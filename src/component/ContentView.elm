@@ -9,6 +9,7 @@ contentDiv : Content -> Html Msg
 contentDiv content =
     div []
         [ h3 [] [ text content.title ]
+        , text (getDateAsText content)
         , pre []
             [ text content.text
             , br [] []
