@@ -2,24 +2,27 @@ module ContentData exposing (..)
 
 import Content exposing (Content)
 
-allContents = [ insanıYargılarken
-              , değerÖlçütü
-              , değerliİnsan
-              , ufakBirNot
-              , üstinsan
-              , bazıNotlar2
-              , düşünceSistemi
-              , düşünceYakıtı
-              , öz
-              , üstinsanınYetileri
-              , farkındalık
-              , hibritÇalışma
-              , beniOkuTxt
-              , gunluk1
-              ]
+
+allContents =
+    [ insanıYargılarken
+    , değerÖlçütü
+    , değerliİnsan
+    , ufakBirNot
+    , üstinsan
+    , bazıNotlar2
+    , düşünceSistemi
+    , düşünceYakıtı
+    , öz
+    , üstinsanınYetileri
+    , farkındalık
+    , hibritÇalışma
+    , beniOkuTxt
+    , gunluk1
+    ]
 
 
-hibritÇalışma = Content "Hibrit Çalışma" "xxx" """
+hibritÇalışma =
+    Content "Hibrit Çalışma" "xxx" """
 Tek bir işle uğraşıldığı halde birden fazla kazanımın sağlandığı çalışma türünü “hibrit çalışma”
 olarak adlandırıyorum. Örnek vermek gerekirse;
 
@@ -52,7 +55,8 @@ elde ederken, uygulama hazır hale geldiğinde çok değerli bir kazanımı daha
 Yaptığım işlerin en azından bu kategoriye dahil olmasını oldukça önemsiyorum.""" [ "tümü", "özgün" ]
 
 
-insanıYargılarken = Content "İnsanı Yargılarken" "xxx" """
+insanıYargılarken =
+    Content "İnsanı Yargılarken" "xxx" """
 İnsan hakkında konuşmaya başlamadan önce insanı neye göre değerlendirmemiz gerektiği konusunda
 hemfikir olmamız gerekir. Günümüzde insana değer biçilirken kimileri iyi niyete, kimileri ahlaka,
 kimileri kişinin dünyaya neler kattığına, ve kimileri de belki saydıklarımdan daha da fazlasına
@@ -68,7 +72,8 @@ en değerli insanın, yani üstinsanın tanımını yapabilmektir. Bunun için d
 edebileceği, nesnel bir değer ölçütü bulma ve kullanma ihtiyacı doğar.""" [ "tümü", "üstinsan" ]
 
 
-değerÖlçütü = Content "Değer Ölçütü" "xxx" """
+değerÖlçütü =
+    Content "Değer Ölçütü" "xxx" """
 İnsanların çoğu eleştirdiği herhangi bir eylemi, eylemi gerçekleştirenin değil, kendi değer
 yargılarının süzgecinden geçirir. Bu da farklı dünya görüşündeki insanlara ılımlı yaklaşmama,
 kendisinden olmayanı hakir görme gibi sonuçlar doğurur. Halbuki kendi yaşam tarzına, değer
@@ -81,7 +86,8 @@ Yazdıklarımdan anlaşılabileceği üzere insanları değerlendirirken kullana
 iyilik, ahlak gibi kavramların aksine şeffaf, ölçülebilir bir kavram olan tutarlılık olmalıdır.""" [ "tümü", "üstinsan" ]
 
 
-değerliİnsan = Content "Değerli İnsan" "xxx" """
+değerliİnsan =
+    Content "Değerli İnsan" "xxx" """
 İnsan değerlemede ihtiyacımız olan, herkes tarafından kabul edilebilir değer ölçütünü belirledikten
 sonra insanın değerini ölçmek düşünüldüğü gibi çok da zor olmayacaktır.
 
@@ -93,7 +99,8 @@ sistemindeki çatlakların sayısıyla ters orantılıdır. Başka bir deyişle,
 sisteminin sağlamlığı kadar değerlidir.""" [ "tümü", "üstinsan" ]
 
 
-ufakBirNot = Content "ufak bir not: ‘değerli’ ile kastedilen" "xxx" """
+ufakBirNot =
+    Content "ufak bir not: ‘değerli’ ile kastedilen" "xxx" """
 Devam etmeden önce araya bir virgül koymanın gerekli olacağını düşündüm.
 
 “İnsanı yargılarken” başlıklı giriş yazısında, insanların, diğerlerini değerlerken öznel kriterlere
@@ -115,7 +122,8 @@ olduğumuzda, çoğu insan için aile fertleri diğer insanlardan -tutarlı olan
 değerli olacaktır.""" [ "tümü", "üstinsan" ]
 
 
-üstinsan = Content "Üstinsan" "xxx" """
+üstinsan =
+    Content "Üstinsan" "xxx" """
 Değer ölçütü tanımladıktan sonra değerli insanı tanımlamak nasıl zor olmadıysa, üstinsanın -kabaca-
 tanımını yapmak da elimizde olan değerli insan tanımı olduktan sonra kolay olacaktır.
 
@@ -166,7 +174,8 @@ düşünce sisteminin sağlamlığı arasında bir uçurum olduğunun ispatıdı
 bu mükemmel sisteme ulaşabilen olağan dışılığı ile hak etmektedir.""" [ "tümü", "üstinsan" ]
 
 
-bazıNotlar2 = Content "bazı notlar #2" "xxx" """
+bazıNotlar2 =
+    Content "bazı notlar #2" "xxx" """
 Yazdıkça açıklama ihtiyacı hissettiğim bazı şeyler geliyor aklıma, bu yüzden sık sık böyle ara
 notlar paylaşacağım sanırım.
 
@@ -186,7 +195,8 @@ büyük bir değişiklik yapacak olduğumda ise yeni versiyonunu okumak isteyenl
 güncellediğinde dair bilgilendirme yapabilirim.""" [ "tümü", "üstinsan" ]
 
 
-düşünceSistemi = Content "Düşünce Sistemi" "xxx" """
+düşünceSistemi =
+    Content "Düşünce Sistemi" "xxx" """
 Doğduğu andan bugüne büyük bir bilgi ve düşünce bombardımanına maruz kalan kişi, düşünce sisteminin
 inşasını başkalarının -bu “başkaları” genellikle ebeveynler olmaktadır- elinden alıp inşa işine
 kendisi devam etmeye karar verdiğinde, düşünce sisteminin temeli çoktan atılmış olacaktır. Her ne
@@ -234,7 +244,8 @@ karakterinin bir parçası olan üstinsan, zaman geçtikçe düşünce sistemind
 düşünceleri bertaraf edecektir.""" [ "tümü", "üstinsan" ]
 
 
-düşünceYakıtı = Content "Düşünce Yakıtı" "xxx" """
+düşünceYakıtı =
+    Content "Düşünce Yakıtı" "xxx" """
 Düşüncenin yakıtı zamandır, üstinsanın karar vermek için kısıtlı bir zamana sahip olduğu durumda
 hatalı düşünmesi ise olasıdır. “Doğru çıkarımlarla doğru düşünceye ulaşmak için şu kadar süre
 yeterlidir” demek mümkün değildir; daha doğrusu bu süre hem kişiden kişiye farklılık gösterir, hem
@@ -245,7 +256,8 @@ sağlayacak kadar üzerinde durmadığı bir düşüncenin düşünce sistemine 
 bir tutum, düşünce sisteminde oluşabilecek çatlakların önüne geçer.""" [ "tümü", "üstinsan" ]
 
 
-öz = Content "Öz" "xxx" """
+öz =
+    Content "Öz" "xxx" """
 Her insan, doğumundan ya da daha öncesinden itibaren bir öze sahiptir ve bu öz insanın karakterinin
 büyük ölçüde belirleyicisidir. Materyalist kimseler, istedikleri takdirde özü genetik ile
 ilişkilendirebilir ya da daha isabetli olarak “kişinin genetik yapısının karakterine etki eden
@@ -265,7 +277,8 @@ yakın noktada bulunan insan ile kendisinin düşünce sisteminin sağlamlığı
 de bunun en belirgin göstergesidir.""" [ "tümü", "üstinsan" ]
 
 
-üstinsanınYetileri = Content "Üstinsanın Yetileri" "xxx" """
+üstinsanınYetileri =
+    Content "Üstinsanın Yetileri" "xxx" """
 Üstinsanın özünü farklı kılan nedir, ya da bir başka deyişle, bu farklı öz üstinsana ne gibi
 yetiler kazandırır?
 
@@ -292,7 +305,8 @@ açıdan üstinsan aynı zamanda “en mantıklı insan” sıfatına da layıkt
 – Üstinsan farkındadır.""" [ "tümü", "üstinsan" ]
 
 
-farkındalık = Content "Farkındalık" "xxx" """
+farkındalık =
+    Content "Farkındalık" "xxx" """
 Ayıpladığı bir eylemi bir zaman sonra, şartlar olgunlaştığında kendisi de yapan kişi, hem
 ayıpladığı eylemi gerçekleştirenin içinde bulunduğu koşulların, hem de aynı koşullarda kendisinde
 de o eylemi yapma potansiyeli olduğunun farkında olamamıştır; bu durumda kişiyi tutarsızlığa itmiş
@@ -340,7 +354,8 @@ yoktur; düşünce düşüncedir ve üstinsan diğer insanların düşünce ve e
 da farkındadır. Öyle ki, üstinsan, insanların özünü kendilerinden daha iyi bilebilir.""" [ "tümü", "üstinsan" ]
 
 
-beniOkuTxt = Content "beni_oku.txt" "xxx" """
+beniOkuTxt =
+    Content "beni_oku.txt" "xxx" """
 üstinsan kategorisinde “üstinsan nedir” sorusu etrafında şekillenen bir düşünceler bütününü kademe
 kademe anlatma niyetindeyim. bunu uzunca bir süre ileride kitap olarak yayımlatma niyetiyle kendime
 sakladım ancak buna ayırmam gereken vakte sahip olmayışım ve yolun sonundaki belirsizlik yola
@@ -375,7 +390,9 @@ kategori yapısının güncellenmesi durumunda burayı da güncelliyor olacağı
 kullanarak yeni bir yazının gelip gelmediğini kontrol etme zahmetinden kurtulabilir, destek olma
 adına ise sitenin varlığından başkalarını haberdar edebilirsiniz.""" [ "beni_oku.txt" ]
 
-fonkProg101 = Content "Fonksiyonel Programlama 101" "xxx" """
+
+fonkProg101 =
+    Content "Fonksiyonel Programlama 101" "xxx" """
 Öğretmenin öğrencilerine ödevler verip notlandırma yapabildiği bir sistem tasarlıyor olalım.
 Öğrenci sınıfımız oldukça basit:
 
@@ -552,7 +569,9 @@ ederiz. Bizim yaptığımız da bunun en basit örneklerinden idi: yazdığımı
 implementasyonuna bağımlı olmaktan kurtarıp yerel muhakeme özelliği kazandırmak ve doğru kod
 parçacığı ile kompozisyona sokmak.""" [ "tümü" ]
 
-gunluk1 = Content "#1" "xxx" """
+
+gunluk1 =
+    Content "#1" "xxx" """
 yaklaşık iki sene önce işe girdim, kendimi hızlıca geliştirerek iki ay önce de bir buçuk sene
 deneyime sahip bir yazılımcıya göre gayet iyi maaşlı bir işe transfer oldum. kendimi hızlıca
 geliştirmeye çalışırken gözleri de hafiften bozdum, gözlük kullanmaya başladım. kendimi hızlıca
@@ -588,7 +607,9 @@ yaşam kalitemi kökünden etkileyeceğini düşündüğüm bir tercihin sosyal 
 olması beni rahatsız ediyor ve bu gibi düşünceler sonrasında maalesef benim de ucundan sosyal bir
 hayvan olduğum gerçeğini hatırlıyorum. zaten öyle olmasam bu yazı da olmazdı.""" [ "günlük" ]
 
-templateContent = Content "Another Content" "xxx" """
+
+templateContent =
+    Content "Another Content" "xxx" """
 It is a long established fact that a reader will be distracted by the readable content of a page
 when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal
 distribution of letters, as opposed to using 'Content here, content here', making it look like
