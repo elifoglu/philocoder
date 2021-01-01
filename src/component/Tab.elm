@@ -1,11 +1,10 @@
-module Tab exposing (Tab, contentsSorted, extractMaybeTab, setActive, tabIsActive)
+module Tab exposing (Tab, extractMaybeTab, setActive, tabIsActive)
 
 import Content exposing (Content)
-import SortStrategy exposing (SortStrategy(..))
 
 
 type alias Tab =
-    { name : String, contents : List Content, active : Bool, sortStrategy : SortStrategy }
+    { name : String, contents : List Content, active : Bool }
 
 
 setActive : Tab -> Tab -> Tab
@@ -29,13 +28,4 @@ extractMaybeTab maybeTab =
             tab
 
         Nothing ->
-            Tab "" [] False ASC
-
-
-contentsSorted : Tab -> List Content
-contentsSorted tab =
-    if tab.sortStrategy == ASC then
-        tab.contents
-
-    else
-        List.reverse tab.contents
+            Tab "" [] False

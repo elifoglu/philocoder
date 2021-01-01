@@ -1,9 +1,14 @@
 module Content exposing (..)
 
+import Date exposing (Date, format)
+
+
+type alias PublishOrderInDay =
+    Int
+
 
 type ContentDate
-    = Date String
-    | DateWithDailyOrder String Int
+    = Date Date PublishOrderInDay
     | NoDate
 
 
@@ -14,11 +19,8 @@ type alias Content =
 getDateAsText : Content -> String
 getDateAsText content =
     case content.date of
-        Date string ->
-            string
-
-        DateWithDailyOrder string _ ->
-            string
+        Date date _ ->
+            format "dd.MM.yy" date
 
         NoDate ->
             ""

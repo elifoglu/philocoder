@@ -1,6 +1,8 @@
 module ContentData exposing (..)
 
 import Content exposing (Content, ContentDate(..))
+import Date exposing (fromCalendarDate)
+import Time exposing (Month(..))
 
 
 allContents =
@@ -22,7 +24,7 @@ allContents =
 
 
 hibritÇalışma =
-    Content "Hibrit Çalışma" (Date "06.05.20") """
+    Content "Hibrit Çalışma" (Date (fromCalendarDate 2020 May 6) 1) """
 Tek bir işle uğraşıldığı halde birden fazla kazanımın sağlandığı çalışma türünü “hibrit çalışma”
 olarak adlandırıyorum. Örnek vermek gerekirse;
 
@@ -56,7 +58,7 @@ Yaptığım işlerin en azından bu kategoriye dahil olmasını oldukça önemsi
 
 
 insanıYargılarken =
-    Content "İnsanı Yargılarken" (Date "28.04.19") """
+    Content "İnsanı Yargılarken" (Date (fromCalendarDate 2019 Apr 28) 1) """
 İnsan hakkında konuşmaya başlamadan önce insanı neye göre değerlendirmemiz gerektiği konusunda
 hemfikir olmamız gerekir. Günümüzde insana değer biçilirken kimileri iyi niyete, kimileri ahlaka,
 kimileri kişinin dünyaya neler kattığına, ve kimileri de belki saydıklarımdan daha da fazlasına
@@ -73,7 +75,7 @@ edebileceği, nesnel bir değer ölçütü bulma ve kullanma ihtiyacı doğar.""
 
 
 değerÖlçütü =
-    Content "Değer Ölçütü" (Date "01.05.19") """
+    Content "Değer Ölçütü" (Date (fromCalendarDate 2019 May 1) 1) """
 İnsanların çoğu eleştirdiği herhangi bir eylemi, eylemi gerçekleştirenin değil, kendi değer
 yargılarının süzgecinden geçirir. Bu da farklı dünya görüşündeki insanlara ılımlı yaklaşmama,
 kendisinden olmayanı hakir görme gibi sonuçlar doğurur. Halbuki kendi yaşam tarzına, değer
@@ -87,7 +89,7 @@ iyilik, ahlak gibi kavramların aksine şeffaf, ölçülebilir bir kavram olan t
 
 
 değerliİnsan =
-    Content "Değerli İnsan" (Date "04.05.19") """
+    Content "Değerli İnsan" (Date (fromCalendarDate 2019 May 4) 1) """
 İnsan değerlemede ihtiyacımız olan, herkes tarafından kabul edilebilir değer ölçütünü belirledikten
 sonra insanın değerini ölçmek düşünüldüğü gibi çok da zor olmayacaktır.
 
@@ -100,7 +102,7 @@ sisteminin sağlamlığı kadar değerlidir.""" [ "tümü", "üstinsan" ]
 
 
 ufakBirNot =
-    Content "ufak bir not: ‘değerli’ ile kastedilen" (Date "05.04.20") """
+    Content "ufak bir not: ‘değerli’ ile kastedilen" (Date (fromCalendarDate 2020 Apr 5) 1) """
 Devam etmeden önce araya bir virgül koymanın gerekli olacağını düşündüm.
 
 “İnsanı yargılarken” başlıklı giriş yazısında, insanların, diğerlerini değerlerken öznel kriterlere
@@ -123,7 +125,7 @@ değerli olacaktır.""" [ "tümü", "üstinsan" ]
 
 
 üstinsan =
-    Content "Üstinsan" (DateWithDailyOrder "21.05.20" 1) """
+    Content "Üstinsan" (Date (fromCalendarDate 2020 May 21) 1) """
 Değer ölçütü tanımladıktan sonra değerli insanı tanımlamak nasıl zor olmadıysa, üstinsanın -kabaca-
 tanımını yapmak da elimizde olan değerli insan tanımı olduktan sonra kolay olacaktır.
 
@@ -175,7 +177,7 @@ bu mükemmel sisteme ulaşabilen olağan dışılığı ile hak etmektedir.""" [
 
 
 bazıNotlar2 =
-    Content "bazı notlar #2" (DateWithDailyOrder "21.05.20" 2) """
+    Content "bazı notlar #2" (Date (fromCalendarDate 2020 May 21) 2) """
 Yazdıkça açıklama ihtiyacı hissettiğim bazı şeyler geliyor aklıma, bu yüzden sık sık böyle ara
 notlar paylaşacağım sanırım.
 
@@ -196,7 +198,7 @@ güncellediğinde dair bilgilendirme yapabilirim.""" [ "tümü", "üstinsan" ]
 
 
 düşünceSistemi =
-    Content "Düşünce Sistemi" (Date "26.05.20") """
+    Content "Düşünce Sistemi" (Date (fromCalendarDate 2020 May 26) 1) """
 Doğduğu andan bugüne büyük bir bilgi ve düşünce bombardımanına maruz kalan kişi, düşünce sisteminin
 inşasını başkalarının -bu “başkaları” genellikle ebeveynler olmaktadır- elinden alıp inşa işine
 kendisi devam etmeye karar verdiğinde, düşünce sisteminin temeli çoktan atılmış olacaktır. Her ne
@@ -245,7 +247,7 @@ düşünceleri bertaraf edecektir.""" [ "tümü", "üstinsan" ]
 
 
 düşünceYakıtı =
-    Content "Düşünce Yakıtı" (DateWithDailyOrder "30.05.20" 1) """
+    Content "Düşünce Yakıtı" (Date (fromCalendarDate 2020 May 30) 1) """
 Düşüncenin yakıtı zamandır, üstinsanın karar vermek için kısıtlı bir zamana sahip olduğu durumda
 hatalı düşünmesi ise olasıdır. “Doğru çıkarımlarla doğru düşünceye ulaşmak için şu kadar süre
 yeterlidir” demek mümkün değildir; daha doğrusu bu süre hem kişiden kişiye farklılık gösterir, hem
@@ -257,7 +259,7 @@ bir tutum, düşünce sisteminde oluşabilecek çatlakların önüne geçer.""" 
 
 
 öz =
-    Content "Öz" (DateWithDailyOrder "30.05.20" 2) """
+    Content "Öz" (Date (fromCalendarDate 2020 May 30) 2) """
 Her insan, doğumundan ya da daha öncesinden itibaren bir öze sahiptir ve bu öz insanın karakterinin
 büyük ölçüde belirleyicisidir. Materyalist kimseler, istedikleri takdirde özü genetik ile
 ilişkilendirebilir ya da daha isabetli olarak “kişinin genetik yapısının karakterine etki eden
@@ -278,7 +280,7 @@ de bunun en belirgin göstergesidir.""" [ "tümü", "üstinsan" ]
 
 
 üstinsanınYetileri =
-    Content "Üstinsanın Yetileri" (Date "01.06.20") """
+    Content "Üstinsanın Yetileri" (Date (fromCalendarDate 2020 Jun 1) 1) """
 Üstinsanın özünü farklı kılan nedir, ya da bir başka deyişle, bu farklı öz üstinsana ne gibi
 yetiler kazandırır?
 
@@ -306,7 +308,7 @@ açıdan üstinsan aynı zamanda “en mantıklı insan” sıfatına da layıkt
 
 
 farkındalık =
-    Content "Farkındalık" (Date "03.06.20") """
+    Content "Farkındalık" (Date (fromCalendarDate 2020 Jun 3) 1) """
 Ayıpladığı bir eylemi bir zaman sonra, şartlar olgunlaştığında kendisi de yapan kişi, hem
 ayıpladığı eylemi gerçekleştirenin içinde bulunduğu koşulların, hem de aynı koşullarda kendisinde
 de o eylemi yapma potansiyeli olduğunun farkında olamamıştır; bu durumda kişiyi tutarsızlığa itmiş
@@ -392,7 +394,7 @@ adına ise sitenin varlığından başkalarını haberdar edebilirsiniz.""" [ "b
 
 
 fonkProg101 =
-    Content "Fonksiyonel Programlama 101" (Date "19.06.20") """
+    Content "Fonksiyonel Programlama 101" (Date (fromCalendarDate 2020 Jun 19) 1) """
 Öğretmenin öğrencilerine ödevler verip notlandırma yapabildiği bir sistem tasarlıyor olalım.
 Öğrenci sınıfımız oldukça basit:
 
@@ -571,7 +573,7 @@ parçacığı ile kompozisyona sokmak.""" [ "tümü" ]
 
 
 gunluk1 =
-    Content "#1" (Date "21.11.20") """
+    Content "#1" (Date (fromCalendarDate 2020 Nov 21) 1) """
 yaklaşık iki sene önce işe girdim, kendimi hızlıca geliştirerek iki ay önce de bir buçuk sene
 deneyime sahip bir yazılımcıya göre gayet iyi maaşlı bir işe transfer oldum. kendimi hızlıca
 geliştirmeye çalışırken gözleri de hafiften bozdum, gözlük kullanmaya başladım. kendimi hızlıca
@@ -609,7 +611,7 @@ hayvan olduğum gerçeğini hatırlıyorum. zaten öyle olmasam bu yazı da olma
 
 
 templateContent =
-    Content "Another Content" (Date "11.11.21") """
+    Content "Another Content" (Date (fromCalendarDate 2020 Oct 10) 1) """
 It is a long established fact that a reader will be distracted by the readable content of a page
 when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal
 distribution of letters, as opposed to using 'Content here, content here', making it look like
