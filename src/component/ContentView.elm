@@ -5,12 +5,12 @@ import Html exposing (..)
 import Msg exposing (..)
 
 contentDiv: Content -> Html Msg
-contentDiv content = div []
-                        [ h3 [] [ text (content.title) ]
-                        , pre []
-                            [ text (content.text)
-                            , br [] []
-                            , br [] []
-                            , hr [] []
-                            ]
-                        ]
+contentDiv content =
+  div []
+   [ h3 [] [ text (content.title) ]
+   , pre []
+      [ text (content.text)
+      , br [] []
+      , br [] []
+      ]
+   ]

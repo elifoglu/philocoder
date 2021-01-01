@@ -1,4 +1,4 @@
-module Tab exposing (..)
+module TabInfo exposing (..)
 
 import Content exposing (Content)
 

@@ -1,5 +1,5 @@
 module Model exposing (..)
 
-import Tab exposing (Tab)
+import TabInfo exposing (Tab)
 
 type alias Model = List Tab

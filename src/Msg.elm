@@ -1,5 +1,5 @@
 module Msg exposing (..)
 
-import Tab exposing (Tab)
+import TabInfo exposing (Tab)
 
 type Msg = TabSelected Tab
