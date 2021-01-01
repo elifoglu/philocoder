@@ -3,7 +3,7 @@ module TabView exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import TabInfo exposing (..)
+import Tab exposing (..)
 import Msg exposing (..)
 
 tabButton: Tab -> Html Msg

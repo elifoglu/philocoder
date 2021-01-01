@@ -1,26 +1,30 @@
 module TabData exposing (..)
 
 import Content exposing (Content)
-import List exposing (member)
-import TabInfo exposing (..)
 import ContentData exposing (..)
+import List exposing (member)
+import SortStrategy exposing (SortStrategy(..))
+import Tab exposing (..)
+
 
 allTabs : List Tab
 allTabs =
-  List.map setContents
-  [ ("tümü", True)
-  , ("üstinsan", False)
-  , ("perspektif", False)
-  , ("özgün", False)
-  , ("günlük", False)
-  , ("kod", False)
-  , ("beni_oku.txt", False)
-  ]
+    List.map setContents
+        [ ( "tümü", True, DESC )
+        , ( "üstinsan", False, ASC )
+        , ( "perspektif", False, DESC )
+        , ( "özgün", False, DESC )
+        , ( "günlük", False, DESC )
+        , ( "kod", False, DESC )
+        , ( "beni_oku.txt", False, DESC )
+        ]
 
-setContents : (String, Bool) -> Tab
-setContents (name, active) =
-  { name = name, contents = List.filter (contentBelongsToTab name) allContents , active = active }
 
-contentBelongsToTab: String -> Content -> Bool
+setContents : ( String, Bool, SortStrategy ) -> Tab
+setContents ( name, active, sortStrategy ) =
+    { name = name, contents = List.filter (contentBelongsToTab name) allContents, active = active, sortStrategy = sortStrategy }
+
+
+contentBelongsToTab : String -> Content -> Bool
 contentBelongsToTab tabName content =
-  member tabName content.tabs
+    member tabName content.tabs

@@ -4,7 +4,7 @@ import Browser
 import Msg exposing (Msg(..))
 import Model exposing (..)
 import View exposing (view)
-import TabInfo
+import Tab
 import TabData exposing (allTabs)
 
 port title : String -> Cmd a
@@ -26,7 +26,7 @@ init _ =
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
-    TabSelected tab -> (List.map (TabInfo.setActive tab) model, Cmd.none)
+    TabSelected tab -> (List.map (Tab.setActive tab) model, Cmd.none)
 
 view = View.view
 
