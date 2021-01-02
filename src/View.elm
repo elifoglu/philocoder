@@ -11,7 +11,7 @@ import TabView exposing (..)
 
 view : Model -> Html Msg
 view model =
-    div [] (css "style.css" :: List.map tabButton model ++ [ div [] [ tabContentsDiv model ] ])
+    div [] (css "../style.css" :: List.map tabButton model ++ [ div [] [ tabContentsDiv model ] ])
 
 
 tabContentsDiv : Model -> Html Msg
