@@ -3,16 +3,19 @@ module TabData exposing (..)
 import Basics exposing (Order(..))
 import Content exposing (Content, ContentDate(..))
 import ContentData exposing (..)
-import Date
 import List exposing (member)
 import Sort exposing (SortStrategy(..), sortContentsByStrategy)
 import Tab exposing (..)
 
 
+tümüTabName =
+    "tümü"
+
+
 allTabs : List Tab
 allTabs =
     List.map setContents
-        [ ( "tümü", True, DateDESC )
+        [ ( tümüTabName, True, DateDESC )
         , ( "üstinsan", False, DateASC )
         , ( "perspektif", False, DateDESC )
         , ( "özgün", False, DateDESC )
