@@ -13,6 +13,7 @@ contentDiv content =
     div []
         [ p [ style "margin-bottom" "30px" ]
             [ span [ class "title" ] [ text content.title ]
+            , br [] []
             , contentTabsText content
             , contentDateText content
             ]
