@@ -21,6 +21,7 @@ allTabs =
         , ( "özgün", False, DateDESC )
         , ( "günlük", False, DateDESC )
         , ( "kod", False, DateDESC )
+        , ( "mikro", False, DateDESC )
         , ( "beni_oku.txt", False, DateDESC )
         ]
 
