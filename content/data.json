@@ -213,6 +213,9 @@
     },
     {
       "title": "beni_oku.txt",
+      "date": {
+        "publishOrderInDay": 1
+      },
       "contentId": 13,
       "tags": [
         "beni_oku.txt"

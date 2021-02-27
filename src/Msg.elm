@@ -1,7 +1,7 @@
 module Msg exposing (..)
 
 import Http
-import Json.Decode as D exposing (Decoder, bool, field, int, map3, map4, maybe, string)
+import Json.Decode as D exposing (Decoder, bool, field, int, map, map3, map4, maybe, oneOf, string)
 
 
 type Msg
@@ -43,26 +43,48 @@ tagDecoder =
 
 
 type alias GotContent =
-    { title : String, maybeDate : Maybe GotContentDate, contentId : Int, tags : List String }
-
-
-type alias GotContentDate =
-    { year : Int, month : Int, day : Int, publishOrderInDay : Int }
+    { title : String, date : GotContentDate, contentId : Int, tags : List String }
 
 
 contentDecoder : Decoder GotContent
 contentDecoder =
     map4 GotContent
         (field "title" string)
-        (maybe (field "date" contentDateDecoder))
+        (field "date" contentDateDecoder)
         (field "contentId" int)
         (field "tags" (D.list string))
 
 
-contentDateDecoder : Decoder GotContentDate
-contentDateDecoder =
-    map4 GotContentDate
+type GotContentDate
+    = DateExists DateAndPublishOrder
+    | DateNotExists JustPublishOrder
+
+
+type alias DateAndPublishOrder =
+    { year : Int, month : Int, day : Int, publishOrderInDay : Int }
+
+
+type alias JustPublishOrder =
+    { publishOrderInDay : Int }
+
+
+dateAndPublishOrderDecoder : Decoder DateAndPublishOrder
+dateAndPublishOrderDecoder =
+    map4 DateAndPublishOrder
         (field "year" int)
         (field "month" int)
         (field "day" int)
         (field "publishOrderInDay" int)
+
+
+justPublishOrderDecoder : Decoder JustPublishOrder
+justPublishOrderDecoder =
+    map JustPublishOrder (field "publishOrderInDay" int)
+
+
+contentDateDecoder : Decoder GotContentDate
+contentDateDecoder =
+    oneOf
+        [ map DateExists dateAndPublishOrderDecoder
+        , map DateNotExists justPublishOrderDecoder
+        ]

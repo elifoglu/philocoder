@@ -67,7 +67,7 @@ update msg model =
 
 
 
---todo beni_oku.txt'ye de tarih geçtin, kaldır
+--todo make codebase modular by doing a refactor
 
 
 updateTextOfContents : Int -> String -> List Content -> List Content
@@ -96,21 +96,21 @@ toHttpReq content =
 gotContentToContent : List Tag -> GotContent -> Content
 gotContentToContent allTags gotContent =
     { title = gotContent.title
-    , date = gotContentDateToContentDate gotContent.maybeDate
+    , date = gotContentDateToContentDate gotContent.date
     , contentId = gotContent.contentId
     , text = Text "aBcd"
     , tags = List.filter (\tag -> tag /= dummyTag) (List.map (tagNameToTag allTags) gotContent.tags)
     }
 
 
-gotContentDateToContentDate : Maybe GotContentDate -> ContentDate
+gotContentDateToContentDate : GotContentDate -> ContentDate
 gotContentDateToContentDate gotContentDate =
     case gotContentDate of
-        Just date ->
-            Date (fromCalendarDate date.year (numberToMonth date.month) date.day) date.publishOrderInDay
+        Msg.DateExists dateAndPublishOrder ->
+            DateExists (fromCalendarDate dateAndPublishOrder.year (numberToMonth dateAndPublishOrder.month) dateAndPublishOrder.day) dateAndPublishOrder.publishOrderInDay
 
-        Nothing ->
-            NoDate
+        Msg.DateNotExists justPublishOrder ->
+            DateNotExists justPublishOrder.publishOrderInDay
 
 
 tagNameToTag : List Tag -> String -> Tag

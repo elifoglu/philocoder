@@ -9,8 +9,8 @@ type alias PublishOrderInDay =
 
 
 type ContentDate
-    = Date Date PublishOrderInDay
-    | NoDate
+    = DateExists Date PublishOrderInDay
+    | DateNotExists PublishOrderInDay
 
 
 type ContentText
@@ -25,8 +25,8 @@ type alias Content =
 getDateAsText : Content -> String
 getDateAsText content =
     case content.date of
-        Date date _ ->
+        DateExists date _ ->
             format "dd.MM.yy" date
 
-        NoDate ->
+        DateNotExists _ ->
             ""

@@ -22,13 +22,16 @@ sortContentsByDateASC contents =
 compareContentsByDate : Content -> Content -> Order
 compareContentsByDate content1 content2 =
     case ( content1.date, content2.date ) of
-        ( Date date1 publishOrder1, Date date2 publishOrder2 ) ->
+        ( DateExists date1 publishOrder1, DateExists date2 publishOrder2 ) ->
             case Date.compare date1 date2 of
                 EQ ->
                     Basics.compare publishOrder1 publishOrder2
 
                 other ->
                     other
+
+        ( DateNotExists publishOrder1, DateNotExists publishOrder2 ) ->
+            Basics.compare publishOrder1 publishOrder2
 
         _ ->
             --we don't expect this case
