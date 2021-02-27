@@ -5,7 +5,6 @@ import Html exposing (..)
 import Html.Attributes exposing (class, style)
 import Markdown exposing (..)
 import Msg exposing (..)
-import TabData exposing (tümüTabName)
 
 
 contentDiv : Content -> Html Msg
@@ -28,7 +27,7 @@ contentDiv content =
 
 contentTabsText : Content -> Html msg
 contentTabsText content =
-    text (" " ++ String.join " " (List.map (\str -> "#" ++ str) (removeGeneralTab content.tabs)))
+    text (" " ++ String.join " " (List.map (\str -> "#" ++ str) content.tabs))
 
 
 contentDateText : Content -> Html msg
@@ -42,8 +41,3 @@ contentDateText content =
 
     else
         text (", " ++ dateText)
-
-
-removeGeneralTab : List String -> List String
-removeGeneralTab strings =
-    List.filter (\num -> num /= tümüTabName) strings

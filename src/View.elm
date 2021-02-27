@@ -17,7 +17,13 @@ view model =
 tabContentsDiv : Model -> Html Msg
 tabContentsDiv model =
     div [ class "tabContents" ]
-        (List.map contentDiv (extractMaybeTab (List.head (List.filter tabIsActive model))).contents)
+        (case List.head (List.filter tabIsActive model) of
+            Just tab ->
+                List.map contentDiv tab.contents
+
+            Nothing ->
+                []
+        )
 
 
 css : String -> Html msg

@@ -1,22 +1,17 @@
-module Sort exposing (SortStrategy(..), sortContentsByStrategy)
+module Sort exposing (sortContentsByStrategy)
 
 import Content exposing (Content, ContentDate(..))
 import Date
 
 
-type SortStrategy
-    = DateASC
-    | DateDESC
-
-
-sortContentsByStrategy : SortStrategy -> List Content -> List Content
+sortContentsByStrategy : String -> List Content -> List Content
 sortContentsByStrategy strategy list =
     case strategy of
-        DateASC ->
-            sortContentsByDateASC list
-
-        DateDESC ->
+        "DateDESC" ->
             List.reverse (sortContentsByDateASC list)
+
+        _ ->
+            sortContentsByDateASC list
 
 
 sortContentsByDateASC : List Content -> List Content

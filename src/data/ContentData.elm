@@ -42,7 +42,7 @@ Bunların getirileri ise tahmin edebileceğiniz gibi, sırasıyla şu şekilde:
 Beynimi keskin hatlarla ikiye bölüp “sen şununla ilgilen, sen de şununla” demeden, görünürde tek iş yaparak, görüldüğü üzere birden fazla kazanım elde ediyorum hibrit çalışma ile. Verdiğim ilk iki örneğin ikisinde de iki kazanımdan biri yabancı dildi ve bu “hibrit çalışmada kazanımlardan biri illa ki yabancı dil olmalı gibi duruyor” diye düşündürebilirdi; bu sebeple üçüncü örneği ekleme ihtiyacı duydum (yine de kazanımlardan birinin yabancı dil olmasının hibrit çalışma için çok uygun olduğunu belirtmeden geçmemek gerek). İlk iki örnekte, kazanımların her ikisi de “öğrenme” kategorisindeyken, üçüncü örnekte ise sadece biri “öğrenme”, diğeri ise “bir işi tamamlama” kategorisinde. Yani, hibrit çalışmanın kazanımları sadece öğrenim ile sınırlı değil.
 
 Hibrit çalışma dışında, hibrit çalışma kategorisine girmese de getirileri bakımından “hibrit çalışmanın akrabası” diyebileceğim işler yapmayı tercih ediyorum. Örneğin yaklaşık bir ay kadar önce ağırlıklı olarak portfolyoma ekleme adına geliştirdiğim bir uygulama, aynı zamanda hayatımı düzene sokmamı sağlıyor. Bu uygulamayı geliştirme sürecinde sadece bir kazanım (bir işi tamamlama) elde ederken, uygulama hazır hale geldiğinde çok değerli bir kazanımı daha cebime koymuş oldum. Yaptığım işlerin en azından bu kategoriye dahil olmasını oldukça önemsiyorum.
-""" [ "tümü", "özgün" ]
+""" [ "tümü", "özgün" ] []
 
 
 insanıYargılarken =
@@ -50,7 +50,7 @@ insanıYargılarken =
 İnsan hakkında konuşmaya başlamadan önce insanı neye göre değerlendirmemiz gerektiği konusunda hemfikir olmamız gerekir. Günümüzde insana değer biçilirken kimileri iyi niyete, kimileri ahlaka, kimileri kişinin dünyaya neler kattığına, ve kimileri de belki saydıklarımdan daha da fazlasına belli oranlarda bakar. Ancak bahsi geçen iyilik ve ahlak gibi kavramlar ucu açık, yoğun tartışmalar sonucunda dahi tanımları üzerinde uzlaşmaya varılamayan kavramlardır. Aynı şekilde, bir kişinin dünyaya kattıkları birileri için oldukça dikkate değer iken başka bir kesim için arz etmeyebilir ve hatta zararlı bile bulunabilir.
 
 İnsanların öznel olarak üstte saydığım kriterlerden bazılarını insan değerlemede ön planda tutması anlaşılabilir ancak bu öznel tercihler sonucunda nesnel bir sonuca varmak mümkün olmayacaktır. Benim ulaşmak istediğim, insanları herkesin kabul edebileceği bir yöntem ile değerlemek ve böylece en değerli insanın, yani üstinsanın tanımını yapabilmektir. Bunun için de insanlığın tümünün kabul edebileceği, nesnel bir değer ölçütü bulma ve kullanma ihtiyacı doğar.
-""" [ "tümü", "üstinsan" ]
+""" [ "tümü", "üstinsan" ] []
 
 
 değerÖlçütü =
@@ -58,7 +58,7 @@ değerÖlçütü =
 İnsanların çoğu eleştirdiği herhangi bir eylemi, eylemi gerçekleştirenin değil, kendi değer yargılarının süzgecinden geçirir. Bu da farklı dünya görüşündeki insanlara ılımlı yaklaşmama, kendisinden olmayanı hakir görme gibi sonuçlar doğurur. Halbuki kendi yaşam tarzına, değer yargılarına uygun davranmadığı için eleştirdiği o insan, kendi içerisinde pek  _tutarlı_, hatta kendisinden çok daha tutarlı bir birey olabilir. Buna paralel olarak, insanın, tutarlılığını sürdürdüğü, düşünce ve eylemlerini kendisiyle çelişmeden açıklayabildiği müddetçe kendisine yöneltilen olumsuz eleştirilerin tümünün önünde bir kalkan oluşturacağı rahatlıkla söylenebilir.
 
 Yazdıklarımdan anlaşılabileceği üzere insanları değerlendirirken kullanacağımız değer ölçütü, iyilik, ahlak gibi kavramların aksine şeffaf, ölçülebilir bir kavram olan _tutarlılık_ olmalıdır.
-""" [ "tümü", "üstinsan" ]
+""" [ "tümü", "üstinsan" ] []
 
 
 değerliİnsan =
@@ -66,7 +66,7 @@ değerliİnsan =
 İnsan değerlemede ihtiyacımız olan, herkes tarafından kabul edilebilir değer ölçütünü belirledikten sonra insanın değerini ölçmek düşünüldüğü gibi çok da zor olmayacaktır.
 
 İnsanı çok sayıda düşünceye sahip bir varlık olarak ele alalım ve insanın sahip olduğu düşüncelerin toplamına o insanın  _düşünce sistemi_  diyelim. İşte insanın değerini belirlemede kullanılan ölçü birimi, bu düşünce sistemindeki çatlakların sayısıdır. Her bir çatlak, düşünce sisteminde bulunan farklı iki düşünce arasındaki tutarsızlığı ifade eder. Kişinin sahip olduğu değer ise düşünce sistemindeki çatlakların sayısıyla ters orantılıdır. Başka bir deyişle, kişi sahip olduğu düşünce sisteminin sağlamlığı kadar değerlidir.
-""" [ "tümü", "üstinsan" ]
+""" [ "tümü", "üstinsan" ] []
 
 
 ufakBirNot =
@@ -78,7 +78,7 @@ Devam etmeden önce araya bir virgül koymanın gerekli olacağını düşündü
 “Değerli”, kelime anlamı itibarıyla öznelliğin kıyılarında gezen bir sıfat ve bunun yerine nesnelliğe daha fazla göz kırpan “kaliteli” ya da daha uygun bir başka sıfat (üzerinde gerçekten düşünmedim, sebebini ise hemen açıklayacağım) daha tutarlı olabilirdi. En nihayetinde “O benim için değerli çünkü o benim annem” cümlesi gayet makul iken “O benim için kaliteli çünkü o benim annem” gibi bir cümle biraz absürt durmakta; bu da “kaliteli” sıfatının nesnelliğe daha yakın olduğuna dair ufak bir ispat olabilir.
 
 Ben ise burada en başından beri “değerli” sıfatını kullanmakta bir beis görmüyorum, çünkü yazılarımda bahsettiğim ve bahsetmeye devam edeceğim “tutarlı insan” figürü kalitelilik ile bağdaştırılabileceği gibi aynı zamanda da _benim için_ değerli olandır ve insanlık tarafından da aynı şekilde addedilmesini beklediğimdir. Yoksa bittabi, değerliliği sözlük anlamı ile ele alacak olduğumuzda, çoğu insan için aile fertleri diğer insanlardan -tutarlı olanlar da dahil- daha değerli olacaktır.
-""" [ "tümü", "üstinsan" ]
+""" [ "tümü", "üstinsan" ] []
 
 
 üstinsan =
@@ -96,7 +96,7 @@ Az önce de söylediğim gibi pratikte hesaplanmayacak olsa da, ortalama bir ins
 Beklentiniz bu yönde ise maalesef yanıldınız. Düşünce sisteminde sadece bir çatlak bulunduğunu varsaydığımız kişinin, çatlağın sebebi olan düşünce ikilisinden en az birisinin problemli olduğunu kabul etmiş oluruz. Çatlak dışındaki tüm düşünce ikililerin tutarlı olduğunu söylediğimizdeki düştüğümüz yanılgı ise şu şekilde açıklanabilir: Çatlağı oluşturan problemli düşünce, 1000 düşünce barındıran düşünce sisteminde çatlağın kendisini oluşturan düşünce ikilisini bir kenara bıraktığımızda, 998 adet düşünce ikilisinin daha elemanıdır ve bu ikililerin diğer tüm elemanları da problemli bir düşünce ile tutarlı gözüktüklerinden problemli olarak mimlenmelidir. Aynı şekilde, problemli konumuna düşen bu yeni düşünceler de, mensubu oldukları düşünce ikililerinin problemli olarak işaretlenmesine sebep olur ve bu böyle devam eder.
 
 Bu domino etkisi göstermektedir ki, düşünce sisteminde fark edilen tek bir çatlak dahi henüz fark edilmemiş çatlaklar sürüsünün habercisidir ve bu da, mükemmel olarak addedebileceğimiz, tutarsızlık barındırmayan düşünce sistemi ile bu mükemmel sisteme teorik olarak olarak en yakın sayılabilecek düşünce sisteminin sağlamlığı arasında bir uçurum olduğunun ispatıdır. Üstinsan, üstinsan sıfatını bu mükemmel sisteme ulaşabilen olağan dışılığı ile hak etmektedir.
-""" [ "tümü", "üstinsan" ]
+""" [ "tümü", "üstinsan" ] []
 
 
 bazıNotlar2 =
@@ -106,7 +106,7 @@ Yazdıkça açıklama ihtiyacı hissettiğim bazı şeyler geliyor aklıma, bu y
 – Yazılarımı, aklımdakileri adım adım, soru işareti bırakmayacak şekilde aktarmaya özen göstererek yazmaya gayret ediyorum ancak bazen bu zorlayıcı olabiliyor. Böyle bir soru işareti ile karşılaştığınızda, bunun ileride açıklanacağından, şu an için ise anlaşılmasının ertelenmesinde bir sakınca olmadığından emin olabilirsiniz. Örnek vermek gerekirse, “Üstinsan” başlıklı bölümde “…üstinsan özü itibarıyla diğer insanlardan farklılık gösterir” kısmının akıllara getireceği soru işareti açıklanmaya muhtaç ve sonraki yazılarda detaylıca açıklanacak.
 
 – Yeni yazıya başlamadan önce çoğunlukla önceki yazılara bir göz atıyorum ve bazen anlatmak istediğimi istediğim gibi aktaramadığımı görüyorum. Böyle bir durumu daha önce bir not ile atlatmıştım; bundan sonrası için ise yazı içeriğini güncellemeyi de seçenekler arasına koydum. Sonuçta bu yazılar burada bir nevi taslak formunda ve vakit buldukça yazmayı istikrarla devam ettirebilirsem eğer, basılacak olası bir kitabın ham maddesi olacaklar. Mevcut yazıların içeriğinde büyük bir değişiklik yapacak olduğumda ise yeni versiyonunu okumak isteyenler için yazının güncellediğinde dair bilgilendirme yapabilirim.
-""" [ "tümü", "üstinsan" ]
+""" [ "tümü", "üstinsan" ] []
 
 
 düşünceSistemi =
@@ -118,7 +118,7 @@ Doğduğu andan bugüne büyük bir bilgi ve düşünce bombardımanına maruz k
 Düşünce sistemi bazı ön bilgiler üzerine inşa edilir ve bu ön bilgilerin doğruluktan uzak olması, kişinin tutarsız olduğunun delili değildir. Kişi bir zaman sonra dış dünyadan edindiği bu bilgiler üzerine düşünce sistemini inşa etmeye başlar ve bazı çatlaklarla karşılaşır. Kişinin tutarlılığı, çatlakla karşılaşma anlarında çatlağa verdiği tepkinin büyüklüğü ve düşünce sistemini yeniden şekillendirme isteği ile doğru orantılıdır. Bu doğrultuda, üstinsanın “tutarsızlık barındırmayan düşünce sistemine sahip kişi”den ziyade “düşünce sisteminin inşasına başladıktan sonra sisteme, sistemi tutarsız kılacak hiçbir düşüncenin girmesine hiçbir şekilde izin vermeyen kişi” olarak tanımlanması daha doğru olur. Ancak pratikte, sahip olduğu yetiler sayesinde düşünce sistemindeki tutarsızlıkları fark edip hızlıca bunları onaracak olan üstinsan için ilk tanımı genelgeçer tanım olarak kullanmak daha kullanışlı olabilir.
 
 Üstinsan, ön bilgilerinin üzerine tutarlı bir şekilde inşa etmeye başladığı düşünce sistemini yine tutarlı bir şekilde inşa etmeyi sürdürmektedir. Düşünme eylemine devam ettikçe, ön bilgilerinden en az birinin sıkıntılı olduğu durumda, sıkıntılı ön bilginin/bilgilerin sistemde çatlaklar oluşturduğunu er ya da geç fark eder. Bu fark etme anı sonrasında ne pahasına olursa olsun düşünce sistemini, sistemin tümünü tutarlı kılacak şekilde yeniden şekillendirir. Bu optimizasyon işlemi karakterinin bir parçası olan üstinsan, zaman geçtikçe düşünce sistemindeki problemli tüm düşünceleri bertaraf edecektir.
-""" [ "tümü", "üstinsan" ]
+""" [ "tümü", "üstinsan" ] []
 
 
 düşünceYakıtı =
@@ -126,7 +126,7 @@ düşünceYakıtı =
 Düşüncenin yakıtı zamandır, üstinsanın karar vermek için kısıtlı bir zamana sahip olduğu durumda hatalı düşünmesi ise olasıdır. “Doğru çıkarımlarla doğru düşünceye ulaşmak için şu kadar süre yeterlidir” demek mümkün değildir; daha doğrusu bu süre hem kişiden kişiye farklılık gösterir, hem de düşünülenin karmaşıklığı ile doğru orantılıdır.
 
 Üstinsan düşünceler üzerinde kısıtlı zamanda karar vermeye meyilli değildir. Sonuca ulaşmasını sağlayacak kadar üzerinde durmadığı bir düşüncenin düşünce sistemine girmesine izin vermez. Böyle bir tutum, düşünce sisteminde oluşabilecek çatlakların önüne geçer.
-""" [ "tümü", "üstinsan" ]
+""" [ "tümü", "üstinsan" ] []
 
 
 öz =
@@ -136,7 +136,7 @@ Her insan, doğumundan ya da daha öncesinden itibaren bir öze sahiptir ve bu �
 Öz nasıl tanımlanırsa tanımlansın, insan, düşünsel anlamda özünün verdiği ölçüde ilerleyebilir, kendini geliştirebilir. Kişinin yine düşünsel anlamda potansiyeli, ulaşabileceği en üst nokta, özünde saklıdır; tıpkı fiziksel anlamda ulaşabileceği en üst noktanın genetik yapısında saklı olduğu gibi.
 
 Genetik perspektiften bakıldığında her insanın özü diğerinden farklı olacak olsa da, insanların özlerinin niteliği bir grafiğe dökülebilse yoğunluk bir noktada toplanır, dağılım belli bir skala içerisinde kalır, üstinsan ise bu skalanın ötesinde konumlanır. Üstinsan özü itibarıyla diğerlerinden net olarak farklı bir konumdadır ve daha önceden değinmiş olduğumuz, kendisine en yakın noktada bulunan insan ile kendisinin düşünce sisteminin sağlamlığı arasındaki uçurum, belki de bunun en belirgin göstergesidir.
-""" [ "tümü", "üstinsan" ]
+""" [ "tümü", "üstinsan" ] []
 
 
 üstinsanınYetileri =
@@ -152,7 +152,7 @@ Genetik perspektiften bakıldığında her insanın özü diğerinden farklı ol
 – Üstinsan, istese de mantığın dışına çıkamayandır. İnsanı tutarlı kılan mantığı temel alışıdır; bu açıdan üstinsan aynı zamanda “en mantıklı insan” sıfatına da layıktır.
 
 – Üstinsan farkındadır.
-""" [ "tümü", "üstinsan" ]
+""" [ "tümü", "üstinsan" ] []
 
 
 farkındalık =
@@ -168,7 +168,7 @@ Kişinin kendisini tutarlı kılacak bu tarz cümleler kurabilmesi, daha doğrus
 Bu cümleleri kurabilecek türden bir farkındalığa sahip olmayıp tutarsız davranan insanlar ise kendini bilmeyen, neyi neden yaptığından ve tutarsızlıklarından haberi olmayan insanlardır ve değerli olmaktan oldukça uzak bir konumdadırlar. Bu noktada tutarsızlık güzel bir tanım daha kazanır: tutarsızlığının farkında olmama hali. Tutarsız insan, tutarsızlığının farkına varamayan insandır.
 
 Tutarlılık ile farkındalık etle tırnak gibi olduğundan, farkında olmayan bir üstinsan düşünülemez. Düşünce sisteminde tutarsızlığa izin vermeyen üstinsan, yüksek farkındalığıyla neyi neden yaptığını bilir; kendini bilir. Üstinsanın bu farkındalığının kendisi ile sınırlı kalması için hiçbir sebep yoktur; düşünce düşüncedir ve üstinsan diğer insanların düşünce ve eylemlerindeki tutarsızlıkların da farkındadır. Öyle ki, üstinsan, insanların özünü kendilerinden daha iyi bilebilir.
-""" [ "tümü", "üstinsan" ]
+""" [ "tümü", "üstinsan" ] []
 
 
 beniOkuTxt =
@@ -182,7 +182,7 @@ beniOkuTxt =
 **kod**  kategorisinde ise yazılım ile alakalı yazılar paylaşılacak.
 
 kategori yapısının güncellenmesi durumunda burayı da güncelliyor olacağım.  _takip_  özelliğini kullanarak yeni bir yazının gelip gelmediğini kontrol etme zahmetinden kurtulabilir, destek olma adına ise sitenin varlığından başkalarını haberdar edebilirsiniz.
-""" [ "beni_oku.txt" ]
+""" [ "beni_oku.txt" ] []
 
 
 fonkProg101 =
@@ -272,7 +272,7 @@ Artık getOptional()’ın sadece dönüş tipi ile ilgilenmemiz gereken bir nok
 Bu türden kazanımları kod yazma rutinimizin tümüne yaymak için yapmamız gerekenler elbette null’lardan kurtulmak ile sınırlı değil. Örneğin, getOptional() metodumuz, görevi olan “istenilen objeyi Optional ile çevreleyip verme”nin dışında başka bir iş de yapıyor olsaydı ki ne yaptığı hiç önemli değil, hala bu metodun implementasyonu ile ilgilenmek zorunda kalır, gönül rahatlığı ile kullanamazdık ([side effect](https://en.wikipedia.org/wiki/Side_effect_(computer_science)). Aynı şekilde, a parametresiyle x sonucunu veren bir fonksiyonumuz, biz yine x sonucunu beklerken bir süre sonra aynı a parametresiyle y sonucunu verseydi bu bizim için hiç hoş olmazdı ([pure function](https://en.wikipedia.org/wiki/Pure_function)).
 
 Scala’nın mucidi Martin Odersky’nin “gördüğüm en açık ‘neden fonksiyonel programlama’ anlatımlarından biri” diyerek paylaştığı [yazıda](https://www.inner-product.com/posts/fp-what-and-why/) fonksiyonel programlamanın iki hedefinden dem vuruluyor: yerel muhakeme (local reasoning) ve kompozisyon (composition). Kendi bağlamında tamamıyla anlamlı olan (yerel muhakeme) kod parçacıklarını doğru şekilde birleştirdiğimizde (kompozisyon), ortaya çıkan bileşime dair anlayışımız hiçbir şekilde değişmez ve bu sayede oldukça anlaşılır bir codebase’e sahip olmak gibi, veya bir kod parçacığının ne işe yaradığını anlayabilmek için codebase’de dolanarak zamanımızı tüketmek zorunda kalmamak gibi değerli kazanımlar elde ederiz. Bizim yaptığımız da bunun en basit örneklerinden idi: yazdığımız kod parçacığını diğerinin implementasyonuna bağımlı olmaktan kurtarıp yerel muhakeme özelliği kazandırmak ve doğru kod parçacığı ile kompozisyona sokmak.
-""" [ "tümü", "kod" ]
+""" [ "tümü", "kod" ] []
 
 
 gunluk1 =
@@ -286,7 +286,7 @@ haftada beş çalışma günü ve iki “tatil” adı altında “bir sonraki b
 bu iki plandan örneğin ilkini gerçekleştirdiğim ve bir beyaz yakalıya yakışacak şekilde bu kararımı linkedin üzerinde paylaşıp yeterli etkileşimi aldığım durumda belirli bir kesim bu fikre sempati duyacak, sempati duyan bu kişiler arasından da bunu göze alabilen ya da böyle bir şeye gerçekten benim gibi ihtiyaç duyan birkaç kişi de benim yaptığımı deneyimlemeye çalışacak. bu noktada aklıma şu geliyor: eğer daha öncesinde böyle bir kararı verip uygulamaya koymuş sadece bir iki kişiye dahi tanık olsaydım, bu kararı almak benim için daha kolay olurdu. uygulamaya koyanlar birkaç kişiyle sınırlı olmasaydı da, sektördeki insanların azımsanamayacak bir kısmı bu kararı vermiş olsaydı bu sefer çok çok daha kolay olurdu. benim için bir karar bile olmazdı ortada; yapardım.
 
 yaşam kalitemi kökünden etkileyeceğini düşündüğüm bir tercihin sosyal etkenlere bu denli bağlı olması beni rahatsız ediyor ve bu gibi düşünceler sonrasında maalesef benim de ucundan sosyal bir hayvan olduğum gerçeğini hatırlıyorum. zaten öyle olmasam bu yazı da olmazdı.
-""" [ "tümü", "günlük" ]
+""" [ "tümü", "günlük" ] []
 
 
 gunluk2 =
@@ -332,7 +332,7 @@ yine o ses türkiye'den devam edeyim.
 aleyna tilki, cemal can canseven, danla bilic. yılbaşında mevzubahis programa maruz kalmaktan kaçınmak zor olmazdı ama hiçbirini isteğim dahilinde tanımadığım bu isimler, bu seviye, her an bir yerden karşıma çıkabilir durumda ve etraftaki her şeyin, her anlamda bu veya buna yakın bir seviyede kalitesizlik barındırmasından dolayı bir boğulma halindeyim. örneklerimi toplumun alt kesiminin izlediği, kalitesi ortada olan bir program üzerinden vermiş olsam da hissettiklerim *üst kesim* seviyesinde de farklı değil. yapay, ucuz, ahlaktan yoksun olduğu ilk intibada belli olan bazı insanların gerçek yüzünü göremeyip amansızca takibe devam etmelerine neden olan bu farkında olmama durumlarına tanık olduğumda yine aynı şeyi hissediyorum. satın alınan her bir robot süpürge sonrası yine aynı şeyi hissediyorum. netflix'in fabrikasyon ürünlerini tüketerek yaşayan insan kitleleri sebebiyle yine aynı şeyi hissediyorum. (netflix demişken, u dönüşü ile yine alt kesime geçiş yapmak durumundayım) exxen adlı platformda yayınlanacak belki de tüm programların platformu doldurma amaçlı sipariş işler, yapay ürünler olacağı bariz bir şekilde ortadayken insanların bunun farkında olmadıklarını ve hatta bunun farkında olabilme ihtimalini barındıran bir farkındalık düzeyiyle uzaktan yakından ilişkileri olmadığını düşündüğümde yine aynı şeyi hissediyorum. ekşi sözlük'e sadece gündemden haberdar olma amaçlı girerken ve dikkat dağıtıcı başlıkları en aza indirgemek adına çeşitli uygulamalar, eklentiler yazmışken her girişimde exxen ile ilgili bir başlığa maruz kaldığımda ve bu sayede insanların gündemde ne varsa onun hakkında haftalarca konuşmayı borç bilen varlıklar olduğunu hatırladığımda yine aynı şeyi hissediyorum. exxen'e her maruz kalışım sonrası, sadece "exxen" adının bayağılığından dolayı yine aynı şeyi hissediyorum. youtube'da bir zamanlar kaliteli işler yaptığını bildiğim bir kişinin artık twitch'te kendisine bağış yapanlara, onları önemsememesine rağmen önemsiyormuş gibi yaparak teşekkür etmesine şahit olduğumda ve benim 5 saniyelik bir kesit izleyerek (twitch izlemiyorum ve evet, bu kesite de istemeden denk geldim) farkına vardığım bu yapay tavrın farkına binlerce takipçisinin hiçbir şekilde varmayıp kendisine bağış yapmayı devam ettirdiğini düşündüğümde yine aynı şeyi hissediyorum. o kişinin hayatını idame ettirebilmesi için belki de artık bu yapmacıklığa mecbur kalması gerektiğini düşündüğümde, hayatta kalmak için rol yapmanın ne kadar önemli olduğu aklıma her düştüğünde yine aynı şeyi hissediyorum. vasıfsız insanlara akan paranın büyük ihtimalle eksponansiyel olarak arttığını ve buna büyük oranda parasızlıktan şikayet eden ya da edecek diğer vasıfsız insanların sebep olduğunu düşündükçe yine aynı şeyi hissediyorum.
 
 bu kalitesizlikten, bayağılıktan, distopik ortamdan kurtulma adına da dış dünyadan gittikçe soyutlanıyorum.
-""" [ "tümü", "günlük" ]
+""" [ "tümü", "günlük" ] []
 
 
 templateContent =
@@ -344,4 +344,4 @@ readable English. Many desktop publishing packages and web page editors now use 
 their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their
 infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose
 (injected humour and the like).
-""" [ "tümü" ]
+""" [ "tümü" ] []

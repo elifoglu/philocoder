@@ -13,7 +13,7 @@ type ContentDate
 
 
 type alias Content =
-    { title : String, date : ContentDate, text : String, tabs : List String }
+    { title : String, date : ContentDate, text : String, tabs : List String, tabsToDisplay : List String }
 
 
 getDateAsText : Content -> String

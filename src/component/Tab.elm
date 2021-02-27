@@ -1,4 +1,4 @@
-module Tab exposing (Tab, extractMaybeTab, setActive, tabIsActive)
+module Tab exposing (Tab, setActive, tabIsActive)
 
 import Content exposing (Content)
 
@@ -19,13 +19,3 @@ setActive selectedTab tab =
 tabIsActive : Tab -> Bool
 tabIsActive tab =
     tab.active
-
-
-extractMaybeTab : Maybe Tab -> Tab
-extractMaybeTab maybeTab =
-    case maybeTab of
-        Just tab ->
-            tab
-
-        Nothing ->
-            Tab "" [] False
