@@ -68,7 +68,6 @@ update msg model =
 
 
 --todo beni_oku.txt'ye de tarih geçtin, kaldır
---todo remove unnecessary libraries
 
 
 updateTextOfContents : Int -> String -> List Content -> List Content
