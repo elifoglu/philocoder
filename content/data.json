@@ -39,7 +39,7 @@
     {
       "name": "beni_oku.txt",
       "contentSortStrategy": "DateDESC",
-      "showAsTag": true
+      "showAsTag": false
     }
   ],
   "allContents": [
@@ -213,12 +213,6 @@
     },
     {
       "title": "beni_oku.txt",
-      "date": {
-        "year": 2020,
-        "month": 6,
-        "day": 3,
-        "publishOrderInDay": 1
-      },
       "contentId": 13,
       "tags": [
         "beni_oku.txt"

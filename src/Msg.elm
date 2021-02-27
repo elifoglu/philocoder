@@ -54,7 +54,7 @@ contentDecoder : Decoder GotContent
 contentDecoder =
     map4 GotContent
         (field "title" string)
-        (field "date" (maybe contentDateDecoder))
+        (maybe (field "date" contentDateDecoder))
         (field "contentId" int)
         (field "tags" (D.list string))
 
