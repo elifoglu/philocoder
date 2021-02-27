@@ -13,11 +13,11 @@ contentDiv content =
         [ p [ style "margin-bottom" "30px" ]
             [ span [ class "title" ] [ text content.title ]
             , br [] []
-            , contentTabsText content
+            , contentTagsText content
             , contentDateText content
             ]
         , div [ style "max-width" "600px" ]
-            [ Markdown.toHtml [] content.text
+            [ Markdown.toHtml [] (getTextOfContent content)
             , br [] []
             , hr [] []
             , br [] []
@@ -25,9 +25,25 @@ contentDiv content =
         ]
 
 
-contentTabsText : Content -> Html msg
-contentTabsText content =
-    text (" " ++ String.join " " (List.map (\str -> "#" ++ str) content.tabs))
+getTextOfContent : Content -> String
+getTextOfContent content =
+    case content.text of
+        Text str ->
+            str
+
+        NotRequestedYet ->
+            ""
+
+
+contentTagsText : Content -> Html msg
+contentTagsText content =
+    text
+        (content.tags
+            |> List.filter (\tag -> tag.showAsTag)
+            |> List.map (\tag -> tag.name)
+            |> List.map (\str -> "#" ++ str)
+            |> String.join " "
+        )
 
 
 contentDateText : Content -> Html msg

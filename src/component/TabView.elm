@@ -4,17 +4,21 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Msg exposing (..)
-import Tab exposing (..)
 
 
-tabButton : Tab -> Html Msg
-tabButton tab =
+tabButton : Maybe Tag -> Tag -> Html Msg
+tabButton activeTab tab =
     button
-        [ if tab.active then
+        [ if tab.name == nameOf activeTab then
             class "tabButtonActive"
 
           else
             class "tabButton"
-        , onClick (TabSelected tab)
+        , onClick (TagSelected tab)
         ]
         [ text tab.name ]
+
+
+nameOf : Maybe Tag -> String
+nameOf maybeTab =
+    Maybe.withDefault "" (Maybe.map (\tab -> tab.name) maybeTab)

@@ -1,6 +1,7 @@
 module Content exposing (..)
 
 import Date exposing (Date, format)
+import Msg exposing (Tag)
 
 
 type alias PublishOrderInDay =
@@ -12,8 +13,13 @@ type ContentDate
     | NoDate
 
 
+type ContentText
+    = Text String
+    | NotRequestedYet
+
+
 type alias Content =
-    { title : String, date : ContentDate, text : String, tabs : List String, tabsToDisplay : List String }
+    { title : String, date : ContentDate, contentId : Int, text : ContentText, tags : List Tag }
 
 
 getDateAsText : Content -> String

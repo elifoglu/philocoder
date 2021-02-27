@@ -1,7 +1,11 @@
 module Model exposing (..)
 
-import Tab exposing (Tab)
+import Content exposing (Content)
+import Msg exposing (Tag)
 
 
 type alias Model =
-    List Tab
+    { activeTag : Maybe Tag
+    , allTags : List Tag
+    , allContents : List Content
+    }

@@ -1,15 +1,12 @@
 port module Main exposing (..)
 
 import Browser
-import Content exposing (Content)
-import ContentData exposing (allContents)
+import Content exposing (Content, ContentDate(..), ContentText(..))
+import Date exposing (fromCalendarDate, numberToMonth)
 import Http
-import Json.Decode as D
-import List exposing (member)
+import List
 import Model exposing (..)
-import Msg exposing (Msg(..), Tag, tagDecoder)
-import Sort exposing (sortContentsByStrategy)
-import Tab exposing (Tab)
+import Msg exposing (DataResponse, GotContent, GotContentDate, Msg(..), Tag, tagResponseDecoder)
 import View exposing (view)
 
 
@@ -27,10 +24,10 @@ main =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( []
+    ( { activeTag = Nothing, allTags = [], allContents = [] }
     , Http.get
-        { url = "http://localhost:8081/tags.txt"
-        , expect = Http.expectJson GotTags (D.list tagDecoder)
+        { url = "http://localhost:8081/data.json"
+        , expect = Http.expectJson GotDataResponse tagResponseDecoder
         }
     )
 
@@ -38,33 +35,102 @@ init _ =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        TabSelected tab ->
-            ( List.map (Tab.setActive tab) model, Cmd.none )
+        TagSelected tab ->
+            ( { model | activeTag = Just tab }, Cmd.none )
 
-        GotTags tagsResult ->
+        --todo 2) 1 numaralı todo yapıldıktan sonra, burada da aktif tag için cmd gönderilmeli
+        GotDataResponse tagsResult ->
             case tagsResult of
+                Ok res ->
+                    let
+                        allContents =
+                            List.map (gotContentToContent res.allTags) res.allContents
+                    in
+                    ( { activeTag = getActiveTag res.nameOfActiveTag res.allTags
+                      , allTags = res.allTags
+                      , allContents = allContents
+                      }
+                    , Cmd.batch (List.map toHttpReq allContents)
+                      --todo 1) sadece aktif tag'in content'leri için request atılmalı
+                    )
+
                 Err _ ->
-                    ( [], Cmd.none )
+                    ( model, Cmd.none )
 
-                Ok tags ->
-                    ( List.map tagToTab tags, Cmd.none )
+        GotContentText contentId contentTextResult ->
+            case contentTextResult of
+                Ok text ->
+                    ( { model | allContents = updateTextOfContents contentId text model.allContents }, Cmd.none )
+
+                Err _ ->
+                    ( model, Cmd.none )
 
 
-tagToTab : Tag -> Tab
-tagToTab tag =
-    { name = tag.name
-    , contents = sortContentsByStrategy tag.contentSortStrategy (getTabContents tag.name)
-    , active = tag.active
+
+--todo beni_oku.txt'ye de tarih geçtin, kaldır
+
+
+updateTextOfContents : Int -> String -> List Content -> List Content
+updateTextOfContents contentId text contents =
+    contents
+        |> List.map (updateTextOfContent contentId text)
+
+
+updateTextOfContent : Int -> String -> Content -> Content
+updateTextOfContent contentId text content =
+    if content.contentId == contentId then
+        { content | text = Text text }
+
+    else
+        content
+
+
+toHttpReq : Content -> Cmd Msg
+toHttpReq content =
+    Http.get
+        { url = "http://localhost:8081/" ++ String.fromInt content.contentId
+        , expect = Http.expectString (GotContentText content.contentId)
+        }
+
+
+gotContentToContent : List Tag -> GotContent -> Content
+gotContentToContent allTags gotContent =
+    { title = gotContent.title
+    , date = gotContentDateToContentDate gotContent.maybeDate
+    , contentId = gotContent.contentId
+    , text = Text "aBcd"
+    , tags = List.filter (\tag -> tag /= dummyTag) (List.map (tagNameToTag allTags) gotContent.tags)
     }
 
 
-getTabContents tabName =
-    List.filter (contentBelongsToTab tabName) allContents
+gotContentDateToContentDate : Maybe GotContentDate -> ContentDate
+gotContentDateToContentDate gotContentDate =
+    case gotContentDate of
+        Just date ->
+            Date (fromCalendarDate date.year (numberToMonth date.month) date.day) date.publishOrderInDay
+
+        Nothing ->
+            NoDate
 
 
-contentBelongsToTab : String -> Content -> Bool
-contentBelongsToTab tabName content =
-    member tabName content.tabs
+tagNameToTag : List Tag -> String -> Tag
+tagNameToTag allTags tagName =
+    Maybe.withDefault dummyTag (List.head (List.filter (\tag -> tag.name == tagName) allTags))
+
+
+dummyTag : Tag
+dummyTag =
+    { name = "DUMMY", contentSortStrategy = "DUMMY", showAsTag = False }
+
+
+getActiveTag : String -> List Tag -> Maybe Tag
+getActiveTag nameOfActiveTag allTags =
+    List.head (List.filter (tagIsActive nameOfActiveTag) allTags)
+
+
+tagIsActive : String -> Tag -> Bool
+tagIsActive activeTagName tag =
+    tag.name == activeTagName
 
 
 view =

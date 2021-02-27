@@ -1,0 +1,270 @@
+{
+  "nameOfActiveTag": "tümü",
+  "allTags": [
+    {
+      "name": "tümü",
+      "contentSortStrategy": "DateDESC",
+      "showAsTag": false
+    },
+    {
+      "name": "üstinsan",
+      "contentSortStrategy": "DateASC",
+      "showAsTag": true
+    },
+    {
+      "name": "perspektif",
+      "contentSortStrategy": "DateDESC",
+      "showAsTag": true
+    },
+    {
+      "name": "özgün",
+      "contentSortStrategy": "DateDESC",
+      "showAsTag": true
+    },
+    {
+      "name": "günlük",
+      "contentSortStrategy": "DateDESC",
+      "showAsTag": true
+    },
+    {
+      "name": "kod",
+      "contentSortStrategy": "DateDESC",
+      "showAsTag": true
+    },
+    {
+      "name": "mikro",
+      "contentSortStrategy": "DateDESC",
+      "showAsTag": true
+    },
+    {
+      "name": "beni_oku.txt",
+      "contentSortStrategy": "DateDESC",
+      "showAsTag": true
+    }
+  ],
+  "allContents": [
+    {
+      "title": "Hibrit Çalışma",
+      "date": {
+        "year": 2020,
+        "month": 5,
+        "day": 6,
+        "publishOrderInDay": 1
+      },
+      "contentId": 1,
+      "tags": [
+        "tümü",
+        "özgün"
+      ]
+    },
+    {
+      "title": "İnsanı Yargılarken",
+      "date": {
+        "year": 2019,
+        "month": 4,
+        "day": 28,
+        "publishOrderInDay": 1
+      },
+      "contentId": 2,
+      "tags": [
+        "tümü",
+        "üstinsan"
+      ]
+    },
+    {
+      "title": "Değer Ölçütü",
+      "date": {
+        "year": 2019,
+        "month": 5,
+        "day": 1,
+        "publishOrderInDay": 1
+      },
+      "contentId": 3,
+      "tags": [
+        "tümü",
+        "üstinsan"
+      ]
+    },
+    {
+      "title": "Değerli İnsan",
+      "date": {
+        "year": 2019,
+        "month": 5,
+        "day": 4,
+        "publishOrderInDay": 1
+      },
+      "contentId": 4,
+      "tags": [
+        "tümü",
+        "üstinsan"
+      ]
+    },
+    {
+      "title": "ufak bir not: ‘değerli’ ile kastedilen",
+      "date": {
+        "year": 2020,
+        "month": 4,
+        "day": 5,
+        "publishOrderInDay": 1
+      },
+      "contentId": 5,
+      "tags": [
+        "tümü",
+        "üstinsan"
+      ]
+    },
+    {
+      "title": "Üstinsan",
+      "date": {
+        "year": 2020,
+        "month": 5,
+        "day": 21,
+        "publishOrderInDay": 1
+      },
+      "contentId": 6,
+      "tags": [
+        "tümü",
+        "üstinsan"
+      ]
+    },
+    {
+      "title": "bazı notlar #2",
+      "date": {
+        "year": 2020,
+        "month": 5,
+        "day": 21,
+        "publishOrderInDay": 2
+      },
+      "contentId": 7,
+      "tags": [
+        "tümü",
+        "üstinsan"
+      ]
+    },
+    {
+      "title": "Düşünce Sistemi",
+      "date": {
+        "year": 2020,
+        "month": 5,
+        "day": 26,
+        "publishOrderInDay": 1
+      },
+      "contentId": 8,
+      "tags": [
+        "tümü",
+        "üstinsan"
+      ]
+    },
+    {
+      "title": "Düşünce Yakıtı",
+      "date": {
+        "year": 2020,
+        "month": 5,
+        "day": 30,
+        "publishOrderInDay": 1
+      },
+      "contentId": 9,
+      "tags": [
+        "tümü",
+        "üstinsan"
+      ]
+    },
+    {
+      "title": "Öz",
+      "date": {
+        "year": 2020,
+        "month": 5,
+        "day": 30,
+        "publishOrderInDay": 2
+      },
+      "contentId": 10,
+      "tags": [
+        "tümü",
+        "üstinsan"
+      ]
+    },
+    {
+      "title": "Üstinsanın Yetileri",
+      "date": {
+        "year": 2020,
+        "month": 6,
+        "day": 1,
+        "publishOrderInDay": 1
+      },
+      "contentId": 11,
+      "tags": [
+        "tümü",
+        "üstinsan"
+      ]
+    },
+    {
+      "title": "Farkındalık",
+      "date": {
+        "year": 2020,
+        "month": 6,
+        "day": 3,
+        "publishOrderInDay": 1
+      },
+      "contentId": 12,
+      "tags": [
+        "tümü",
+        "üstinsan"
+      ]
+    },
+    {
+      "title": "beni_oku.txt",
+      "date": {
+        "year": 2020,
+        "month": 6,
+        "day": 3,
+        "publishOrderInDay": 1
+      },
+      "contentId": 13,
+      "tags": [
+        "beni_oku.txt"
+      ]
+    },
+    {
+      "title": "Fonksiyonel Programlama 101",
+      "date": {
+        "year": 2020,
+        "month": 6,
+        "day": 19,
+        "publishOrderInDay": 1
+      },
+      "contentId": 14,
+      "tags": [
+        "tümü",
+        "kod"
+      ]
+    },
+    {
+      "title": "#1",
+      "date": {
+        "year": 2020,
+        "month": 11,
+        "day": 21,
+        "publishOrderInDay": 1
+      },
+      "contentId": 15,
+      "tags": [
+        "tümü",
+        "günlük"
+      ]
+    },
+    {
+      "title": "#2",
+      "date": {
+        "year": 2021,
+        "month": 1,
+        "day": 9,
+        "publishOrderInDay": 1
+      },
+      "contentId": 16,
+      "tags": [
+        "tümü",
+        "günlük"
+      ]
+    }
+  ]
+}
