@@ -262,6 +262,21 @@
         "tümü",
         "günlük"
       ]
+    },
+    {
+      "title": "Not alma sanatı ve Zettelkasten",
+      "date": {
+        "year": 2021,
+        "month": 1,
+        "day": 31,
+        "publishOrderInDay": 1
+      },
+      "contentId": 17,
+      "tags": [
+        "tümü",
+        "perspektif",
+        "kod"
+      ]
     }
   ]
 }
