@@ -2,7 +2,7 @@
     "type": "application",
     "source-directories": [
         "src",
-        "src/component",
+        "src/model",
         "src/util"
     ],
     "elm-version": "0.19.1",

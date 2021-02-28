@@ -1,5 +1,6 @@
 port module Main exposing (..)
 
+import ApiUtil exposing (contentApiURL, dataFilename)
 import Browser
 import Content exposing (Content, ContentDate(..), ContentText(..))
 import Date exposing (fromCalendarDate, numberToMonth)
@@ -30,21 +31,6 @@ init _ =
         , expect = Http.expectJson GotDataResponse tagResponseDecoder
         }
     )
-
-
-contentApiURL =
-    "http://18.223.98.196:8081/"
-
-
-
-{-
-   contentApiURL =
-       "http://localhost:8081/"
--}
-
-
-dataFilename =
-    "data.json"
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )

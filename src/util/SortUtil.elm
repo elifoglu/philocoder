@@ -1,4 +1,4 @@
-module Sort exposing (sortContentsByStrategy)
+module SortUtil exposing (sortContentsByStrategy)
 
 import Content exposing (Content, ContentDate(..))
 import Date

@@ -10,12 +10,8 @@ type Msg
     | GotContentText ContentID (Result Http.Error String)
 
 
-type alias ContentID =
-    Int
-
-
-type alias DataResponse =
-    { nameOfActiveTag : String, allTags : List Tag, allContents : List GotContent }
+type alias Tag =
+    { name : String, contentSortStrategy : String, showAsTag : Bool }
 
 
 
@@ -30,16 +26,20 @@ tagResponseDecoder =
         (field "allContents" (D.list contentDecoder))
 
 
-type alias Tag =
-    { name : String, contentSortStrategy : String, showAsTag : Bool }
-
-
 tagDecoder : Decoder Tag
 tagDecoder =
     map3 Tag
         (field "name" string)
         (field "contentSortStrategy" string)
         (field "showAsTag" bool)
+
+
+type alias DataResponse =
+    { nameOfActiveTag : String, allTags : List Tag, allContents : List GotContent }
+
+
+type alias ContentID =
+    Int
 
 
 type alias GotContent =
