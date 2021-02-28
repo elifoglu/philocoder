@@ -24,7 +24,7 @@ pre {
     font-size: 18px;
 }
 
-.tabButton {
+.tagButton {
     margin: 2px 0 0 2px;
     padding: 10px 25px;
     border: 0;
@@ -38,7 +38,7 @@ pre {
     appearance: none;
 }
 
-.tabButtonActive {
+.tagButtonActive {
     margin: 2px 0 0 2px;
     padding: 10px 25px;
     border: 0;
@@ -52,10 +52,10 @@ pre {
     appearance: none;
 }
 
-.tabButton:hover {
+.tagButton:hover {
     background: #c9c9c9;
 }
 
-.tabContents {
+.tagContents {
     margin: 20px;
 }

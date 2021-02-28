@@ -50,8 +50,8 @@ dataFilename =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        TagSelected tab ->
-            ( { model | activeTag = Just tab }, Cmd.none )
+        TagSelected tag ->
+            ( { model | activeTag = Just tag }, Cmd.none )
 
         --todo 2) 1 numaralı todo yapıldıktan sonra, burada da aktif tag için cmd gönderilmeli
         GotDataResponse tagsResult ->

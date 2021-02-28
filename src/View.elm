@@ -8,22 +8,22 @@ import List exposing (member)
 import Model exposing (..)
 import Msg exposing (Msg(..), Tag)
 import Sort exposing (sortContentsByStrategy)
-import TabView exposing (..)
+import TagView exposing (..)
 
 
 view : Model -> Html Msg
 view model =
-    div [] (css "../style.css" :: tabButtons model ++ [ div [] [ tabContentsDiv model ] ])
+    div [] (css "../style.css" :: tagButtons model ++ [ div [] [ tagContentsDiv model ] ])
 
 
-tabButtons : Model -> List (Html Msg)
-tabButtons model =
-    List.map (tabButton model.activeTag) model.allTags
+tagButtons : Model -> List (Html Msg)
+tagButtons model =
+    List.map (tagButton model.activeTag) model.allTags
 
 
-tabContentsDiv : Model -> Html Msg
-tabContentsDiv model =
-    div [ class "tabContents" ]
+tagContentsDiv : Model -> Html Msg
+tagContentsDiv model =
+    div [ class "tagContents" ]
         (case model.activeTag of
             Just tag ->
                 tag
