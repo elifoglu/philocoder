@@ -26,10 +26,25 @@ init : () -> ( Model, Cmd Msg )
 init _ =
     ( { activeTag = Nothing, allTags = [], allContents = [] }
     , Http.get
-        { url = "http://18.223.98.196:8081/data.json"
+        { url = contentApiURL ++ dataFilename
         , expect = Http.expectJson GotDataResponse tagResponseDecoder
         }
     )
+
+
+contentApiURL =
+    "http://18.223.98.196:8081/"
+
+
+
+{-
+   contentApiURL =
+       "http://localhost:8081/"
+-}
+
+
+dataFilename =
+    "data.json"
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -88,7 +103,7 @@ updateTextOfContent contentId text content =
 toHttpReq : Content -> Cmd Msg
 toHttpReq content =
     Http.get
-        { url = "http://18.223.98.196:8081/" ++ String.fromInt content.contentId
+        { url = contentApiURL ++ String.fromInt content.contentId
         , expect = Http.expectString (GotContentText content.contentId)
         }
 
