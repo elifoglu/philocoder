@@ -26,7 +26,7 @@ init : () -> ( Model, Cmd Msg )
 init _ =
     ( { activeTag = Nothing, allTags = [], allContents = [] }
     , Http.get
-        { url = "http://localhost:8081/data.json"
+        { url = "http://18.223.98.196:8081/data.json"
         , expect = Http.expectJson GotDataResponse tagResponseDecoder
         }
     )
@@ -88,7 +88,7 @@ updateTextOfContent contentId text content =
 toHttpReq : Content -> Cmd Msg
 toHttpReq content =
     Http.get
-        { url = "http://localhost:8081/" ++ String.fromInt content.contentId
+        { url = "http://18.223.98.196:8081/" ++ String.fromInt content.contentId
         , expect = Http.expectString (GotContentText content.contentId)
         }
 
@@ -98,7 +98,7 @@ gotContentToContent allTags gotContent =
     { title = gotContent.title
     , date = gotContentDateToContentDate gotContent.date
     , contentId = gotContent.contentId
-    , text = Text "aBcd"
+    , text = NotRequestedYet
     , tags = List.filter (\tag -> tag /= dummyTag) (List.map (tagNameToTag allTags) gotContent.tags)
     }
 

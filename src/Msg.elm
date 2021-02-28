@@ -1,7 +1,7 @@
 module Msg exposing (..)
 
 import Http
-import Json.Decode as D exposing (Decoder, bool, field, int, map, map3, map4, maybe, oneOf, string)
+import Json.Decode as D exposing (Decoder, bool, field, int, map, map3, map4, oneOf, string)
 
 
 type Msg
