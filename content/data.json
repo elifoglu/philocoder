@@ -37,6 +37,11 @@
       "showAsTag": true
     },
     {
+      "name": "beğenilen",
+      "contentSortStrategy": "DateDESC",
+      "showAsTag": true
+    },
+    {
       "name": "beni_oku.txt",
       "contentSortStrategy": "DateDESC",
       "showAsTag": false
@@ -290,6 +295,21 @@
       "tags": [
         "tümü",
         "perspektif"
+      ]
+    },
+    {
+      "title": "The Life of a File",
+      "date": {
+        "year": 2021,
+        "month": 3,
+        "day": 2,
+        "publishOrderInDay": 1
+      },
+      "contentId": 19,
+      "tags": [
+        "tümü",
+        "beğenilen",
+        "kod"
       ]
     }
   ]
