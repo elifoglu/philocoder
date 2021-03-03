@@ -7,9 +7,17 @@ body {
     font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
     background: rgba(187, 187, 187, 0.25);
     color: rgba(0,0,0,.75);
+    /*background: rgb(36, 36, 36);
+    color: #d4d4d4;*/
     margin-left: 5px;
     text-align: justify;
 }
+
+/*
+a {
+    color: white;
+}
+*/
 
 pre {
     background-color: black;
@@ -24,38 +32,54 @@ pre {
     font-size: 18px;
 }
 
-.tagButton {
-    margin: 2px 0 0 2px;
-    padding: 10px 25px;
+.tagTab {
+    margin: 2px;
+    padding: 10px;
     border: 0;
+    border-radius: 2px;
     background: inherit;
-    color: #000000;
+    /*color: #ffffff;*/
     font-weight: normal;
     outline: none;
     font-size: 100%;
     vertical-align: baseline;
     font-family: inherit;
     appearance: none;
+    text-align: center;
+    display: inline-block;
 }
 
-.tagButtonActive {
-    margin: 2px 0 0 2px;
-    padding: 10px 25px;
-    border: 0;
-    background: #c9c9c9;
-    color: #000000;
-    font-weight: normal;
-    outline: none;
-    font-size: 100%;
-    vertical-align: baseline;
-    font-family: inherit;
-    appearance: none;
-}
-
-.tagButton:hover {
+.tagTab:hover {
     background: #c9c9c9;
 }
 
-.tagContents {
+.tagTabActive {
+    background: #c9c9c9;
+}
+
+a {
+    color: black;
+}
+
+.tagLink {
+    padding: 10px;
+    text-decoration: none;
+}
+
+.homeLink {
+    padding: 10px;
+    text-decoration: none;
+}
+
+
+
+.contents {
     margin: 20px;
+}
+
+.navToContent {
+    width: 15px;
+    height: auto;
+    align-content: center;
+    align-self: center;
 }

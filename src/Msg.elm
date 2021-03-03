@@ -1,17 +1,20 @@
 module Msg exposing (..)
 
+import Browser
 import Http
-import Json.Decode as D exposing (Decoder, bool, field, int, map, map3, map4, oneOf, string)
+import Json.Decode as D exposing (Decoder, bool, field, int, map, map2, map4, oneOf, string)
+import Url
 
 
 type Msg
-    = TagSelected Tag
+    = LinkClicked Browser.UrlRequest
+    | UrlChanged Url.Url
     | GotDataResponse (Result Http.Error DataResponse)
     | GotContentText ContentID (Result Http.Error String)
 
 
 type alias Tag =
-    { name : String, contentSortStrategy : String, showAsTag : Bool }
+    { tagId : String, name : String, contentSortStrategy : String, showAsTag : Bool }
 
 
 
@@ -20,22 +23,22 @@ type alias Tag =
 
 tagResponseDecoder : Decoder DataResponse
 tagResponseDecoder =
-    map3 DataResponse
-        (field "nameOfActiveTag" string)
+    map2 DataResponse
         (field "allTags" (D.list tagDecoder))
         (field "allContents" (D.list contentDecoder))
 
 
 tagDecoder : Decoder Tag
 tagDecoder =
-    map3 Tag
+    map4 Tag
+        (field "tagId" string)
         (field "name" string)
         (field "contentSortStrategy" string)
         (field "showAsTag" bool)
 
 
 type alias DataResponse =
-    { nameOfActiveTag : String, allTags : List Tag, allContents : List GotContent }
+    { allTags : List Tag, allContents : List GotContent }
 
 
 type alias ContentID =

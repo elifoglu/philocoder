@@ -1,47 +1,55 @@
 {
-  "nameOfActiveTag": "tümü",
   "allTags": [
     {
+      "tagId": "tumu",
       "name": "tümü",
       "contentSortStrategy": "DateDESC",
       "showAsTag": false
     },
     {
+      "tagId": "ustinsan",
       "name": "üstinsan",
       "contentSortStrategy": "DateASC",
       "showAsTag": true
     },
     {
+      "tagId": "perspektif",
       "name": "perspektif",
       "contentSortStrategy": "DateDESC",
       "showAsTag": true
     },
     {
+      "tagId": "ozgun",
       "name": "özgün",
       "contentSortStrategy": "DateDESC",
       "showAsTag": true
     },
     {
+      "tagId": "gunluk",
       "name": "günlük",
       "contentSortStrategy": "DateDESC",
       "showAsTag": true
     },
     {
+      "tagId": "kod",
       "name": "kod",
       "contentSortStrategy": "DateDESC",
       "showAsTag": true
     },
     {
+      "tagId": "mikro",
       "name": "mikro",
       "contentSortStrategy": "DateDESC",
       "showAsTag": true
     },
     {
+      "tagId": "begenilen",
       "name": "beğenilen",
       "contentSortStrategy": "DateDESC",
       "showAsTag": true
     },
     {
+      "tagId": "beni_oku",
       "name": "beni_oku.txt",
       "contentSortStrategy": "DateDESC",
       "showAsTag": false

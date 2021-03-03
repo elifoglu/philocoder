@@ -1,13 +1,18 @@
 port module Main exposing (..)
 
 import ApiUtil exposing (contentApiURL, dataFilename)
-import Browser
+import Browser exposing (UrlRequest)
+import Browser.Navigation as Nav
 import Content exposing (Content, ContentDate(..), ContentText(..))
+import ContentUtil exposing (getContentById)
 import Date exposing (fromCalendarDate, numberToMonth)
 import Http
 import List
 import Model exposing (..)
 import Msg exposing (DataResponse, GotContent, GotContentDate, Msg(..), Tag, tagResponseDecoder)
+import TagUtil exposing (getTagById)
+import Url
+import UrlParseUtil exposing (parseOrHome)
 import View exposing (view)
 
 
@@ -15,17 +20,19 @@ port title : String -> Cmd a
 
 
 main =
-    Browser.element
+    Browser.application
         { init = init
         , update = update
         , subscriptions = subscriptions
         , view = view
+        , onUrlRequest = LinkClicked
+        , onUrlChange = UrlChanged
         }
 
 
-init : () -> ( Model, Cmd Msg )
-init _ =
-    ( { activeTag = Nothing, allTags = [], allContents = [] }
+init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
+init flags url key =
+    ( Model "empty" key url (parseOrHome url) [] []
     , Http.get
         { url = contentApiURL ++ dataFilename
         , expect = Http.expectJson GotDataResponse tagResponseDecoder
@@ -36,10 +43,7 @@ init _ =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        TagSelected tag ->
-            ( { model | activeTag = Just tag }, Cmd.none )
-
-        --todo 2) 1 numaralı todo yapıldıktan sonra, burada da aktif tag için cmd gönderilmeli
+        --todo no 2) 1 numaralı todo yapıldıktan sonra, burada da aktif tag için cmd gönderilmeli
         GotDataResponse tagsResult ->
             case tagsResult of
                 Ok res ->
@@ -47,12 +51,12 @@ update msg model =
                         allContents =
                             List.map (gotContentToContent res.allTags) res.allContents
                     in
-                    ( { activeTag = getActiveTag res.nameOfActiveTag res.allTags
-                      , allTags = res.allTags
-                      , allContents = allContents
+                    ( { model
+                        | allTags = res.allTags
+                        , allContents = allContents
                       }
                     , Cmd.batch (List.map toHttpReq allContents)
-                      --todo 1) sadece aktif tag'in content'leri için request atılmalı
+                      --todo no 1) sadece aktif tag'in content'leri için request atılmalı
                     )
 
                 Err _ ->
@@ -65,6 +69,47 @@ update msg model =
 
                 Err _ ->
                     ( model, Cmd.none )
+
+        LinkClicked urlRequest ->
+            case urlRequest of
+                Browser.Internal url ->
+                    ( addNewLog { model | currentUrl = url } ("internal:" ++ Url.toString url), Nav.pushUrl model.key (Url.toString url) )
+
+                Browser.External href ->
+                    ( addNewLog model ("external:" ++ href), Nav.load href )
+
+        UrlChanged url ->
+            ( addNewLog { model | activePage = parseOrHome url } ("urlChanged:" ++ Url.toString url)
+            , sendTitle model (parseOrHome url)
+            )
+
+
+sendTitle : Model -> Page -> Cmd msg
+sendTitle model activePage =
+    case activePage of
+        HomePage ->
+            title "Philocoder"
+
+        ContentPage contentId ->
+            case getContentById model.allContents contentId of
+                Just content ->
+                    title (content.title ++ " - Philocoder")
+
+                Nothing ->
+                    Cmd.none
+
+        TagPage tagId ->
+            case getTagById model.allTags tagId of
+                Just tag ->
+                    title (tag.name ++ " - Philocoder")
+
+                Nothing ->
+                    Cmd.none
+
+
+addNewLog : Model -> String -> Model
+addNewLog model str =
+    { model | log = model.log ++ "-----" ++ str }
 
 
 
@@ -121,12 +166,19 @@ tagNameToTag allTags tagName =
 
 dummyTag : Tag
 dummyTag =
-    { name = "DUMMY", contentSortStrategy = "DUMMY", showAsTag = False }
+    { tagId = "DUMMY", name = "DUMMY", contentSortStrategy = "DUMMY", showAsTag = False }
 
 
-getActiveTag : String -> List Tag -> Maybe Tag
+
+--todo prune dummy things
+
+
+getActiveTag : String -> List Tag -> Tag
 getActiveTag nameOfActiveTag allTags =
-    List.head (List.filter (tagIsActive nameOfActiveTag) allTags)
+    allTags
+        |> List.filter (tagIsActive nameOfActiveTag)
+        |> List.head
+        |> Maybe.withDefault dummyTag
 
 
 tagIsActive : String -> Tag -> Bool
