@@ -3,6 +3,10 @@ module HttpResponses exposing (ContentID, DataResponse, DateAndPublishOrder, Got
 import Json.Decode as D exposing (Decoder, bool, field, int, map, map2, map4, oneOf, string)
 
 
+
+--todo change module name & add to a new directory
+
+
 type alias DataResponse =
     { allTags : List GotTag, allContents : List GotContent }
 

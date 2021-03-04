@@ -71,7 +71,7 @@ update msg model =
         GotContentText contentId contentTextResult ->
             case contentTextResult of
                 Ok text ->
-                    ( { model | allContents = updateTextOfContents contentId text model.allContents }, sendTitle model model.activePage )
+                    ( { model | allContents = updateTextOfContents contentId text model.allContents }, sendTitle model )
 
                 Err _ ->
                     ( model, Cmd.none )
@@ -79,14 +79,19 @@ update msg model =
         LinkClicked urlRequest ->
             case urlRequest of
                 Browser.Internal url ->
-                    ( addNewLog model ("internal:" ++ Url.toString url), Nav.pushUrl model.key (Url.toString url) )
+                    ( model, Nav.pushUrl model.key (Url.toString url) )
 
                 Browser.External href ->
-                    ( addNewLog model ("external:" ++ href), Nav.load href )
+                    ( model, Nav.load href )
 
         UrlChanged url ->
-            ( addNewLog { model | activePage = pageBy url } ("urlChanged:" ++ Url.toString url)
-            , sendTitle model (pageBy url)
+            let
+                newModel : Model
+                newModel =
+                    { model | activePage = pageBy url }
+            in
+            ( newModel
+            , sendTitle newModel
             )
 
 
@@ -95,9 +100,9 @@ subscriptions _ =
     Sub.none
 
 
-sendTitle : Model -> Page -> Cmd msg
-sendTitle model activePage =
-    case activePage of
+sendTitle : Model -> Cmd msg
+sendTitle model =
+    case model.activePage of
         HomePage ->
             title "Philocoder"
 
@@ -119,11 +124,6 @@ sendTitle model activePage =
 
         NotFoundPage ->
             title "Oops - Not Found"
-
-
-addNewLog : Model -> String -> Model
-addNewLog model str =
-    { model | log = model.log ++ "-----" ++ str }
 
 
 updateTextOfContents : Int -> String -> List Content -> List Content
@@ -182,3 +182,7 @@ tagNameToTag allTags tagName =
 dummyTag : Tag
 dummyTag =
     { tagId = "DUMMY", name = "DUMMY", contentSortStrategy = "DUMMY", showAsTag = False }
+
+
+
+--todo remove dummy tag related things
