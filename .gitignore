@@ -1,3 +1,5 @@
+build/*
+nohup.out
 elm-stuff
 repl-temp-*
 philocoder.iml
