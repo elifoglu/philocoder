@@ -1,4 +1,4 @@
-module Sorter exposing (sortContentsByStrategy)
+module Content.Sorter exposing (sortContentsByStrategy)
 
 import Content.Model exposing (Content, ContentDate(..))
 import Date

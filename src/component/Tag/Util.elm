@@ -2,8 +2,8 @@ module Tag.Util exposing (contentCountOfTag, contentsOfTag, nameOfActiveTag, tag
 
 import AppModel exposing (Model)
 import Content.Model exposing (Content)
+import Content.Sorter exposing (sortContentsByStrategy)
 import List exposing (member)
-import Sorter exposing (sortContentsByStrategy)
 import Tag.Model exposing (Tag)
 
 
