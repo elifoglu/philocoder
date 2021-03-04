@@ -1,8 +1,8 @@
 port module Main exposing (..)
 
-import ApiUtil exposing (contentApiURL, dataFilename)
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
+import Constants exposing (contentApiURL, dataFilename)
 import Content exposing (Content, ContentDate(..), ContentText(..))
 import ContentUtil exposing (getContentById)
 import Date exposing (fromCalendarDate, numberToMonth)
@@ -12,7 +12,7 @@ import Model exposing (..)
 import Msg exposing (DataResponse, GotContent, GotContentDate, Msg(..), Tag, tagResponseDecoder)
 import TagUtil exposing (getTagById)
 import Url
-import UrlParseUtil exposing (parseOrHome)
+import UrlParser exposing (parseOrHome)
 import View exposing (view)
 
 
@@ -170,23 +170,6 @@ tagNameToTag allTags tagName =
 dummyTag : Tag
 dummyTag =
     { tagId = "DUMMY", name = "DUMMY", contentSortStrategy = "DUMMY", showAsTag = False }
-
-
-
---todo prune dummy things
-
-
-getActiveTag : String -> List Tag -> Tag
-getActiveTag nameOfActiveTag allTags =
-    allTags
-        |> List.filter (tagIsActive nameOfActiveTag)
-        |> List.head
-        |> Maybe.withDefault dummyTag
-
-
-tagIsActive : String -> Tag -> Bool
-tagIsActive activeTagName tag =
-    tag.name == activeTagName
 
 
 view =

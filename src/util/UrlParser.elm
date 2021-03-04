@@ -1,4 +1,4 @@
-module UrlParseUtil exposing (parseOrHome)
+module UrlParser exposing (parseOrHome)
 
 import Model exposing (Page(..))
 import Url

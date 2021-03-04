@@ -2,7 +2,7 @@ module View exposing (view)
 
 import Browser exposing (Document)
 import Content exposing (Content)
-import ContentUtil exposing (getContentById, getDateTextOfContent, getTagsTextOfContent, getTextOfContent)
+import ContentUtil exposing (getContentById, getTextOfContent, viewDateTextOfContent, viewTagsTextOfContent)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import List
@@ -123,11 +123,11 @@ contentDiv content =
         [ p [ style "margin-bottom" "30px" ]
             [ span [ class "title" ] [ text (content.title ++ " "), viewContentLink content.contentId ]
             , br [] []
-            , getTagsTextOfContent content
-            , getDateTextOfContent content
+            , viewTagsTextOfContent content
+            , viewDateTextOfContent content
             ]
         , div [ style "max-width" "600px" ]
-            [ Markdown.toHtml [] (getTextOfContent content)
+            [ getTextOfContent content
             , br [] []
             , hr [] []
             , br [] []

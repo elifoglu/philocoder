@@ -4,7 +4,7 @@ import Content exposing (Content)
 import List exposing (member)
 import Model exposing (Model)
 import Msg exposing (Tag)
-import SortUtil exposing (sortContentsByStrategy)
+import Sorter exposing (sortContentsByStrategy)
 
 
 contentCountOfTag : Model -> Tag -> Int
