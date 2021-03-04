@@ -11,6 +11,7 @@ import Date exposing (fromCalendarDate, numberToMonth)
 import Http
 import HttpResponses exposing (DataResponse, GotContent, GotContentDate, GotTag, dataResponseDecoder)
 import List
+import Maybe.Extra exposing (values)
 import Msg exposing (Msg(..))
 import Tag.Model exposing (Tag)
 import Tag.Util exposing (tagById)
@@ -156,6 +157,7 @@ gotContentToContent allTags gotContent =
     , contentId = gotContent.contentId
     , text = NotRequestedYet
     , tags = List.filter (\tag -> tag /= dummyTag) (List.map (tagNameToTag allTags) gotContent.tags)
+    , refs = gotContent.refs
     }
 
 

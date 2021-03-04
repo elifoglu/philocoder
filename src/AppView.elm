@@ -47,7 +47,7 @@ viewContentsOfTagDiv allContents maybeTag =
             Just tag ->
                 tag
                     |> contentsOfTag allContents
-                    |> List.map viewContentDiv
+                    |> List.map (viewContentDiv allContents)
                     |> List.intersperse viewContentSeparator
 
             Nothing ->

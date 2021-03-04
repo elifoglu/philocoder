@@ -1,6 +1,6 @@
 module HttpResponses exposing (ContentID, DataResponse, DateAndPublishOrder, GotContent, GotContentDate(..), GotTag, JustPublishOrder, dataResponseDecoder)
 
-import Json.Decode as D exposing (Decoder, bool, field, int, map, map2, map4, oneOf, string)
+import Json.Decode as D exposing (Decoder, bool, field, int, map, map2, map4, map5, maybe, oneOf, string)
 
 
 
@@ -16,7 +16,7 @@ type alias GotTag =
 
 
 type alias GotContent =
-    { title : String, date : GotContentDate, contentId : Int, tags : List String }
+    { title : String, date : GotContentDate, contentId : Int, tags : List String, refs : Maybe (List Int) }
 
 
 type alias ContentID =
@@ -54,11 +54,12 @@ tagDecoder =
 
 contentDecoder : Decoder GotContent
 contentDecoder =
-    map4 GotContent
+    map5 GotContent
         (field "title" string)
         (field "date" contentDateDecoder)
         (field "contentId" int)
         (field "tags" (D.list string))
+        (maybe (field "refs" (D.list int)))
 
 
 contentDateDecoder : Decoder GotContentDate
