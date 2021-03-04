@@ -13,49 +13,20 @@ type Msg
     | GotContentText ContentID (Result Http.Error String)
 
 
-type alias Tag =
-    { tagId : String, name : String, contentSortStrategy : String, showAsTag : Bool }
-
-
-
---todo birebir aynı olsa bile gottag ve tag ayrımını yap
-
-
 type alias DataResponse =
-    { allTags : List Tag, allContents : List GotContent }
+    { allTags : List GotTag, allContents : List GotContent }
 
 
-dataResponseDecoder : Decoder DataResponse
-dataResponseDecoder =
-    map2 DataResponse
-        (field "allTags" (D.list tagDecoder))
-        (field "allContents" (D.list contentDecoder))
-
-
-tagDecoder : Decoder Tag
-tagDecoder =
-    map4 Tag
-        (field "tagId" string)
-        (field "name" string)
-        (field "contentSortStrategy" string)
-        (field "showAsTag" bool)
-
-
-type alias ContentID =
-    Int
+type alias GotTag =
+    { tagId : String, name : String, contentSortStrategy : String, showAsTag : Bool }
 
 
 type alias GotContent =
     { title : String, date : GotContentDate, contentId : Int, tags : List String }
 
 
-contentDecoder : Decoder GotContent
-contentDecoder =
-    map4 GotContent
-        (field "title" string)
-        (field "date" contentDateDecoder)
-        (field "contentId" int)
-        (field "tags" (D.list string))
+type alias ContentID =
+    Int
 
 
 type GotContentDate
@@ -71,6 +42,39 @@ type alias JustPublishOrder =
     { publishOrderInDay : Int }
 
 
+dataResponseDecoder : Decoder DataResponse
+dataResponseDecoder =
+    map2 DataResponse
+        (field "allTags" (D.list tagDecoder))
+        (field "allContents" (D.list contentDecoder))
+
+
+tagDecoder : Decoder GotTag
+tagDecoder =
+    map4 GotTag
+        (field "tagId" string)
+        (field "name" string)
+        (field "contentSortStrategy" string)
+        (field "showAsTag" bool)
+
+
+contentDecoder : Decoder GotContent
+contentDecoder =
+    map4 GotContent
+        (field "title" string)
+        (field "date" contentDateDecoder)
+        (field "contentId" int)
+        (field "tags" (D.list string))
+
+
+contentDateDecoder : Decoder GotContentDate
+contentDateDecoder =
+    oneOf
+        [ map DateExists dateAndPublishOrderDecoder
+        , map DateNotExists justPublishOrderDecoder
+        ]
+
+
 dateAndPublishOrderDecoder : Decoder DateAndPublishOrder
 dateAndPublishOrderDecoder =
     map4 DateAndPublishOrder
@@ -83,11 +87,3 @@ dateAndPublishOrderDecoder =
 justPublishOrderDecoder : Decoder JustPublishOrder
 justPublishOrderDecoder =
     map JustPublishOrder (field "publishOrderInDay" int)
-
-
-contentDateDecoder : Decoder GotContentDate
-contentDateDecoder =
-    oneOf
-        [ map DateExists dateAndPublishOrderDecoder
-        , map DateNotExists justPublishOrderDecoder
-        ]

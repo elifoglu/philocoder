@@ -1,48 +1,14 @@
-module Content exposing (..)
+module ContentView exposing (viewContentDiv, viewMaybeContentDiv)
 
+import ContentModel exposing (Content, ContentDate(..), ContentText(..))
+import ContentUtil exposing (contentById)
 import Date exposing (Date, format)
 import Html exposing (Html, a, br, div, hr, img, p, span, text)
 import Html.Attributes exposing (class, href, src, style)
 import Markdown
-import Msg exposing (Msg, Tag)
+import Msg exposing (Msg)
 import NotFound exposing (view404Div)
-
-
-
---MODEL
-
-
-type alias Content =
-    { title : String, date : ContentDate, contentId : Int, text : ContentText, tags : List Tag }
-
-
-type ContentDate
-    = DateExists Date PublishOrderInDay
-    | DateNotExists PublishOrderInDay
-
-
-type alias PublishOrderInDay =
-    Int
-
-
-type ContentText
-    = Text String
-    | NotRequestedYet
-
-
-
---UTIL
-
-
-contentById : List Content -> Int -> Maybe Content
-contentById contents id =
-    contents
-        |> List.filter (\a -> a.contentId == id)
-        |> List.head
-
-
-
---VIEW
+import TagModel exposing (Tag)
 
 
 viewContentDiv : Content -> Html Msg

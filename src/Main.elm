@@ -1,18 +1,24 @@
-port module Main exposing (..)
+port module Main exposing (main)
 
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
 import Constants exposing (contentApiURL, dataFilename)
-import Content exposing (Content, ContentDate(..), ContentText(..), contentById)
+import ContentModel exposing (Content, ContentDate(..), ContentText(..))
+import ContentUtil exposing (contentById)
 import Date exposing (fromCalendarDate, numberToMonth)
 import Http
 import List
 import Model exposing (..)
-import Msg exposing (DataResponse, GotContent, GotContentDate, Msg(..), Tag, dataResponseDecoder)
-import Tag exposing (tagById)
+import Msg exposing (DataResponse, GotContent, GotContentDate, GotTag, Msg(..), dataResponseDecoder)
+import TagModel exposing (Tag)
+import TagUtil exposing (tagById)
 import Url
 import UrlParser exposing (pageBy)
 import View exposing (view)
+
+
+
+--todo make codebase modular by doing a refactor
 
 
 port title : String -> Cmd a
@@ -51,7 +57,7 @@ update msg model =
                             List.map (gotContentToContent res.allTags) res.allContents
                     in
                     ( { model
-                        | allTags = res.allTags
+                        | allTags = List.map gotTagToTag res.allTags
                         , allContents = allContents
                       }
                     , Cmd.batch (List.map toHttpReq allContents)
@@ -81,6 +87,11 @@ update msg model =
             ( addNewLog { model | activePage = pageBy url } ("urlChanged:" ++ Url.toString url)
             , sendTitle model (pageBy url)
             )
+
+
+subscriptions : Model -> Sub Msg
+subscriptions _ =
+    Sub.none
 
 
 sendTitle : Model -> Page -> Cmd msg
@@ -114,10 +125,6 @@ addNewLog model str =
     { model | log = model.log ++ "-----" ++ str }
 
 
-
---todo make codebase modular by doing a refactor
-
-
 updateTextOfContents : Int -> String -> List Content -> List Content
 updateTextOfContents contentId text contents =
     contents
@@ -141,7 +148,7 @@ toHttpReq content =
         }
 
 
-gotContentToContent : List Tag -> GotContent -> Content
+gotContentToContent : List GotTag -> GotContent -> Content
 gotContentToContent allTags gotContent =
     { title = gotContent.title
     , date = gotContentDateToContentDate gotContent.date
@@ -149,6 +156,11 @@ gotContentToContent allTags gotContent =
     , text = NotRequestedYet
     , tags = List.filter (\tag -> tag /= dummyTag) (List.map (tagNameToTag allTags) gotContent.tags)
     }
+
+
+gotTagToTag : GotTag -> Tag
+gotTagToTag gotTag =
+    gotTag
 
 
 gotContentDateToContentDate : GotContentDate -> ContentDate
@@ -169,12 +181,3 @@ tagNameToTag allTags tagName =
 dummyTag : Tag
 dummyTag =
     { tagId = "DUMMY", name = "DUMMY", contentSortStrategy = "DUMMY", showAsTag = False }
-
-
-view =
-    View.view
-
-
-subscriptions : Model -> Sub Msg
-subscriptions _ =
-    Sub.none

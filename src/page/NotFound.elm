@@ -1,4 +1,4 @@
-module NotFound exposing (..)
+module NotFound exposing (view404Div)
 
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (class)

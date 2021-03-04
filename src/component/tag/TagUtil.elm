@@ -1,16 +1,10 @@
-module Tag exposing (contentsOfTag, tagById, tagWithMostContents, viewTagTabs)
+module TagUtil exposing (contentCountOfTag, contentsOfTag, nameOfActiveTag, tagById, tagWithMostContents)
 
-import Content exposing (Content)
-import Html exposing (Html, a, div, text)
-import Html.Attributes exposing (class, href)
+import ContentModel exposing (Content)
 import List exposing (member)
 import Model exposing (Model)
-import Msg exposing (Msg, Tag)
 import Sorter exposing (sortContentsByStrategy)
-
-
-
---UTIL
+import TagModel exposing (Tag)
 
 
 tagById : List Tag -> String -> Maybe Tag
@@ -56,31 +50,3 @@ tagWithMostContents model =
         |> List.sortBy (\tag -> contentCountOfTag model tag)
         |> List.reverse
         |> List.head
-
-
-
---VIEW
-
-
-viewTagTabs : Model -> List (Html Msg)
-viewTagTabs model =
-    List.map (viewTagTab model) model.allTags
-
-
-viewTagTab : Model -> Tag -> Html Msg
-viewTagTab model tag =
-    div
-        [ class
-            (if tag.name == nameOfActiveTag model then
-                "tagTab tagTabActive"
-
-             else
-                "tagTab"
-            )
-        ]
-        [ a
-            [ class "tagLink"
-            , href ("/tags/" ++ tag.tagId)
-            ]
-            [ text (tag.name ++ " (" ++ String.fromInt (contentCountOfTag model tag) ++ ")") ]
-        ]
