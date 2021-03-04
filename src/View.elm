@@ -49,7 +49,7 @@ view model =
 viewContentLink : Int -> Html msg
 viewContentLink contentId =
     a [ href ("/contents/" ++ String.fromInt contentId) ]
-        [ img [ class "navToContent", src "../content/link.svg" ] []
+        [ img [ class "navToContent", src "../link.svg" ] []
         ]
 
 
