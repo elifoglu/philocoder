@@ -2,7 +2,7 @@ module ApiUtil exposing (..)
 
 
 contentApiURL =
-    "http://18.223.98.196:8081/"
+    "/content/"
 
 
 
