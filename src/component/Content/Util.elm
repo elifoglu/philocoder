@@ -1,6 +1,6 @@
-module ContentUtil exposing (contentById)
+module Content.Util exposing (contentById)
 
-import ContentModel exposing (Content)
+import Content.Model exposing (Content)
 
 
 contentById : List Content -> Int -> Maybe Content

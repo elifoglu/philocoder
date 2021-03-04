@@ -1,8 +1,8 @@
-module Model exposing (Model, Page(..))
+module AppModel exposing (Model, Page(..))
 
 import Browser.Navigation as Nav
-import ContentModel exposing (Content)
-import TagModel exposing (Tag)
+import Content.Model exposing (Content)
+import Tag.Model exposing (Tag)
 
 
 type alias Model =

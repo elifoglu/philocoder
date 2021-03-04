@@ -1,4 +1,4 @@
-module TagModel exposing (Tag)
+module Tag.Model exposing (Tag)
 
 
 type alias Tag =

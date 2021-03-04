@@ -1,20 +1,20 @@
 port module Main exposing (main)
 
+import AppModel exposing (..)
+import AppView exposing (..)
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
 import Constants exposing (contentApiURL, dataFilename)
-import ContentModel exposing (Content, ContentDate(..), ContentText(..))
-import ContentUtil exposing (contentById)
+import Content.Model exposing (..)
+import Content.Util exposing (contentById)
 import Date exposing (fromCalendarDate, numberToMonth)
 import Http
 import List
-import Model exposing (..)
 import Msg exposing (DataResponse, GotContent, GotContentDate, GotTag, Msg(..), dataResponseDecoder)
-import TagModel exposing (Tag)
-import TagUtil exposing (tagById)
+import Tag.Model exposing (Tag)
+import Tag.Util exposing (tagById)
 import Url
 import UrlParser exposing (pageBy)
-import View exposing (view)
 
 
 

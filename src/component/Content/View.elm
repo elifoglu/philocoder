@@ -1,14 +1,14 @@
-module ContentView exposing (viewContentDiv, viewMaybeContentDiv)
+module Content.View exposing (viewContentDiv, viewMaybeContentDiv)
 
-import ContentModel exposing (Content, ContentDate(..), ContentText(..))
-import ContentUtil exposing (contentById)
+import Content.Model exposing (Content, ContentDate(..), ContentText(..))
+import Content.Util exposing (contentById)
 import Date exposing (Date, format)
 import Html exposing (Html, a, br, div, hr, img, p, span, text)
 import Html.Attributes exposing (class, href, src, style)
 import Markdown
 import Msg exposing (Msg)
 import NotFound exposing (view404Div)
-import TagModel exposing (Tag)
+import Tag.Model exposing (Tag)
 
 
 viewContentDiv : Content -> Html Msg

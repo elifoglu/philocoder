@@ -1,6 +1,6 @@
 module UrlParser exposing (pageBy)
 
-import Model exposing (Page(..))
+import AppModel exposing (Page(..))
 import Url
 import Url.Parser exposing ((</>), Parser, int, map, oneOf, parse, s, string, top)
 

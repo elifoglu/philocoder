@@ -1,6 +1,6 @@
 module Sorter exposing (sortContentsByStrategy)
 
-import ContentModel exposing (Content, ContentDate(..))
+import Content.Model exposing (Content, ContentDate(..))
 import Date
 
 

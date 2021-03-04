@@ -1,7 +1,7 @@
-module ContentModel exposing (Content, ContentDate(..), ContentText(..))
+module Content.Model exposing (Content, ContentDate(..), ContentText(..))
 
 import Date exposing (Date)
-import TagModel exposing (Tag)
+import Tag.Model exposing (Tag)
 
 
 type alias Content =

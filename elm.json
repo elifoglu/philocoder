@@ -3,8 +3,8 @@
     "source-directories": [
         "src",
         "src/component",
-        "src/component/content",
-        "src/component/tag",
+        "src/component/Content",
+        "src/component/Tag",
         "src/page",
         "src/util"
     ],
