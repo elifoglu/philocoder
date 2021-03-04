@@ -9,8 +9,9 @@ import Content.Model exposing (..)
 import Content.Util exposing (contentById)
 import Date exposing (fromCalendarDate, numberToMonth)
 import Http
+import HttpResponses exposing (DataResponse, GotContent, GotContentDate, GotTag, dataResponseDecoder)
 import List
-import Msg exposing (DataResponse, GotContent, GotContentDate, GotTag, Msg(..), dataResponseDecoder)
+import Msg exposing (Msg(..))
 import Tag.Model exposing (Tag)
 import Tag.Util exposing (tagById)
 import Url
@@ -166,10 +167,10 @@ gotTagToTag gotTag =
 gotContentDateToContentDate : GotContentDate -> ContentDate
 gotContentDateToContentDate gotContentDate =
     case gotContentDate of
-        Msg.DateExists dateAndPublishOrder ->
+        HttpResponses.DateExists dateAndPublishOrder ->
             DateExists (fromCalendarDate dateAndPublishOrder.year (numberToMonth dateAndPublishOrder.month) dateAndPublishOrder.day) dateAndPublishOrder.publishOrderInDay
 
-        Msg.DateNotExists justPublishOrder ->
+        HttpResponses.DateNotExists justPublishOrder ->
             DateNotExists justPublishOrder.publishOrderInDay
 
 
