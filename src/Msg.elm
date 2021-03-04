@@ -21,8 +21,12 @@ type alias Tag =
 --todo birebir aynı olsa bile gottag ve tag ayrımını yap
 
 
-tagResponseDecoder : Decoder DataResponse
-tagResponseDecoder =
+type alias DataResponse =
+    { allTags : List Tag, allContents : List GotContent }
+
+
+dataResponseDecoder : Decoder DataResponse
+dataResponseDecoder =
     map2 DataResponse
         (field "allTags" (D.list tagDecoder))
         (field "allContents" (D.list contentDecoder))
@@ -35,10 +39,6 @@ tagDecoder =
         (field "name" string)
         (field "contentSortStrategy" string)
         (field "showAsTag" bool)
-
-
-type alias DataResponse =
-    { allTags : List Tag, allContents : List GotContent }
 
 
 type alias ContentID =

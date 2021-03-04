@@ -9,15 +9,10 @@ import Url
 type alias Model =
     { log : String
     , key : Nav.Key
-    , currentUrl : Url.Url
     , activePage : Page
     , allTags : List Tag
     , allContents : List Content
     }
-
-
-
---todo currenturl'e gerek yok, kaldırılabilir
 
 
 type Page

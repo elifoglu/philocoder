@@ -1,4 +1,4 @@
-module UrlParser exposing (parseOrHome)
+module UrlParser exposing (pageBy)
 
 import Model exposing (Page(..))
 import Url
@@ -14,11 +14,11 @@ routeParser =
         ]
 
 
-parseOrHome : Url.Url -> Page
-parseOrHome url =
+pageBy : Url.Url -> Page
+pageBy url =
     case parse routeParser url of
-        Just route ->
-            route
+        Just page ->
+            page
 
         Nothing ->
             NotFoundPage

@@ -3,16 +3,15 @@ port module Main exposing (..)
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
 import Constants exposing (contentApiURL, dataFilename)
-import Content exposing (Content, ContentDate(..), ContentText(..))
-import ContentUtil exposing (getContentById)
+import Content exposing (Content, ContentDate(..), ContentText(..), contentById)
 import Date exposing (fromCalendarDate, numberToMonth)
 import Http
 import List
 import Model exposing (..)
-import Msg exposing (DataResponse, GotContent, GotContentDate, Msg(..), Tag, tagResponseDecoder)
-import TagUtil exposing (getTagById)
+import Msg exposing (DataResponse, GotContent, GotContentDate, Msg(..), Tag, dataResponseDecoder)
+import Tag exposing (tagById)
 import Url
-import UrlParser exposing (parseOrHome)
+import UrlParser exposing (pageBy)
 import View exposing (view)
 
 
@@ -32,10 +31,10 @@ main =
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
-    ( Model "empty" key url (parseOrHome url) [] []
+    ( Model "log" key (pageBy url) [] []
     , Http.get
         { url = contentApiURL ++ dataFilename
-        , expect = Http.expectJson GotDataResponse tagResponseDecoder
+        , expect = Http.expectJson GotDataResponse dataResponseDecoder
         }
     )
 
@@ -65,7 +64,7 @@ update msg model =
         GotContentText contentId contentTextResult ->
             case contentTextResult of
                 Ok text ->
-                    ( { model | allContents = updateTextOfContents contentId text model.allContents }, sendTitle model (parseOrHome model.currentUrl) )
+                    ( { model | allContents = updateTextOfContents contentId text model.allContents }, sendTitle model model.activePage )
 
                 Err _ ->
                     ( model, Cmd.none )
@@ -73,14 +72,14 @@ update msg model =
         LinkClicked urlRequest ->
             case urlRequest of
                 Browser.Internal url ->
-                    ( addNewLog { model | currentUrl = url } ("internal:" ++ Url.toString url), Nav.pushUrl model.key (Url.toString url) )
+                    ( addNewLog model ("internal:" ++ Url.toString url), Nav.pushUrl model.key (Url.toString url) )
 
                 Browser.External href ->
                     ( addNewLog model ("external:" ++ href), Nav.load href )
 
         UrlChanged url ->
-            ( addNewLog { model | activePage = parseOrHome url } ("urlChanged:" ++ Url.toString url)
-            , sendTitle model (parseOrHome url)
+            ( addNewLog { model | activePage = pageBy url } ("urlChanged:" ++ Url.toString url)
+            , sendTitle model (pageBy url)
             )
 
 
@@ -91,7 +90,7 @@ sendTitle model activePage =
             title "Philocoder"
 
         ContentPage contentId ->
-            case getContentById model.allContents contentId of
+            case contentById model.allContents contentId of
                 Just content ->
                     title (content.title ++ " - Philocoder")
 
@@ -99,7 +98,7 @@ sendTitle model activePage =
                     Cmd.none
 
         TagPage tagId ->
-            case getTagById model.allTags tagId of
+            case tagById model.allTags tagId of
                 Just tag ->
                     title (tag.name ++ " - Philocoder")
 
