@@ -1,0 +1,13 @@
+module HomeNavigator.View exposing (viewHomeNavigator)
+
+import Html exposing (Html, a, b, text)
+import Html.Attributes exposing (class, href, style)
+import Msg exposing (Msg)
+
+
+viewHomeNavigator : Html Msg
+viewHomeNavigator =
+    a [ class "homeLink", href "/" ]
+        [ b [ style "font-weight" "bolder" ]
+            [ text "philocoder" ]
+        ]

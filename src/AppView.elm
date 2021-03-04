@@ -4,6 +4,7 @@ import AppModel exposing (..)
 import Browser exposing (Document)
 import Content.Model exposing (Content)
 import Content.View exposing (..)
+import HomeNavigator.View exposing (viewHomeNavigator)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import List
@@ -37,14 +38,6 @@ view model =
             )
         ]
     }
-
-
-viewHomeNavigator : Html Msg
-viewHomeNavigator =
-    a [ class "homeLink", href "/" ]
-        [ b [ style "font-weight" "bolder" ]
-            [ text "philocoder" ]
-        ]
 
 
 viewContentsOfTagDiv : List Content -> Maybe Tag -> Html Msg
