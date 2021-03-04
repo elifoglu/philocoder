@@ -26,11 +26,11 @@ view model =
                         HomePage ->
                             viewContentsOfTagDiv model.allContents (tagWithMostContents model)
 
-                        ContentPage contentId ->
-                            viewMaybeContentDiv model.allContents contentId
-
                         TagPage tagId ->
                             viewContentsOfTagDiv model.allContents (tagById model.allTags tagId)
+
+                        ContentPage contentId ->
+                            viewMaybeContentDiv model.allContents contentId
 
                         NotFoundPage ->
                             view404Div
@@ -48,6 +48,7 @@ viewContentsOfTagDiv allContents maybeTag =
                 tag
                     |> contentsOfTag allContents
                     |> List.map viewContentDiv
+                    |> List.intersperse viewContentSeparator
 
             Nothing ->
                 [ view404Div ]

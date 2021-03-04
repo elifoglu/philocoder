@@ -1,4 +1,4 @@
-module Content.View exposing (viewContentDiv, viewMaybeContentDiv)
+module Content.View exposing (viewContentDiv, viewContentSeparator, viewMaybeContentDiv)
 
 import Content.Model exposing (Content, ContentDate(..), ContentText(..))
 import Content.Util exposing (contentById)
@@ -22,8 +22,6 @@ viewContentDiv content =
             ]
         , div [ style "max-width" "600px" ]
             [ viewMarkdownTextOfContent content
-            , br [] []
-            , hr [] []
             , br [] []
             ]
         ]
@@ -85,3 +83,11 @@ viewDateTextOfContent content =
 
     else
         text (", " ++ dateText)
+
+
+viewContentSeparator : Html Msg
+viewContentSeparator =
+    div [ class "contents", style "max-width" "600px" ]
+        [ hr [] []
+        , br [] []
+        ]
