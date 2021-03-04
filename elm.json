@@ -5,8 +5,7 @@
         "src/component",
         "src/component/Content",
         "src/component/Tag",
-        "src/page",
-        "src/util"
+        "src/page"
     ],
     "elm-version": "0.19.1",
     "dependencies": {
