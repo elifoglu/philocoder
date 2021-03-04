@@ -24,10 +24,13 @@ view model =
                             viewContentsOfTagDiv model.allContents (tagWithMostContents model)
 
                         M.ContentPage contentId ->
-                            maybeContentDiv model.allContents contentId
+                            viewMaybeContentDiv model.allContents contentId
 
                         M.TagPage tagId ->
                             viewContentsOfTagDiv model.allContents (getTagById model.allTags tagId)
+
+                        NotFoundPage ->
+                            view404Div
 
                    --todo implement mtagpage view
                    ]
@@ -44,6 +47,11 @@ view model =
        ]
     -}
     }
+
+
+view404Div : Html msg
+view404Div =
+    div [ class "contents" ] [ text "böyle bir sayfa/içerik yok" ]
 
 
 viewContentLink : Int -> Html msg
@@ -95,18 +103,18 @@ viewContentsOfTagDiv allContents maybeTag =
                     |> List.map contentDiv
 
             Nothing ->
-                []
+                [ view404Div ]
         )
 
 
-maybeContentDiv : List Content -> Int -> Html Msg
-maybeContentDiv allContents contentId =
+viewMaybeContentDiv : List Content -> Int -> Html Msg
+viewMaybeContentDiv allContents contentId =
     case getContentById allContents contentId of
         Just content ->
             contentDiv content
 
         Nothing ->
-            div [] []
+            view404Div
 
 
 contentDiv : Content -> Html Msg

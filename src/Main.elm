@@ -65,7 +65,7 @@ update msg model =
         GotContentText contentId contentTextResult ->
             case contentTextResult of
                 Ok text ->
-                    ( { model | allContents = updateTextOfContents contentId text model.allContents }, Cmd.none )
+                    ( { model | allContents = updateTextOfContents contentId text model.allContents }, sendTitle model (parseOrHome model.currentUrl) )
 
                 Err _ ->
                     ( model, Cmd.none )
@@ -105,6 +105,9 @@ sendTitle model activePage =
 
                 Nothing ->
                     Cmd.none
+
+        NotFoundPage ->
+            title "Oops - Not Found"
 
 
 addNewLog : Model -> String -> Model

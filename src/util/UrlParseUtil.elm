@@ -1,14 +1,15 @@
-module UrlParseUtil exposing (..)
+module UrlParseUtil exposing (parseOrHome)
 
 import Model exposing (Page(..))
 import Url
-import Url.Parser exposing ((</>), Parser, int, map, oneOf, parse, s, string)
+import Url.Parser exposing ((</>), Parser, int, map, oneOf, parse, s, string, top)
 
 
 routeParser : Parser (Page -> a) a
 routeParser =
     oneOf
-        [ map TagPage (s "tags" </> string)
+        [ map HomePage top
+        , map TagPage (s "tags" </> string)
         , map ContentPage (s "contents" </> int)
         ]
 
@@ -20,4 +21,4 @@ parseOrHome url =
             route
 
         Nothing ->
-            HomePage
+            NotFoundPage

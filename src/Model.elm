@@ -24,3 +24,4 @@ type Page
     = HomePage
     | ContentPage Int
     | TagPage String
+    | NotFoundPage
