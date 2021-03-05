@@ -1,4 +1,4 @@
-port module Main exposing (main)
+module Main exposing (main)
 
 import AppModel exposing (..)
 import AppView exposing (..)
@@ -6,23 +6,19 @@ import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
 import Constants exposing (contentApiURL, dataFilename)
 import Content.Model exposing (..)
-import Content.Util exposing (contentById)
 import DataResponse exposing (DataResponse, GotContent, GotContentDate, GotTag, dataResponseDecoder)
 import Date exposing (fromCalendarDate, numberToMonth)
 import Http
 import List
 import Msg exposing (Msg(..))
+import Ports exposing (sendTitle)
 import Tag.Model exposing (Tag)
-import Tag.Util exposing (tagById)
 import Url
 import UrlParser exposing (pageBy)
 
 
 
 --todo make codebase modular by doing a refactor
-
-
-port title : String -> Cmd a
 
 
 main =
@@ -98,32 +94,6 @@ update msg model =
 subscriptions : Model -> Sub Msg
 subscriptions _ =
     Sub.none
-
-
-sendTitle : Model -> Cmd msg
-sendTitle model =
-    case model.activePage of
-        HomePage ->
-            title "Philocoder"
-
-        ContentPage contentId ->
-            case contentById model.allContents contentId of
-                Just content ->
-                    title (content.title ++ " - Philocoder")
-
-                Nothing ->
-                    Cmd.none
-
-        TagPage tagId ->
-            case tagById model.allTags tagId of
-                Just tag ->
-                    title (tag.name ++ " - Philocoder")
-
-                Nothing ->
-                    Cmd.none
-
-        NotFoundPage ->
-            title "Oops - Not Found"
 
 
 updateTextOfContents : Int -> String -> List Content -> List Content
