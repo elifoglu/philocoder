@@ -17,7 +17,7 @@ viewContentDiv : List Content -> Content -> Html Msg
 viewContentDiv allContents content =
     div [ class "contents" ]
         [ p [ style "margin-bottom" "30px" ]
-            [ span [ class "title" ] [ text (content.title ++ " "), viewContentLinkWithLinkIcon content.contentId ]
+            [ span [ class "title" ] [ viewContentText content.title, viewContentLinkWithLinkIcon content.contentId ]
             , br [] []
             , viewTagsTextOfContent content
             , viewDateTextOfContent content
@@ -29,6 +29,18 @@ viewContentDiv allContents content =
             , br [] []
             ]
         ]
+
+
+viewContentText : Maybe String -> Html Msg
+viewContentText maybeTitle =
+    text
+        (case maybeTitle of
+            Just title ->
+                title ++ " "
+
+            Nothing ->
+                ""
+        )
 
 
 viewMaybeContentDiv : List Content -> Int -> Html Msg
@@ -55,7 +67,12 @@ viewContentLinkWithLinkIcon contentId =
 
 viewContentLinkWithContentTitle : Content -> Html msg
 viewContentLinkWithContentTitle content =
-    viewContentLink (text content.title) content.contentId
+    case content.title of
+        Just exists ->
+            viewContentLink (text exists) content.contentId
+
+        Nothing ->
+            viewContentLink (text (String.fromInt content.contentId)) content.contentId
 
 
 viewMarkdownTextOfContent : Content -> Html msg
