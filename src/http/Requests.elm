@@ -1,10 +1,17 @@
-module Requests exposing (..)
+module Requests exposing (getContentText, getDataResponse)
 
-import Constants exposing (contentApiURL, dataFilename)
 import Content.Model exposing (Content)
 import DataResponse exposing (dataResponseDecoder)
 import Http
 import Msg exposing (Msg(..))
+
+
+contentApiURL =
+    "/content/"
+
+
+dataFilename =
+    "data.json"
 
 
 getDataResponse : Cmd Msg
