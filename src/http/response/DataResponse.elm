@@ -1,10 +1,6 @@
-module HttpResponses exposing (ContentID, DataResponse, DateAndPublishOrder, GotContent, GotContentDate(..), GotTag, JustPublishOrder, dataResponseDecoder)
+module DataResponse exposing (ContentID, DataResponse, DateAndPublishOrder, GotContent, GotContentDate(..), GotTag, JustPublishOrder, dataResponseDecoder)
 
 import Json.Decode as D exposing (Decoder, bool, field, int, map, map2, map4, map5, maybe, oneOf, string)
-
-
-
---todo change module name & add to a new directory
 
 
 type alias DataResponse =

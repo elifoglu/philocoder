@@ -1,8 +1,8 @@
 module Msg exposing (..)
 
 import Browser
+import DataResponse exposing (ContentID, DataResponse)
 import Http
-import HttpResponses exposing (ContentID, DataResponse)
 import Url
 
 

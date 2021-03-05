@@ -7,11 +7,10 @@ import Browser.Navigation as Nav
 import Constants exposing (contentApiURL, dataFilename)
 import Content.Model exposing (..)
 import Content.Util exposing (contentById)
+import DataResponse exposing (DataResponse, GotContent, GotContentDate, GotTag, dataResponseDecoder)
 import Date exposing (fromCalendarDate, numberToMonth)
 import Http
-import HttpResponses exposing (DataResponse, GotContent, GotContentDate, GotTag, dataResponseDecoder)
 import List
-import Maybe.Extra exposing (values)
 import Msg exposing (Msg(..))
 import Tag.Model exposing (Tag)
 import Tag.Util exposing (tagById)
@@ -169,10 +168,10 @@ gotTagToTag gotTag =
 gotContentDateToContentDate : GotContentDate -> ContentDate
 gotContentDateToContentDate gotContentDate =
     case gotContentDate of
-        HttpResponses.DateExists dateAndPublishOrder ->
+        DataResponse.DateExists dateAndPublishOrder ->
             DateExists (fromCalendarDate dateAndPublishOrder.year (numberToMonth dateAndPublishOrder.month) dateAndPublishOrder.day) dateAndPublishOrder.publishOrderInDay
 
-        HttpResponses.DateNotExists justPublishOrder ->
+        DataResponse.DateNotExists justPublishOrder ->
             DateNotExists justPublishOrder.publishOrderInDay
 
 
