@@ -1,8 +1,9 @@
-module Tag.Util exposing (contentCountOfTag, contentsOfTag, nameOfActiveTag, tagById, tagWithMostContents)
+module Tag.Util exposing (contentCountOfTag, contentsOfTag, gotTagToTag, nameOfActiveTag, tagById, tagNameToTag, tagWithMostContents)
 
 import AppModel exposing (Model)
 import Content.Model exposing (Content)
 import Content.Sorter exposing (sortContentsByStrategy)
+import DataResponse exposing (GotTag)
 import List exposing (member)
 import Tag.Model exposing (Tag)
 
@@ -50,3 +51,15 @@ tagWithMostContents model =
         |> List.sortBy (\tag -> contentCountOfTag model tag)
         |> List.reverse
         |> List.head
+
+
+tagNameToTag : List Tag -> String -> Maybe Tag
+tagNameToTag allTags tagName =
+    allTags
+        |> List.filter (\tag -> tag.name == tagName)
+        |> List.head
+
+
+gotTagToTag : GotTag -> Tag
+gotTagToTag gotTag =
+    gotTag
