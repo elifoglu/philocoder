@@ -9,7 +9,7 @@ import Tag.Util exposing (tagById)
 port title : String -> Cmd a
 
 
-defaultTitleCmd =
+sendDefaultTitle =
     title "Philocoder"
 
 
@@ -17,7 +17,7 @@ sendTitle : Model -> Cmd msg
 sendTitle model =
     case model.activePage of
         HomePage ->
-            defaultTitleCmd
+            sendDefaultTitle
 
         ContentPage contentId ->
             case contentById model.allContents contentId of
@@ -32,7 +32,7 @@ sendTitle model =
                                     title (String.left 7 exists ++ "... - Philocoder")
 
                                 NotRequestedYet ->
-                                    defaultTitleCmd
+                                    sendDefaultTitle
 
                 Nothing ->
                     Cmd.none
