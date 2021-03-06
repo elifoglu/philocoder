@@ -6,4 +6,4 @@ import Html.Attributes exposing (class)
 
 view404Div : Html msg
 view404Div =
-    div [ class "contents" ] [ text "böyle bir sayfa/içerik yok" ]
+    text "böyle bir sayfa/içerik yok"

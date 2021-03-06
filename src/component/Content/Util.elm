@@ -1,8 +1,9 @@
-module Content.Util exposing (contentById, gotContentToContent, updateTextOfContents)
+module Content.Util exposing (contentById, gotContentToContent, maybeDateText, maybeTagsText, updateTextOfContents)
 
 import Content.Model exposing (Content, ContentDate(..), ContentText(..))
 import DataResponse exposing (GotContent, GotContentDate, GotTag)
-import Date exposing (fromCalendarDate, numberToMonth)
+import Date exposing (format, fromCalendarDate, numberToMonth)
+import List.Extra exposing (uniqueBy)
 import Maybe.Extra exposing (values)
 import Tag.Util exposing (tagNameToTag)
 
@@ -51,3 +52,46 @@ updateTextOfContent contentId text content =
 
     else
         content
+
+
+contentHasDisplayableTags : Content -> Bool
+contentHasDisplayableTags content =
+    (content.tags
+        |> List.filter (\tag -> tag.showAsTag)
+        |> List.length
+    )
+        > 0
+
+
+maybeTagsText : Content -> Maybe String
+maybeTagsText content =
+    case contentHasDisplayableTags content of
+        True ->
+            Just
+                (content.tags
+                    |> List.filter (\tag -> tag.showAsTag)
+                    |> List.map (\tag -> tag.name)
+                    |> List.map (\str -> "#" ++ str)
+                    |> String.join " "
+                )
+
+        False ->
+            Nothing
+
+
+maybeDateText : Content -> Maybe String
+maybeDateText content =
+    let
+        dateText =
+            case content.date of
+                DateExists date _ ->
+                    format "dd.MM.yy" date
+
+                DateNotExists _ ->
+                    ""
+    in
+    if String.isEmpty dateText then
+        Nothing
+
+    else
+        Just dateText

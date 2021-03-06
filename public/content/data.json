@@ -4,55 +4,64 @@
       "tagId": "tumu",
       "name": "tümü",
       "contentSortStrategy": "DateDESC",
-      "showAsTag": false
+      "showAsTag": false,
+      "contentRenderType": "normal"
     },
     {
       "tagId": "ustinsan",
       "name": "üstinsan",
       "contentSortStrategy": "DateASC",
-      "showAsTag": true
+      "showAsTag": true,
+      "contentRenderType":  "normal"
     },
     {
       "tagId": "perspektif",
       "name": "perspektif",
       "contentSortStrategy": "DateDESC",
-      "showAsTag": true
+      "showAsTag": true,
+      "contentRenderType":  "normal"
     },
     {
       "tagId": "ozgun",
       "name": "özgün",
       "contentSortStrategy": "DateDESC",
-      "showAsTag": true
+      "showAsTag": true,
+      "contentRenderType":  "normal"
     },
     {
       "tagId": "gunluk",
       "name": "günlük",
       "contentSortStrategy": "DateDESC",
-      "showAsTag": true
+      "showAsTag": true,
+      "contentRenderType":  "normal"
     },
     {
       "tagId": "kod",
       "name": "kod",
       "contentSortStrategy": "DateDESC",
-      "showAsTag": true
+      "showAsTag": true,
+      "contentRenderType":  "normal"
     },
     {
       "tagId": "mikro",
       "name": "mikro",
       "contentSortStrategy": "DateDESC",
-      "showAsTag": true
+      "showAsTag": true,
+      "contentRenderType":  "minified"
     },
     {
       "tagId": "begenilen",
       "name": "beğenilen",
       "contentSortStrategy": "DateDESC",
-      "showAsTag": true
+      "showAsTag": true,
+      "contentRenderType":  "minified"
     },
     {
       "tagId": "beni_oku",
       "name": "beni_oku.txt",
       "contentSortStrategy": "DateDESC",
-      "showAsTag": false
+      "showAsTag": false,
+      "contentRenderType":  "normal"
     }
   ],
   "allContents": [
@@ -306,7 +315,6 @@
       ]
     },
     {
-      "title": "The Life of a File",
       "date": {
         "year": 2021,
         "month": 3,

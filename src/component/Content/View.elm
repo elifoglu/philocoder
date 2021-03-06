@@ -1,8 +1,8 @@
-module Content.View exposing (viewContentDiv, viewContentSeparator, viewMaybeContentDiv)
+module Content.View exposing (viewContentDiv, viewContentDivs, viewContentSeparator)
 
+import AppModel exposing (Model)
 import Content.Model exposing (Content, ContentDate(..), ContentText(..))
-import Content.Util exposing (contentById)
-import Date exposing (Date, format)
+import Content.Util exposing (contentById, maybeDateText, maybeTagsText)
 import Html exposing (Html, a, br, div, hr, img, p, span, text)
 import Html.Attributes exposing (class, href, src, style)
 import List.Extra exposing (uniqueBy)
@@ -10,25 +10,72 @@ import Markdown
 import Maybe.Extra exposing (values)
 import Msg exposing (Msg)
 import NotFound exposing (view404Div)
-import Tag.Model exposing (Tag)
+import Tag.Model exposing (ContentRenderType, Tag)
+import Tag.Util exposing (contentsOfTag)
 
 
-viewContentDiv : List Content -> Content -> Html Msg
-viewContentDiv allContents content =
-    div [ class "contents" ]
-        [ p [ style "margin-bottom" "30px" ]
-            [ span [ class "title" ] [ viewContentText content.title, viewContentLinkWithLinkIcon content.contentId ]
-            , br [] []
-            , viewTagsTextOfContent content
-            , viewDateTextOfContent content
-            , br [] []
-            , viewRefsTextOfContent allContents content
-            ]
-        , div [ style "max-width" "600px" ]
+viewContentDivs : Model -> Maybe Tag -> List (Html Msg)
+viewContentDivs model maybeTag =
+    case maybeTag of
+        Just tag ->
+            tag
+                |> contentsOfTag model.allContents
+                |> List.map (viewContentDiv model maybeTag)
+                |> List.intersperse (viewContentSeparator tag.contentRenderType)
+
+        Nothing ->
+            [ view404Div ]
+
+
+viewContentDiv : Model -> Maybe Tag -> Content -> Html Msg
+viewContentDiv model maybeActiveTag content =
+    case maybeActiveTag of
+        Just tag ->
+            case tag.contentRenderType of
+                Tag.Model.Normal ->
+                    viewContentInNormalView model content
+
+                Tag.Model.Minified ->
+                    viewContentInMinifiedView content
+
+        Nothing ->
+            viewContentInNormalView model content
+
+
+viewContentInNormalView : Model -> Content -> Html Msg
+viewContentInNormalView model content =
+    p []
+        [ span [ class "title" ] [ viewContentText content.title, viewContentLinkWithLinkIcon content ]
+        , viewContentInfoDiv model.allContents content
+        , div []
             [ viewMarkdownTextOfContent content
             , br [] []
             ]
         ]
+
+
+viewContentInMinifiedView : Content -> Html Msg
+viewContentInMinifiedView content =
+    p []
+        [ div []
+            [ viewContentLinkWithLinkIcon content
+            , viewMarkdownTextOfContent content
+            ]
+        ]
+
+
+viewContentInfoDiv : List Content -> Content -> Html Msg
+viewContentInfoDiv allContents content =
+    div [ style "margin-bottom" "25px" ]
+        ((case ( maybeTagsText content, maybeDateText content ) of
+            ( Just tagsText, Just contentText ) ->
+                [ text (tagsText ++ ", " ++ contentText) ]
+
+            ( _, _ ) ->
+                []
+         )
+            ++ [ viewRefsTextOfContent allContents content ]
+        )
 
 
 viewContentText : Maybe String -> Html Msg
@@ -43,16 +90,6 @@ viewContentText maybeTitle =
         )
 
 
-viewMaybeContentDiv : List Content -> Int -> Html Msg
-viewMaybeContentDiv allContents contentId =
-    case contentById allContents contentId of
-        Just content ->
-            viewContentDiv allContents content
-
-        Nothing ->
-            view404Div
-
-
 viewContentLink : Html msg -> Int -> Html msg
 viewContentLink htmlToClick contentId =
     a [ href ("/contents/" ++ String.fromInt contentId) ]
@@ -60,9 +97,23 @@ viewContentLink htmlToClick contentId =
         ]
 
 
-viewContentLinkWithLinkIcon : Int -> Html msg
-viewContentLinkWithLinkIcon contentId =
-    viewContentLink (img [ class "navToContent", src "../link.svg" ] []) contentId
+
+--viewContentLinkWithDate function may be useful for later
+
+
+viewContentLinkWithDate : Content -> Html msg
+viewContentLinkWithDate content =
+    case maybeDateText content of
+        Just dateText ->
+            viewContentLink (text dateText) content.contentId
+
+        Nothing ->
+            text ""
+
+
+viewContentLinkWithLinkIcon : Content -> Html msg
+viewContentLinkWithLinkIcon content =
+    viewContentLink (img [ class "navToContent", src "../link.svg" ] []) content.contentId
 
 
 viewContentLinkWithContentTitle : Content -> Html msg
@@ -87,17 +138,6 @@ viewMarkdownTextOfContent content =
         )
 
 
-viewTagsTextOfContent : Content -> Html msg
-viewTagsTextOfContent content =
-    text
-        (content.tags
-            |> List.filter (\tag -> tag.showAsTag)
-            |> List.map (\tag -> tag.name)
-            |> List.map (\str -> "#" ++ str)
-            |> String.join " "
-        )
-
-
 viewRefsTextOfContent : List Content -> Content -> Html msg
 viewRefsTextOfContent allContents content =
     case content.refs of
@@ -113,40 +153,30 @@ viewRefsTextOfContent allContents content =
                 text ""
 
             else
-                span []
-                    (text
-                        "refs: "
-                        :: (refContents
-                                |> List.map (\refContent -> viewContentLinkWithContentTitle refContent)
-                                |> List.intersperse (text ", ")
-                           )
-                    )
+                div [ style "margin-top" "2px" ]
+                    [ span []
+                        (text
+                            "refs: "
+                            :: (refContents
+                                    |> List.map (\refContent -> viewContentLinkWithContentTitle refContent)
+                                    |> List.intersperse (text ", ")
+                               )
+                        )
+                    ]
 
         Nothing ->
             text ""
 
 
-viewDateTextOfContent : Content -> Html msg
-viewDateTextOfContent content =
-    let
-        dateText =
-            case content.date of
-                DateExists date _ ->
-                    format "dd.MM.yy" date
+viewContentSeparator : ContentRenderType -> Html Msg
+viewContentSeparator contentRenderType =
+    case contentRenderType of
+        Tag.Model.Normal ->
+            div []
+                [ hr [] []
+                , br [] []
+                ]
 
-                DateNotExists _ ->
-                    ""
-    in
-    if String.isEmpty dateText then
-        text ""
-
-    else
-        text (", " ++ dateText)
-
-
-viewContentSeparator : Html Msg
-viewContentSeparator =
-    div [ class "contents", style "max-width" "600px" ]
-        [ hr [] []
-        , br [] []
-        ]
+        Tag.Model.Minified ->
+            div [ style "margin-bottom" "40px" ]
+                []
