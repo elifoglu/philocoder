@@ -7,11 +7,6 @@ let elm = Elm.Main.init({
 
 elm.ports.title.subscribe( title => {
   document.title = title;
-
-});
-
-elm.ports.url.subscribe( url => {
-  window.history.replaceState(null, null, url);
 });
 
 // If you want your app to work offline and load faster, you can change

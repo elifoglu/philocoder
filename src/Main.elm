@@ -8,7 +8,7 @@ import Content.Util exposing (gotContentToContent, updateTextOfContents)
 import DataResponse exposing (DataResponse, GotContent, GotContentDate, GotTag)
 import List
 import Msg exposing (Msg(..))
-import Ports exposing (sendTitle, sendUrl)
+import Ports exposing (sendTitle)
 import Requests exposing (getContentText, getDataResponse)
 import Tag.Util exposing (gotTagToTag)
 import Url
@@ -78,7 +78,7 @@ update msg model =
                     { model | activePage = pageBy url }
             in
             ( newModel
-            , Cmd.batch [ sendUrl newModel, sendTitle newModel ]
+            , sendTitle newModel
             )
 
 
