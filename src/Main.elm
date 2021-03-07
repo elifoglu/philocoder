@@ -36,7 +36,6 @@ init flags url key =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        --todo no 2) 1 numaralı todo yapıldıktan sonra, burada da aktif tag için cmd gönderilmeli
         GotDataResponse tagsResult ->
             case tagsResult of
                 Ok res ->
@@ -49,7 +48,7 @@ update msg model =
                         , allContents = allContents
                       }
                     , Cmd.batch (List.map getContentText allContents)
-                      --todo no 1) sadece aktif tag'in content'leri için request atılmalı
+                      --todo no 1) just send commands for active tag's contents. not for all contents
                     )
 
                 Err _ ->
@@ -71,6 +70,7 @@ update msg model =
                 Browser.External href ->
                     ( model, Nav.load href )
 
+        --todo no 2) if todo1 is done, a new command should be sent (if not sent before) after every tag click
         UrlChanged url ->
             let
                 newModel : Model
