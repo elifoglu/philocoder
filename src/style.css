@@ -81,3 +81,7 @@ a {
     align-content: center;
     align-self: center;
 }
+
+.markdownDiv p { /* removes unnecessary empty line between contentLinkIcon and contentText for minified view */
+    margin-block-start: 0;
+}

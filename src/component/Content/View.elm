@@ -128,7 +128,7 @@ viewContentLinkWithContentTitle content =
 
 viewMarkdownTextOfContent : Content -> Html msg
 viewMarkdownTextOfContent content =
-    Markdown.toHtml []
+    Markdown.toHtml [ class "markdownDiv" ]
         (case content.text of
             Text str ->
                 str
