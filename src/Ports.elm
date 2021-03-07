@@ -1,4 +1,4 @@
-port module Ports exposing (sendTitle, title)
+port module Ports exposing (sendTitle, sendUrl, title)
 
 import AppModel exposing (Model, Page(..))
 import Content.Model exposing (ContentText(..))
@@ -7,6 +7,9 @@ import Tag.Util exposing (tagById)
 
 
 port title : String -> Cmd a
+
+
+port url : String -> Cmd a
 
 
 sendDefaultTitle =
@@ -47,3 +50,29 @@ sendTitle model =
 
         NotFoundPage ->
             title "Oops - Not Found"
+
+
+sendUrl : Model -> Cmd msg
+sendUrl model =
+    case model.activePage of
+        HomePage ->
+            url "/"
+
+        ContentPage contentId ->
+            case contentById model.allContents contentId of
+                Just content ->
+                    url ("/contents/" ++ String.fromInt content.contentId)
+
+                Nothing ->
+                    url "/404"
+
+        TagPage tagId ->
+            case tagById model.allTags tagId of
+                Just tag ->
+                    url ("/tags/" ++ tag.tagId)
+
+                Nothing ->
+                    url "/404"
+
+        NotFoundPage ->
+            url "/404"
