@@ -5,8 +5,6 @@
         "src/App",
         "src/Component",
         "src/Component/Atom",
-        "src/Component/Atom/Content",
-        "src/Component/Atom/Tag",
         "src/Component/Molecule",
         "src/Http",
         "src/Http/Response"
