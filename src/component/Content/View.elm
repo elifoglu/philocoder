@@ -10,7 +10,7 @@ import Markdown
 import Maybe.Extra exposing (values)
 import Msg exposing (Msg)
 import NotFound exposing (view404Div)
-import Tag.Model exposing (ContentRenderType, Tag)
+import Tag.Model exposing (ContentRenderType(..), Tag)
 import Tag.Util exposing (contentsOfTag)
 
 
@@ -31,18 +31,27 @@ viewContentDiv : Model -> Maybe Tag -> Content -> Html Msg
 viewContentDiv model maybeActiveTag content =
     case maybeActiveTag of
         Just tag ->
-            case tag.contentRenderType of
-                Tag.Model.Normal ->
-                    viewContentInNormalView model content
-
-                Tag.Model.Minified ->
-                    viewContentInMinifiedView content
+            renderContentFn tag.contentRenderType model content
 
         Nothing ->
             viewContentInNormalView model content
 
 
-viewContentInNormalView : Model -> Content -> Html Msg
+type alias ContentRenderFn =
+    Model -> Content -> Html Msg
+
+
+renderContentFn : ContentRenderType -> ContentRenderFn
+renderContentFn contentRenderType =
+    case contentRenderType of
+        Normal ->
+            viewContentInNormalView
+
+        Minified ->
+            viewContentInMinifiedView
+
+
+viewContentInNormalView : ContentRenderFn
 viewContentInNormalView model content =
     p []
         [ span [ class "title" ] [ viewContentText content.title, viewContentLinkWithLinkIcon content ]
@@ -54,8 +63,8 @@ viewContentInNormalView model content =
         ]
 
 
-viewContentInMinifiedView : Content -> Html Msg
-viewContentInMinifiedView content =
+viewContentInMinifiedView : ContentRenderFn
+viewContentInMinifiedView _ content =
     p []
         [ div []
             [ viewContentLinkWithLinkIcon content
