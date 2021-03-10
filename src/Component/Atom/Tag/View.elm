@@ -1,9 +1,9 @@
 module Tag.View exposing (viewTagTab)
 
 import App.Model exposing (Model)
+import App.Msg exposing (Msg)
 import Html exposing (Html, a, div, text)
 import Html.Attributes exposing (class, href)
-import Msg exposing (Msg)
 import Tag.Model exposing (Tag)
 import Tag.Util exposing (contentCountOfTag, nameOfActiveTag)
 

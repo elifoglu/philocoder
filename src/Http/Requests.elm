@@ -1,9 +1,9 @@
 module Requests exposing (getContentText, getDataResponse)
 
+import App.Msg exposing (Msg(..))
 import Content.Model exposing (Content)
 import DataResponse exposing (dataResponseDecoder)
 import Http
-import Msg exposing (Msg(..))
 
 
 contentApiURL =

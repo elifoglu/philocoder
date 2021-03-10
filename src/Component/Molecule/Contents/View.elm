@@ -1,10 +1,10 @@
 module Contents.View exposing (viewContentDivs)
 
 import App.Model exposing (Model)
+import App.Msg exposing (Msg)
 import Content.View exposing (viewContentDiv)
 import Html exposing (Html, br, div, hr)
 import Html.Attributes exposing (style)
-import Msg exposing (Msg)
 import NotFound.View exposing (view404Div)
 import Tag.Model exposing (ContentRenderType(..), Tag)
 import Tag.Util exposing (contentsOfTag)

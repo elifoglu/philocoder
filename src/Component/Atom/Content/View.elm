@@ -1,6 +1,7 @@
 module Content.View exposing (viewContentDiv)
 
 import App.Model exposing (Model)
+import App.Msg exposing (Msg)
 import Content.Model exposing (Content, ContentDate(..), ContentText(..))
 import Content.Util exposing (contentById, maybeDateText, maybeTagsText)
 import Html exposing (Html, a, br, div, img, p, span, text)
@@ -8,7 +9,6 @@ import Html.Attributes exposing (class, href, src, style)
 import List.Extra exposing (uniqueBy)
 import Markdown
 import Maybe.Extra exposing (values)
-import Msg exposing (Msg)
 import Tag.Model exposing (ContentRenderType(..), Tag)
 
 

@@ -1,4 +1,4 @@
-module Msg exposing (..)
+module App.Msg exposing (..)
 
 import Browser
 import DataResponse exposing (ContentID, DataResponse)
