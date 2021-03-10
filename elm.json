@@ -2,12 +2,14 @@
     "type": "application",
     "source-directories": [
         "src",
-        "src/component",
-        "src/component/Content",
-        "src/component/Tag",
-        "src/page",
-        "src/http",
-        "src/http/response"
+        "src/App",
+        "src/Component",
+        "src/Component/Atom",
+        "src/Component/Atom/Content",
+        "src/Component/Atom/Tag",
+        "src/Component/Molecule",
+        "src/Http",
+        "src/Http/Response"
     ],
     "elm-version": "0.19.1",
     "dependencies": {

@@ -1,18 +1,18 @@
 module Main exposing (main)
 
-import AppModel exposing (..)
-import AppView exposing (..)
+import App.Model exposing (..)
+import App.Ports exposing (sendTitle)
+import App.UrlParser exposing (pageBy)
+import App.View exposing (view)
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
 import Content.Util exposing (gotContentToContent, updateTextOfContents)
 import DataResponse exposing (DataResponse, GotContent, GotContentDate, GotTag)
 import List
 import Msg exposing (Msg(..))
-import Ports exposing (sendTitle)
 import Requests exposing (getContentText, getDataResponse)
 import Tag.Util exposing (gotTagToTag)
 import Url
-import UrlParser exposing (pageBy)
 
 
 main =

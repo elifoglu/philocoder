@@ -1,4 +1,4 @@
-module AppModel exposing (Model, Page(..))
+module App.Model exposing (Model, Page(..))
 
 import Browser.Navigation as Nav
 import Content.Model exposing (Content)

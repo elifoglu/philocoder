@@ -1,16 +1,11 @@
-module Tag.View exposing (viewTagTabs)
+module Tag.View exposing (viewTagTab)
 
-import AppModel exposing (Model)
+import App.Model exposing (Model)
 import Html exposing (Html, a, div, text)
 import Html.Attributes exposing (class, href)
 import Msg exposing (Msg)
 import Tag.Model exposing (Tag)
 import Tag.Util exposing (contentCountOfTag, nameOfActiveTag)
-
-
-viewTagTabs : Model -> List (Html Msg)
-viewTagTabs model =
-    List.map (viewTagTab model) model.allTags
 
 
 viewTagTab : Model -> Tag -> Html Msg

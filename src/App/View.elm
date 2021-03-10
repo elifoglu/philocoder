@@ -1,16 +1,17 @@
-module AppView exposing (view)
+module App.View exposing (view)
 
-import AppModel exposing (..)
+import App.Model exposing (..)
 import Browser exposing (Document)
 import Content.Util exposing (contentById)
-import Content.View exposing (..)
+import Content.View exposing (viewContentDiv)
+import Contents.View exposing (viewContentDivs)
 import HomeNavigator.View exposing (viewHomeNavigator)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Msg exposing (Msg(..))
-import NotFound exposing (view404Div)
+import NotFound.View exposing (view404Div)
 import Tag.Util exposing (tagById, tagWithMostContents)
-import Tag.View exposing (viewTagTabs)
+import Tags.View exposing (viewTagTabs)
 
 
 view : Model -> Document Msg

@@ -1,6 +1,6 @@
-port module Ports exposing (sendTitle, title)
+port module App.Ports exposing (sendTitle, title)
 
-import AppModel exposing (Model, Page(..))
+import App.Model exposing (Model, Page(..))
 import Content.Model exposing (ContentText(..))
 import Content.Util exposing (contentById)
 import Tag.Util exposing (tagById)

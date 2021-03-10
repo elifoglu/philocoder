@@ -1,6 +1,6 @@
 module Tag.Util exposing (contentCountOfTag, contentsOfTag, gotTagToTag, nameOfActiveTag, tagById, tagNameToTag, tagWithMostContents)
 
-import AppModel exposing (Model)
+import App.Model exposing (Model)
 import Content.Model exposing (Content)
 import Content.Sorter exposing (sortContentsByStrategy)
 import DataResponse exposing (GotTag)
@@ -33,7 +33,7 @@ contentsOfTag allContents tag =
 nameOfActiveTag : Model -> String
 nameOfActiveTag model =
     case model.activePage of
-        AppModel.TagPage tagId ->
+        App.Model.TagPage tagId ->
             case tagById model.allTags tagId of
                 Just tag ->
                     tag.name

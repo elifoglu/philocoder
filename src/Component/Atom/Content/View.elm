@@ -1,48 +1,33 @@
-module Content.View exposing (viewContentDiv, viewContentDivs, viewContentSeparator)
+module Content.View exposing (viewContentDiv)
 
-import AppModel exposing (Model)
+import App.Model exposing (Model)
 import Content.Model exposing (Content, ContentDate(..), ContentText(..))
 import Content.Util exposing (contentById, maybeDateText, maybeTagsText)
-import Html exposing (Html, a, br, div, hr, img, p, span, text)
+import Html exposing (Html, a, br, div, img, p, span, text)
 import Html.Attributes exposing (class, href, src, style)
 import List.Extra exposing (uniqueBy)
 import Markdown
 import Maybe.Extra exposing (values)
 import Msg exposing (Msg)
-import NotFound exposing (view404Div)
 import Tag.Model exposing (ContentRenderType(..), Tag)
-import Tag.Util exposing (contentsOfTag)
-
-
-viewContentDivs : Model -> Maybe Tag -> List (Html Msg)
-viewContentDivs model maybeTag =
-    case maybeTag of
-        Just tag ->
-            tag
-                |> contentsOfTag model.allContents
-                |> List.map (viewContentDiv model maybeTag)
-                |> List.intersperse (viewContentSeparator tag.contentRenderType)
-
-        Nothing ->
-            [ view404Div ]
-
-
-viewContentDiv : Model -> Maybe Tag -> Content -> Html Msg
-viewContentDiv model maybeActiveTag content =
-    case maybeActiveTag of
-        Just tag ->
-            renderContentFn tag.contentRenderType model content
-
-        Nothing ->
-            viewContentInNormalView model content
 
 
 type alias ContentRenderFn =
     Model -> Content -> Html Msg
 
 
-renderContentFn : ContentRenderType -> ContentRenderFn
-renderContentFn contentRenderType =
+viewContentDiv : Model -> Maybe Tag -> Content -> Html Msg
+viewContentDiv model maybeActiveTag content =
+    case maybeActiveTag of
+        Just tag ->
+            viewContentFn tag.contentRenderType model content
+
+        Nothing ->
+            viewContentFn Normal model content
+
+
+viewContentFn : ContentRenderType -> ContentRenderFn
+viewContentFn contentRenderType =
     case contentRenderType of
         Normal ->
             viewContentInNormalView
@@ -73,6 +58,18 @@ viewContentInMinifiedView _ content =
         ]
 
 
+viewContentText : Maybe String -> Html Msg
+viewContentText maybeTitle =
+    text
+        (case maybeTitle of
+            Just title ->
+                title ++ " "
+
+            Nothing ->
+                ""
+        )
+
+
 viewContentInfoDiv : List Content -> Content -> Html Msg
 viewContentInfoDiv allContents content =
     div [ style "margin-bottom" "25px" ]
@@ -84,18 +81,6 @@ viewContentInfoDiv allContents content =
                 []
          )
             ++ [ viewRefsTextOfContent allContents content ]
-        )
-
-
-viewContentText : Maybe String -> Html Msg
-viewContentText maybeTitle =
-    text
-        (case maybeTitle of
-            Just title ->
-                title ++ " "
-
-            Nothing ->
-                ""
         )
 
 
@@ -175,17 +160,3 @@ viewRefsTextOfContent allContents content =
 
         Nothing ->
             text ""
-
-
-viewContentSeparator : ContentRenderType -> Html Msg
-viewContentSeparator contentRenderType =
-    case contentRenderType of
-        Tag.Model.Normal ->
-            div []
-                [ hr [] []
-                , br [] []
-                ]
-
-        Tag.Model.Minified ->
-            div [ style "margin-bottom" "40px" ]
-                []
