@@ -286,7 +286,7 @@
       ]
     },
     {
-      "title": "Not alma sanatı ve Zettelkasten",
+      "title": "Not Alma Sanatı ve Zettelkasten",
       "date": {
         "year": 2021,
         "month": 1,
@@ -329,7 +329,7 @@
       ]
     },
     {
-      "title": "\"Fazla kişisel\" web sitesi",
+      "title": "\"Fazla Kişisel\" Web Sitesi",
       "date": {
         "year": 2021,
         "month": 3,
@@ -367,6 +367,20 @@
       "tags": [
         "tümü",
         "mikro"
+      ]
+    },
+    {
+      "title": "İdeal 21. Yüzyıl İnsanı",
+      "date": {
+        "year": 2021,
+        "month": 3,
+        "day": 15,
+        "publishOrderInDay": 1
+      },
+      "contentId": 23,
+      "tags": [
+        "tümü",
+        "özgün"
       ]
     }
   ]
