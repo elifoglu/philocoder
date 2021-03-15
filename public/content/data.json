@@ -5,63 +5,72 @@
       "name": "tümü",
       "contentSortStrategy": "DateDESC",
       "showAsTag": false,
-      "contentRenderType": "normal"
+      "contentRenderType": "normal",
+      "showContentCount": true
     },
     {
       "tagId": "ustinsan",
       "name": "üstinsan",
       "contentSortStrategy": "DateASC",
       "showAsTag": true,
-      "contentRenderType":  "normal"
+      "contentRenderType":  "normal",
+      "showContentCount": true
     },
     {
       "tagId": "perspektif",
       "name": "perspektif",
       "contentSortStrategy": "DateDESC",
       "showAsTag": true,
-      "contentRenderType":  "normal"
+      "contentRenderType":  "normal",
+      "showContentCount": true
     },
     {
       "tagId": "ozgun",
       "name": "özgün",
       "contentSortStrategy": "DateDESC",
       "showAsTag": true,
-      "contentRenderType":  "normal"
+      "contentRenderType":  "normal",
+      "showContentCount": true
     },
     {
       "tagId": "gunluk",
       "name": "günlük",
       "contentSortStrategy": "DateDESC",
       "showAsTag": true,
-      "contentRenderType":  "normal"
+      "contentRenderType":  "normal",
+      "showContentCount": true
     },
     {
       "tagId": "kod",
       "name": "kod",
       "contentSortStrategy": "DateDESC",
       "showAsTag": true,
-      "contentRenderType":  "normal"
+      "contentRenderType":  "normal",
+      "showContentCount": true
     },
     {
       "tagId": "mikro",
       "name": "mikro",
       "contentSortStrategy": "DateDESC",
       "showAsTag": true,
-      "contentRenderType":  "minified"
+      "contentRenderType":  "minified",
+      "showContentCount": true
     },
     {
       "tagId": "begenilen",
       "name": "beğenilen",
       "contentSortStrategy": "DateDESC",
       "showAsTag": true,
-      "contentRenderType":  "minified"
+      "contentRenderType":  "minified",
+      "showContentCount": true
     },
     {
       "tagId": "beni_oku",
       "name": "beni_oku.txt",
       "contentSortStrategy": "DateDESC",
       "showAsTag": false,
-      "contentRenderType":  "normal"
+      "contentRenderType":  "normal",
+      "showContentCount": false
     }
   ],
   "allContents": [

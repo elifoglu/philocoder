@@ -23,5 +23,14 @@ viewTagTab model tag =
             [ class "tagLink"
             , href ("/tags/" ++ tag.tagId)
             ]
-            [ text (tag.name ++ " (" ++ String.fromInt (contentCountOfTag model tag) ++ ")") ]
+            [ text
+                (tag.name
+                    ++ (if tag.showContentCount then
+                            " (" ++ String.fromInt (contentCountOfTag model tag) ++ ")"
+
+                        else
+                            ""
+                       )
+                )
+            ]
         ]
