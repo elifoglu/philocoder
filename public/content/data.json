@@ -404,6 +404,34 @@
         "tümü",
         "mikro"
       ]
+    },
+    {
+      "title": "Konfor alanını terk etmenizi sağlayacak yazı",
+      "date": {
+        "year": 2018,
+        "month": 2,
+        "day": 8,
+        "publishOrderInDay": 1
+      },
+      "contentId": 25,
+      "tags": [
+        "tümü",
+        "perspektif"
+      ]
+    },
+    {
+      "title": "Gri yaşamak",
+      "date": {
+        "year": 2019,
+        "month": 8,
+        "day": 31,
+        "publishOrderInDay": 1
+      },
+      "contentId": 26,
+      "tags": [
+        "tümü",
+        "perspektif"
+      ]
     }
   ]
 }
