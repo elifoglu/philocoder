@@ -150,7 +150,7 @@ viewRefsTextOfContent allContents content =
                 div [ style "margin-top" "2px" ]
                     [ span []
                         (text
-                            "refs: "
+                            "ilgili: "
                             :: (refContents
                                     |> List.map (\refContent -> viewContentLinkWithContentTitle refContent)
                                     |> List.intersperse (text ", ")
