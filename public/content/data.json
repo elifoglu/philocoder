@@ -6,7 +6,8 @@
       "contentSortStrategy": "DateDESC",
       "showAsTag": false,
       "contentRenderType": "normal",
-      "showContentCount": true
+      "showContentCount": true,
+      "showInHeader":true
     },
     {
       "tagId": "ustinsan",
@@ -14,7 +15,8 @@
       "contentSortStrategy": "DateASC",
       "showAsTag": true,
       "contentRenderType":  "normal",
-      "showContentCount": true
+      "showContentCount": true,
+      "showInHeader": true
     },
     {
       "tagId": "perspektif",
@@ -22,7 +24,8 @@
       "contentSortStrategy": "DateDESC",
       "showAsTag": true,
       "contentRenderType":  "normal",
-      "showContentCount": true
+      "showContentCount": true,
+      "showInHeader": true
     },
     {
       "tagId": "ozgun",
@@ -30,7 +33,8 @@
       "contentSortStrategy": "DateDESC",
       "showAsTag": true,
       "contentRenderType":  "normal",
-      "showContentCount": true
+      "showContentCount": true,
+      "showInHeader": true
     },
     {
       "tagId": "gunluk",
@@ -38,7 +42,8 @@
       "contentSortStrategy": "DateDESC",
       "showAsTag": true,
       "contentRenderType":  "normal",
-      "showContentCount": true
+      "showContentCount": true,
+      "showInHeader": true
     },
     {
       "tagId": "kod",
@@ -46,7 +51,8 @@
       "contentSortStrategy": "DateDESC",
       "showAsTag": true,
       "contentRenderType":  "normal",
-      "showContentCount": true
+      "showContentCount": true,
+      "showInHeader": true
     },
     {
       "tagId": "mikro",
@@ -54,7 +60,8 @@
       "contentSortStrategy": "DateDESC",
       "showAsTag": true,
       "contentRenderType":  "minified",
-      "showContentCount": true
+      "showContentCount": true,
+      "showInHeader": true
     },
     {
       "tagId": "begenilen",
@@ -62,7 +69,8 @@
       "contentSortStrategy": "DateDESC",
       "showAsTag": true,
       "contentRenderType":  "minified",
-      "showContentCount": true
+      "showContentCount": true,
+      "showInHeader": true
     },
     {
       "tagId": "kisisel_gelisim",
@@ -70,7 +78,8 @@
       "contentSortStrategy": "DateDESC",
       "showAsTag": true,
       "contentRenderType":  "normal",
-      "showContentCount": true
+      "showContentCount": true,
+      "showInHeader": false
     },
     {
       "tagId": "beni_oku",
@@ -78,7 +87,8 @@
       "contentSortStrategy": "DateDESC",
       "showAsTag": false,
       "contentRenderType":  "normal",
-      "showContentCount": false
+      "showContentCount": false,
+      "showInHeader": true
     }
   ],
   "allContents": [

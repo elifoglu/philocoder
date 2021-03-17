@@ -8,4 +8,6 @@ import Tag.View exposing (viewTagTab)
 
 viewTagTabs : Model -> List (Html Msg)
 viewTagTabs model =
-    List.map (viewTagTab model) model.allTags
+    model.allTags
+        |> List.filter (\tag -> tag.showInHeader)
+        |> List.map (viewTagTab model)
