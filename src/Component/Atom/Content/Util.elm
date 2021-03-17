@@ -1,10 +1,10 @@
-module Content.Util exposing (contentById, gotContentToContent, maybeDateText, maybeTagsText, updateTextOfContents)
+module Content.Util exposing (contentById, gotContentToContent, maybeDateText, maybeDisplayableTagsOfContent, updateTextOfContents)
 
 import Content.Model exposing (Content, ContentDate(..), ContentText(..))
 import DataResponse exposing (GotContent, GotContentDate, GotTag)
 import Date exposing (format, fromCalendarDate, numberToMonth)
-import List.Extra exposing (uniqueBy)
 import Maybe.Extra exposing (values)
+import Tag.Model exposing (Tag)
 import Tag.Util exposing (tagNameToTag)
 
 
@@ -63,16 +63,13 @@ contentHasDisplayableTags content =
         > 0
 
 
-maybeTagsText : Content -> Maybe String
-maybeTagsText content =
+maybeDisplayableTagsOfContent : Content -> Maybe (List Tag)
+maybeDisplayableTagsOfContent content =
     case contentHasDisplayableTags content of
         True ->
             Just
                 (content.tags
                     |> List.filter (\tag -> tag.showAsTag)
-                    |> List.map (\tag -> tag.name)
-                    |> List.map (\str -> "#" ++ str)
-                    |> String.join " "
                 )
 
         False ->

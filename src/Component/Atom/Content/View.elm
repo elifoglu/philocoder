@@ -3,7 +3,7 @@ module Content.View exposing (viewContentDiv)
 import App.Model exposing (Model)
 import App.Msg exposing (Msg)
 import Content.Model exposing (Content, ContentDate(..), ContentText(..))
-import Content.Util exposing (contentById, maybeDateText, maybeTagsText)
+import Content.Util exposing (contentById, maybeDateText, maybeDisplayableTagsOfContent)
 import Html exposing (Html, a, br, div, img, p, span, text)
 import Html.Attributes exposing (class, href, src, style)
 import List.Extra exposing (uniqueBy)
@@ -73,15 +73,28 @@ viewContentText maybeTitle =
 viewContentInfoDiv : List Content -> Content -> Html Msg
 viewContentInfoDiv allContents content =
     div [ style "margin-bottom" "25px" ]
-        ((case ( maybeTagsText content, maybeDateText content ) of
-            ( Just tagsText, Just contentText ) ->
-                [ text (tagsText ++ ", " ++ contentText) ]
+        ((case ( maybeDisplayableTagsOfContent content, maybeDateText content ) of
+            ( Just displayableTagsOfContent, Just dateText ) ->
+                viewTagLinks displayableTagsOfContent
+                    ++ [ text (", " ++ dateText) ]
 
             ( _, _ ) ->
                 []
          )
             ++ [ viewRefsTextOfContent allContents content ]
         )
+
+
+viewTagLinks : List Tag -> List (Html Msg)
+viewTagLinks tags =
+    tags
+        |> List.map viewTagLink
+        |> List.intersperse (text " ")
+
+
+viewTagLink : Tag -> Html Msg
+viewTagLink tag =
+    a [ href ("/tags/" ++ tag.tagId) ] [ text ("#" ++ tag.name) ]
 
 
 viewContentLink : Html msg -> Int -> Html msg
