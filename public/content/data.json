@@ -65,6 +65,14 @@
       "showContentCount": true
     },
     {
+      "tagId": "kisisel_gelisim",
+      "name": "kişisel gelişim",
+      "contentSortStrategy": "DateDESC",
+      "showAsTag": true,
+      "contentRenderType":  "normal",
+      "showContentCount": true
+    },
+    {
       "tagId": "beni_oku",
       "name": "beni_oku.txt",
       "contentSortStrategy": "DateDESC",
@@ -85,7 +93,8 @@
       "contentId": 1,
       "tags": [
         "tümü",
-        "özgün"
+        "özgün",
+        "kişisel gelişim"
       ]
     },
     {
@@ -416,7 +425,8 @@
       "contentId": 25,
       "tags": [
         "tümü",
-        "perspektif"
+        "perspektif",
+        "kişisel gelişim"
       ]
     },
     {
@@ -430,7 +440,8 @@
       "contentId": 26,
       "tags": [
         "tümü",
-        "perspektif"
+        "perspektif",
+        "kişisel gelişim"
       ]
     },
     {
@@ -459,6 +470,20 @@
         "beğenilen"
       ],
       "refs": [18]
+    },
+    {
+      "date": {
+        "year": 2021,
+        "month": 3,
+        "day": 17,
+        "publishOrderInDay": 3
+      },
+      "contentId": 29,
+      "tags": [
+        "tümü",
+        "kişisel gelişim",
+        "beğenilen"
+      ]
     }
   ]
 }
