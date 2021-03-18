@@ -60,10 +60,20 @@ a {
     color: black;
 }
 
-.tagLink {
+.tagLinkInHeader {
     padding: 10px;
     text-decoration: none;
 }
+
+.tagLink {
+    text-decoration: none;
+    color: black;
+}
+
+.tagLink:hover {
+    color: gray;
+}
+
 
 .homeLink {
     padding: 10px;

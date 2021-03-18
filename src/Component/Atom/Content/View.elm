@@ -94,7 +94,7 @@ viewTagLinks tags =
 
 viewTagLink : Tag -> Html Msg
 viewTagLink tag =
-    a [ href ("/tags/" ++ tag.tagId) ] [ text ("#" ++ tag.name) ]
+    a [ href ("/tags/" ++ tag.tagId), class "tagLink" ] [ text ("#" ++ tag.name) ]
 
 
 viewContentLink : Html msg -> Int -> Html msg

@@ -20,7 +20,7 @@ viewTagTab model tag =
             )
         ]
         [ a
-            [ class "tagLink"
+            [ class "tagLinkInHeader"
             , href ("/tags/" ++ tag.tagId)
             ]
             [ text
