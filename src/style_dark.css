@@ -1,0 +1,95 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    /*background: rgba(187, 187, 187, 0.25);
+    color: rgba(0,0,0,.75);*/
+    background: rgb(36, 36, 36);
+    color: #d4d4d4;
+    margin-left: 5px;
+}
+
+a {
+    color: white;
+    /*text-decoration: none;*/
+}
+
+a:hover {
+    color: #c9c9c9;
+}
+
+pre {
+    background-color: black;
+    color: rgb(255, 255, 255);
+    margin-left: 5px;
+    padding: 10px;
+    overflow-x: auto;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.tagTab {
+    margin: 2px;
+    padding: 10px;
+    border: 0;
+    border-radius: 2px;
+    background: inherit;
+    color: #ffffff;
+    font-weight: normal;
+    outline: none;
+    font-size: 100%;
+    vertical-align: baseline;
+    font-family: inherit;
+    appearance: none;
+    text-align: center;
+    display: inline-block;
+}
+
+.tagTab:hover {
+    background: #c9c9c9;
+}
+
+.tagTabActive {
+    background: #c9c9c9;
+}
+
+.tagLinkInHeader {
+    padding: 10px;
+    text-decoration: none;
+}
+
+.tagLink {
+    text-decoration: none;
+    color: gray;
+}
+
+.tagLink:hover {
+    color: white;
+}
+
+.homeLink {
+    padding: 10px;
+    text-decoration: none;
+}
+
+.contents {
+    margin: 20px;
+    max-width: 600px;
+}
+
+.navToContent {
+    width: 15px;
+    height: auto;
+    align-content: center;
+    align-self: center;
+}
+
+.markdownDiv p { /* removes unnecessary empty line between contentLinkIcon and contentText for minified view */
+    margin-block-start: 0;
+}
