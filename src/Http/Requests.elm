@@ -10,7 +10,5 @@ getDataResponse : Cmd Msg
 getDataResponse =
     Http.get
         { url = "http://localhost:8090/all"
-
-        --{ url = contentApiURL ++ dataFilename
         , expect = Http.expectJson GotDataResponse dataResponseDecoder
         }
