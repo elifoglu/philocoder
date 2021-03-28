@@ -1,11 +1,11 @@
-module Content.Model exposing (Content, ContentDate(..), ContentText(..))
+module Content.Model exposing (Content, ContentDate(..))
 
 import Date exposing (Date)
 import Tag.Model exposing (Tag)
 
 
 type alias Content =
-    { title : Maybe String, date : ContentDate, contentId : ContentID, text : ContentText, tags : List Tag, refs : Maybe (List ContentID) }
+    { title : Maybe String, date : ContentDate, contentId : ContentID, text : String, tags : List Tag, refs : Maybe (List ContentID) }
 
 
 type alias ContentID =
@@ -19,8 +19,3 @@ type ContentDate
 
 type alias PublishOrderInDay =
     Int
-
-
-type ContentText
-    = Text String
-    | NotRequestedYet

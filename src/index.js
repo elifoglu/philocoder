@@ -1,4 +1,4 @@
-import './style.css';
+import './style_dark.css';
 import { Elm } from './Main.elm';
 
 let elm = Elm.Main.init({

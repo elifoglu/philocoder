@@ -1,6 +1,6 @@
-module Content.Util exposing (contentById, gotContentToContent, maybeDateText, maybeDisplayableTagsOfContent, updateTextOfContents)
+module Content.Util exposing (contentById, gotContentToContent, maybeDateText, maybeDisplayableTagsOfContent)
 
-import Content.Model exposing (Content, ContentDate(..), ContentText(..))
+import Content.Model exposing (Content, ContentDate(..))
 import DataResponse exposing (GotContent, GotContentDate, GotTag)
 import Date exposing (format, fromCalendarDate, numberToMonth)
 import Maybe.Extra exposing (values)
@@ -20,7 +20,7 @@ gotContentToContent allTags gotContent =
     { title = gotContent.title
     , date = gotContentDateToContentDate gotContent.date
     , contentId = gotContent.contentId
-    , text = NotRequestedYet
+    , text = gotContent.content
     , tags =
         gotContent.tags
             |> List.map (tagNameToTag allTags)
@@ -37,21 +37,6 @@ gotContentDateToContentDate gotContentDate =
 
         DataResponse.DateNotExists justPublishOrder ->
             DateNotExists justPublishOrder.publishOrderInDay
-
-
-updateTextOfContents : Int -> String -> List Content -> List Content
-updateTextOfContents contentId text contents =
-    contents
-        |> List.map (updateTextOfContent contentId text)
-
-
-updateTextOfContent : Int -> String -> Content -> Content
-updateTextOfContent contentId text content =
-    if content.contentId == contentId then
-        { content | text = Text text }
-
-    else
-        content
 
 
 contentHasDisplayableTags : Content -> Bool

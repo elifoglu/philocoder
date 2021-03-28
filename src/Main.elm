@@ -7,10 +7,10 @@ import App.UrlParser exposing (pageBy)
 import App.View exposing (view)
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
-import Content.Util exposing (gotContentToContent, updateTextOfContents)
+import Content.Util exposing (gotContentToContent)
 import DataResponse exposing (DataResponse, GotContent, GotContentDate, GotTag)
 import List
-import Requests exposing (getContentText, getDataResponse)
+import Requests exposing (getDataResponse)
 import Tag.Util exposing (gotTagToTag)
 import Url
 
@@ -47,17 +47,9 @@ update msg model =
                         | allTags = List.map gotTagToTag res.allTags
                         , allContents = allContents
                       }
-                    , Cmd.batch (List.map getContentText allContents)
+                    , Cmd.none
                       --todo no 1) just send commands for active tag's contents. not for all contents
                     )
-
-                Err _ ->
-                    ( model, Cmd.none )
-
-        GotContentText contentId contentTextResult ->
-            case contentTextResult of
-                Ok text ->
-                    ( { model | allContents = updateTextOfContents contentId text model.allContents }, sendTitle model )
 
                 Err _ ->
                     ( model, Cmd.none )

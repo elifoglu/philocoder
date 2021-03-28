@@ -1,7 +1,6 @@
 port module App.Ports exposing (sendTitle, title)
 
 import App.Model exposing (Model, Page(..))
-import Content.Model exposing (ContentText(..))
 import Content.Util exposing (contentById)
 import Tag.Util exposing (tagById)
 
@@ -27,12 +26,7 @@ sendTitle model =
                             title (exists ++ " - Philocoder")
 
                         Nothing ->
-                            case content.text of
-                                Text exists ->
-                                    title (String.left 7 exists ++ "... - Philocoder")
-
-                                NotRequestedYet ->
-                                    sendDefaultTitle
+                            title (String.left 7 content.text ++ "... - Philocoder")
 
                 Nothing ->
                     Cmd.none

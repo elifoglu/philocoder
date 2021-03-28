@@ -2,7 +2,7 @@ module Content.View exposing (viewContentDiv)
 
 import App.Model exposing (Model)
 import App.Msg exposing (Msg)
-import Content.Model exposing (Content, ContentDate(..), ContentText(..))
+import Content.Model exposing (Content, ContentDate(..))
 import Content.Util exposing (contentById, maybeDateText, maybeDisplayableTagsOfContent)
 import Html exposing (Html, a, br, div, img, p, span, text)
 import Html.Attributes exposing (class, href, src, style)
@@ -135,14 +135,7 @@ viewContentLinkWithContentTitle content =
 
 viewMarkdownTextOfContent : Content -> Html msg
 viewMarkdownTextOfContent content =
-    Markdown.toHtml [ class "markdownDiv" ]
-        (case content.text of
-            Text str ->
-                str
-
-            NotRequestedYet ->
-                ""
-        )
+    Markdown.toHtml [ class "markdownDiv" ] content.text
 
 
 viewRefsTextOfContent : List Content -> Content -> Html msg
