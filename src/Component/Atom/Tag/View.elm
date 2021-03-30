@@ -5,7 +5,7 @@ import App.Msg exposing (Msg)
 import Html exposing (Html, a, div, text)
 import Html.Attributes exposing (class, href)
 import Tag.Model exposing (Tag)
-import Tag.Util exposing (contentCountOfTag, nameOfActiveTag)
+import Tag.Util exposing (nameOfActiveTag)
 
 
 viewTagTab : Model -> Tag -> Html Msg
@@ -13,10 +13,10 @@ viewTagTab model tag =
     div
         [ class
             (if tag.name == nameOfActiveTag model then
-                "tagTab tagTabActive"
+                "headerTab headerTabActive"
 
              else
-                "tagTab"
+                "headerTab"
             )
         ]
         [ a
@@ -26,7 +26,7 @@ viewTagTab model tag =
             [ text
                 (tag.name
                     ++ (if tag.showContentCount then
-                            " (" ++ String.fromInt (contentCountOfTag model tag) ++ ")"
+                            " (" ++ String.fromInt tag.contentCount ++ ")"
 
                         else
                             ""

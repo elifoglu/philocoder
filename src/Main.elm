@@ -8,10 +8,9 @@ import App.View exposing (view)
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
 import Content.Util exposing (gotContentToContent)
-import DataResponse exposing (DataResponse, GotContent, GotContentDate, GotTag)
 import List
-import Requests exposing (getDataResponse)
-import Tag.Util exposing (gotTagToTag)
+import Requests exposing (getAllTags, getContent, getHomeContents, getTagContents)
+import Tag.Util exposing (gotTagToTag, tagById)
 import Url
 
 
@@ -21,57 +20,152 @@ main =
         , update = update
         , subscriptions = subscriptions
         , view = view
-        , onUrlRequest = LinkClicked
+        , onUrlRequest = UrlRequested
         , onUrlChange = UrlChanged
         }
 
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
-    ( Model "log" key (pageBy url) [] []
-    , getDataResponse
+    ( Model "log" key (pageBy url) []
+    , getAllTags
     )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        GotDataResponse tagsResult ->
-            case tagsResult of
-                Ok res ->
+        GotAllTags res ->
+            case res of
+                Ok gotTags ->
                     let
-                        allContents =
-                            List.map (gotContentToContent res.allTags) res.allContents
+                        allTags =
+                            List.map gotTagToTag gotTags
                     in
                     ( { model
-                        | allTags = List.map gotTagToTag res.allTags
-                        , allContents = allContents
+                        | allTags = allTags
                       }
-                    , Cmd.none
-                      --todo no 1) just send commands for active tag's contents. not for all contents
+                    , case model.activePage of
+                        NonInitializedHomePage ->
+                            getHomeContents
+
+                        NonInitializedContentPage contentId ->
+                            getContent contentId
+
+                        NonInitializedTagPage tagId ->
+                            case tagById allTags tagId of
+                                Just tag ->
+                                    getTagContents tag
+
+                                Nothing ->
+                                    Cmd.none
+
+                        _ ->
+                            Cmd.none
                     )
 
                 Err _ ->
                     ( model, Cmd.none )
 
-        LinkClicked urlRequest ->
+        GotContent result ->
+            case result of
+                Ok gotContent ->
+                    let
+                        content =
+                            gotContentToContent model.allTags gotContent
+
+                        newModel =
+                            { model
+                                | activePage = ContentPage content
+                            }
+                    in
+                    ( newModel
+                    , sendTitle newModel
+                    )
+
+                Err _ ->
+                    let
+                        newModel =
+                            { model | activePage = NotFoundPage }
+                    in
+                    ( newModel
+                    , sendTitle newModel
+                    )
+
+        GotContentsOfTag tag result ->
+            case result of
+                Ok gotContents ->
+                    let
+                        newModel =
+                            { model
+                                | activePage = TagPage tag (List.map (gotContentToContent model.allTags) gotContents)
+                            }
+                    in
+                    ( newModel
+                    , sendTitle newModel
+                    )
+
+                Err _ ->
+                    ( model, Cmd.none )
+
+        UrlRequested urlRequest ->
             case urlRequest of
                 Browser.Internal url ->
                     ( model, Nav.pushUrl model.key (Url.toString url) )
 
                 Browser.External href ->
-                    ( model, Nav.load href )
+                    ( model
+                    , Nav.load href
+                    )
 
-        --todo no 2) if todo1 is done, a new command should be sent (if not sent before) after every tag click
         UrlChanged url ->
             let
+                activePage : Page
+                activePage =
+                    pageBy url
+
                 newModel : Model
                 newModel =
-                    { model | activePage = pageBy url }
+                    { model | activePage = activePage }
             in
             ( newModel
-            , sendTitle newModel
+            , Cmd.batch
+                [ sendTitle newModel
+                , case activePage of
+                    NonInitializedHomePage ->
+                        getHomeContents
+
+                    NonInitializedContentPage contentId ->
+                        getContent contentId
+
+                    NonInitializedTagPage tagId ->
+                        case tagById model.allTags tagId of
+                            Just tag ->
+                                getTagContents tag
+
+                            Nothing ->
+                                Cmd.none
+
+                    _ ->
+                        Cmd.none
+                ]
             )
+
+        GotHomeContents result ->
+            case result of
+                Ok gotContents ->
+                    let
+                        newModel =
+                            { model
+                                | activePage = HomePage (List.map (gotContentToContent model.allTags) gotContents)
+                            }
+                    in
+                    ( newModel
+                    , sendTitle newModel
+                    )
+
+                Err _ ->
+                    ( model, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg

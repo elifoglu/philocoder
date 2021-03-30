@@ -19,26 +19,24 @@ view model =
     { title = "Philocoder"
     , body =
         [ div []
-            ([ css "../style.css", viewHomeNavigator ]
-                ++ viewTagTabs model
+            (viewHomeNavigator
+                :: viewTagTabs model
                 ++ [ div [ class "contents" ]
                         (case model.activePage of
-                            HomePage ->
-                                viewContentDivs model (tagWithMostContents model)
+                            HomePage contents ->
+                                viewContentDivs model contents Nothing
 
-                            TagPage tagId ->
-                                viewContentDivs model (tagById model.allTags tagId)
+                            ContentPage content ->
+                                [ viewContentDiv model (tagWithMostContents model) content ]
 
-                            ContentPage contentId ->
-                                case contentById model.allContents contentId of
-                                    Just content ->
-                                        [ viewContentDiv model (tagWithMostContents model) content ]
-
-                                    Nothing ->
-                                        [ view404Div ]
+                            TagPage tag contents ->
+                                viewContentDivs model contents (Just tag)
 
                             NotFoundPage ->
                                 [ view404Div ]
+
+                            _ ->
+                                []
                         )
                    ]
             )

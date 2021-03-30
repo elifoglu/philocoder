@@ -8,9 +8,9 @@ import Url.Parser exposing ((</>), Parser, int, map, oneOf, parse, s, string, to
 routeParser : Parser (Page -> a) a
 routeParser =
     oneOf
-        [ map HomePage top
-        , map TagPage (s "tags" </> string)
-        , map ContentPage (s "contents" </> int)
+        [ map NonInitializedHomePage top
+        , map NonInitializedTagPage (s "tags" </> string)
+        , map NonInitializedContentPage (s "contents" </> int)
         ]
 
 

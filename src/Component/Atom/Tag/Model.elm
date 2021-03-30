@@ -9,6 +9,7 @@ type alias Tag =
     , contentRenderType : ContentRenderType
     , showContentCount : Bool
     , showInHeader : Bool
+    , contentCount : Int
     }
 
 

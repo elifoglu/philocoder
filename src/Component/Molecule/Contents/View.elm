@@ -2,25 +2,21 @@ module Contents.View exposing (viewContentDivs)
 
 import App.Model exposing (Model)
 import App.Msg exposing (Msg)
+import Content.Model exposing (Content)
+import Content.Sorter exposing (sortContentsByStrategy)
 import Content.View exposing (viewContentDiv)
 import Html exposing (Html, br, div, hr)
 import Html.Attributes exposing (style)
-import NotFound.View exposing (view404Div)
-import Tag.Model exposing (ContentRenderType(..), Tag)
-import Tag.Util exposing (contentsOfTag)
+import Tag.Model as ContentRenderType exposing (ContentRenderType(..), Tag)
+import Tag.Util exposing (contentRenderTypeOf, contentSortStrategyOf)
 
 
-viewContentDivs : Model -> Maybe Tag -> List (Html Msg)
-viewContentDivs model maybeTag =
-    case maybeTag of
-        Just tag ->
-            tag
-                |> contentsOfTag model.allContents
-                |> List.map (viewContentDiv model maybeTag)
-                |> List.intersperse (viewContentSeparator tag.contentRenderType)
-
-        Nothing ->
-            [ view404Div ]
+viewContentDivs : Model -> List Content -> Maybe Tag -> List (Html Msg)
+viewContentDivs model contents maybeTag =
+    contents
+        |> sortContentsByStrategy (contentSortStrategyOf maybeTag)
+        |> List.map (viewContentDiv model maybeTag)
+        |> List.intersperse (viewContentSeparator (contentRenderTypeOf maybeTag))
 
 
 viewContentSeparator : ContentRenderType -> Html Msg

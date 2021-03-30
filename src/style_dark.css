@@ -34,7 +34,7 @@ pre {
     font-size: 18px;
 }
 
-.tagTab {
+.headerTab {
     margin: 2px;
     padding: 10px;
     border: 0;
@@ -51,11 +51,11 @@ pre {
     display: inline-block;
 }
 
-.tagTab:hover {
+.headerTab:hover {
     background: #c9c9c9;
 }
 
-.tagTabActive {
+.headerTabActive {
     background: #c9c9c9;
 }
 
@@ -71,11 +71,6 @@ pre {
 
 .tagLink:hover {
     color: white;
-}
-
-.homeLink {
-    padding: 10px;
-    text-decoration: none;
 }
 
 .contents {

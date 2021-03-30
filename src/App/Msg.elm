@@ -1,12 +1,16 @@
 module App.Msg exposing (..)
 
 import Browser
-import DataResponse exposing (ContentID, DataResponse)
+import DataResponse exposing (ContentID, ContentsResponse, GotContent, TagsResponse)
 import Http
+import Tag.Model exposing (Tag)
 import Url
 
 
 type Msg
-    = LinkClicked Browser.UrlRequest
+    = UrlRequested Browser.UrlRequest
     | UrlChanged Url.Url
-    | GotDataResponse (Result Http.Error DataResponse)
+    | GotAllTags (Result Http.Error TagsResponse)
+    | GotContentsOfTag Tag (Result Http.Error ContentsResponse)
+    | GotHomeContents (Result Http.Error ContentsResponse)
+    | GotContent (Result Http.Error GotContent)

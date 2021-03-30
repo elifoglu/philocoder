@@ -31,13 +31,12 @@ pre {
     font-size: 18px;
 }
 
-.tagTab {
+.headerTab {
     margin: 2px;
     padding: 10px;
     border: 0;
     border-radius: 2px;
     background: inherit;
-    /*color: #ffffff;*/
     font-weight: normal;
     outline: none;
     font-size: 100%;
@@ -48,11 +47,11 @@ pre {
     display: inline-block;
 }
 
-.tagTab:hover {
+.headerTab:hover {
     background: #c9c9c9;
 }
 
-.tagTabActive {
+.headerTabActive {
     background: #c9c9c9;
 }
 
@@ -72,12 +71,6 @@ a {
 
 .tagLink:hover {
     color: gray;
-}
-
-
-.homeLink {
-    padding: 10px;
-    text-decoration: none;
 }
 
 .contents {

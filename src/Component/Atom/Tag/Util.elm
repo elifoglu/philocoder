@@ -1,11 +1,9 @@
-module Tag.Util exposing (contentCountOfTag, contentsOfTag, gotTagToTag, nameOfActiveTag, tagById, tagNameToTag, tagWithMostContents)
+module Tag.Util exposing (contentRenderTypeOf, contentSortStrategyOf, gotTagToTag, nameOfActiveTag, tagById, tagNameToTag, tagWithMostContents)
 
 import App.Model exposing (Model)
-import Content.Model exposing (Content)
-import Content.Sorter exposing (sortContentsByStrategy)
 import DataResponse exposing (GotTag)
-import List exposing (member)
-import Tag.Model exposing (Tag)
+import List
+import Tag.Model as ContentRenderType exposing (ContentRenderType, Tag)
 
 
 tagById : List Tag -> String -> Maybe Tag
@@ -15,31 +13,11 @@ tagById allTags tagId =
         |> List.head
 
 
-contentCountOfTag : Model -> Tag -> Int
-contentCountOfTag model tag =
-    (tag
-        |> contentsOfTag model.allContents
-    )
-        |> List.length
-
-
-contentsOfTag : List Content -> Tag -> List Content
-contentsOfTag allContents tag =
-    allContents
-        |> List.filter (\content -> member tag content.tags)
-        |> sortContentsByStrategy tag.contentSortStrategy
-
-
 nameOfActiveTag : Model -> String
 nameOfActiveTag model =
     case model.activePage of
-        App.Model.TagPage tagId ->
-            case tagById model.allTags tagId of
-                Just tag ->
-                    tag.name
-
-                Nothing ->
-                    ""
+        App.Model.TagPage tag _ ->
+            tag.name
 
         _ ->
             ""
@@ -48,7 +26,7 @@ nameOfActiveTag model =
 tagWithMostContents : Model -> Maybe Tag
 tagWithMostContents model =
     model.allTags
-        |> List.sortBy (\tag -> contentCountOfTag model tag)
+        |> List.sortBy (\tag -> tag.contentCount)
         |> List.reverse
         |> List.head
 
@@ -63,3 +41,23 @@ tagNameToTag allTags tagName =
 gotTagToTag : GotTag -> Tag
 gotTagToTag gotTag =
     gotTag
+
+
+contentSortStrategyOf : Maybe Tag -> String
+contentSortStrategyOf maybeTag =
+    case maybeTag of
+        Just tag ->
+            tag.contentSortStrategy
+
+        Nothing ->
+            "DateDESC"
+
+
+contentRenderTypeOf : Maybe Tag -> ContentRenderType
+contentRenderTypeOf maybeTag =
+    case maybeTag of
+        Just tag ->
+            tag.contentRenderType
+
+        Nothing ->
+            ContentRenderType.Normal

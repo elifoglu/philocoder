@@ -1,11 +1,16 @@
-module DataResponse exposing (ContentID, DataResponse, DateAndPublishOrder, GotContent, GotContentDate(..), GotTag, JustPublishOrder, dataResponseDecoder)
+module DataResponse exposing (ContentID, ContentsResponse, DateAndPublishOrder, GotContent, GotContentDate(..), GotTag, JustPublishOrder, TagsResponse, contentDecoder, contentsDecoder, tagsDecoder)
 
-import Json.Decode as D exposing (Decoder, andThen, bool, field, int, map, map2, map4, map6, map7, maybe, oneOf, string, succeed)
+import Content.Model exposing (Ref)
+import Json.Decode as D exposing (Decoder, andThen, bool, field, int, map, map2, map4, map6, map7, map8, maybe, oneOf, string, succeed)
 import Tag.Model exposing (ContentRenderType(..))
 
 
-type alias DataResponse =
-    { allTags : List GotTag, allContents : List GotContent }
+type alias TagsResponse =
+    List GotTag
+
+
+type alias ContentsResponse =
+    List GotContent
 
 
 type alias GotTag =
@@ -16,11 +21,12 @@ type alias GotTag =
     , contentRenderType : ContentRenderType
     , showContentCount : Bool
     , showInHeader : Bool
+    , contentCount : Int
     }
 
 
 type alias GotContent =
-    { title : Maybe String, date : GotContentDate, contentId : Int, content : String, tags : List String, refs : Maybe (List Int) }
+    { title : Maybe String, date : GotContentDate, contentId : Int, content : String, tags : List String, refs : Maybe (List Ref) }
 
 
 type alias ContentID =
@@ -40,16 +46,19 @@ type alias JustPublishOrder =
     { publishOrderInDay : Int }
 
 
-dataResponseDecoder : Decoder DataResponse
-dataResponseDecoder =
-    map2 DataResponse
-        (field "allTags" (D.list tagDecoder))
-        (field "allContents" (D.list contentDecoder))
+tagsDecoder : Decoder TagsResponse
+tagsDecoder =
+    D.list tagDecoder
+
+
+contentsDecoder : Decoder ContentsResponse
+contentsDecoder =
+    D.list contentDecoder
 
 
 tagDecoder : Decoder GotTag
 tagDecoder =
-    map7 GotTag
+    map8 GotTag
         (field "tagId" string)
         (field "name" string)
         (field "contentSortStrategy" string)
@@ -57,6 +66,7 @@ tagDecoder =
         (field "contentRenderType" contentRenderTypeDecoder)
         (field "showContentCount" bool)
         (field "showInHeader" bool)
+        (field "contentCount" int)
 
 
 contentRenderTypeDecoder : Decoder ContentRenderType
@@ -81,7 +91,7 @@ contentDecoder =
         (field "contentId" int)
         (field "content" string)
         (field "tags" (D.list string))
-        (maybe (field "refs" (D.list int)))
+        (maybe (field "refs" (D.list refDecoder)))
 
 
 contentDateDecoder : Decoder GotContentDate
@@ -104,3 +114,10 @@ dateAndPublishOrderDecoder =
 justPublishOrderDecoder : Decoder JustPublishOrder
 justPublishOrderDecoder =
     map JustPublishOrder (field "publishOrderInDay" int)
+
+
+refDecoder : Decoder Ref
+refDecoder =
+    map2 Ref
+        (field "text" string)
+        (field "id" string)

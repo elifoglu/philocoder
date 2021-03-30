@@ -13,17 +13,17 @@ import Tag.Model exposing (ContentRenderType(..), Tag)
 
 
 type alias ContentRenderFn =
-    Model -> Content -> Html Msg
+    Content -> Html Msg
 
 
 viewContentDiv : Model -> Maybe Tag -> Content -> Html Msg
 viewContentDiv model maybeActiveTag content =
     case maybeActiveTag of
         Just tag ->
-            viewContentFn tag.contentRenderType model content
+            viewContentFn tag.contentRenderType content
 
         Nothing ->
-            viewContentFn Normal model content
+            viewContentFn Normal content
 
 
 viewContentFn : ContentRenderType -> ContentRenderFn
@@ -37,10 +37,10 @@ viewContentFn contentRenderType =
 
 
 viewContentInNormalView : ContentRenderFn
-viewContentInNormalView model content =
+viewContentInNormalView content =
     p []
         [ span [ class "title" ] [ viewContentText content.title, viewContentLinkWithLinkIcon content ]
-        , viewContentInfoDiv model.allContents content
+        , viewContentInfoDiv content
         , div []
             [ viewMarkdownTextOfContent content
             , br [] []
@@ -49,7 +49,7 @@ viewContentInNormalView model content =
 
 
 viewContentInMinifiedView : ContentRenderFn
-viewContentInMinifiedView _ content =
+viewContentInMinifiedView content =
     p []
         [ div []
             [ viewContentLinkWithLinkIcon content
@@ -70,8 +70,8 @@ viewContentText maybeTitle =
         )
 
 
-viewContentInfoDiv : List Content -> Content -> Html Msg
-viewContentInfoDiv allContents content =
+viewContentInfoDiv : Content -> Html Msg
+viewContentInfoDiv content =
     div [ style "margin-bottom" "25px" ]
         ((case ( maybeDisplayableTagsOfContent content, maybeDateText content ) of
             ( Just displayableTagsOfContent, Just dateText ) ->
@@ -81,7 +81,7 @@ viewContentInfoDiv allContents content =
             ( _, _ ) ->
                 []
          )
-            ++ [ viewRefsTextOfContent allContents content ]
+            ++ [ viewRefsTextOfContent content ]
         )
 
 
@@ -97,9 +97,9 @@ viewTagLink tag =
     a [ href ("/tags/" ++ tag.tagId), class "tagLink" ] [ text ("#" ++ tag.name) ]
 
 
-viewContentLink : Html msg -> Int -> Html msg
+viewContentLink : Html msg -> String -> Html msg
 viewContentLink htmlToClick contentId =
-    a [ href ("/contents/" ++ String.fromInt contentId) ]
+    a [ href ("/contents/" ++ contentId) ]
         [ htmlToClick
         ]
 
@@ -112,7 +112,7 @@ viewContentLinkWithDate : Content -> Html msg
 viewContentLinkWithDate content =
     case maybeDateText content of
         Just dateText ->
-            viewContentLink (text dateText) content.contentId
+            viewContentLink (text dateText) (String.fromInt content.contentId)
 
         Nothing ->
             text ""
@@ -120,17 +120,12 @@ viewContentLinkWithDate content =
 
 viewContentLinkWithLinkIcon : Content -> Html msg
 viewContentLinkWithLinkIcon content =
-    viewContentLink (img [ class "navToContent", src "../link.svg" ] []) content.contentId
+    viewContentLink (img [ class "navToContent", src "../link.svg" ] []) (String.fromInt content.contentId)
 
 
-viewContentLinkWithContentTitle : Content -> Html msg
-viewContentLinkWithContentTitle content =
-    case content.title of
-        Just exists ->
-            viewContentLink (text exists) content.contentId
-
-        Nothing ->
-            viewContentLink (text (String.fromInt content.contentId)) content.contentId
+viewContentLinkWithContentTitle : String -> String -> Html msg
+viewContentLinkWithContentTitle txt id =
+    viewContentLink (text txt) id
 
 
 viewMarkdownTextOfContent : Content -> Html msg
@@ -138,18 +133,11 @@ viewMarkdownTextOfContent content =
     Markdown.toHtml [ class "markdownDiv" ] content.text
 
 
-viewRefsTextOfContent : List Content -> Content -> Html msg
-viewRefsTextOfContent allContents content =
+viewRefsTextOfContent : Content -> Html msg
+viewRefsTextOfContent content =
     case content.refs of
-        Just refContentIds ->
-            let
-                refContents =
-                    refContentIds
-                        |> List.map (contentById allContents)
-                        |> values
-                        |> uniqueBy (\c -> c.contentId)
-            in
-            if List.isEmpty refContents then
+        Just refs ->
+            if List.isEmpty refs then
                 text ""
 
             else
@@ -157,8 +145,8 @@ viewRefsTextOfContent allContents content =
                     [ span []
                         (text
                             "ilgili: "
-                            :: (refContents
-                                    |> List.map (\refContent -> viewContentLinkWithContentTitle refContent)
+                            :: (refs
+                                    |> List.map (\r -> viewContentLinkWithContentTitle r.text r.id)
                                     |> List.intersperse (text ", ")
                                )
                         )

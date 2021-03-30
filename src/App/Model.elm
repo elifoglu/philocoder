@@ -10,12 +10,14 @@ type alias Model =
     , key : Nav.Key
     , activePage : Page
     , allTags : List Tag
-    , allContents : List Content
     }
 
 
 type Page
-    = HomePage
-    | ContentPage Int
-    | TagPage String
+    = NonInitializedHomePage
+    | HomePage (List Content)
+    | NonInitializedContentPage Int
+    | ContentPage Content
+    | NonInitializedTagPage String
+    | TagPage Tag (List Content)
     | NotFoundPage
