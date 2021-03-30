@@ -16,7 +16,7 @@ tagById allTags tagId =
 nameOfActiveTag : Model -> String
 nameOfActiveTag model =
     case model.activePage of
-        App.Model.TagPage tag _ ->
+        App.Model.TagPage tag _ _ ->
             tag.name
 
         _ ->

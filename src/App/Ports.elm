@@ -24,7 +24,7 @@ sendTitle model =
                 Nothing ->
                     title (String.left 7 content.text ++ "... - Philocoder")
 
-        TagPage tag _ ->
+        TagPage tag _ _ ->
             title (tag.name ++ " - Philocoder")
 
         NotFoundPage ->

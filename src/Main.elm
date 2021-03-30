@@ -52,10 +52,10 @@ update msg model =
                         NonInitializedContentPage contentId ->
                             getContent contentId
 
-                        NonInitializedTagPage tagId ->
+                        NonInitializedTagPage tagId maybePage ->
                             case tagById allTags tagId of
                                 Just tag ->
-                                    getTagContents tag
+                                    getTagContents tag maybePage
 
                                 Nothing ->
                                     Cmd.none
@@ -94,11 +94,22 @@ update msg model =
 
         GotContentsOfTag tag result ->
             case result of
-                Ok gotContents ->
+                Ok contentsResponse ->
                     let
+                        currentPage =
+                            case model.activePage of
+                                NonInitializedTagPage _ maybePage ->
+                                    Maybe.withDefault 1 maybePage
+
+                                _ ->
+                                    1
+
+                        pagination =
+                            Pagination currentPage contentsResponse.totalPageCount
+
                         newModel =
                             { model
-                                | activePage = TagPage tag (List.map (gotContentToContent model.allTags) gotContents)
+                                | activePage = TagPage tag (List.map (gotContentToContent model.allTags) contentsResponse.contents) pagination
                             }
                     in
                     ( newModel
@@ -138,10 +149,10 @@ update msg model =
                     NonInitializedContentPage contentId ->
                         getContent contentId
 
-                    NonInitializedTagPage tagId ->
+                    NonInitializedTagPage tagId maybePage ->
                         case tagById model.allTags tagId of
                             Just tag ->
-                                getTagContents tag
+                                getTagContents tag maybePage
 
                             Nothing ->
                                 Cmd.none
@@ -153,11 +164,11 @@ update msg model =
 
         GotHomeContents result ->
             case result of
-                Ok gotContents ->
+                Ok contentsResponse ->
                     let
                         newModel =
                             { model
-                                | activePage = HomePage (List.map (gotContentToContent model.allTags) gotContents)
+                                | activePage = HomePage (List.map (gotContentToContent model.allTags) contentsResponse.contents)
                             }
                     in
                     ( newModel

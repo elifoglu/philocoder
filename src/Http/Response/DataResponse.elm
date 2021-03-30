@@ -1,4 +1,4 @@
-module DataResponse exposing (ContentID, ContentsResponse, DateAndPublishOrder, GotContent, GotContentDate(..), GotTag, JustPublishOrder, TagsResponse, contentDecoder, contentsDecoder, tagsDecoder)
+module DataResponse exposing (ContentID, ContentsResponse, DateAndPublishOrder, GotContent, GotContentDate(..), GotTag, JustPublishOrder, TagsResponse, contentDecoder, contentsResponseDecoder, tagsDecoder)
 
 import Content.Model exposing (Ref)
 import Json.Decode as D exposing (Decoder, andThen, bool, field, int, map, map2, map4, map6, map7, map8, maybe, oneOf, string, succeed)
@@ -10,7 +10,7 @@ type alias TagsResponse =
 
 
 type alias ContentsResponse =
-    List GotContent
+    { totalPageCount : Int, contents : List GotContent }
 
 
 type alias GotTag =
@@ -51,9 +51,11 @@ tagsDecoder =
     D.list tagDecoder
 
 
-contentsDecoder : Decoder ContentsResponse
-contentsDecoder =
-    D.list contentDecoder
+contentsResponseDecoder : Decoder ContentsResponse
+contentsResponseDecoder =
+    map2 ContentsResponse
+        (field "totalPageCount" int)
+        (field "contents" (D.list contentDecoder))
 
 
 tagDecoder : Decoder GotTag

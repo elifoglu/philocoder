@@ -29,7 +29,7 @@ view model =
                             ContentPage content ->
                                 [ viewContentDiv model (tagWithMostContents model) content ]
 
-                            TagPage tag contents ->
+                            TagPage tag contents _ ->
                                 viewContentDivs model contents (Just tag)
 
                             NotFoundPage ->

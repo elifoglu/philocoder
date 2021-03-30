@@ -1,4 +1,4 @@
-module App.Model exposing (Model, Page(..))
+module App.Model exposing (Model, Page(..), Pagination)
 
 import Browser.Navigation as Nav
 import Content.Model exposing (Content)
@@ -18,6 +18,10 @@ type Page
     | HomePage (List Content)
     | NonInitializedContentPage Int
     | ContentPage Content
-    | NonInitializedTagPage String
-    | TagPage Tag (List Content)
+    | NonInitializedTagPage String (Maybe Int)
+    | TagPage Tag (List Content) Pagination
     | NotFoundPage
+
+
+type alias Pagination =
+    { currentPage : Int, totalPageCount : Int }

@@ -1,7 +1,7 @@
 module Requests exposing (getAllTags, getContent, getHomeContents, getTagContents)
 
 import App.Msg exposing (Msg(..))
-import DataResponse exposing (contentDecoder, contentsDecoder, tagsDecoder)
+import DataResponse exposing (contentDecoder, contentsResponseDecoder, tagsDecoder)
 import Http
 import Tag.Model exposing (Tag)
 
@@ -14,11 +14,20 @@ getAllTags =
         }
 
 
-getTagContents : Tag -> Cmd Msg
-getTagContents tag =
+getTagContents : Tag -> Maybe Int -> Cmd Msg
+getTagContents tag maybePage =
     Http.get
-        { url = "http://localhost:8090/contents?tagId=" ++ tag.tagId
-        , expect = Http.expectJson (GotContentsOfTag tag) contentsDecoder
+        { url =
+            "http://localhost:8090/contents?tagId="
+                ++ tag.tagId
+                ++ (case maybePage of
+                        Just page ->
+                            "&page=" ++ String.fromInt page
+
+                        Nothing ->
+                            ""
+                   )
+        , expect = Http.expectJson (GotContentsOfTag tag) contentsResponseDecoder
         }
 
 
@@ -26,7 +35,7 @@ getHomeContents : Cmd Msg
 getHomeContents =
     Http.get
         { url = "http://localhost:8090/contents?tagId=tumu"
-        , expect = Http.expectJson GotHomeContents contentsDecoder
+        , expect = Http.expectJson GotHomeContents contentsResponseDecoder
         }
 
 
