@@ -1,7 +1,7 @@
 module DataResponse exposing (ContentID, ContentsResponse, DateAndPublishOrder, GotContent, GotContentDate(..), GotTag, JustPublishOrder, TagsResponse, contentDecoder, contentsResponseDecoder, tagsDecoder)
 
 import Content.Model exposing (Ref)
-import Json.Decode as D exposing (Decoder, andThen, bool, field, int, map, map2, map4, map6, map7, map8, maybe, oneOf, string, succeed)
+import Json.Decode as D exposing (Decoder, andThen, bool, field, int, map, map2, map4, map6, map7, maybe, oneOf, string, succeed)
 import Tag.Model exposing (ContentRenderType(..))
 
 
@@ -16,7 +16,6 @@ type alias ContentsResponse =
 type alias GotTag =
     { tagId : String
     , name : String
-    , contentSortStrategy : String
     , showAsTag : Bool
     , contentRenderType : ContentRenderType
     , showContentCount : Bool
@@ -60,10 +59,9 @@ contentsResponseDecoder =
 
 tagDecoder : Decoder GotTag
 tagDecoder =
-    map8 GotTag
+    map7 GotTag
         (field "tagId" string)
         (field "name" string)
-        (field "contentSortStrategy" string)
         (field "showAsTag" bool)
         (field "contentRenderType" contentRenderTypeDecoder)
         (field "showContentCount" bool)

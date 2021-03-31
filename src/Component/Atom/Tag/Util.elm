@@ -1,4 +1,4 @@
-module Tag.Util exposing (contentRenderTypeOf, contentSortStrategyOf, gotTagToTag, nameOfActiveTag, tagById, tagNameToTag, tagWithMostContents)
+module Tag.Util exposing (contentRenderTypeOf, gotTagToTag, nameOfActiveTag, tagById, tagNameToTag, tagWithMostContents)
 
 import App.Model exposing (Model)
 import DataResponse exposing (GotTag)
@@ -41,16 +41,6 @@ tagNameToTag allTags tagName =
 gotTagToTag : GotTag -> Tag
 gotTagToTag gotTag =
     gotTag
-
-
-contentSortStrategyOf : Maybe Tag -> String
-contentSortStrategyOf maybeTag =
-    case maybeTag of
-        Just tag ->
-            tag.contentSortStrategy
-
-        Nothing ->
-            "DateDESC"
 
 
 contentRenderTypeOf : Maybe Tag -> ContentRenderType
