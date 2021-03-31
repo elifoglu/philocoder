@@ -9,6 +9,7 @@ import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
 import Content.Util exposing (gotContentToContent)
 import List
+import Pagination.Model exposing (Pagination)
 import Requests exposing (getAllTags, getContent, getHomeContents, getTagContents)
 import Tag.Util exposing (gotTagToTag, tagById)
 import Url

@@ -10,6 +10,7 @@ import HomeNavigator.View exposing (viewHomeNavigator)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import NotFound.View exposing (view404Div)
+import Pagination.View exposing (viewPagination)
 import Tag.Util exposing (tagById, tagWithMostContents)
 import Tags.View exposing (viewTagTabs)
 
@@ -22,7 +23,7 @@ view model =
             (viewHomeNavigator
                 :: viewTagTabs model
                 ++ [ div [ class "contents" ]
-                        (case model.activePage of
+                        ((case model.activePage of
                             HomePage contents ->
                                 viewContentDivs model contents Nothing
 
@@ -37,6 +38,8 @@ view model =
 
                             _ ->
                                 []
+                         )
+                            ++ [ viewPagination model.activePage ]
                         )
                    ]
             )
