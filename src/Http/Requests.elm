@@ -6,10 +6,14 @@ import Http
 import Tag.Model exposing (Tag)
 
 
+apiURL =
+    "http://localhost:8090/"
+
+
 getAllTags : Cmd Msg
 getAllTags =
     Http.get
-        { url = "http://localhost:8090/tags"
+        { url = apiURL ++ "tags"
         , expect = Http.expectJson GotAllTags tagsDecoder
         }
 
@@ -18,7 +22,8 @@ getTagContents : Tag -> Maybe Int -> Cmd Msg
 getTagContents tag maybePage =
     Http.get
         { url =
-            "http://localhost:8090/contents?tagId="
+            apiURL
+                ++ "contents?tagId="
                 ++ tag.tagId
                 ++ (case maybePage of
                         Just page ->
@@ -34,7 +39,7 @@ getTagContents tag maybePage =
 getHomeContents : Cmd Msg
 getHomeContents =
     Http.get
-        { url = "http://localhost:8090/contents?tagId=tumu"
+        { url = apiURL ++ "contents?tagId=tumu"
         , expect = Http.expectJson GotHomeContents contentsResponseDecoder
         }
 
@@ -42,6 +47,6 @@ getHomeContents =
 getContent : Int -> Cmd Msg
 getContent contentId =
     Http.get
-        { url = "http://localhost:8090/contents/" ++ String.fromInt contentId
+        { url = apiURL ++ "contents/" ++ String.fromInt contentId
         , expect = Http.expectJson GotContent contentDecoder
         }
