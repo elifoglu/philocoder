@@ -36,6 +36,9 @@ view model =
                             NotFoundPage ->
                                 [ view404Div ]
 
+                            MaintenancePage ->
+                                [ text "*bakım çalışması*" ]
+
                             _ ->
                                 []
                          )

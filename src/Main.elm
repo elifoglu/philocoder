@@ -66,7 +66,11 @@ update msg model =
                     )
 
                 Err _ ->
-                    ( model, Cmd.none )
+                    ( { model
+                        | activePage = MaintenancePage
+                      }
+                    , Cmd.none
+                    )
 
         GotContent result ->
             case result of

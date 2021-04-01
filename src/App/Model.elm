@@ -22,3 +22,4 @@ type Page
     | NonInitializedTagPage String (Maybe Int)
     | TagPage Tag (List Content) Pagination
     | NotFoundPage
+    | MaintenancePage
