@@ -6,6 +6,7 @@ import Browser exposing (Document)
 import Content.Util exposing (contentById)
 import Content.View exposing (viewContentDiv)
 import Contents.View exposing (viewContentDivs)
+import CreateContent.View exposing (viewCreateContentDiv)
 import HomeNavigator.View exposing (viewHomeNavigator)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -32,6 +33,12 @@ view model =
 
                             TagPage tag contents _ ->
                                 viewContentDivs model contents (Just tag)
+
+                            CreateContentPage createContentPageModel ->
+                                [ viewCreateContentDiv createContentPageModel ]
+
+                            CreatingContentPage ->
+                                [ text "*content oluşturulmaya çalışılıyor*" ]
 
                             NotFoundPage ->
                                 [ view404Div ]

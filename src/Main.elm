@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import App.Model exposing (..)
-import App.Msg exposing (Msg(..))
+import App.Msg exposing (CreateContentInputType(..), Msg(..))
 import App.Ports exposing (sendTitle)
 import App.UrlParser exposing (pageBy)
 import App.View exposing (view)
@@ -10,7 +10,7 @@ import Browser.Navigation as Nav
 import Content.Util exposing (gotContentToContent)
 import List
 import Pagination.Model exposing (Pagination)
-import Requests exposing (getAllTags, getContent, getHomeContents, getTagContents)
+import Requests exposing (getAllTags, getContent, getHomeContents, getTagContents, postNewContent)
 import Tag.Util exposing (gotTagToTag, tagById)
 import Url
 
@@ -182,6 +182,44 @@ update msg model =
 
                 Err _ ->
                     ( model, Cmd.none )
+
+        CreateContentInputChanged inputType input ->
+            case model.activePage of
+                CreateContentPage createContentPageModel ->
+                    let
+                        newCurrentPageModel =
+                            case inputType of
+                                Id ->
+                                    { createContentPageModel | id = input }
+
+                                Title ->
+                                    { createContentPageModel | title = input }
+
+                                Text ->
+                                    { createContentPageModel | text = input }
+
+                                Date ->
+                                    { createContentPageModel | date = input }
+
+                                PublishOrderInDay ->
+                                    { createContentPageModel | publishOrderInDay = input }
+
+                                Tags ->
+                                    { createContentPageModel | tags = input }
+
+                                Refs ->
+                                    { createContentPageModel | refs = input }
+
+                                Password ->
+                                    { createContentPageModel | password = input }
+                    in
+                    ( { model | activePage = CreateContentPage newCurrentPageModel }, Cmd.none )
+
+                _ ->
+                    ( model, Cmd.none )
+
+        CreateContent createContentPageModel ->
+            ( { model | activePage = CreatingContentPage }, postNewContent createContentPageModel )
 
 
 subscriptions : Model -> Sub Msg

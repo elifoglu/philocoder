@@ -1,5 +1,6 @@
-module Requests exposing (getAllTags, getContent, getHomeContents, getTagContents)
+module Requests exposing (getAllTags, getContent, getHomeContents, getTagContents, postNewContent)
 
+import App.Model exposing (CreateContentPageModel, createContentPageModelEncoder)
 import App.Msg exposing (Msg(..))
 import DataResponse exposing (contentDecoder, contentsResponseDecoder, tagsDecoder)
 import Http
@@ -48,5 +49,14 @@ getContent : Int -> Cmd Msg
 getContent contentId =
     Http.get
         { url = apiURL ++ "contents/" ++ String.fromInt contentId
+        , expect = Http.expectJson GotContent contentDecoder
+        }
+
+
+postNewContent : CreateContentPageModel -> Cmd Msg
+postNewContent model =
+    Http.post
+        { url = apiURL ++ "contents"
+        , body = Http.jsonBody (createContentPageModelEncoder model)
         , expect = Http.expectJson GotContent contentDecoder
         }
