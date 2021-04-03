@@ -24,11 +24,18 @@ sendTitle model =
                 Nothing ->
                     title (String.left 7 content.text ++ "... - Philocoder")
 
-        TagPage tag _ _ ->
-            title (tag.name ++ " - Philocoder")
+        TagPage tag _ pagination ->
+            if pagination.currentPage == 1 then
+                title (tag.name ++ " - Philocoder")
+
+            else
+                title (tag.name ++ " " ++ " (" ++ String.fromInt pagination.currentPage ++ ") - Philocoder")
 
         NotFoundPage ->
             title "Oops - Not Found"
+
+        CreateContentPage _ ->
+            title "Create new content - Philocoder"
 
         _ ->
             Cmd.none

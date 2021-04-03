@@ -61,6 +61,9 @@ update msg model =
                                 Nothing ->
                                     Cmd.none
 
+                        CreateContentPage _ ->
+                            sendTitle model
+
                         _ ->
                             Cmd.none
                     )
