@@ -15,8 +15,11 @@ type Msg
     | GotContentsOfTag Tag (Result Http.Error ContentsResponse)
     | GotHomeContents (Result Http.Error ContentsResponse)
     | GotContent (Result Http.Error GotContent)
+    | GotContentToPreview CreateContentPageModel (Result Http.Error GotContent)
     | CreateContentInputChanged CreateContentInputType String
     | CreateContent CreateContentPageModel
+    | GoToPreviewContentPage CreateContentPageModel
+    | GoToCreateContentPage CreateContentPageModel
 
 
 type CreateContentInputType

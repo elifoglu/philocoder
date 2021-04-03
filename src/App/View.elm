@@ -12,6 +12,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import NotFound.View exposing (view404Div)
 import Pagination.View exposing (viewPagination)
+import PreviewContent.View exposing (viewPreviewContentDiv)
 import Tag.Util exposing (tagById, tagWithMostContents)
 import Tags.View exposing (viewTagTabs)
 
@@ -36,6 +37,9 @@ view model =
 
                             CreateContentPage createContentPageModel ->
                                 [ viewCreateContentDiv createContentPageModel ]
+
+                            PreviewContentPage createContentPageModel maybeContent ->
+                                [ viewPreviewContentDiv model createContentPageModel maybeContent ]
 
                             CreatingContentPage ->
                                 [ text "*content oluşturulmaya çalışılıyor*" ]

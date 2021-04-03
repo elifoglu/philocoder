@@ -10,7 +10,7 @@ import Browser.Navigation as Nav
 import Content.Util exposing (gotContentToContent)
 import List
 import Pagination.Model exposing (Pagination)
-import Requests exposing (getAllTags, getContent, getHomeContents, getTagContents, postNewContent)
+import Requests exposing (getAllTags, getContent, getHomeContents, getTagContents, postNewContent, previewContent)
 import Tag.Util exposing (gotTagToTag, tagById)
 import Url
 
@@ -95,6 +95,31 @@ update msg model =
                     let
                         newModel =
                             { model | activePage = NotFoundPage }
+                    in
+                    ( newModel
+                    , sendTitle newModel
+                    )
+
+        GotContentToPreview createContentPageModel result ->
+            case result of
+                Ok gotContentToPreview ->
+                    let
+                        content =
+                            gotContentToContent model.allTags gotContentToPreview
+
+                        newModel =
+                            { model
+                                | activePage = PreviewContentPage createContentPageModel (Just content)
+                            }
+                    in
+                    ( newModel
+                    , sendTitle newModel
+                    )
+
+                Err _ ->
+                    let
+                        newModel =
+                            { model | activePage = PreviewContentPage createContentPageModel Nothing }
                     in
                     ( newModel
                     , sendTitle newModel
@@ -222,7 +247,27 @@ update msg model =
                     ( model, Cmd.none )
 
         CreateContent createContentPageModel ->
-            ( { model | activePage = CreatingContentPage }, postNewContent createContentPageModel )
+            ( { model | activePage = CreatingContentPage }
+            , postNewContent createContentPageModel
+            )
+
+        GoToPreviewContentPage createContentPageModel ->
+            let
+                newModel =
+                    { model | activePage = PreviewContentPage createContentPageModel Nothing }
+            in
+            ( newModel
+            , Cmd.batch [ previewContent createContentPageModel, sendTitle newModel ]
+            )
+
+        GoToCreateContentPage createContentPageModel ->
+            let
+                newModel =
+                    { model | activePage = CreateContentPage createContentPageModel }
+            in
+            ( newModel
+            , sendTitle newModel
+            )
 
 
 subscriptions : Model -> Sub Msg

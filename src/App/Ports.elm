@@ -37,5 +37,8 @@ sendTitle model =
         CreateContentPage _ ->
             title "Create new content - Philocoder"
 
+        PreviewContentPage _ _ ->
+            title "Preview content - Philocoder"
+
         _ ->
             Cmd.none

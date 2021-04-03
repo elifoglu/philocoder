@@ -1,4 +1,4 @@
-module Requests exposing (getAllTags, getContent, getHomeContents, getTagContents, postNewContent)
+module Requests exposing (getAllTags, getContent, getHomeContents, getTagContents, postNewContent, previewContent)
 
 import App.Model exposing (CreateContentPageModel, createContentPageModelEncoder)
 import App.Msg exposing (Msg(..))
@@ -59,4 +59,13 @@ postNewContent model =
         { url = apiURL ++ "contents"
         , body = Http.jsonBody (createContentPageModelEncoder model)
         , expect = Http.expectJson GotContent contentDecoder
+        }
+
+
+previewContent : CreateContentPageModel -> Cmd Msg
+previewContent model =
+    Http.post
+        { url = apiURL ++ "previewContent"
+        , body = Http.jsonBody (createContentPageModelEncoder model)
+        , expect = Http.expectJson (GotContentToPreview model) contentDecoder
         }

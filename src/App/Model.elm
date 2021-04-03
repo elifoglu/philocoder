@@ -24,6 +24,7 @@ type Page
     | TagPage Tag (List Content) Pagination
     | CreateContentPage CreateContentPageModel
     | CreatingContentPage
+    | PreviewContentPage CreateContentPageModel (Maybe Content)
     | NotFoundPage
     | MaintenancePage
 

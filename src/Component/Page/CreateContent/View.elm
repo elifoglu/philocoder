@@ -1,4 +1,4 @@
-module CreateContent.View exposing (..)
+module CreateContent.View exposing (viewCreateContentDiv)
 
 import App.Model exposing (CreateContentPageModel)
 import App.Msg exposing (CreateContentInputType(..), Msg(..))
@@ -19,6 +19,7 @@ viewCreateContentDiv model =
             , viewInput "text" "refIDs (use comma to separate)" model.refs (CreateContentInputChanged Refs)
             , viewInput "password" "password" model.password (CreateContentInputChanged Password)
             , viewContentTextArea "content" model.text (CreateContentInputChanged Text)
+            , viewPreviewContentButton (GoToPreviewContentPage model)
             , viewCreateContentButton (CreateContent model)
             ]
 
@@ -36,3 +37,8 @@ viewContentTextArea p v toMsg =
 viewCreateContentButton : msg -> Html msg
 viewCreateContentButton msg =
     button [ onClick msg ] [ text "create new content" ]
+
+
+viewPreviewContentButton : msg -> Html msg
+viewPreviewContentButton msg =
+    button [ onClick msg ] [ text "preview content" ]
