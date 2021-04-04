@@ -18,8 +18,7 @@ type Msg
     | GotContentToPreview CreateContentPageModel (Result Http.Error GotContent)
     | CreateContentInputChanged CreateContentInputType String
     | CreateContent CreateContentPageModel
-    | GoToPreviewContentPage CreateContentPageModel
-    | GoToCreateContentPage CreateContentPageModel
+    | PreviewContent CreateContentPageModel
 
 
 type CreateContentInputType

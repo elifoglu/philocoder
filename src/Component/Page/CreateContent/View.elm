@@ -1,26 +1,38 @@
 module CreateContent.View exposing (viewCreateContentDiv)
 
-import App.Model exposing (CreateContentPageModel)
+import App.Model exposing (CreateContentPageModel, Model)
 import App.Msg exposing (CreateContentInputType(..), Msg(..))
-import Html exposing (Html, br, button, div, input, text, textarea)
+import Content.Model exposing (Content)
+import Content.View exposing (viewContentDiv)
+import Html exposing (Html, br, button, div, hr, input, text, textarea)
 import Html.Attributes exposing (placeholder, style, type_, value)
 import Html.Events exposing (onClick, onInput)
+import Tag.Util exposing (tagWithMostContents)
 
 
-viewCreateContentDiv : CreateContentPageModel -> Html Msg
-viewCreateContentDiv model =
+viewCreateContentDiv : Model -> CreateContentPageModel -> Maybe Content -> Html Msg
+viewCreateContentDiv model createContentPageModel maybeContentToPreview =
     div [] <|
         List.intersperse (br [] [])
-            [ viewInput "text" "id" model.id (CreateContentInputChanged Id)
-            , viewInput "text" "title (empty if does not exist)" model.title (CreateContentInputChanged Title)
-            , viewInput "text" "dd.mm.yyyy (e.g. 3.4.2021 or 29.12.2021)" model.date (CreateContentInputChanged Date)
-            , viewInput "text" "publishOrderInDay (1, 2, 3...)" model.publishOrderInDay (CreateContentInputChanged PublishOrderInDay)
-            , viewInput "text" "tagNames (use comma to separate)" model.tags (CreateContentInputChanged Tags)
-            , viewInput "text" "refIDs (use comma to separate)" model.refs (CreateContentInputChanged Refs)
-            , viewInput "password" "password" model.password (CreateContentInputChanged Password)
-            , viewContentTextArea "content" model.text (CreateContentInputChanged Text)
-            , viewPreviewContentButton (GoToPreviewContentPage model)
-            , viewCreateContentButton (CreateContent model)
+            [ viewInput "text" "id" createContentPageModel.id (CreateContentInputChanged Id)
+            , viewInput "text" "title (empty if does not exist)" createContentPageModel.title (CreateContentInputChanged Title)
+            , viewInput "text" "dd.mm.yyyy (e.g. 3.4.2021 or 29.12.2021)" createContentPageModel.date (CreateContentInputChanged Date)
+            , viewInput "text" "publishOrderInDay (1, 2, 3...)" createContentPageModel.publishOrderInDay (CreateContentInputChanged PublishOrderInDay)
+            , viewInput "text" "tagNames (use comma to separate)" createContentPageModel.tags (CreateContentInputChanged Tags)
+            , viewInput "text" "refIDs (use comma to separate)" createContentPageModel.refs (CreateContentInputChanged Refs)
+            , viewInput "password" "password" createContentPageModel.password (CreateContentInputChanged Password)
+            , viewContentTextArea "content" createContentPageModel.text (CreateContentInputChanged Text)
+            , div []
+                [ viewPreviewContentButton (PreviewContent createContentPageModel)
+                , viewCreateContentButton (CreateContent createContentPageModel)
+                ]
+            , hr [] []
+            , case maybeContentToPreview of
+                Just content ->
+                    viewContentDiv model (tagWithMostContents model) content
+
+                Nothing ->
+                    text "invalid content, or no content at all"
             ]
 
 

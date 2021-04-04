@@ -22,9 +22,8 @@ type Page
     | ContentPage Content
     | NonInitializedTagPage String (Maybe Int)
     | TagPage Tag (List Content) Pagination
-    | CreateContentPage CreateContentPageModel
+    | CreateContentPage CreateContentPageModel (Maybe Content)
     | CreatingContentPage
-    | PreviewContentPage CreateContentPageModel (Maybe Content)
     | NotFoundPage
     | MaintenancePage
 

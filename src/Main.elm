@@ -61,7 +61,7 @@ update msg model =
                                 Nothing ->
                                     Cmd.none
 
-                        CreateContentPage _ ->
+                        CreateContentPage _ _ ->
                             sendTitle model
 
                         _ ->
@@ -106,23 +106,16 @@ update msg model =
                     let
                         content =
                             gotContentToContent model.allTags gotContentToPreview
-
-                        newModel =
-                            { model
-                                | activePage = PreviewContentPage createContentPageModel (Just content)
-                            }
                     in
-                    ( newModel
-                    , sendTitle newModel
+                    ( { model
+                        | activePage = CreateContentPage createContentPageModel (Just content)
+                      }
+                    , Cmd.none
                     )
 
                 Err _ ->
-                    let
-                        newModel =
-                            { model | activePage = PreviewContentPage createContentPageModel Nothing }
-                    in
-                    ( newModel
-                    , sendTitle newModel
+                    ( { model | activePage = CreateContentPage createContentPageModel Nothing }
+                    , Cmd.none
                     )
 
         GotContentsOfTag tag result ->
@@ -213,7 +206,7 @@ update msg model =
 
         CreateContentInputChanged inputType input ->
             case model.activePage of
-                CreateContentPage createContentPageModel ->
+                CreateContentPage createContentPageModel maybeContentToPreview ->
                     let
                         newCurrentPageModel =
                             case inputType of
@@ -241,7 +234,7 @@ update msg model =
                                 Password ->
                                     { createContentPageModel | password = input }
                     in
-                    ( { model | activePage = CreateContentPage newCurrentPageModel }, Cmd.none )
+                    ( { model | activePage = CreateContentPage newCurrentPageModel maybeContentToPreview }, Cmd.none )
 
                 _ ->
                     ( model, Cmd.none )
@@ -251,22 +244,9 @@ update msg model =
             , postNewContent createContentPageModel
             )
 
-        GoToPreviewContentPage createContentPageModel ->
-            let
-                newModel =
-                    { model | activePage = PreviewContentPage createContentPageModel Nothing }
-            in
-            ( newModel
-            , Cmd.batch [ previewContent createContentPageModel, sendTitle newModel ]
-            )
-
-        GoToCreateContentPage createContentPageModel ->
-            let
-                newModel =
-                    { model | activePage = CreateContentPage createContentPageModel }
-            in
-            ( newModel
-            , sendTitle newModel
+        PreviewContent createContentPageModel ->
+            ( model
+            , previewContent createContentPageModel
             )
 
 

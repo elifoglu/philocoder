@@ -12,7 +12,7 @@ routeParser =
         [ map NonInitializedHomePage top
         , map NonInitializedTagPage (s "tags" </> string <?> Query.int "page")
         , map NonInitializedContentPage (s "contents" </> int)
-        , map (CreateContentPage (CreateContentPageModel "" "" "" "" "" "" "" "")) (s "create")
+        , map (CreateContentPage (CreateContentPageModel "" "" "" "" "" "" "" "") Nothing) (s "create")
         ]
 
 

@@ -34,11 +34,8 @@ sendTitle model =
         NotFoundPage ->
             title "Oops - Not Found"
 
-        CreateContentPage _ ->
+        CreateContentPage _ _ ->
             title "Create new content - Philocoder"
-
-        PreviewContentPage _ _ ->
-            title "Preview content - Philocoder"
 
         _ ->
             Cmd.none

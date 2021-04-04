@@ -3,7 +3,6 @@ module App.View exposing (view)
 import App.Model exposing (..)
 import App.Msg exposing (Msg(..))
 import Browser exposing (Document)
-import Content.Util exposing (contentById)
 import Content.View exposing (viewContentDiv)
 import Contents.View exposing (viewContentDivs)
 import CreateContent.View exposing (viewCreateContentDiv)
@@ -12,8 +11,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import NotFound.View exposing (view404Div)
 import Pagination.View exposing (viewPagination)
-import PreviewContent.View exposing (viewPreviewContentDiv)
-import Tag.Util exposing (tagById, tagWithMostContents)
+import Tag.Util exposing (tagWithMostContents)
 import Tags.View exposing (viewTagTabs)
 
 
@@ -35,11 +33,8 @@ view model =
                             TagPage tag contents _ ->
                                 viewContentDivs model contents (Just tag)
 
-                            CreateContentPage createContentPageModel ->
-                                [ viewCreateContentDiv createContentPageModel ]
-
-                            PreviewContentPage createContentPageModel maybeContent ->
-                                [ viewPreviewContentDiv model createContentPageModel maybeContent ]
+                            CreateContentPage createContentPageModel maybeContentToPreview ->
+                                [ viewCreateContentDiv model createContentPageModel maybeContentToPreview ]
 
                             CreatingContentPage ->
                                 [ text "*content oluşturulmaya çalışılıyor*" ]
