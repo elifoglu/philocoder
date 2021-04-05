@@ -1,6 +1,6 @@
 port module App.Ports exposing (sendTitle, title)
 
-import App.Model exposing (Model, Page(..))
+import App.Model exposing (Initializable(..), Model, Page(..))
 
 
 port title : String -> Cmd a
@@ -16,20 +16,30 @@ sendTitle model =
         HomePage _ ->
             sendDefaultTitle
 
-        ContentPage content ->
-            case content.title of
-                Just exists ->
-                    title (exists ++ " - Philocoder")
+        ContentPage status ->
+            case status of
+                NonInitialized _ ->
+                    Cmd.none
 
-                Nothing ->
-                    title (String.left 7 content.text ++ "... - Philocoder")
+                Initialized content ->
+                    case content.title of
+                        Just exists ->
+                            title (exists ++ " - Philocoder")
 
-        TagPage tag _ pagination ->
-            if pagination.currentPage == 1 then
-                title (tag.name ++ " - Philocoder")
+                        Nothing ->
+                            title (String.left 7 content.text ++ "... - Philocoder")
 
-            else
-                title (tag.name ++ " " ++ " (" ++ String.fromInt pagination.currentPage ++ ") - Philocoder")
+        TagPage status ->
+            case status of
+                NonInitialized _ ->
+                    Cmd.none
+
+                Initialized ( tag, _, pagination ) ->
+                    if pagination.currentPage == 1 then
+                        title (tag.name ++ " - Philocoder")
+
+                    else
+                        title (tag.name ++ " " ++ " (" ++ String.fromInt pagination.currentPage ++ ") - Philocoder")
 
         NotFoundPage ->
             title "Oops - Not Found"

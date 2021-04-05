@@ -47,18 +47,33 @@ update msg model =
                         | allTags = allTags
                       }
                     , case model.activePage of
-                        NonInitializedHomePage ->
-                            getHomeContents
+                        HomePage status ->
+                            case status of
+                                NonInitialized _ ->
+                                    getHomeContents
 
-                        NonInitializedContentPage contentId ->
-                            getContent contentId
+                                Initialized _ ->
+                                    Cmd.none
 
-                        NonInitializedTagPage tagId maybePage ->
-                            case tagById allTags tagId of
-                                Just tag ->
-                                    getTagContents tag maybePage
+                        ContentPage status ->
+                            case status of
+                                NonInitialized contentId ->
+                                    getContent contentId
 
-                                Nothing ->
+                                Initialized _ ->
+                                    Cmd.none
+
+                        TagPage status ->
+                            case status of
+                                NonInitialized ( tagId, maybePage ) ->
+                                    case tagById allTags tagId of
+                                        Just tag ->
+                                            getTagContents tag maybePage
+
+                                        Nothing ->
+                                            Cmd.none
+
+                                Initialized _ ->
                                     Cmd.none
 
                         CreateContentPage _ _ ->
@@ -91,7 +106,7 @@ update msg model =
                                     UpdateContentPage (contentToUpdateContentPageModel content) (Just content) contentId
 
                                 _ ->
-                                    ContentPage content
+                                    ContentPage <| Initialized content
 
                         newModel =
                             { model
@@ -153,8 +168,13 @@ update msg model =
                     let
                         currentPage =
                             case model.activePage of
-                                NonInitializedTagPage _ maybePage ->
-                                    Maybe.withDefault 1 maybePage
+                                TagPage status ->
+                                    case status of
+                                        NonInitialized ( _, maybePage ) ->
+                                            Maybe.withDefault 1 maybePage
+
+                                        _ ->
+                                            1
 
                                 _ ->
                                     1
@@ -164,7 +184,10 @@ update msg model =
 
                         newModel =
                             { model
-                                | activePage = TagPage tag (List.map (gotContentToContent model.allTags) contentsResponse.contents) pagination
+                                | activePage =
+                                    TagPage <|
+                                        Initialized
+                                            ( tag, List.map (gotContentToContent model.allTags) contentsResponse.contents, pagination )
                             }
                     in
                     ( newModel
@@ -198,18 +221,33 @@ update msg model =
             , Cmd.batch
                 [ sendTitle newModel
                 , case activePage of
-                    NonInitializedHomePage ->
-                        getHomeContents
+                    HomePage status ->
+                        case status of
+                            NonInitialized _ ->
+                                getHomeContents
 
-                    NonInitializedContentPage contentId ->
-                        getContent contentId
+                            _ ->
+                                Cmd.none
 
-                    NonInitializedTagPage tagId maybePage ->
-                        case tagById model.allTags tagId of
-                            Just tag ->
-                                getTagContents tag maybePage
+                    ContentPage status ->
+                        case status of
+                            NonInitialized contentId ->
+                                getContent contentId
 
-                            Nothing ->
+                            _ ->
+                                Cmd.none
+
+                    TagPage status ->
+                        case status of
+                            NonInitialized ( tagId, maybePage ) ->
+                                case tagById model.allTags tagId of
+                                    Just tag ->
+                                        getTagContents tag maybePage
+
+                                    Nothing ->
+                                        Cmd.none
+
+                            _ ->
                                 Cmd.none
 
                     _ ->
@@ -223,7 +261,7 @@ update msg model =
                     let
                         newModel =
                             { model
-                                | activePage = HomePage (List.map (gotContentToContent model.allTags) contentsResponse.contents)
+                                | activePage = HomePage <| Initialized (List.map (gotContentToContent model.allTags) contentsResponse.contents)
                             }
                     in
                     ( newModel

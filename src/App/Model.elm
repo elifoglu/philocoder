@@ -1,4 +1,4 @@
-module App.Model exposing (CreateContentPageModel, Model, Page(..), UpdateContentPageModel, contentToUpdateContentPageModel, createContentPageModelEncoder, updateContentPageModelEncoder)
+module App.Model exposing (CreateContentPageModel, Initializable(..), Model, NoVal(..), Page(..), UpdateContentPageModel, contentToUpdateContentPageModel, createContentPageModelEncoder, updateContentPageModelEncoder)
 
 import Browser.Navigation as Nav
 import Content.Model exposing (Content, ContentDate(..))
@@ -9,6 +9,10 @@ import Pagination.Model exposing (Pagination)
 import Tag.Model exposing (Tag)
 
 
+type NoVal
+    = NoVal
+
+
 type alias Model =
     { log : String
     , key : Nav.Key
@@ -17,13 +21,15 @@ type alias Model =
     }
 
 
+type Initializable a b
+    = NonInitialized a
+    | Initialized b
+
+
 type Page
-    = NonInitializedHomePage
-    | HomePage (List Content)
-    | NonInitializedContentPage Int
-    | ContentPage Content
-    | NonInitializedTagPage String (Maybe Int)
-    | TagPage Tag (List Content) Pagination
+    = HomePage (Initializable NoVal (List Content))
+    | ContentPage (Initializable Int Content)
+    | TagPage (Initializable ( String, Maybe Int ) ( Tag, List Content, Pagination ))
     | CreateContentPage CreateContentPageModel (Maybe Content)
     | UpdateContentPage UpdateContentPageModel (Maybe Content) Int
     | CreatingContentPage

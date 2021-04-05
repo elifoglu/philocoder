@@ -1,6 +1,6 @@
 module Tag.Util exposing (contentRenderTypeOf, gotTagToTag, nameOfActiveTag, tagById, tagNameToTag, tagWithMostContents)
 
-import App.Model exposing (Model)
+import App.Model exposing (Initializable(..), Model, Page(..))
 import DataResponse exposing (GotTag)
 import List
 import Tag.Model as ContentRenderType exposing (ContentRenderType, Tag)
@@ -16,8 +16,13 @@ tagById allTags tagId =
 nameOfActiveTag : Model -> String
 nameOfActiveTag model =
     case model.activePage of
-        App.Model.TagPage tag _ _ ->
-            tag.name
+        TagPage status ->
+            case status of
+                Initialized ( tag, _, _ ) ->
+                    tag.name
+
+                _ ->
+                    ""
 
         _ ->
             ""

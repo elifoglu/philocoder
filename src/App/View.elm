@@ -25,14 +25,29 @@ view model =
                 :: viewTagTabs model
                 ++ [ div [ class "contents" ]
                         ((case model.activePage of
-                            HomePage contents ->
-                                viewContentDivs model contents Nothing
+                            HomePage status ->
+                                case status of
+                                    NonInitialized _ ->
+                                        []
 
-                            ContentPage content ->
-                                [ viewContentDiv model (tagWithMostContents model) content ]
+                                    Initialized contents ->
+                                        viewContentDivs model contents Nothing
 
-                            TagPage tag contents _ ->
-                                viewContentDivs model contents (Just tag)
+                            ContentPage status ->
+                                case status of
+                                    NonInitialized _ ->
+                                        []
+
+                                    Initialized content ->
+                                        [ viewContentDiv model (tagWithMostContents model) content ]
+
+                            TagPage status ->
+                                case status of
+                                    NonInitialized _ ->
+                                        []
+
+                                    Initialized ( tag, contents, _ ) ->
+                                        viewContentDivs model contents (Just tag)
 
                             CreateContentPage createContentPageModel maybeContentToPreview ->
                                 [ viewCreateContentDiv model createContentPageModel maybeContentToPreview ]
@@ -51,9 +66,6 @@ view model =
 
                             MaintenancePage ->
                                 [ text "*bakım çalışması*" ]
-
-                            _ ->
-                                []
                          )
                             ++ [ viewPagination model.activePage ]
                         )
