@@ -1,6 +1,6 @@
 port module App.Ports exposing (sendTitle, title)
 
-import App.Model exposing (Initializable(..), Model, Page(..))
+import App.Model exposing (Initializable(..), MaySendRequest(..), Model, Page(..))
 
 
 port title : String -> Cmd a
@@ -44,11 +44,16 @@ sendTitle model =
         NotFoundPage ->
             title "Oops - Not Found"
 
-        CreateContentPage _ _ ->
+        CreateContentPage _ ->
             title "Create new content - Philocoder"
 
-        UpdateContentPage _ _ contentId ->
-            title <| "Update content " ++ String.fromInt contentId ++ " - Philocoder"
+        UpdateContentPage status ->
+            case status of
+                NoRequestSentYet ( _, _, contentId ) ->
+                    title <| "Update content " ++ String.fromInt contentId ++ " - Philocoder"
+
+                _ ->
+                    Cmd.none
 
         _ ->
             Cmd.none

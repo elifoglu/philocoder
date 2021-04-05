@@ -1,4 +1,4 @@
-module App.Model exposing (CreateContentPageModel, Initializable(..), Model, NoVal(..), Page(..), UpdateContentPageModel, contentToUpdateContentPageModel, createContentPageModelEncoder, updateContentPageModelEncoder)
+module App.Model exposing (CreateContentPageModel, Initializable(..), MaySendRequest(..), Model, NoVal(..), Page(..), UpdateContentPageModel, contentToUpdateContentPageModel, createContentPageModelEncoder, updateContentPageModelEncoder)
 
 import Browser.Navigation as Nav
 import Content.Model exposing (Content, ContentDate(..))
@@ -26,14 +26,17 @@ type Initializable a b
     | Initialized b
 
 
+type MaySendRequest pageData
+    = NoRequestSentYet pageData
+    | RequestSent String
+
+
 type Page
     = HomePage (Initializable NoVal (List Content))
     | ContentPage (Initializable Int Content)
     | TagPage (Initializable ( String, Maybe Int ) ( Tag, List Content, Pagination ))
-    | CreateContentPage CreateContentPageModel (Maybe Content)
-    | UpdateContentPage UpdateContentPageModel (Maybe Content) Int
-    | CreatingContentPage
-    | UpdatingContentPage
+    | CreateContentPage (MaySendRequest ( CreateContentPageModel, Maybe Content ))
+    | UpdateContentPage (MaySendRequest ( UpdateContentPageModel, Maybe Content, Int ))
     | NotFoundPage
     | MaintenancePage
 

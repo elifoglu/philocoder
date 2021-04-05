@@ -76,11 +76,21 @@ update msg model =
                                 Initialized _ ->
                                     Cmd.none
 
-                        CreateContentPage _ _ ->
-                            sendTitle model
+                        CreateContentPage status ->
+                            case status of
+                                NoRequestSentYet pageData ->
+                                    sendTitle model
 
-                        UpdateContentPage _ _ contentId ->
-                            Cmd.batch [ getContent contentId, sendTitle model ]
+                                _ ->
+                                    Cmd.none
+
+                        UpdateContentPage status ->
+                            case status of
+                                NoRequestSentYet ( _, _, contentId ) ->
+                                    Cmd.batch [ getContent contentId, sendTitle model ]
+
+                                _ ->
+                                    Cmd.none
 
                         _ ->
                             Cmd.none
@@ -102,8 +112,14 @@ update msg model =
 
                         newActivePage =
                             case model.activePage of
-                                UpdateContentPage _ _ contentId ->
-                                    UpdateContentPage (contentToUpdateContentPageModel content) (Just content) contentId
+                                UpdateContentPage status ->
+                                    case status of
+                                        NoRequestSentYet ( _, _, contentId ) ->
+                                            UpdateContentPage <|
+                                                NoRequestSentYet ( contentToUpdateContentPageModel content, Just content, contentId )
+
+                                        _ ->
+                                            ContentPage <| Initialized content
 
                                 _ ->
                                     ContentPage <| Initialized content
@@ -134,13 +150,13 @@ update msg model =
                             gotContentToContent model.allTags gotContentToPreview
                     in
                     ( { model
-                        | activePage = CreateContentPage createContentPageModel (Just content)
+                        | activePage = CreateContentPage <| NoRequestSentYet ( createContentPageModel, Just content )
                       }
                     , Cmd.none
                     )
 
                 Err _ ->
-                    ( { model | activePage = CreateContentPage createContentPageModel Nothing }
+                    ( { model | activePage = CreateContentPage <| NoRequestSentYet ( createContentPageModel, Nothing ) }
                     , Cmd.none
                     )
 
@@ -152,13 +168,13 @@ update msg model =
                             gotContentToContent model.allTags gotContentToPreview
                     in
                     ( { model
-                        | activePage = UpdateContentPage updateContentPageModel (Just content) contentID
+                        | activePage = UpdateContentPage <| NoRequestSentYet ( updateContentPageModel, Just content, contentID )
                       }
                     , Cmd.none
                     )
 
                 Err _ ->
-                    ( { model | activePage = UpdateContentPage updateContentPageModel Nothing contentID }
+                    ( { model | activePage = UpdateContentPage <| NoRequestSentYet ( updateContentPageModel, Nothing, contentID ) }
                     , Cmd.none
                     )
 
@@ -273,71 +289,81 @@ update msg model =
 
         ContentInputChanged inputType input ->
             case model.activePage of
-                CreateContentPage createContentPageModel maybeContentToPreview ->
-                    let
-                        newCurrentPageModel =
-                            case inputType of
-                                Id ->
-                                    { createContentPageModel | id = input }
+                CreateContentPage status ->
+                    case status of
+                        NoRequestSentYet ( createContentPageModel, maybeContentToPreview ) ->
+                            let
+                                newCurrentPageModel =
+                                    case inputType of
+                                        Id ->
+                                            { createContentPageModel | id = input }
 
-                                Title ->
-                                    { createContentPageModel | title = input }
+                                        Title ->
+                                            { createContentPageModel | title = input }
 
-                                Text ->
-                                    { createContentPageModel | text = input }
+                                        Text ->
+                                            { createContentPageModel | text = input }
 
-                                Date ->
-                                    { createContentPageModel | date = input }
+                                        Date ->
+                                            { createContentPageModel | date = input }
 
-                                PublishOrderInDay ->
-                                    { createContentPageModel | publishOrderInDay = input }
+                                        PublishOrderInDay ->
+                                            { createContentPageModel | publishOrderInDay = input }
 
-                                Tags ->
-                                    { createContentPageModel | tags = input }
+                                        Tags ->
+                                            { createContentPageModel | tags = input }
 
-                                Refs ->
-                                    { createContentPageModel | refs = input }
+                                        Refs ->
+                                            { createContentPageModel | refs = input }
 
-                                Password ->
-                                    { createContentPageModel | password = input }
-                    in
-                    ( { model | activePage = CreateContentPage newCurrentPageModel maybeContentToPreview }, Cmd.none )
+                                        Password ->
+                                            { createContentPageModel | password = input }
+                            in
+                            ( { model | activePage = CreateContentPage <| NoRequestSentYet ( newCurrentPageModel, maybeContentToPreview ) }, Cmd.none )
 
-                UpdateContentPage updateContentPageModel maybeContentToPreview contentId ->
-                    let
-                        newCurrentPageModel =
-                            case inputType of
-                                Id ->
-                                    updateContentPageModel
+                        _ ->
+                            ( model, Cmd.none )
 
-                                Title ->
-                                    { updateContentPageModel | title = input }
+                UpdateContentPage status ->
+                    case status of
+                        NoRequestSentYet ( updateContentPageModel, maybeContentToPreview, contentId ) ->
+                            let
+                                newCurrentPageModel =
+                                    case inputType of
+                                        Id ->
+                                            updateContentPageModel
 
-                                Text ->
-                                    { updateContentPageModel | text = input }
+                                        Title ->
+                                            { updateContentPageModel | title = input }
 
-                                Date ->
-                                    { updateContentPageModel | date = input }
+                                        Text ->
+                                            { updateContentPageModel | text = input }
 
-                                PublishOrderInDay ->
-                                    { updateContentPageModel | publishOrderInDay = input }
+                                        Date ->
+                                            { updateContentPageModel | date = input }
 
-                                Tags ->
-                                    { updateContentPageModel | tags = input }
+                                        PublishOrderInDay ->
+                                            { updateContentPageModel | publishOrderInDay = input }
 
-                                Refs ->
-                                    { updateContentPageModel | refs = input }
+                                        Tags ->
+                                            { updateContentPageModel | tags = input }
 
-                                Password ->
-                                    { updateContentPageModel | password = input }
-                    in
-                    ( { model | activePage = UpdateContentPage newCurrentPageModel maybeContentToPreview contentId }, Cmd.none )
+                                        Refs ->
+                                            { updateContentPageModel | refs = input }
+
+                                        Password ->
+                                            { updateContentPageModel | password = input }
+                            in
+                            ( { model | activePage = UpdateContentPage <| NoRequestSentYet ( newCurrentPageModel, maybeContentToPreview, contentId ) }, Cmd.none )
+
+                        _ ->
+                            ( model, Cmd.none )
 
                 _ ->
                     ( model, Cmd.none )
 
         CreateContent createContentPageModel ->
-            ( { model | activePage = CreatingContentPage }
+            ( { model | activePage = CreateContentPage <| RequestSent "creating content..." }
             , postNewContent createContentPageModel
             )
 
@@ -347,7 +373,7 @@ update msg model =
             )
 
         UpdateContent contentID updateContentPageModel ->
-            ( { model | activePage = UpdatingContentPage }
+            ( { model | activePage = UpdateContentPage <| RequestSent "updating content..." }
             , updateExistingContent contentID updateContentPageModel
             )
 

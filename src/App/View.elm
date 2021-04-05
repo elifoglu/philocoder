@@ -49,17 +49,21 @@ view model =
                                     Initialized ( tag, contents, _ ) ->
                                         viewContentDivs model contents (Just tag)
 
-                            CreateContentPage createContentPageModel maybeContentToPreview ->
-                                [ viewCreateContentDiv model createContentPageModel maybeContentToPreview ]
+                            CreateContentPage status ->
+                                case status of
+                                    NoRequestSentYet ( createContentPageModel, maybeContentToPreview ) ->
+                                        [ viewCreateContentDiv model createContentPageModel maybeContentToPreview ]
 
-                            UpdateContentPage updateContentPageModel maybeContentToPreview contentId ->
-                                [ viewUpdateContentDiv model updateContentPageModel maybeContentToPreview contentId ]
+                                    RequestSent infoToShowAfterRequest ->
+                                        [ text infoToShowAfterRequest ]
 
-                            CreatingContentPage ->
-                                [ text "trying to create content..." ]
+                            UpdateContentPage status ->
+                                case status of
+                                    NoRequestSentYet ( updateContentPageModel, maybeContentToPreview, contentId ) ->
+                                        [ viewUpdateContentDiv model updateContentPageModel maybeContentToPreview contentId ]
 
-                            UpdatingContentPage ->
-                                [ text "trying to update content..." ]
+                                    RequestSent infoToShowAfterRequest ->
+                                        [ text infoToShowAfterRequest ]
 
                             NotFoundPage ->
                                 [ view404Div ]
