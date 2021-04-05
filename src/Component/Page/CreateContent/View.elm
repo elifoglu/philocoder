@@ -1,7 +1,7 @@
 module CreateContent.View exposing (viewCreateContentDiv)
 
 import App.Model exposing (CreateContentPageModel, Model)
-import App.Msg exposing (CreateContentInputType(..), Msg(..))
+import App.Msg exposing (CreateContentInputType(..), Msg(..), PreviewContentModel(..))
 import Content.Model exposing (Content)
 import Content.View exposing (viewContentDiv)
 import Html exposing (Html, br, button, div, hr, input, text, textarea)
@@ -14,16 +14,16 @@ viewCreateContentDiv : Model -> CreateContentPageModel -> Maybe Content -> Html 
 viewCreateContentDiv model createContentPageModel maybeContentToPreview =
     div [] <|
         List.intersperse (br [] [])
-            [ viewInput "text" "id" createContentPageModel.id (CreateContentInputChanged Id)
-            , viewInput "text" "title (empty if does not exist)" createContentPageModel.title (CreateContentInputChanged Title)
-            , viewInput "text" "dd.mm.yyyy (e.g. 3.4.2021 or 29.12.2021)" createContentPageModel.date (CreateContentInputChanged Date)
-            , viewInput "text" "publishOrderInDay (1, 2, 3...)" createContentPageModel.publishOrderInDay (CreateContentInputChanged PublishOrderInDay)
-            , viewInput "text" "tagNames (use comma to separate)" createContentPageModel.tags (CreateContentInputChanged Tags)
-            , viewInput "text" "refIDs (use comma to separate)" createContentPageModel.refs (CreateContentInputChanged Refs)
-            , viewInput "password" "password" createContentPageModel.password (CreateContentInputChanged Password)
-            , viewContentTextArea "content" createContentPageModel.text (CreateContentInputChanged Text)
+            [ viewInput "text" "id" createContentPageModel.id (ContentInputChanged Id)
+            , viewInput "text" "title (empty if does not exist)" createContentPageModel.title (ContentInputChanged Title)
+            , viewInput "text" "dd.mm.yyyy (e.g. 3.4.2021 or 29.12.2021)" createContentPageModel.date (ContentInputChanged Date)
+            , viewInput "text" "publishOrderInDay (1, 2, 3...)" createContentPageModel.publishOrderInDay (ContentInputChanged PublishOrderInDay)
+            , viewInput "text" "tagNames (use comma to separate)" createContentPageModel.tags (ContentInputChanged Tags)
+            , viewInput "text" "refIDs (use comma to separate)" createContentPageModel.refs (ContentInputChanged Refs)
+            , viewInput "password" "password" createContentPageModel.password (ContentInputChanged Password)
+            , viewContentTextArea "content" createContentPageModel.text (ContentInputChanged Text)
             , div []
-                [ viewPreviewContentButton (PreviewContent createContentPageModel)
+                [ viewPreviewContentButton (PreviewContent <| PreviewForContentCreate createContentPageModel)
                 , viewCreateContentButton (CreateContent createContentPageModel)
                 ]
             , hr [] []

@@ -13,6 +13,7 @@ import NotFound.View exposing (view404Div)
 import Pagination.View exposing (viewPagination)
 import Tag.Util exposing (tagWithMostContents)
 import Tags.View exposing (viewTagTabs)
+import UpdateContent.View exposing (viewUpdateContentDiv)
 
 
 view : Model -> Document Msg
@@ -36,8 +37,14 @@ view model =
                             CreateContentPage createContentPageModel maybeContentToPreview ->
                                 [ viewCreateContentDiv model createContentPageModel maybeContentToPreview ]
 
+                            UpdateContentPage updateContentPageModel maybeContentToPreview contentId ->
+                                [ viewUpdateContentDiv model updateContentPageModel maybeContentToPreview contentId ]
+
                             CreatingContentPage ->
-                                [ text "*content oluşturulmaya çalışılıyor*" ]
+                                [ text "trying to create content..." ]
+
+                            UpdatingContentPage ->
+                                [ text "trying to update content..." ]
 
                             NotFoundPage ->
                                 [ view404Div ]

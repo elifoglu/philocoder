@@ -37,5 +37,8 @@ sendTitle model =
         CreateContentPage _ _ ->
             title "Create new content - Philocoder"
 
+        UpdateContentPage _ _ contentId ->
+            title <| "Update content " ++ String.fromInt contentId ++ " - Philocoder"
+
         _ ->
             Cmd.none

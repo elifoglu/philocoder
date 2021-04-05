@@ -10,7 +10,7 @@ import Browser.Navigation as Nav
 import Content.Util exposing (gotContentToContent)
 import List
 import Pagination.Model exposing (Pagination)
-import Requests exposing (getAllTags, getContent, getHomeContents, getTagContents, postNewContent, previewContent)
+import Requests exposing (getAllTags, getContent, getHomeContents, getTagContents, postNewContent, previewContent, updateExistingContent)
 import Tag.Util exposing (gotTagToTag, tagById)
 import Url
 
@@ -64,6 +64,9 @@ update msg model =
                         CreateContentPage _ _ ->
                             sendTitle model
 
+                        UpdateContentPage _ _ contentId ->
+                            Cmd.batch [ getContent contentId, sendTitle model ]
+
                         _ ->
                             Cmd.none
                     )
@@ -82,9 +85,17 @@ update msg model =
                         content =
                             gotContentToContent model.allTags gotContent
 
+                        newActivePage =
+                            case model.activePage of
+                                UpdateContentPage _ _ contentId ->
+                                    UpdateContentPage (contentToUpdateContentPageModel content) (Just content) contentId
+
+                                _ ->
+                                    ContentPage content
+
                         newModel =
                             { model
-                                | activePage = ContentPage content
+                                | activePage = newActivePage
                             }
                     in
                     ( newModel
@@ -100,7 +111,7 @@ update msg model =
                     , sendTitle newModel
                     )
 
-        GotContentToPreview createContentPageModel result ->
+        GotContentToPreviewForCreatePage createContentPageModel result ->
             case result of
                 Ok gotContentToPreview ->
                     let
@@ -115,6 +126,24 @@ update msg model =
 
                 Err _ ->
                     ( { model | activePage = CreateContentPage createContentPageModel Nothing }
+                    , Cmd.none
+                    )
+
+        GotContentToPreviewForUpdatePage contentID updateContentPageModel result ->
+            case result of
+                Ok gotContentToPreview ->
+                    let
+                        content =
+                            gotContentToContent model.allTags gotContentToPreview
+                    in
+                    ( { model
+                        | activePage = UpdateContentPage updateContentPageModel (Just content) contentID
+                      }
+                    , Cmd.none
+                    )
+
+                Err _ ->
+                    ( { model | activePage = UpdateContentPage updateContentPageModel Nothing contentID }
                     , Cmd.none
                     )
 
@@ -204,7 +233,7 @@ update msg model =
                 Err _ ->
                     ( model, Cmd.none )
 
-        CreateContentInputChanged inputType input ->
+        ContentInputChanged inputType input ->
             case model.activePage of
                 CreateContentPage createContentPageModel maybeContentToPreview ->
                     let
@@ -236,6 +265,36 @@ update msg model =
                     in
                     ( { model | activePage = CreateContentPage newCurrentPageModel maybeContentToPreview }, Cmd.none )
 
+                UpdateContentPage updateContentPageModel maybeContentToPreview contentId ->
+                    let
+                        newCurrentPageModel =
+                            case inputType of
+                                Id ->
+                                    updateContentPageModel
+
+                                Title ->
+                                    { updateContentPageModel | title = input }
+
+                                Text ->
+                                    { updateContentPageModel | text = input }
+
+                                Date ->
+                                    { updateContentPageModel | date = input }
+
+                                PublishOrderInDay ->
+                                    { updateContentPageModel | publishOrderInDay = input }
+
+                                Tags ->
+                                    { updateContentPageModel | tags = input }
+
+                                Refs ->
+                                    { updateContentPageModel | refs = input }
+
+                                Password ->
+                                    { updateContentPageModel | password = input }
+                    in
+                    ( { model | activePage = UpdateContentPage newCurrentPageModel maybeContentToPreview contentId }, Cmd.none )
+
                 _ ->
                     ( model, Cmd.none )
 
@@ -244,9 +303,14 @@ update msg model =
             , postNewContent createContentPageModel
             )
 
-        PreviewContent createContentPageModel ->
+        PreviewContent previewContentModel ->
             ( model
-            , previewContent createContentPageModel
+            , previewContent previewContentModel
+            )
+
+        UpdateContent contentID updateContentPageModel ->
+            ( { model | activePage = UpdatingContentPage }
+            , updateExistingContent contentID updateContentPageModel
             )
 
 

@@ -1,8 +1,8 @@
-module Requests exposing (getAllTags, getContent, getHomeContents, getTagContents, postNewContent, previewContent)
+module Requests exposing (getAllTags, getContent, getHomeContents, getTagContents, postNewContent, previewContent, updateExistingContent)
 
-import App.Model exposing (CreateContentPageModel, createContentPageModelEncoder)
-import App.Msg exposing (Msg(..))
-import DataResponse exposing (contentDecoder, contentsResponseDecoder, tagsDecoder)
+import App.Model exposing (CreateContentPageModel, UpdateContentPageModel, createContentPageModelEncoder, updateContentPageModelEncoder)
+import App.Msg exposing (Msg(..), PreviewContentModel(..))
+import DataResponse exposing (ContentID, contentDecoder, contentsResponseDecoder, tagsDecoder)
 import Http
 import Tag.Model exposing (Tag)
 
@@ -62,10 +62,28 @@ postNewContent model =
         }
 
 
-previewContent : CreateContentPageModel -> Cmd Msg
-previewContent model =
+updateExistingContent : ContentID -> UpdateContentPageModel -> Cmd Msg
+updateExistingContent contentId model =
     Http.post
-        { url = apiURL ++ "previewContent"
-        , body = Http.jsonBody (createContentPageModelEncoder model)
-        , expect = Http.expectJson (GotContentToPreview model) contentDecoder
+        { url = apiURL ++ "contents/" ++ String.fromInt contentId
+        , body = Http.jsonBody (updateContentPageModelEncoder contentId model)
+        , expect = Http.expectJson GotContent contentDecoder
         }
+
+
+previewContent : PreviewContentModel -> Cmd Msg
+previewContent model =
+    case model of
+        PreviewForContentCreate createContentPageModel ->
+            Http.post
+                { url = apiURL ++ "previewContent"
+                , body = Http.jsonBody (createContentPageModelEncoder createContentPageModel)
+                , expect = Http.expectJson (GotContentToPreviewForCreatePage createContentPageModel) contentDecoder
+                }
+
+        PreviewForContentUpdate contentID updateContentPageModel ->
+            Http.post
+                { url = apiURL ++ "previewContent"
+                , body = Http.jsonBody (updateContentPageModelEncoder contentID updateContentPageModel)
+                , expect = Http.expectJson (GotContentToPreviewForUpdatePage contentID updateContentPageModel) contentDecoder
+                }

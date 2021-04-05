@@ -1,6 +1,6 @@
 module App.Msg exposing (..)
 
-import App.Model exposing (CreateContentPageModel)
+import App.Model exposing (CreateContentPageModel, UpdateContentPageModel)
 import Browser
 import DataResponse exposing (ContentID, ContentsResponse, GotContent, TagsResponse)
 import Http
@@ -15,10 +15,17 @@ type Msg
     | GotContentsOfTag Tag (Result Http.Error ContentsResponse)
     | GotHomeContents (Result Http.Error ContentsResponse)
     | GotContent (Result Http.Error GotContent)
-    | GotContentToPreview CreateContentPageModel (Result Http.Error GotContent)
-    | CreateContentInputChanged CreateContentInputType String
+    | GotContentToPreviewForCreatePage CreateContentPageModel (Result Http.Error GotContent)
+    | GotContentToPreviewForUpdatePage ContentID UpdateContentPageModel (Result Http.Error GotContent)
+    | ContentInputChanged CreateContentInputType String
+    | PreviewContent PreviewContentModel
     | CreateContent CreateContentPageModel
-    | PreviewContent CreateContentPageModel
+    | UpdateContent ContentID UpdateContentPageModel
+
+
+type PreviewContentModel
+    = PreviewForContentCreate CreateContentPageModel
+    | PreviewForContentUpdate ContentID UpdateContentPageModel
 
 
 type CreateContentInputType
