@@ -1,6 +1,6 @@
 module App.UrlParser exposing (pageBy)
 
-import App.Model exposing (CreateContentPageModel, Initializable(..), MaySendRequest(..), NoVal(..), Page(..), UpdateContentPageModel)
+import App.Model exposing (CreateContentPageModel, CreateTagPageModel, Initializable(..), MaySendRequest(..), NoVal(..), Page(..), UpdateContentPageModel)
 import Url
 import Url.Parser exposing ((</>), (<?>), Parser, int, map, oneOf, parse, s, string, top)
 import Url.Parser.Query as Query
@@ -12,7 +12,8 @@ routeParser =
         [ map (HomePage (NonInitialized NoVal)) top
         , map nonInitializedTagPageMapper (s "tags" </> string <?> Query.int "page")
         , map nonInitializedContentPageMapper (s "contents" </> int)
-        , map (CreateContentPage (NoRequestSentYet ( CreateContentPageModel "" "" "" "" "" "" "" "", Nothing ))) (s "create")
+        , map (CreateContentPage (NoRequestSentYet ( CreateContentPageModel "" "" "" "" "" "" "" "", Nothing ))) (s "create" </> s "content")
+        , map (CreateTagPage (NoRequestSentYet (CreateTagPageModel "" "" "DateDESC" True "normal" True False ""))) (s "create" </> s "tag")
         , map nonInitializedUpdatePageMapper (s "update" </> s "content" </> int)
         ]
 

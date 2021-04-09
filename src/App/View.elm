@@ -6,6 +6,7 @@ import Browser exposing (Document)
 import Content.View exposing (viewContentDiv)
 import Contents.View exposing (viewContentDivs)
 import CreateContent.View exposing (viewCreateContentDiv)
+import CreateTag.View exposing (viewCreateTagDiv)
 import HomeNavigator.View exposing (viewHomeNavigator)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -65,6 +66,14 @@ view model =
                                 case status of
                                     NoRequestSentYet ( updateContentPageModel, maybeContentToPreview, contentId ) ->
                                         [ viewUpdateContentDiv model updateContentPageModel maybeContentToPreview contentId ]
+
+                                    RequestSent infoToShowAfterRequest ->
+                                        [ text infoToShowAfterRequest ]
+
+                            CreateTagPage status ->
+                                case status of
+                                    NoRequestSentYet createTagPageModel ->
+                                        [ viewCreateTagDiv model createTagPageModel ]
 
                                     RequestSent infoToShowAfterRequest ->
                                         [ text infoToShowAfterRequest ]

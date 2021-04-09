@@ -1,4 +1,4 @@
-module App.Model exposing (CreateContentPageModel, Initializable(..), MaySendRequest(..), Model, NoVal(..), Page(..), UpdateContentPageModel, contentToUpdateContentPageModel, createContentPageModelEncoder, updateContentPageModelEncoder)
+module App.Model exposing (CreateContentPageModel, CreateTagPageModel, Initializable(..), MaySendRequest(..), Model, NoVal(..), Page(..), UpdateContentPageModel, contentToUpdateContentPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder)
 
 import Browser.Navigation as Nav
 import Content.Model exposing (Content, ContentDate(..))
@@ -37,6 +37,7 @@ type Page
     | TagPage (Initializable ( String, Maybe Int ) ( Tag, List Content, Pagination ))
     | CreateContentPage (MaySendRequest ( CreateContentPageModel, Maybe Content ))
     | UpdateContentPage (MaySendRequest ( UpdateContentPageModel, Maybe Content, Int ))
+    | CreateTagPage (MaySendRequest CreateTagPageModel)
     | NotFoundPage
     | MaintenancePage
 
@@ -60,6 +61,18 @@ type alias UpdateContentPageModel =
     , publishOrderInDay : String
     , tags : String
     , refs : String
+    , password : String
+    }
+
+
+type alias CreateTagPageModel =
+    { tagId : String
+    , name : String
+    , contentSortStrategy : String
+    , showAsTag : Bool
+    , contentRenderType : String
+    , showContentCount : Bool
+    , showInHeader : Bool
     , password : String
     }
 
@@ -118,5 +131,19 @@ updateContentPageModelEncoder contentId model =
         , ( "publishOrderInDay", Encode.string model.publishOrderInDay )
         , ( "tags", Encode.string model.tags )
         , ( "refs", Encode.string model.refs )
+        , ( "password", Encode.string model.password )
+        ]
+
+
+createTagPageModelEncoder : CreateTagPageModel -> Encode.Value
+createTagPageModelEncoder model =
+    Encode.object
+        [ ( "tagId", Encode.string model.tagId )
+        , ( "name", Encode.string model.name )
+        , ( "contentSortStrategy", Encode.string model.contentSortStrategy )
+        , ( "showAsTag", Encode.bool model.showAsTag )
+        , ( "contentRenderType", Encode.string model.contentRenderType )
+        , ( "showContentCount", Encode.bool model.showContentCount )
+        , ( "showInHeader", Encode.bool model.showInHeader )
         , ( "password", Encode.string model.password )
         ]

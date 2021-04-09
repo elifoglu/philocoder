@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import App.Model exposing (..)
-import App.Msg exposing (CreateContentInputType(..), Msg(..))
+import App.Msg exposing (CreateContentInputType(..), CreateTagInputType(..), Msg(..))
 import App.Ports exposing (sendTitle)
 import App.UrlParser exposing (pageBy)
 import App.View exposing (view)
@@ -10,7 +10,7 @@ import Browser.Navigation as Nav
 import Content.Util exposing (gotContentToContent)
 import List
 import Pagination.Model exposing (Pagination)
-import Requests exposing (getAllTags, getContent, getHomeContents, getTagContents, postNewContent, previewContent, updateExistingContent)
+import Requests exposing (createNewTag, getAllTags, getContent, getHomeContents, getTagContents, postNewContent, previewContent, updateExistingContent)
 import Tag.Util exposing (gotTagToTag, tagById)
 import Url
 
@@ -376,6 +376,63 @@ update msg model =
             ( { model | activePage = UpdateContentPage <| RequestSent "updating content..." }
             , updateExistingContent contentID updateContentPageModel
             )
+
+        TagInputChanged inputType ->
+            case model.activePage of
+                CreateTagPage status ->
+                    case status of
+                        NoRequestSentYet createTagPageModel ->
+                            let
+                                newCurrentPageModel =
+                                    case inputType of
+                                        TagId input ->
+                                            { createTagPageModel | tagId = input }
+
+                                        Name input ->
+                                            { createTagPageModel | name = input }
+
+                                        ContentSortStrategy input ->
+                                            { createTagPageModel | contentSortStrategy = input }
+
+                                        ShowAsTag input ->
+                                            { createTagPageModel | showAsTag = input }
+
+                                        ContentRenderType input ->
+                                            { createTagPageModel | contentRenderType = input }
+
+                                        ShowContentCount input ->
+                                            { createTagPageModel | showContentCount = input }
+
+                                        ShowInHeader input ->
+                                            { createTagPageModel | showInHeader = input }
+
+                                        Pw input ->
+                                            { createTagPageModel | password = input }
+                            in
+                            ( { model | activePage = CreateTagPage <| NoRequestSentYet newCurrentPageModel }, Cmd.none )
+
+                        _ ->
+                            ( model, Cmd.none )
+
+                _ ->
+                    ( model, Cmd.none )
+
+        CreateTag createTagPageModel ->
+            ( { model | activePage = CreateTagPage <| RequestSent "creating tag..." }
+            , createNewTag createTagPageModel
+            )
+
+        GotCreateTagResponse res ->
+            case res of
+                Ok tagId ->
+                    if tagId == "created" then
+                        ( { model | activePage = HomePage <| NonInitialized NoVal }, getHomeContents )
+
+                    else
+                        ( { model | activePage = NotFoundPage }, Cmd.none )
+
+                Err _ ->
+                    ( { model | activePage = NotFoundPage }, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
