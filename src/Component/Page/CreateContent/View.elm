@@ -1,7 +1,7 @@
 module CreateContent.View exposing (viewCreateContentDiv)
 
 import App.Model exposing (CreateContentPageModel, Model)
-import App.Msg exposing (CreateContentInputType(..), Msg(..), PreviewContentModel(..))
+import App.Msg exposing (ContentInputType(..), Msg(..), PreviewContentModel(..))
 import Content.Model exposing (Content)
 import Content.View exposing (viewContentDiv)
 import Html exposing (Html, br, button, div, hr, input, text, textarea)

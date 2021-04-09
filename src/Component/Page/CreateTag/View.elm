@@ -1,7 +1,7 @@
 module CreateTag.View exposing (viewCreateTagDiv)
 
 import App.Model exposing (CreateContentPageModel, CreateTagPageModel, Model)
-import App.Msg exposing (CreateTagInputType(..), Msg(..), PreviewContentModel(..))
+import App.Msg exposing (Msg(..), PreviewContentModel(..), TagInputType(..))
 import Html exposing (Html, br, button, div, input, label, select, span, text)
 import Html.Attributes exposing (checked, for, id, placeholder, selected, style, type_, value)
 import Html.Events exposing (onCheck, onClick, onInput)
@@ -12,14 +12,14 @@ viewCreateTagDiv : Model -> CreateTagPageModel -> Html Msg
 viewCreateTagDiv model createTagPageModel =
     div [] <|
         List.intersperse (br [] [])
-            [ viewInput "text" "tagId" createTagPageModel.tagId (createTagInputMessageForStrings TagId)
-            , viewInput "text" "name" createTagPageModel.name (createTagInputMessageForStrings Name)
-            , viewInput "text" "contentSortStrategy" createTagPageModel.contentSortStrategy (createTagInputMessageForStrings ContentSortStrategy)
-            , viewCheckBox "showAsTag" createTagPageModel.showAsTag (createTagInputMessageForStrings ShowAsTag)
-            , viewInput "text" "contentRenderType" createTagPageModel.contentRenderType (createTagInputMessageForStrings ContentRenderType)
-            , viewCheckBox "showContentcount" createTagPageModel.showContentCount (createTagInputMessageForStrings ShowContentCount)
-            , viewCheckBox "showInHeader" createTagPageModel.showInHeader (createTagInputMessageForStrings ShowInHeader)
-            , viewInput "password" "password" createTagPageModel.password (createTagInputMessageForStrings Pw)
+            [ viewInput "text" "tagId" createTagPageModel.tagId (createTagInputMessage TagId)
+            , viewInput "text" "name" createTagPageModel.name (createTagInputMessage Name)
+            , viewInput "text" "contentSortStrategy" createTagPageModel.contentSortStrategy (createTagInputMessage ContentSortStrategy)
+            , viewCheckBox "showAsTag" createTagPageModel.showAsTag (createTagInputMessage ShowAsTag)
+            , viewInput "text" "contentRenderType" createTagPageModel.contentRenderType (createTagInputMessage ContentRenderType)
+            , viewCheckBox "showContentcount" createTagPageModel.showContentCount (createTagInputMessage ShowContentCount)
+            , viewCheckBox "showInHeader" createTagPageModel.showInHeader (createTagInputMessage ShowInHeader)
+            , viewInput "password" "password" createTagPageModel.password (createTagInputMessage Pw)
             , div []
                 [ viewCreateTagButton (CreateTag createTagPageModel)
                 ]
@@ -31,8 +31,8 @@ viewInput t p v toMsg =
     input [ type_ t, placeholder p, value v, selected True, onInput toMsg, style "width" "1000px" ] []
 
 
-createTagInputMessageForStrings : (eitherStringOrBool -> CreateTagInputType) -> eitherStringOrBool -> Msg
-createTagInputMessageForStrings a b =
+createTagInputMessage : (eitherStringOrBool -> TagInputType) -> eitherStringOrBool -> Msg
+createTagInputMessage a b =
     TagInputChanged (a b)
 
 

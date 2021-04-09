@@ -1,6 +1,6 @@
 module App.UrlParser exposing (pageBy)
 
-import App.Model exposing (CreateContentPageModel, CreateTagPageModel, Initializable(..), MaySendRequest(..), NoVal(..), Page(..), UpdateContentPageModel)
+import App.Model exposing (CreateContentPageModel, CreateTagPageModel, Initializable(..), MaySendRequest(..), NoVal(..), Page(..), UpdateContentPageModel, UpdateTagPageModel)
 import Url
 import Url.Parser exposing ((</>), (<?>), Parser, int, map, oneOf, parse, s, string, top)
 import Url.Parser.Query as Query
@@ -13,8 +13,9 @@ routeParser =
         , map nonInitializedTagPageMapper (s "tags" </> string <?> Query.int "page")
         , map nonInitializedContentPageMapper (s "contents" </> int)
         , map (CreateContentPage (NoRequestSentYet ( CreateContentPageModel "" "" "" "" "" "" "" "", Nothing ))) (s "create" </> s "content")
+        , map nonInitializedUpdateContentPageMapper (s "update" </> s "content" </> int)
         , map (CreateTagPage (NoRequestSentYet (CreateTagPageModel "" "" "DateDESC" True "normal" True False ""))) (s "create" </> s "tag")
-        , map nonInitializedUpdatePageMapper (s "update" </> s "content" </> int)
+        , map nonInitializedUpdateTagPageMapper (s "update" </> s "tag" </> string)
         ]
 
 
@@ -28,9 +29,14 @@ nonInitializedContentPageMapper contentId =
     ContentPage (NonInitialized contentId)
 
 
-nonInitializedUpdatePageMapper : Int -> Page
-nonInitializedUpdatePageMapper contentId =
+nonInitializedUpdateContentPageMapper : Int -> Page
+nonInitializedUpdateContentPageMapper contentId =
     UpdateContentPage (NoRequestSentYet ( UpdateContentPageModel "" "" "" "" "" "" "", Nothing, contentId ))
+
+
+nonInitializedUpdateTagPageMapper : String -> Page
+nonInitializedUpdateTagPageMapper tagId =
+    UpdateTagPage (NoRequestSentYet ( UpdateTagPageModel "" "", tagId ))
 
 
 pageBy : Url.Url -> Page

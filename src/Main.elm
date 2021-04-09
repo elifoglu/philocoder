@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import App.Model exposing (..)
-import App.Msg exposing (CreateContentInputType(..), CreateTagInputType(..), Msg(..))
+import App.Msg exposing (ContentInputType(..), Msg(..), TagInputType(..))
 import App.Ports exposing (sendTitle)
 import App.UrlParser exposing (pageBy)
 import App.View exposing (view)
@@ -10,7 +10,7 @@ import Browser.Navigation as Nav
 import Content.Util exposing (gotContentToContent)
 import List
 import Pagination.Model exposing (Pagination)
-import Requests exposing (createNewTag, getAllTags, getContent, getHomeContents, getTagContents, postNewContent, previewContent, updateExistingContent)
+import Requests exposing (createNewTag, getAllTags, getContent, getHomeContents, getTagContents, postNewContent, previewContent, updateExistingContent, updateExistingTag)
 import Tag.Util exposing (gotTagToTag, tagById)
 import Url
 
@@ -78,7 +78,7 @@ update msg model =
 
                         CreateContentPage status ->
                             case status of
-                                NoRequestSentYet pageData ->
+                                NoRequestSentYet _ ->
                                     sendTitle model
 
                                 _ ->
@@ -406,10 +406,33 @@ update msg model =
                                         ShowInHeader input ->
                                             { createTagPageModel | showInHeader = input }
 
+                                        InfoContentId _ ->
+                                            createTagPageModel
+
                                         Pw input ->
                                             { createTagPageModel | password = input }
                             in
                             ( { model | activePage = CreateTagPage <| NoRequestSentYet newCurrentPageModel }, Cmd.none )
+
+                        _ ->
+                            ( model, Cmd.none )
+
+                UpdateTagPage status ->
+                    case status of
+                        NoRequestSentYet ( updateTagPageModel, tagId ) ->
+                            let
+                                newCurrentPageModel =
+                                    case inputType of
+                                        InfoContentId input ->
+                                            { updateTagPageModel | infoContentId = input }
+
+                                        Pw input ->
+                                            { updateTagPageModel | password = input }
+
+                                        _ ->
+                                            updateTagPageModel
+                            in
+                            ( { model | activePage = UpdateTagPage <| NoRequestSentYet ( newCurrentPageModel, tagId ) }, Cmd.none )
 
                         _ ->
                             ( model, Cmd.none )
@@ -422,10 +445,15 @@ update msg model =
             , createNewTag createTagPageModel
             )
 
-        GotCreateTagResponse res ->
+        UpdateTag tagId updateTagPageModel ->
+            ( { model | activePage = UpdateTagPage <| RequestSent "updating tag..." }
+            , updateExistingTag tagId updateTagPageModel
+            )
+
+        GotDoneResponse res ->
             case res of
                 Ok tagId ->
-                    if tagId == "created" then
+                    if tagId == "done" then
                         ( { model | activePage = HomePage <| NonInitialized NoVal }, getHomeContents )
 
                     else

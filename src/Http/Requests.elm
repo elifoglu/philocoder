@@ -1,6 +1,6 @@
-module Requests exposing (createNewTag, getAllTags, getContent, getHomeContents, getTagContents, postNewContent, previewContent, updateExistingContent)
+module Requests exposing (createNewTag, getAllTags, getContent, getHomeContents, getTagContents, postNewContent, previewContent, updateExistingContent, updateExistingTag)
 
-import App.Model exposing (CreateContentPageModel, CreateTagPageModel, UpdateContentPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder)
+import App.Model exposing (CreateContentPageModel, CreateTagPageModel, UpdateContentPageModel, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
 import App.Msg exposing (Msg(..), PreviewContentModel(..))
 import DataResponse exposing (ContentID, contentDecoder, contentsResponseDecoder, tagsDecoder)
 import Http
@@ -94,5 +94,14 @@ createNewTag model =
     Http.post
         { url = apiURL ++ "tags"
         , body = Http.jsonBody (createTagPageModelEncoder model)
-        , expect = Http.expectString GotCreateTagResponse
+        , expect = Http.expectString GotDoneResponse
+        }
+
+
+updateExistingTag : String -> UpdateTagPageModel -> Cmd Msg
+updateExistingTag tagId model =
+    Http.post
+        { url = apiURL ++ "tags/" ++ tagId
+        , body = Http.jsonBody (updateTagPageModelEncoder model)
+        , expect = Http.expectString GotDoneResponse
         }

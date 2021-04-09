@@ -1,6 +1,6 @@
 module App.Msg exposing (..)
 
-import App.Model exposing (CreateContentPageModel, CreateTagPageModel, UpdateContentPageModel)
+import App.Model exposing (CreateContentPageModel, CreateTagPageModel, UpdateContentPageModel, UpdateTagPageModel)
 import Browser
 import DataResponse exposing (ContentID, ContentsResponse, GotContent, TagsResponse)
 import Http
@@ -17,13 +17,14 @@ type Msg
     | GotContent (Result Http.Error GotContent)
     | GotContentToPreviewForCreatePage CreateContentPageModel (Result Http.Error GotContent)
     | GotContentToPreviewForUpdatePage ContentID UpdateContentPageModel (Result Http.Error GotContent)
-    | ContentInputChanged CreateContentInputType String
-    | TagInputChanged CreateTagInputType
+    | ContentInputChanged ContentInputType String
+    | TagInputChanged TagInputType
     | PreviewContent PreviewContentModel
     | CreateContent CreateContentPageModel
     | UpdateContent ContentID UpdateContentPageModel
     | CreateTag CreateTagPageModel
-    | GotCreateTagResponse (Result Http.Error String)
+    | UpdateTag String UpdateTagPageModel
+    | GotDoneResponse (Result Http.Error String)
 
 
 type PreviewContentModel
@@ -31,7 +32,7 @@ type PreviewContentModel
     | PreviewForContentUpdate ContentID UpdateContentPageModel
 
 
-type CreateContentInputType
+type ContentInputType
     = Id
     | Title
     | Text
@@ -42,7 +43,7 @@ type CreateContentInputType
     | Password
 
 
-type CreateTagInputType
+type TagInputType
     = TagId String
     | Name String
     | ContentSortStrategy String
@@ -50,4 +51,5 @@ type CreateTagInputType
     | ContentRenderType String
     | ShowContentCount Bool
     | ShowInHeader Bool
+    | InfoContentId String
     | Pw String

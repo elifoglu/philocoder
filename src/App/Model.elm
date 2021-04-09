@@ -1,4 +1,4 @@
-module App.Model exposing (CreateContentPageModel, CreateTagPageModel, Initializable(..), MaySendRequest(..), Model, NoVal(..), Page(..), UpdateContentPageModel, contentToUpdateContentPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder)
+module App.Model exposing (CreateContentPageModel, CreateTagPageModel, Initializable(..), MaySendRequest(..), Model, NoVal(..), Page(..), UpdateContentPageModel, UpdateTagPageModel, contentToUpdateContentPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
 
 import Browser.Navigation as Nav
 import Content.Model exposing (Content, ContentDate(..))
@@ -38,6 +38,7 @@ type Page
     | CreateContentPage (MaySendRequest ( CreateContentPageModel, Maybe Content ))
     | UpdateContentPage (MaySendRequest ( UpdateContentPageModel, Maybe Content, Int ))
     | CreateTagPage (MaySendRequest CreateTagPageModel)
+    | UpdateTagPage (MaySendRequest ( UpdateTagPageModel, String ))
     | NotFoundPage
     | MaintenancePage
 
@@ -73,6 +74,12 @@ type alias CreateTagPageModel =
     , contentRenderType : String
     , showContentCount : Bool
     , showInHeader : Bool
+    , password : String
+    }
+
+
+type alias UpdateTagPageModel =
+    { infoContentId : String
     , password : String
     }
 
@@ -145,5 +152,13 @@ createTagPageModelEncoder model =
         , ( "contentRenderType", Encode.string model.contentRenderType )
         , ( "showContentCount", Encode.bool model.showContentCount )
         , ( "showInHeader", Encode.bool model.showInHeader )
+        , ( "password", Encode.string model.password )
+        ]
+
+
+updateTagPageModelEncoder : UpdateTagPageModel -> Encode.Value
+updateTagPageModelEncoder model =
+    Encode.object
+        [ ( "infoContentId", Encode.string model.infoContentId )
         , ( "password", Encode.string model.password )
         ]

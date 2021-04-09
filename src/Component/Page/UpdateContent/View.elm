@@ -1,7 +1,7 @@
 module UpdateContent.View exposing (viewUpdateContentDiv)
 
 import App.Model exposing (CreateContentPageModel, Model, UpdateContentPageModel)
-import App.Msg exposing (CreateContentInputType(..), Msg(..), PreviewContentModel(..))
+import App.Msg exposing (ContentInputType(..), Msg(..), PreviewContentModel(..))
 import Content.Model exposing (Content)
 import Content.View exposing (viewContentDiv)
 import DataResponse exposing (ContentID)
@@ -15,7 +15,7 @@ viewUpdateContentDiv : Model -> UpdateContentPageModel -> Maybe Content -> Conte
 viewUpdateContentDiv model updateContentPageModel maybeContentToPreview contentId =
     div [] <|
         List.intersperse (br [] [])
-            [ viewDisabledInput "text" "id" (String.fromInt contentId) (ContentInputChanged Id)
+            [ viewDisabledInput "text" (String.fromInt contentId)
             , viewInput "text" "title (empty if does not exist)" updateContentPageModel.title (ContentInputChanged Title)
             , viewInput "text" "dd.mm.yyyy (e.g. 3.4.2021 or 29.12.2021)" updateContentPageModel.date (ContentInputChanged Date)
             , viewInput "text" "publishOrderInDay (1, 2, 3...)" updateContentPageModel.publishOrderInDay (ContentInputChanged PublishOrderInDay)
@@ -42,9 +42,9 @@ viewInput t p v toMsg =
     input [ type_ t, placeholder p, value v, onInput toMsg, style "width" "1000px" ] []
 
 
-viewDisabledInput : String -> String -> String -> (String -> msg) -> Html msg
-viewDisabledInput t p v toMsg =
-    input [ type_ t, placeholder p, value v, onInput toMsg, style "width" "1000px", style "enabled" "false" ] []
+viewDisabledInput : String -> String -> Html msg
+viewDisabledInput t v =
+    input [ type_ t, value v, style "width" "1000px", style "enabled" "false" ] []
 
 
 viewContentTextArea : String -> String -> (String -> msg) -> Html msg

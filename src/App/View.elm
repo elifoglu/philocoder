@@ -16,6 +16,7 @@ import Tag.Util exposing (tagWithMostContents)
 import TagInfoIcon.View exposing (viewTagInfoIcon)
 import Tags.View exposing (viewTagTabs)
 import UpdateContent.View exposing (viewUpdateContentDiv)
+import UpdateTag.View exposing (viewUpdateTagDiv)
 
 
 view : Model -> Document Msg
@@ -74,6 +75,14 @@ view model =
                                 case status of
                                     NoRequestSentYet createTagPageModel ->
                                         [ viewCreateTagDiv model createTagPageModel ]
+
+                                    RequestSent infoToShowAfterRequest ->
+                                        [ text infoToShowAfterRequest ]
+
+                            UpdateTagPage status ->
+                                case status of
+                                    NoRequestSentYet ( updateTagPageModel, tagId ) ->
+                                        [ viewUpdateTagDiv updateTagPageModel tagId ]
 
                                     RequestSent infoToShowAfterRequest ->
                                         [ text infoToShowAfterRequest ]
