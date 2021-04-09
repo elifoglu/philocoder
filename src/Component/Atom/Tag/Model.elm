@@ -9,6 +9,7 @@ type alias Tag =
     , showContentCount : Bool
     , showInHeader : Bool
     , contentCount : Int
+    , infoContentId : Maybe Int
     }
 
 

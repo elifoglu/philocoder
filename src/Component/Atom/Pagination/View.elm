@@ -1,6 +1,5 @@
 module Pagination.View exposing (viewPagination)
 
-import App.Model exposing (Initializable(..), Page(..))
 import App.Msg exposing (Msg)
 import Html exposing (Html, a, button, div, text)
 import Html.Attributes exposing (class, disabled, href, style)
@@ -8,26 +7,16 @@ import Pagination.Model exposing (Pagination)
 import Tag.Model exposing (Tag)
 
 
-viewPagination : Page -> Html Msg
-viewPagination page =
-    case page of
-        TagPage status ->
-            case status of
-                Initialized ( tag, _, pagination ) ->
-                    if pagination.totalPageCount == 1 then
-                        text ""
+viewPagination : Tag -> Pagination -> Html Msg
+viewPagination tag pagination =
+    if pagination.totalPageCount == 1 then
+        text ""
 
-                    else
-                        div []
-                            (List.range 1 pagination.totalPageCount
-                                |> List.map (viewPageLinkForTagPage tag pagination.currentPage)
-                            )
-
-                _ ->
-                    text ""
-
-        _ ->
-            text ""
+    else
+        div []
+            (List.range 1 pagination.totalPageCount
+                |> List.map (viewPageLinkForTagPage tag pagination.currentPage)
+            )
 
 
 viewPageLinkForTagPage : Tag -> Int -> Int -> Html Msg

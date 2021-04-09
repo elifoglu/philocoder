@@ -12,6 +12,7 @@ import Html.Attributes exposing (..)
 import NotFound.View exposing (view404Div)
 import Pagination.View exposing (viewPagination)
 import Tag.Util exposing (tagWithMostContents)
+import TagInfoIcon.View exposing (viewTagInfoIcon)
 import Tags.View exposing (viewTagTabs)
 import UpdateContent.View exposing (viewUpdateContentDiv)
 
@@ -24,7 +25,7 @@ view model =
             (viewHomeNavigator
                 :: viewTagTabs model
                 ++ [ div [ class "contents" ]
-                        ((case model.activePage of
+                        (case model.activePage of
                             HomePage status ->
                                 case status of
                                     NonInitialized _ ->
@@ -46,8 +47,11 @@ view model =
                                     NonInitialized _ ->
                                         []
 
-                                    Initialized ( tag, contents, _ ) ->
+                                    Initialized ( tag, contents, pagination ) ->
                                         viewContentDivs model contents (Just tag)
+                                            ++ [ viewTagInfoIcon tag
+                                               , viewPagination tag pagination
+                                               ]
 
                             CreateContentPage status ->
                                 case status of
@@ -70,8 +74,6 @@ view model =
 
                             MaintenancePage ->
                                 [ text "*bakım çalışması*" ]
-                         )
-                            ++ [ viewPagination model.activePage ]
                         )
                    ]
             )
