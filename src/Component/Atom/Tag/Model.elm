@@ -7,7 +7,7 @@ type alias Tag =
     , showAsTag : Bool
     , contentRenderType : ContentRenderType
     , showContentCount : Bool
-    , showInHeader : Bool
+    , headerIndex : Maybe Int
     , contentCount : Int
     , infoContentId : Maybe Int
     }

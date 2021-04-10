@@ -1,4 +1,4 @@
-module Tag.Util exposing (contentRenderTypeOf, gotTagToTag, nameOfActiveTag, tagById, tagNameToTag, tagWithMostContents)
+module Tag.Util exposing (contentRenderTypeOf, gotTagToTag, nameOfActiveTag, tagById, tagHasHeaderIndex, tagNameToTag, tagWithMostContents)
 
 import App.Model exposing (Initializable(..), Model, Page(..))
 import DataResponse exposing (GotTag)
@@ -41,6 +41,16 @@ tagNameToTag allTags tagName =
     allTags
         |> List.filter (\tag -> tag.name == tagName)
         |> List.head
+
+
+tagHasHeaderIndex : Tag -> Bool
+tagHasHeaderIndex tag =
+    case tag.headerIndex of
+        Just _ ->
+            True
+
+        Nothing ->
+            False
 
 
 gotTagToTag : GotTag -> Tag

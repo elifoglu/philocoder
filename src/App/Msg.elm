@@ -50,6 +50,6 @@ type TagInputType
     | ShowAsTag Bool
     | ContentRenderType String
     | ShowContentCount Bool
-    | ShowInHeader Bool
+    | HeaderIndex String
     | InfoContentId String
     | Pw String

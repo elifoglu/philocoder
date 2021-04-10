@@ -18,7 +18,7 @@ viewCreateTagDiv model createTagPageModel =
             , viewCheckBox "showAsTag" createTagPageModel.showAsTag (createTagInputMessage ShowAsTag)
             , viewInput "text" "contentRenderType" createTagPageModel.contentRenderType (createTagInputMessage ContentRenderType)
             , viewCheckBox "showContentcount" createTagPageModel.showContentCount (createTagInputMessage ShowContentCount)
-            , viewCheckBox "showInHeader" createTagPageModel.showInHeader (createTagInputMessage ShowInHeader)
+            , viewInput "text" "headerIndex" createTagPageModel.headerIndex (createTagInputMessage HeaderIndex)
             , viewInput "password" "password" createTagPageModel.password (createTagInputMessage Pw)
             , div []
                 [ viewCreateTagButton (CreateTag createTagPageModel)

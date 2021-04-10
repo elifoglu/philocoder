@@ -19,7 +19,7 @@ type alias GotTag =
     , showAsTag : Bool
     , contentRenderType : ContentRenderType
     , showContentCount : Bool
-    , showInHeader : Bool
+    , headerIndex : Maybe Int
     , contentCount : Int
     , infoContentId : Maybe Int
     }
@@ -66,7 +66,7 @@ tagDecoder =
         (field "showAsTag" bool)
         (field "contentRenderType" contentRenderTypeDecoder)
         (field "showContentCount" bool)
-        (field "showInHeader" bool)
+        (field "headerIndex" (maybe int))
         (field "contentCount" int)
         (field "infoContentId" (maybe int))
 

@@ -403,8 +403,8 @@ update msg model =
                                         ShowContentCount input ->
                                             { createTagPageModel | showContentCount = input }
 
-                                        ShowInHeader input ->
-                                            { createTagPageModel | showInHeader = input }
+                                        HeaderIndex input ->
+                                            { createTagPageModel | headerIndex = input }
 
                                         InfoContentId _ ->
                                             createTagPageModel

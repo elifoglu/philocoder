@@ -73,7 +73,7 @@ type alias CreateTagPageModel =
     , showAsTag : Bool
     , contentRenderType : String
     , showContentCount : Bool
-    , showInHeader : Bool
+    , headerIndex : String
     , password : String
     }
 
@@ -151,7 +151,7 @@ createTagPageModelEncoder model =
         , ( "showAsTag", Encode.bool model.showAsTag )
         , ( "contentRenderType", Encode.string model.contentRenderType )
         , ( "showContentCount", Encode.bool model.showContentCount )
-        , ( "showInHeader", Encode.bool model.showInHeader )
+        , ( "headerIndex", Encode.string model.headerIndex )
         , ( "password", Encode.string model.password )
         ]
 
