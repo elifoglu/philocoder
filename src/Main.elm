@@ -92,6 +92,22 @@ update msg model =
                                 _ ->
                                     Cmd.none
 
+                        CreateTagPage status ->
+                            case status of
+                                NoRequestSentYet _ ->
+                                    sendTitle model
+
+                                _ ->
+                                    Cmd.none
+
+                        UpdateTagPage status ->
+                            case status of
+                                NoRequestSentYet ( _, _ ) ->
+                                    sendTitle model
+
+                                _ ->
+                                    Cmd.none
+
                         _ ->
                             Cmd.none
                     )
@@ -112,6 +128,15 @@ update msg model =
 
                         newActivePage =
                             case model.activePage of
+                                CreateContentPage status ->
+                                    case status of
+                                        NoRequestSentYet ( _, _ ) ->
+                                            CreateContentPage <|
+                                                NoRequestSentYet ( contentToCreateContentPageModel content, Nothing )
+
+                                        _ ->
+                                            ContentPage <| Initialized content
+
                                 UpdateContentPage status ->
                                     case status of
                                         NoRequestSentYet ( _, _, contentId ) ->
@@ -318,6 +343,9 @@ update msg model =
 
                                         Password ->
                                             { createContentPageModel | password = input }
+
+                                        ContentToCopy ->
+                                            { createContentPageModel | contentIdToCopy = input }
                             in
                             ( { model | activePage = CreateContentPage <| NoRequestSentYet ( newCurrentPageModel, maybeContentToPreview ) }, Cmd.none )
 
@@ -353,6 +381,9 @@ update msg model =
 
                                         Password ->
                                             { updateContentPageModel | password = input }
+
+                                        _ ->
+                                            updateContentPageModel
                             in
                             ( { model | activePage = UpdateContentPage <| NoRequestSentYet ( newCurrentPageModel, maybeContentToPreview, contentId ) }, Cmd.none )
 
@@ -461,6 +492,11 @@ update msg model =
 
                 Err _ ->
                     ( { model | activePage = NotFoundPage }, Cmd.none )
+
+        GetContentToCopy contentId ->
+            ( model
+            , getContent <| Maybe.withDefault 0 (String.toInt contentId)
+            )
 
 
 subscriptions : Model -> Sub Msg

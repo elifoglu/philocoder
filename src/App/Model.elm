@@ -1,4 +1,4 @@
-module App.Model exposing (CreateContentPageModel, CreateTagPageModel, Initializable(..), MaySendRequest(..), Model, NoVal(..), Page(..), UpdateContentPageModel, UpdateTagPageModel, contentToUpdateContentPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
+module App.Model exposing (CreateContentPageModel, CreateTagPageModel, Initializable(..), MaySendRequest(..), Model, NoVal(..), Page(..), UpdateContentPageModel, UpdateTagPageModel, contentToCreateContentPageModel, contentToUpdateContentPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
 
 import Browser.Navigation as Nav
 import Content.Model exposing (Content, ContentDate(..))
@@ -52,6 +52,7 @@ type alias CreateContentPageModel =
     , tags : String
     , refs : String
     , password : String
+    , contentIdToCopy : String
     }
 
 
@@ -81,6 +82,38 @@ type alias CreateTagPageModel =
 type alias UpdateTagPageModel =
     { infoContentId : String
     , password : String
+    }
+
+
+contentToCreateContentPageModel : Content -> CreateContentPageModel
+contentToCreateContentPageModel content =
+    { id = ""
+    , title = Maybe.withDefault "" content.title
+    , text = content.text
+    , date =
+        case content.date of
+            DateExists date _ ->
+                String.fromInt (day date) ++ "." ++ String.fromInt (monthNumber date) ++ "." ++ String.fromInt (year date)
+
+            DateNotExists _ ->
+                ""
+    , publishOrderInDay =
+        case content.date of
+            DateExists _ publishOrderInDay ->
+                String.fromInt publishOrderInDay
+
+            DateNotExists publishOrderInDay ->
+                String.fromInt publishOrderInDay
+    , tags = String.join "," (List.map (\tag -> tag.name) content.tags)
+    , refs =
+        case content.refs of
+            Just refs ->
+                String.join "," (List.map (\ref -> ref.id) refs)
+
+            Nothing ->
+                ""
+    , password = ""
+    , contentIdToCopy = ""
     }
 
 

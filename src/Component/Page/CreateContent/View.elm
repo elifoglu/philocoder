@@ -13,27 +13,31 @@ import Tag.Util exposing (tagWithMostContents)
 viewCreateContentDiv : Model -> CreateContentPageModel -> Maybe Content -> Html Msg
 viewCreateContentDiv model createContentPageModel maybeContentToPreview =
     div [] <|
-        List.intersperse (br [] [])
-            [ viewInput "text" "id" createContentPageModel.id (ContentInputChanged Id)
-            , viewInput "text" "title (empty if does not exist)" createContentPageModel.title (ContentInputChanged Title)
-            , viewInput "text" "dd.mm.yyyy (e.g. 3.4.2021 or 29.12.2021)" createContentPageModel.date (ContentInputChanged Date)
-            , viewInput "text" "publishOrderInDay (1, 2, 3...)" createContentPageModel.publishOrderInDay (ContentInputChanged PublishOrderInDay)
-            , viewInput "text" "tagNames (use comma to separate)" createContentPageModel.tags (ContentInputChanged Tags)
-            , viewInput "text" "refIDs (use comma to separate)" createContentPageModel.refs (ContentInputChanged Refs)
-            , viewInput "password" "password" createContentPageModel.password (ContentInputChanged Password)
-            , viewContentTextArea "content" createContentPageModel.text (ContentInputChanged Text)
-            , div []
-                [ viewPreviewContentButton (PreviewContent <| PreviewForContentCreate createContentPageModel)
-                , viewCreateContentButton (CreateContent createContentPageModel)
-                ]
-            , hr [] []
-            , case maybeContentToPreview of
-                Just content ->
-                    viewContentDiv model (tagWithMostContents model) content
+        [ text "Create a new content using this content's data:"
+        , viewInput "text" "id of content to copy" createContentPageModel.contentIdToCopy (ContentInputChanged ContentToCopy)
+        , viewGetContentToCopyButton (GetContentToCopy createContentPageModel.contentIdToCopy)
+        ]
+            ++ List.intersperse (br [] [])
+                [ viewInput "text" "id" createContentPageModel.id (ContentInputChanged Id)
+                , viewInput "text" "title (empty if does not exist)" createContentPageModel.title (ContentInputChanged Title)
+                , viewInput "text" "dd.mm.yyyy (e.g. 3.4.2021 or 29.12.2021)" createContentPageModel.date (ContentInputChanged Date)
+                , viewInput "text" "publishOrderInDay (1, 2, 3...)" createContentPageModel.publishOrderInDay (ContentInputChanged PublishOrderInDay)
+                , viewInput "text" "tagNames (use comma to separate)" createContentPageModel.tags (ContentInputChanged Tags)
+                , viewInput "text" "refIDs (use comma to separate)" createContentPageModel.refs (ContentInputChanged Refs)
+                , viewInput "password" "password" createContentPageModel.password (ContentInputChanged Password)
+                , viewContentTextArea "content" createContentPageModel.text (ContentInputChanged Text)
+                , div []
+                    [ viewPreviewContentButton (PreviewContent <| PreviewForContentCreate createContentPageModel)
+                    , viewCreateContentButton (CreateContent createContentPageModel)
+                    ]
+                , hr [] []
+                , case maybeContentToPreview of
+                    Just content ->
+                        viewContentDiv model (tagWithMostContents model) content
 
-                Nothing ->
-                    text "invalid content, or no content at all"
-            ]
+                    Nothing ->
+                        text "invalid content, or no content at all"
+                ]
 
 
 viewInput : String -> String -> String -> (String -> msg) -> Html msg
@@ -54,3 +58,8 @@ viewCreateContentButton msg =
 viewPreviewContentButton : msg -> Html msg
 viewPreviewContentButton msg =
     button [ onClick msg ] [ text "preview content" ]
+
+
+viewGetContentToCopyButton : msg -> Html msg
+viewGetContentToCopyButton msg =
+    button [ onClick msg ] [ text "get content to copy" ]

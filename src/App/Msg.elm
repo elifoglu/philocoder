@@ -21,6 +21,7 @@ type Msg
     | TagInputChanged TagInputType
     | PreviewContent PreviewContentModel
     | CreateContent CreateContentPageModel
+    | GetContentToCopy String
     | UpdateContent ContentID UpdateContentPageModel
     | CreateTag CreateTagPageModel
     | UpdateTag String UpdateTagPageModel
@@ -41,6 +42,7 @@ type ContentInputType
     | Tags
     | Refs
     | Password
+    | ContentToCopy
 
 
 type TagInputType

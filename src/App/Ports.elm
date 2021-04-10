@@ -55,5 +55,16 @@ sendTitle model =
                 _ ->
                     Cmd.none
 
+        CreateTagPage _ ->
+            title "Create new tag - Philocoder"
+
+        UpdateTagPage status ->
+            case status of
+                NoRequestSentYet ( _, tagId ) ->
+                    title <| "Update content " ++ tagId ++ " - Philocoder"
+
+                _ ->
+                    Cmd.none
+
         _ ->
             Cmd.none
