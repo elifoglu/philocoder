@@ -32,4 +32,4 @@ viewDisabledInput t v =
 
 viewUpdateTagButton : msg -> Html msg
 viewUpdateTagButton msg =
-    button [ onClick msg ] [ text "create new tag" ]
+    button [ onClick msg ] [ text "update tag" ]
