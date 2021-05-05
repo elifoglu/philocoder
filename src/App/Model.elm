@@ -2,7 +2,7 @@ module App.Model exposing (CreateContentPageModel, CreateTagPageModel, Drag, Ent
 
 import Browser.Navigation as Nav
 import Content.Model exposing (Content, ContentDate(..))
-import DataResponse exposing (ContentID)
+import DataResponse exposing (ContentID, GotRef)
 import Date exposing (day, monthNumber, year)
 import Force
 import Graph exposing (Graph, NodeId)
@@ -20,7 +20,8 @@ type alias Model =
     , key : Nav.Key
     , activePage : Page
     , allTags : List Tag
-    , graphModel : GraphModel
+    , allRefs : List GotRef
+    , graphModel : Maybe GraphModel
     }
 
 

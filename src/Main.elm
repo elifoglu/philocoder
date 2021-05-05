@@ -11,7 +11,7 @@ import Content.Util exposing (gotContentToContent)
 import ForceDirectedGraph exposing (graphSubscriptions, initGraphModel, updateGraph)
 import List
 import Pagination.Model exposing (Pagination)
-import Requests exposing (createNewTag, getAllTags, getContent, getTagContents, postNewContent, previewContent, updateExistingContent, updateExistingTag)
+import Requests exposing (createNewTag, getAllReferences, getAllTags, getContent, getTagContents, postNewContent, previewContent, updateExistingContent, updateExistingTag)
 import Tag.Util exposing (gotTagToTag, tagById)
 import Url
 
@@ -29,7 +29,7 @@ main =
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
-    ( Model "log" key (pageBy url) [] initGraphModel
+    ( Model "log" key (pageBy url) [] [] Nothing
     , getAllTags
     )
 
@@ -101,8 +101,9 @@ update msg model =
                                 _ ->
                                     Cmd.none
 
-                        --HomePage ->
-                        --  Cmd.none
+                        HomePage ->
+                            getAllReferences
+
                         _ ->
                             Cmd.none
                     )
@@ -479,10 +480,34 @@ update msg model =
             , getContent <| Maybe.withDefault 0 (String.toInt contentId)
             )
 
+        GotAllReferences res ->
+            case res of
+                Ok allRefs ->
+                    let
+                        newModel =
+                            { model | allRefs = allRefs, graphModel = Just <| initGraphModel allRefs }
+                    in
+                    ( newModel, Cmd.none )
+
+                Err _ ->
+                    ( model
+                    , Cmd.none
+                    )
+
         otherMsg ->
-            ( { model | graphModel = updateGraph otherMsg model.graphModel }, Cmd.none )
+            case model.graphModel of
+                Just graphModel ->
+                    ( { model | graphModel = Just <| updateGraph otherMsg graphModel }, Cmd.none )
+
+                Nothing ->
+                    ( model, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    graphSubscriptions model.graphModel
+    case model.graphModel of
+        Just graphModel ->
+            graphSubscriptions graphModel
+
+        Nothing ->
+            Sub.none

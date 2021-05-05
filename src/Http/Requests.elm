@@ -1,8 +1,8 @@
-module Requests exposing (createNewTag, getAllTags, getContent, getTagContents, postNewContent, previewContent, updateExistingContent, updateExistingTag)
+module Requests exposing (createNewTag, getAllReferences, getAllTags, getContent, getTagContents, postNewContent, previewContent, updateExistingContent, updateExistingTag)
 
 import App.Model exposing (CreateContentPageModel, CreateTagPageModel, UpdateContentPageModel, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
 import App.Msg exposing (Msg(..), PreviewContentModel(..))
-import DataResponse exposing (ContentID, contentDecoder, contentsResponseDecoder, tagsDecoder)
+import DataResponse exposing (ContentID, allRefsDecoder, contentDecoder, contentsResponseDecoder, tagsDecoder)
 import Http
 import Tag.Model exposing (Tag)
 
@@ -42,6 +42,14 @@ getContent contentId =
     Http.get
         { url = apiURL ++ "contents/" ++ String.fromInt contentId
         , expect = Http.expectJson GotContent contentDecoder
+        }
+
+
+getAllReferences : Cmd Msg
+getAllReferences =
+    Http.get
+        { url = apiURL ++ "content-refs"
+        , expect = Http.expectJson GotAllReferences allRefsDecoder
         }
 
 
