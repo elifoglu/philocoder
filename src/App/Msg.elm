@@ -2,7 +2,7 @@ module App.Msg exposing (..)
 
 import App.Model exposing (CreateContentPageModel, CreateTagPageModel, UpdateContentPageModel, UpdateTagPageModel)
 import Browser
-import DataResponse exposing (ContentID, ContentsResponse, GotContent, TagsResponse)
+import DataResponse exposing (ContentID, ContentsResponse, GotAllRefs, GotContent, TagsResponse)
 import Graph exposing (NodeId)
 import Http
 import Tag.Model exposing (Tag)
@@ -16,6 +16,7 @@ type Msg
     | GotAllTags (Result Http.Error TagsResponse)
     | GotContentsOfTag Tag (Result Http.Error ContentsResponse)
     | GotContent (Result Http.Error GotContent)
+    | GotAllReferences (Result Http.Error GotAllRefs)
     | GotContentToPreviewForCreatePage CreateContentPageModel (Result Http.Error GotContent)
     | GotContentToPreviewForUpdatePage ContentID UpdateContentPageModel (Result Http.Error GotContent)
     | ContentInputChanged ContentInputType String

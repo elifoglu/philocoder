@@ -4,10 +4,12 @@ import App.Model exposing (Entity, GraphModel, Model)
 import App.Msg exposing (Msg(..))
 import Browser.Events
 import Color
+import DataResponse exposing (GotRef)
 import Force exposing (State)
 import Graph exposing (Edge, Graph, Node, NodeContext, NodeId)
 import Html.Events.Extra.Mouse as Mouse
 import Json.Decode as Decode
+import List.Extra exposing (elemIndex, unique)
 import TypedSvg exposing (circle, g, line, svg, title)
 import TypedSvg.Attributes exposing (class, fill, stroke, viewBox)
 import TypedSvg.Attributes.InPx exposing (cx, cy, r, strokeWidth, x1, x2, y1, y2)
@@ -15,44 +17,41 @@ import TypedSvg.Core exposing (Attribute, Svg, text)
 import TypedSvg.Types exposing (Paint(..))
 
 
-contentsGraph : Graph String ()
-contentsGraph =
+contentsGraph : List GotRef -> Graph String ()
+contentsGraph allRefs =
+    let
+        uniqueRefList : List String
+        uniqueRefList =
+            flattenAllRefs allRefs
+    in
     Graph.fromNodeLabelsAndEdgePairs
-        [ "1"
-        , "2"
-        , "3"
-        , "4"
-        , "5"
-        , "6"
-        , "7"
-        , "8"
-        , "8"
-        , "8"
-        , "8"
-        , "8"
-        , "8"
-        , "8"
-        , "8"
-        , "8"
-        , "8"
-        , "8"
-        , "8"
-        , "8"
-        , "8"
-        , "8"
-        , "8"
-        , "8"
-        ]
-        [ ( 1, 0 )
-        , ( 2, 0 )
-        , ( 1, 2 )
-        , ( 1, 3 )
-        , ( 1, 4 )
-        , ( 1, 5 )
-        , ( 0, 2 )
-        , ( 0, 6 )
-        , ( 0, 7 )
-        ]
+        uniqueRefList
+        (allRefs
+            |> List.map gotRefToPair
+            |> List.map (mapToIndexOfEach uniqueRefList)
+        )
+
+
+flattenAllRefs : List GotRef -> List String
+flattenAllRefs gotRefs =
+    gotRefs
+        |> List.concatMap (\ref -> [ ref.a, ref.b ])
+        |> unique
+        |> List.map (\ref -> String.fromInt ref)
+
+
+gotRefToPair : GotRef -> ( Int, Int )
+gotRefToPair gotRef =
+    ( gotRef.a
+    , gotRef.b
+    )
+
+
+mapToIndexOfEach : List String -> ( Int, Int ) -> ( Int, Int )
+mapToIndexOfEach contentIdList ( a, b ) =
+    ( Maybe.withDefault -1 <| elemIndex (String.fromInt a) contentIdList
+    , Maybe.withDefault -1 <| elemIndex (String.fromInt b) contentIdList
+    )
 
 
 w : Float
@@ -69,12 +68,12 @@ h =
 --INIT--
 
 
-initGraphModel : GraphModel
-initGraphModel =
+initGraphModel : List GotRef -> GraphModel
+initGraphModel allRefs =
     let
         graph : Graph Entity ()
         graph =
-            contentsGraph
+            contentsGraph allRefs
                 |> Graph.mapContexts initializeNode
 
         link : { a | from : b, to : c } -> ( b, c )
@@ -84,7 +83,7 @@ initGraphModel =
         forces : List (Force.Force NodeId)
         forces =
             [ Force.links <| List.map link <| Graph.edges graph
-            , Force.manyBodyStrength -1 <| List.map .id (Graph.nodes graph)
+            , Force.manyBodyStrength -3 <| List.map .id (Graph.nodes graph)
             , Force.center (w / 2) (h / 2)
             ]
     in
@@ -177,16 +176,21 @@ updateContextWithValue nodeCtx value =
 --VIEW--
 
 
-viewGraph : GraphModel -> Svg Msg
-viewGraph model =
-    svg [ viewBox 0 0 w h ]
-        [ Graph.edges model.graph
-            |> List.map (linkElement model.graph)
-            |> g [ class [ "links" ] ]
-        , Graph.nodes model.graph
-            |> List.map nodeElement
-            |> g [ class [ "nodes" ] ]
-        ]
+viewGraph : Maybe GraphModel -> Svg Msg
+viewGraph maybeModel =
+    svg [ viewBox 0 0 w h ] <|
+        case maybeModel of
+            Just model ->
+                [ Graph.edges model.graph
+                    |> List.map (linkElement model.graph)
+                    |> g [ class [ "links" ] ]
+                , Graph.nodes model.graph
+                    |> List.map nodeElement
+                    |> g [ class [ "nodes" ] ]
+                ]
+
+            Nothing ->
+                []
 
 
 linkElement : Graph Entity () -> Edge () -> Svg msg

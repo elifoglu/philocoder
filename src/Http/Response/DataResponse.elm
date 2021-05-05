@@ -1,4 +1,4 @@
-module DataResponse exposing (ContentID, ContentsResponse, DateAndPublishOrder, GotContent, GotContentDate(..), GotTag, JustPublishOrder, TagsResponse, contentDecoder, contentsResponseDecoder, tagsDecoder)
+module DataResponse exposing (ContentID, ContentsResponse, DateAndPublishOrder, GotAllRefs, GotContent, GotContentDate(..), GotRef, GotTag, JustPublishOrder, TagsResponse, allRefsDecoder, contentDecoder, contentsResponseDecoder, tagsDecoder)
 
 import Content.Model exposing (Ref)
 import Json.Decode as D exposing (Decoder, andThen, bool, field, int, map, map2, map4, map6, map8, maybe, oneOf, string, succeed)
@@ -46,6 +46,14 @@ type alias JustPublishOrder =
     { publishOrderInDay : Int }
 
 
+type alias GotAllRefs =
+    List GotRef
+
+
+type alias GotRef =
+    { a : Int, b : Int }
+
+
 tagsDecoder : Decoder TagsResponse
 tagsDecoder =
     D.list tagDecoder
@@ -56,6 +64,14 @@ contentsResponseDecoder =
     map2 ContentsResponse
         (field "totalPageCount" int)
         (field "contents" (D.list contentDecoder))
+
+
+allRefsDecoder : Decoder GotAllRefs
+allRefsDecoder =
+    D.list <|
+        map2 GotRef
+            (field "a" int)
+            (field "b" int)
 
 
 tagDecoder : Decoder GotTag
