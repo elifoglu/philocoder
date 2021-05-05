@@ -17,11 +17,6 @@ viewHomePageDiv model =
         )
 
 
-tagSorter : Tag -> Int
-tagSorter tag =
-    tag.contentCount
-
-
 viewTag : Tag -> Html Msg
 viewTag tag =
     span []

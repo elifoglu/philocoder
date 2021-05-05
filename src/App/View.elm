@@ -8,6 +8,7 @@ import Content.View exposing (viewContentDiv)
 import Contents.View exposing (viewContentDivs)
 import CreateContent.View exposing (viewCreateContentDiv)
 import CreateTag.View exposing (viewCreateTagDiv)
+import ForceDirectedGraph exposing (viewGraph)
 import Home.View exposing (viewHomePageDiv)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -27,7 +28,9 @@ view model =
             , div [ class "body" ]
                 (case model.activePage of
                     HomePage ->
-                        [ viewHomePageDiv model ]
+                        [ viewHomePageDiv model
+                        , div [ style "width" "300px", style "height" "300px" ] [ viewGraph model.graphModel ]
+                        ]
 
                     ContentPage status ->
                         case status of
