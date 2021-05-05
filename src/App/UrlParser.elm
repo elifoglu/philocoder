@@ -9,7 +9,7 @@ import Url.Parser.Query as Query
 routeParser : Parser (Page -> a) a
 routeParser =
     oneOf
-        [ map (HomePage (NonInitialized NoVal)) top
+        [ map HomePage top
         , map nonInitializedTagPageMapper (s "tags" </> string <?> Query.int "page")
         , map nonInitializedContentPageMapper (s "contents" </> int)
         , map (CreateContentPage (NoRequestSentYet ( CreateContentPageModel "" "" "" "" "" "" "" "" "", Nothing ))) (s "create" </> s "content")

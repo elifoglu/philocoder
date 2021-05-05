@@ -1,6 +1,5 @@
 module Contents.View exposing (viewContentDivs)
 
-import App.Model exposing (Model)
 import App.Msg exposing (Msg)
 import Content.Model exposing (Content)
 import Content.View exposing (viewContentDiv)
@@ -10,10 +9,10 @@ import Tag.Model exposing (ContentRenderType(..), Tag)
 import Tag.Util exposing (contentRenderTypeOf)
 
 
-viewContentDivs : Model -> List Content -> Maybe Tag -> List (Html Msg)
-viewContentDivs model contents maybeTag =
+viewContentDivs : List Content -> Maybe Tag -> List (Html Msg)
+viewContentDivs contents maybeTag =
     contents
-        |> List.map (viewContentDiv model maybeTag)
+        |> List.map (viewContentDiv maybeTag)
         |> List.intersperse (viewContentSeparator (contentRenderTypeOf maybeTag))
 
 
@@ -27,5 +26,5 @@ viewContentSeparator contentRenderType =
                 ]
 
         Minified ->
-            div [ style "margin-bottom" "40px" ]
+            div [ style "margin-bottom" "30px" ]
                 []

@@ -32,7 +32,7 @@ type MaySendRequest pageData
 
 
 type Page
-    = HomePage (Initializable NoVal (List Content))
+    = HomePage
     | ContentPage (Initializable Int Content)
     | TagPage (Initializable ( String, Maybe Int ) ( Tag, List Content, Pagination ))
     | CreateContentPage (MaySendRequest ( CreateContentPageModel, Maybe Content ))

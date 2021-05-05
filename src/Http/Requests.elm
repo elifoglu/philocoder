@@ -1,4 +1,4 @@
-module Requests exposing (createNewTag, getAllTags, getContent, getHomeContents, getTagContents, postNewContent, previewContent, updateExistingContent, updateExistingTag)
+module Requests exposing (createNewTag, getAllTags, getContent, getTagContents, postNewContent, previewContent, updateExistingContent, updateExistingTag)
 
 import App.Model exposing (CreateContentPageModel, CreateTagPageModel, UpdateContentPageModel, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
 import App.Msg exposing (Msg(..), PreviewContentModel(..))
@@ -34,14 +34,6 @@ getTagContents tag maybePage =
                             ""
                    )
         , expect = Http.expectJson (GotContentsOfTag tag) contentsResponseDecoder
-        }
-
-
-getHomeContents : Cmd Msg
-getHomeContents =
-    Http.get
-        { url = apiURL ++ "contents?tagId=tumu"
-        , expect = Http.expectJson GotHomeContents contentsResponseDecoder
         }
 
 

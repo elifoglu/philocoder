@@ -30,7 +30,7 @@ viewUpdateContentDiv model updateContentPageModel maybeContentToPreview contentI
             , hr [] []
             , case maybeContentToPreview of
                 Just content ->
-                    viewContentDiv model (tagWithMostContents model) content
+                    viewContentDiv (tagWithMostContents model) content
 
                 Nothing ->
                     text "invalid content, or no content at all"

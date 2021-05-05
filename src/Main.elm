@@ -10,7 +10,7 @@ import Browser.Navigation as Nav
 import Content.Util exposing (gotContentToContent)
 import List
 import Pagination.Model exposing (Pagination)
-import Requests exposing (createNewTag, getAllTags, getContent, getHomeContents, getTagContents, postNewContent, previewContent, updateExistingContent, updateExistingTag)
+import Requests exposing (createNewTag, getAllTags, getContent, getTagContents, postNewContent, previewContent, updateExistingContent, updateExistingTag)
 import Tag.Util exposing (gotTagToTag, tagById)
 import Url
 
@@ -47,14 +47,6 @@ update msg model =
                         | allTags = allTags
                       }
                     , case model.activePage of
-                        HomePage status ->
-                            case status of
-                                NonInitialized _ ->
-                                    getHomeContents
-
-                                Initialized _ ->
-                                    Cmd.none
-
                         ContentPage status ->
                             case status of
                                 NonInitialized contentId ->
@@ -262,14 +254,6 @@ update msg model =
             , Cmd.batch
                 [ sendTitle newModel
                 , case activePage of
-                    HomePage status ->
-                        case status of
-                            NonInitialized _ ->
-                                getHomeContents
-
-                            _ ->
-                                Cmd.none
-
                     ContentPage status ->
                         case status of
                             NonInitialized contentId ->
@@ -295,22 +279,6 @@ update msg model =
                         Cmd.none
                 ]
             )
-
-        GotHomeContents result ->
-            case result of
-                Ok contentsResponse ->
-                    let
-                        newModel =
-                            { model
-                                | activePage = HomePage <| Initialized (List.map (gotContentToContent model.allTags) contentsResponse.contents)
-                            }
-                    in
-                    ( newModel
-                    , sendTitle newModel
-                    )
-
-                Err _ ->
-                    ( model, Cmd.none )
 
         ContentInputChanged inputType input ->
             case model.activePage of
@@ -484,11 +452,16 @@ update msg model =
         GotDoneResponse res ->
             case res of
                 Ok tagId ->
-                    if tagId == "done" then
-                        ( { model | activePage = HomePage <| NonInitialized NoVal }, getHomeContents )
+                    ( { model
+                        | activePage =
+                            if tagId == "done" then
+                                HomePage
 
-                    else
-                        ( { model | activePage = NotFoundPage }, Cmd.none )
+                            else
+                                NotFoundPage
+                      }
+                    , Cmd.none
+                    )
 
                 Err _ ->
                     ( { model | activePage = NotFoundPage }, Cmd.none )

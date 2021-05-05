@@ -13,7 +13,7 @@ viewPagination tag pagination =
         text ""
 
     else
-        div []
+        div [ style "margin-top" "30px", style "margin-bottom" "30px" ]
             (List.range 1 pagination.totalPageCount
                 |> List.map (viewPageLinkForTagPage tag pagination.currentPage)
             )

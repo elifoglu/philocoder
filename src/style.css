@@ -7,16 +7,8 @@ body {
     font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
     background: rgba(187, 187, 187, 0.25);
     color: rgba(0,0,0,.75);
-    /*background: rgb(36, 36, 36);
-    color: #d4d4d4;*/
     margin-left: 5px;
 }
-
-/*
-a {
-    color: white;
-}
-*/
 
 pre {
     background-color: black;
@@ -31,8 +23,12 @@ pre {
     font-size: 18px;
 }
 
-.headerTab {
-    margin: 2px;
+.header {
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.headerItem {
     padding: 10px;
     border: 0;
     border-radius: 2px;
@@ -47,11 +43,7 @@ pre {
     display: inline-block;
 }
 
-.headerTab:hover {
-    background: #c9c9c9;
-}
-
-.headerTabActive {
+.homeNavigator:hover {
     background: #c9c9c9;
 }
 
@@ -86,8 +78,9 @@ a {
     color: black;
 }
 
-.contents {
-    margin: 20px;
+.body {
+    margin-top: 10px;
+    margin-left: 20px;
     max-width: 600px;
 }
 
@@ -100,4 +93,10 @@ a {
 
 .markdownDiv p { /* removes unnecessary empty line between contentLinkIcon and contentText for minified view */
     margin-block-start: 0;
+}
+
+.navToTagDesc {
+    width: 13px;
+    vertical-align: middle;
+    margin-bottom: 2px;
 }

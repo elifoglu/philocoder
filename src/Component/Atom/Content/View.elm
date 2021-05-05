@@ -1,14 +1,11 @@
 module Content.View exposing (viewContentDiv)
 
-import App.Model exposing (Model)
 import App.Msg exposing (Msg)
 import Content.Model exposing (Content, ContentDate(..))
-import Content.Util exposing (contentById, maybeDateText, maybeDisplayableTagsOfContent)
+import Content.Util exposing (maybeDateText, maybeDisplayableTagsOfContent)
 import Html exposing (Html, a, br, div, img, p, span, text)
 import Html.Attributes exposing (class, href, src, style)
-import List.Extra exposing (uniqueBy)
 import Markdown
-import Maybe.Extra exposing (values)
 import Tag.Model exposing (ContentRenderType(..), Tag)
 
 
@@ -16,8 +13,8 @@ type alias ContentRenderFn =
     Content -> Html Msg
 
 
-viewContentDiv : Model -> Maybe Tag -> Content -> Html Msg
-viewContentDiv model maybeActiveTag content =
+viewContentDiv : Maybe Tag -> Content -> Html Msg
+viewContentDiv maybeActiveTag content =
     case maybeActiveTag of
         Just tag ->
             viewContentFn tag.contentRenderType content

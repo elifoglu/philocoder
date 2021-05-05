@@ -2,19 +2,18 @@ module App.View exposing (view)
 
 import App.Model exposing (..)
 import App.Msg exposing (Msg(..))
+import Breadcrumb.View exposing (viewBreadcrumb)
 import Browser exposing (Document)
 import Content.View exposing (viewContentDiv)
 import Contents.View exposing (viewContentDivs)
 import CreateContent.View exposing (viewCreateContentDiv)
 import CreateTag.View exposing (viewCreateTagDiv)
-import HomeNavigator.View exposing (viewHomeNavigator)
+import Home.View exposing (viewHomePageDiv)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import NotFound.View exposing (view404Div)
 import Pagination.View exposing (viewPagination)
 import Tag.Util exposing (tagWithMostContents)
-import TagInfoIcon.View exposing (viewTagInfoIcon)
-import Tags.View exposing (viewTagTabs)
 import UpdateContent.View exposing (viewUpdateContentDiv)
 import UpdateTag.View exposing (viewUpdateTagDiv)
 
@@ -24,81 +23,68 @@ view model =
     { title = "Philocoder"
     , body =
         [ div []
-            (viewHomeNavigator
-                :: viewTagTabs model
-                ++ [ div [ class "contents" ]
-                        (case model.activePage of
-                            HomePage status ->
-                                case status of
-                                    NonInitialized _ ->
-                                        []
+            [ div [ class "header" ] <| viewBreadcrumb model
+            , div [ class "body" ]
+                (case model.activePage of
+                    HomePage ->
+                        [ viewHomePageDiv model ]
 
-                                    Initialized contents ->
-                                        viewContentDivs model contents Nothing
+                    ContentPage status ->
+                        case status of
+                            NonInitialized _ ->
+                                []
 
-                            ContentPage status ->
-                                case status of
-                                    NonInitialized _ ->
-                                        []
+                            Initialized content ->
+                                [ viewContentDiv (tagWithMostContents model) content ]
 
-                                    Initialized content ->
-                                        [ viewContentDiv model (tagWithMostContents model) content ]
+                    TagPage status ->
+                        case status of
+                            NonInitialized _ ->
+                                []
 
-                            TagPage status ->
-                                case status of
-                                    NonInitialized _ ->
-                                        []
+                            Initialized ( tag, contents, pagination ) ->
+                                viewContentDivs contents (Just tag)
+                                    ++ [ viewPagination tag pagination
+                                       ]
 
-                                    Initialized ( tag, contents, pagination ) ->
-                                        viewContentDivs model contents (Just tag)
-                                            ++ [ viewTagInfoIcon tag
-                                               , viewPagination tag pagination
-                                               ]
+                    CreateContentPage status ->
+                        case status of
+                            NoRequestSentYet ( createContentPageModel, maybeContentToPreview ) ->
+                                [ viewCreateContentDiv model createContentPageModel maybeContentToPreview ]
 
-                            CreateContentPage status ->
-                                case status of
-                                    NoRequestSentYet ( createContentPageModel, maybeContentToPreview ) ->
-                                        [ viewCreateContentDiv model createContentPageModel maybeContentToPreview ]
+                            RequestSent infoToShowAfterRequest ->
+                                [ text infoToShowAfterRequest ]
 
-                                    RequestSent infoToShowAfterRequest ->
-                                        [ text infoToShowAfterRequest ]
+                    UpdateContentPage status ->
+                        case status of
+                            NoRequestSentYet ( updateContentPageModel, maybeContentToPreview, contentId ) ->
+                                [ viewUpdateContentDiv model updateContentPageModel maybeContentToPreview contentId ]
 
-                            UpdateContentPage status ->
-                                case status of
-                                    NoRequestSentYet ( updateContentPageModel, maybeContentToPreview, contentId ) ->
-                                        [ viewUpdateContentDiv model updateContentPageModel maybeContentToPreview contentId ]
+                            RequestSent infoToShowAfterRequest ->
+                                [ text infoToShowAfterRequest ]
 
-                                    RequestSent infoToShowAfterRequest ->
-                                        [ text infoToShowAfterRequest ]
+                    CreateTagPage status ->
+                        case status of
+                            NoRequestSentYet createTagPageModel ->
+                                [ viewCreateTagDiv model createTagPageModel ]
 
-                            CreateTagPage status ->
-                                case status of
-                                    NoRequestSentYet createTagPageModel ->
-                                        [ viewCreateTagDiv model createTagPageModel ]
+                            RequestSent infoToShowAfterRequest ->
+                                [ text infoToShowAfterRequest ]
 
-                                    RequestSent infoToShowAfterRequest ->
-                                        [ text infoToShowAfterRequest ]
+                    UpdateTagPage status ->
+                        case status of
+                            NoRequestSentYet ( updateTagPageModel, tagId ) ->
+                                [ viewUpdateTagDiv updateTagPageModel tagId ]
 
-                            UpdateTagPage status ->
-                                case status of
-                                    NoRequestSentYet ( updateTagPageModel, tagId ) ->
-                                        [ viewUpdateTagDiv updateTagPageModel tagId ]
+                            RequestSent infoToShowAfterRequest ->
+                                [ text infoToShowAfterRequest ]
 
-                                    RequestSent infoToShowAfterRequest ->
-                                        [ text infoToShowAfterRequest ]
+                    NotFoundPage ->
+                        [ view404Div ]
 
-                            NotFoundPage ->
-                                [ view404Div ]
-
-                            MaintenancePage ->
-                                [ text "*bakım çalışması*" ]
-                        )
-                   ]
-            )
+                    MaintenancePage ->
+                        [ text "*bakım çalışması*" ]
+                )
+            ]
         ]
     }
-
-
-css : String -> Html msg
-css path =
-    node "link" [ rel "stylesheet", href path ] []

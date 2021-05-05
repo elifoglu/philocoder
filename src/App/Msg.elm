@@ -13,7 +13,6 @@ type Msg
     | UrlChanged Url.Url
     | GotAllTags (Result Http.Error TagsResponse)
     | GotContentsOfTag Tag (Result Http.Error ContentsResponse)
-    | GotHomeContents (Result Http.Error ContentsResponse)
     | GotContent (Result Http.Error GotContent)
     | GotContentToPreviewForCreatePage CreateContentPageModel (Result Http.Error GotContent)
     | GotContentToPreviewForUpdatePage ContentID UpdateContentPageModel (Result Http.Error GotContent)
