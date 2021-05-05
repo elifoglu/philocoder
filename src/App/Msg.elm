@@ -31,6 +31,7 @@ type Msg
     | DragAt ( Float, Float )
     | DragEnd ( Float, Float )
     | Tick Time.Posix
+    | GoToContent ContentID
 
 
 type PreviewContentModel

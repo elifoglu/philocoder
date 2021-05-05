@@ -15,17 +15,33 @@ import TypedSvg.Core exposing (Attribute, Svg, text)
 import TypedSvg.Types exposing (Paint(..))
 
 
-miserablesGraph : Graph String ()
-miserablesGraph =
+contentsGraph : Graph String ()
+contentsGraph =
     Graph.fromNodeLabelsAndEdgePairs
-        [ "Myriel"
-        , "Napoleon"
-        , "Mlle.Baptistine"
-        , "Mlle.Baptistine"
-        , "Mlle.Baptistine"
-        , "Mlle.Baptistine"
-        , "Mlle.Baptistine"
-        , "Mlle.Baptistine"
+        [ "1"
+        , "2"
+        , "3"
+        , "4"
+        , "5"
+        , "6"
+        , "7"
+        , "8"
+        , "8"
+        , "8"
+        , "8"
+        , "8"
+        , "8"
+        , "8"
+        , "8"
+        , "8"
+        , "8"
+        , "8"
+        , "8"
+        , "8"
+        , "8"
+        , "8"
+        , "8"
+        , "8"
         ]
         [ ( 1, 0 )
         , ( 2, 0 )
@@ -41,12 +57,12 @@ miserablesGraph =
 
 w : Float
 w =
-    990
+    200
 
 
 h : Float
 h =
-    504
+    200
 
 
 
@@ -56,15 +72,19 @@ h =
 initGraphModel : GraphModel
 initGraphModel =
     let
+        graph : Graph Entity ()
         graph =
-            Graph.mapContexts initializeNode miserablesGraph
+            contentsGraph
+                |> Graph.mapContexts initializeNode
 
+        link : { a | from : b, to : c } -> ( b, c )
         link { from, to } =
             ( from, to )
 
+        forces : List (Force.Force NodeId)
         forces =
             [ Force.links <| List.map link <| Graph.edges graph
-            , Force.manyBody <| List.map .id <| Graph.nodes graph
+            , Force.manyBodyStrength -1 <| List.map .id (Graph.nodes graph)
             , Force.center (w / 2) (h / 2)
             ]
     in
@@ -196,16 +216,22 @@ nodeElement node =
         , fill <| Paint Color.black
         , stroke <| Paint <| Color.rgba 0 0 0 0
         , strokeWidth 7
-        , onMouseDown node.id
         , cx node.label.x
         , cy node.label.y
+        , onMouseClick node
         ]
-        [ title [] [ text node.label.value ] ]
+        [ title [] [ text node.label.value ]
+        ]
 
 
 onMouseDown : NodeId -> Attribute Msg
 onMouseDown index =
     Mouse.onDown (.clientPos >> DragStart index)
+
+
+onMouseClick : { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Attribute Msg
+onMouseClick node =
+    Mouse.onClick (\_ -> GoToContent (Maybe.withDefault 0 (String.toInt node.label.value)))
 
 
 

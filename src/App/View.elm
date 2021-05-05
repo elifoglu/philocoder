@@ -28,7 +28,9 @@ view model =
             , div [ class "body" ]
                 (case model.activePage of
                     HomePage ->
-                        [ viewHomePageDiv model, viewGraph model.graphModel ]
+                        [ viewHomePageDiv model
+                        , div [ style "width" "300px", style "height" "300px" ] [ viewGraph model.graphModel ]
+                        ]
 
                     ContentPage status ->
                         case status of

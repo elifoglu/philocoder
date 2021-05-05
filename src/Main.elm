@@ -101,6 +101,8 @@ update msg model =
                                 _ ->
                                     Cmd.none
 
+                        --HomePage ->
+                        --  Cmd.none
                         _ ->
                             Cmd.none
                     )
@@ -230,6 +232,11 @@ update msg model =
 
                 Err _ ->
                     ( model, Cmd.none )
+
+        GoToContent contentID ->
+            ( model
+            , Cmd.batch [ Nav.pushUrl model.key ("/contents/" ++ String.fromInt contentID), getContent contentID ]
+            )
 
         UrlRequested urlRequest ->
             case urlRequest of
