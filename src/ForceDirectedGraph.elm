@@ -1,18 +1,31 @@
-module ForceDirectedGraph exposing (main)
+module ForceDirectedGraph exposing (graphSubscriptions, initGraphModel, updateGraph, viewGraph)
 
-import Browser
+import App.Model exposing (Entity, GraphModel, Model)
+import App.Msg exposing (Msg(..))
 import Browser.Events
 import Color
 import Force exposing (State)
 import Graph exposing (Edge, Graph, Node, NodeContext, NodeId)
 import Html.Events.Extra.Mouse as Mouse
 import Json.Decode as Decode
-import Time
 import TypedSvg exposing (circle, g, line, svg, title)
 import TypedSvg.Attributes exposing (class, fill, stroke, viewBox)
 import TypedSvg.Attributes.InPx exposing (cx, cy, r, strokeWidth, x1, x2, y1, y2)
 import TypedSvg.Core exposing (Attribute, Svg, text)
 import TypedSvg.Types exposing (Paint(..))
+
+
+
+{-
+   main : Program () Model Msg
+   main =
+       Browser.element
+           { init = init
+           , view = view
+           , update = \msg model -> ( update msg model, Cmd.none )
+           , subscriptions = subscriptions
+           }
+-}
 
 
 w : Float
@@ -25,31 +38,6 @@ h =
     504
 
 
-type Msg
-    = DragStart NodeId ( Float, Float )
-    | DragAt ( Float, Float )
-    | DragEnd ( Float, Float )
-    | Tick Time.Posix
-
-
-type alias Model =
-    { drag : Maybe Drag
-    , graph : Graph Entity ()
-    , simulation : Force.State NodeId
-    }
-
-
-type alias Drag =
-    { start : ( Float, Float )
-    , current : ( Float, Float )
-    , index : NodeId
-    }
-
-
-type alias Entity =
-    Force.Entity NodeId { value : String }
-
-
 initializeNode : NodeContext String () -> NodeContext Entity ()
 initializeNode ctx =
     { node = { label = Force.entity ctx.node.id ctx.node.label, id = ctx.node.id }
@@ -58,8 +46,8 @@ initializeNode ctx =
     }
 
 
-init : () -> ( Model, Cmd Msg )
-init _ =
+initGraphModel : GraphModel
+initGraphModel =
     let
         graph =
             Graph.mapContexts initializeNode miserablesGraph
@@ -73,7 +61,7 @@ init _ =
             , Force.center (w / 2) (h / 2)
             ]
     in
-    ( Model Nothing graph (Force.simulation forces), Cmd.none )
+    GraphModel Nothing graph (Force.simulation forces)
 
 
 updateNode : ( Float, Float ) -> NodeContext Entity () -> NodeContext Entity ()
@@ -103,8 +91,8 @@ updateGraphWithList =
     List.foldr (\node graph -> Graph.update node.id (graphUpdater node) graph)
 
 
-update : Msg -> Model -> Model
-update msg ({ drag, graph, simulation } as model) =
+updateGraph : Msg -> GraphModel -> GraphModel
+updateGraph msg ({ drag, graph, simulation } as model) =
     case msg of
         Tick t ->
             let
@@ -113,10 +101,10 @@ update msg ({ drag, graph, simulation } as model) =
             in
             case drag of
                 Nothing ->
-                    Model drag (updateGraphWithList graph list) newState
+                    GraphModel drag (updateGraphWithList graph list) newState
 
                 Just { current, index } ->
-                    Model drag
+                    GraphModel drag
                         (Graph.update index
                             (Maybe.map (updateNode current))
                             (updateGraphWithList graph list)
@@ -124,31 +112,34 @@ update msg ({ drag, graph, simulation } as model) =
                         newState
 
         DragStart index xy ->
-            Model (Just (Drag xy xy index)) graph simulation
+            GraphModel (Just (App.Model.Drag xy xy index)) graph simulation
 
         DragAt xy ->
             case drag of
                 Just { start, index } ->
-                    Model (Just (Drag start xy index))
+                    GraphModel (Just (App.Model.Drag start xy index))
                         (Graph.update index (Maybe.map (updateNode xy)) graph)
                         (Force.reheat simulation)
 
                 Nothing ->
-                    Model Nothing graph simulation
+                    GraphModel Nothing graph simulation
 
         DragEnd xy ->
             case drag of
                 Just { start, index } ->
-                    Model Nothing
+                    GraphModel Nothing
                         (Graph.update index (Maybe.map (updateNode xy)) graph)
                         simulation
 
                 Nothing ->
-                    Model Nothing graph simulation
+                    GraphModel Nothing graph simulation
+
+        _ ->
+            model
 
 
-subscriptions : Model -> Sub Msg
-subscriptions model =
+graphSubscriptions : GraphModel -> Sub Msg
+graphSubscriptions model =
     case model.drag of
         Nothing ->
             -- This allows us to save resources, as if the simulation is done, there is no point in subscribing
@@ -206,8 +197,8 @@ nodeElement node =
         [ title [] [ text node.label.value ] ]
 
 
-view : Model -> Svg Msg
-view model =
+viewGraph : GraphModel -> Svg Msg
+viewGraph model =
     svg [ viewBox 0 0 w h ]
         [ Graph.edges model.graph
             |> List.map (linkElement model.graph)
@@ -216,16 +207,6 @@ view model =
             |> List.map nodeElement
             |> g [ class [ "nodes" ] ]
         ]
-
-
-main : Program () Model Msg
-main =
-    Browser.element
-        { init = init
-        , view = view
-        , update = \msg model -> ( update msg model, Cmd.none )
-        , subscriptions = subscriptions
-        }
 
 
 miserablesGraph : Graph String ()

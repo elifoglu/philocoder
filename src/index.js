@@ -1,8 +1,8 @@
 import './style.css';
-import { Elm } from './ForceDirectedGraph.elm';
+import {Elm} from './Main.elm';
 
-let elm = Elm.ForceDirectedGraph.init({
-  node: document.getElementById('root')
+let elm = Elm.Main.init({
+    node: document.getElementById('root')
 });
 
 /*elm.ports.title.subscribe( title => {

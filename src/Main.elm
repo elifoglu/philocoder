@@ -8,6 +8,7 @@ import App.View exposing (view)
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
 import Content.Util exposing (gotContentToContent)
+import ForceDirectedGraph exposing (graphSubscriptions, initGraphModel, updateGraph)
 import List
 import Pagination.Model exposing (Pagination)
 import Requests exposing (createNewTag, getAllTags, getContent, getTagContents, postNewContent, previewContent, updateExistingContent, updateExistingTag)
@@ -28,7 +29,7 @@ main =
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
-    ( Model "log" key (pageBy url) []
+    ( Model "log" key (pageBy url) [] initGraphModel
     , getAllTags
     )
 
@@ -471,7 +472,10 @@ update msg model =
             , getContent <| Maybe.withDefault 0 (String.toInt contentId)
             )
 
+        otherMsg ->
+            ( { model | graphModel = updateGraph otherMsg model.graphModel }, Cmd.none )
+
 
 subscriptions : Model -> Sub Msg
-subscriptions _ =
-    Sub.none
+subscriptions model =
+    graphSubscriptions model.graphModel

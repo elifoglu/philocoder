@@ -3,8 +3,10 @@ module App.Msg exposing (..)
 import App.Model exposing (CreateContentPageModel, CreateTagPageModel, UpdateContentPageModel, UpdateTagPageModel)
 import Browser
 import DataResponse exposing (ContentID, ContentsResponse, GotContent, TagsResponse)
+import Graph exposing (NodeId)
 import Http
 import Tag.Model exposing (Tag)
+import Time
 import Url
 
 
@@ -25,6 +27,10 @@ type Msg
     | CreateTag CreateTagPageModel
     | UpdateTag String UpdateTagPageModel
     | GotDoneResponse (Result Http.Error String)
+    | DragStart NodeId ( Float, Float )
+    | DragAt ( Float, Float )
+    | DragEnd ( Float, Float )
+    | Tick Time.Posix
 
 
 type PreviewContentModel

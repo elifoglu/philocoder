@@ -1,9 +1,11 @@
-module App.Model exposing (CreateContentPageModel, CreateTagPageModel, Initializable(..), MaySendRequest(..), Model, NoVal(..), Page(..), UpdateContentPageModel, UpdateTagPageModel, contentToCreateContentPageModel, contentToUpdateContentPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
+module App.Model exposing (CreateContentPageModel, CreateTagPageModel, Drag, Entity, GraphModel, Initializable(..), MaySendRequest(..), Model, NoVal(..), Page(..), UpdateContentPageModel, UpdateTagPageModel, contentToCreateContentPageModel, contentToUpdateContentPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
 
 import Browser.Navigation as Nav
 import Content.Model exposing (Content, ContentDate(..))
 import DataResponse exposing (ContentID)
 import Date exposing (day, monthNumber, year)
+import Force
+import Graph exposing (Graph, NodeId)
 import Json.Encode as Encode
 import Pagination.Model exposing (Pagination)
 import Tag.Model exposing (Tag)
@@ -18,6 +20,25 @@ type alias Model =
     , key : Nav.Key
     , activePage : Page
     , allTags : List Tag
+    , graphModel : GraphModel
+    }
+
+
+type alias GraphModel =
+    { drag : Maybe Drag
+    , graph : Graph Entity ()
+    , simulation : Force.State NodeId
+    }
+
+
+type alias Entity =
+    Force.Entity NodeId { value : String }
+
+
+type alias Drag =
+    { start : ( Float, Float )
+    , current : ( Float, Float )
+    , index : NodeId
     }
 
 
