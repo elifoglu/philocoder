@@ -56,12 +56,12 @@ mapToIndexOfEach contentIdList ( a, b ) =
 
 w : Float
 w =
-    200
+    180
 
 
 h : Float
 h =
-    200
+    180
 
 
 
@@ -84,7 +84,7 @@ initGraphModel allRefs =
         forces =
             [ Force.links <| List.map link <| Graph.edges graph
             , Force.manyBodyStrength -3 <| List.map .id (Graph.nodes graph)
-            , Force.center (w / 2) (h / 2)
+            , Force.center (w / 2.5) (h / 2)
             ]
     in
     GraphModel Nothing graph (Force.simulation forces)

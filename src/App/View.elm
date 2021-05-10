@@ -29,7 +29,14 @@ view model =
                 (case model.activePage of
                     HomePage ->
                         [ viewHomePageDiv model
-                        , div [ style "width" "300px", style "height" "300px" ] [ viewGraph model.graphModel ]
+                        , div
+                            [ style "width" "240px"
+                            , style "height" "240px"
+                            , style "margin-left" "150px"
+                            , style "display" "block"
+                            , style "align-items" "center"
+                            ]
+                            [ viewGraph model.graphModel ]
                         ]
 
                     ContentPage status ->
