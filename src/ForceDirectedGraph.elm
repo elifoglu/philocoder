@@ -10,6 +10,7 @@ import Graph exposing (Edge, Graph, Node, NodeContext, NodeId)
 import Html.Events.Extra.Mouse as Mouse
 import Json.Decode as Decode
 import List.Extra exposing (elemIndex, unique)
+import Tuple exposing (first, second)
 import TypedSvg exposing (circle, g, line, svg, title)
 import TypedSvg.Attributes exposing (class, fill, stroke, viewBox)
 import TypedSvg.Attributes.InPx exposing (cx, cy, r, strokeWidth, x1, x2, y1, y2)
@@ -64,6 +65,16 @@ h =
     180
 
 
+clientPosXCorrectionValue : Float
+clientPosXCorrectionValue =
+    205
+
+
+clientPosYCorrectionValue : Float
+clientPosYCorrectionValue =
+    95
+
+
 
 --INIT--
 
@@ -83,7 +94,7 @@ initGraphModel allRefs =
         forces : List (Force.Force NodeId)
         forces =
             [ Force.links <| List.map link <| Graph.edges graph
-            , Force.manyBodyStrength -3 <| List.map .id (Graph.nodes graph)
+            , Force.manyBodyStrength -2 <| List.map .id (Graph.nodes graph)
             , Force.center (w / 2.5) (h / 2)
             ]
     in
@@ -223,6 +234,7 @@ nodeElement node =
         , cx node.label.x
         , cy node.label.y
         , onMouseClick node
+        , onMouseDown node.id
         ]
         [ title [] [ text node.label.value ]
         ]
@@ -230,12 +242,12 @@ nodeElement node =
 
 onMouseDown : NodeId -> Attribute Msg
 onMouseDown index =
-    Mouse.onDown (.clientPos >> DragStart index)
+    Mouse.onDown (\event -> DragStart index ( first event.clientPos - clientPosXCorrectionValue, second event.clientPos - clientPosYCorrectionValue ))
 
 
 onMouseClick : { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Attribute Msg
 onMouseClick node =
-    Mouse.onClick (\_ -> GoToContent (Maybe.withDefault 0 (String.toInt node.label.value)))
+    Mouse.onContextMenu (\_ -> GoToContent (Maybe.withDefault 0 (String.toInt node.label.value)))
 
 
 
@@ -256,7 +268,7 @@ graphSubscriptions model =
 
         Just _ ->
             Sub.batch
-                [ Browser.Events.onMouseMove (Decode.map (.clientPos >> DragAt) Mouse.eventDecoder)
-                , Browser.Events.onMouseUp (Decode.map (.clientPos >> DragEnd) Mouse.eventDecoder)
+                [ Browser.Events.onMouseMove (Decode.map (\event -> DragAt ( first event.clientPos - clientPosXCorrectionValue, second event.clientPos - clientPosYCorrectionValue )) Mouse.eventDecoder)
+                , Browser.Events.onMouseUp (Decode.map (\event -> DragEnd ( first event.clientPos - clientPosXCorrectionValue, second event.clientPos - clientPosYCorrectionValue )) Mouse.eventDecoder)
                 , Browser.Events.onAnimationFrame Tick
                 ]
