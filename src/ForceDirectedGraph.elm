@@ -240,7 +240,7 @@ linkElement graph edge =
             Maybe.withDefault (Force.entity 0 "") <| Maybe.map (.node >> .label) <| Graph.get edge.to graph
     in
     line
-        [ strokeWidth 0.8
+        [ strokeWidth 0.9
         , stroke <| Paint linkColor
         , x1 source.x
         , y1 source.y
