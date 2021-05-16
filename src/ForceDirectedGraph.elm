@@ -11,9 +11,9 @@ import Html.Events.Extra.Mouse as Mouse
 import Json.Decode as Decode
 import List.Extra exposing (elemIndex, unique)
 import Tuple exposing (first, second)
-import TypedSvg exposing (circle, g, line, svg, title)
-import TypedSvg.Attributes exposing (class, fill, stroke, viewBox)
-import TypedSvg.Attributes.InPx exposing (cx, cy, r, strokeWidth, x1, x2, y1, y2)
+import TypedSvg exposing (circle, defs, g, line, marker, polygon, svg, title)
+import TypedSvg.Attributes exposing (class, end, fill, id, markerEnd, orient, points, refX, refY, stroke, viewBox)
+import TypedSvg.Attributes.InPx exposing (cx, cy, markerHeight, markerWidth, r, strokeWidth, x1, x2, y1, y2)
 import TypedSvg.Core exposing (Attribute, Svg, text)
 import TypedSvg.Types exposing (Paint(..))
 
@@ -192,7 +192,9 @@ viewGraph maybeModel =
     svg [ viewBox 0 0 w h ] <|
         case maybeModel of
             Just model ->
-                [ Graph.edges model.graph
+                [ defs []
+                    [ arrowHead ]
+                , Graph.edges model.graph
                     |> List.map (linkElement model.graph)
                     |> g [ class [ "links" ] ]
                 , Graph.nodes model.graph
@@ -202,6 +204,30 @@ viewGraph maybeModel =
 
             Nothing ->
                 []
+
+
+linkColor : Color.Color
+linkColor =
+    Color.rgb255 123 123 123
+
+
+nodeColor : Color.Color
+nodeColor =
+    Color.rgb255 0 169 255
+
+
+arrowHead : Svg msg
+arrowHead =
+    marker
+        [ id "arrowhead"
+        , markerWidth 6
+        , markerHeight 6
+        , refX "7"
+        , refY "2"
+        , orient "auto"
+        , fill <| Paint linkColor
+        ]
+        [ polygon [ points [ ( 0, 0 ), ( 6, 2 ), ( 0, 4 ) ] ] [] ]
 
 
 linkElement : Graph Entity () -> Edge () -> Svg msg
@@ -214,12 +240,13 @@ linkElement graph edge =
             Maybe.withDefault (Force.entity 0 "") <| Maybe.map (.node >> .label) <| Graph.get edge.to graph
     in
     line
-        [ strokeWidth 1
-        , stroke <| Paint <| Color.rgb255 170 170 170
+        [ strokeWidth 0.8
+        , stroke <| Paint linkColor
         , x1 source.x
         , y1 source.y
         , x2 target.x
         , y2 target.y
+        , markerEnd "url(#arrowhead)"
         ]
         []
 
@@ -228,7 +255,7 @@ nodeElement : { a | id : NodeId, label : { b | x : Float, y : Float, value : Str
 nodeElement node =
     circle
         [ r 2.5
-        , fill <| Paint Color.black
+        , fill <| Paint nodeColor
         , stroke <| Paint <| Color.rgba 0 0 0 0
         , strokeWidth 7
         , cx node.label.x
