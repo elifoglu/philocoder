@@ -1,7 +1,7 @@
 module App.Model exposing (CreateContentPageModel, CreateTagPageModel, Drag, Entity, GraphModel, Initializable(..), MaySendRequest(..), Model, NoVal(..), Page(..), UpdateContentPageModel, UpdateTagPageModel, contentToCreateContentPageModel, contentToUpdateContentPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
 
 import Browser.Navigation as Nav
-import Content.Model exposing (Content, ContentDate(..))
+import Content.Model exposing (Content)
 import DataResponse exposing (ContentID, GotRef)
 import Date exposing (day, monthNumber, year)
 import Force
@@ -69,8 +69,6 @@ type alias CreateContentPageModel =
     { id : String
     , title : String
     , text : String
-    , date : String
-    , publishOrderInDay : String
     , tags : String
     , refs : String
     , password : String
@@ -81,8 +79,6 @@ type alias CreateContentPageModel =
 type alias UpdateContentPageModel =
     { title : String
     , text : String
-    , date : String
-    , publishOrderInDay : String
     , tags : String
     , refs : String
     , password : String
@@ -112,20 +108,6 @@ contentToCreateContentPageModel content =
     { id = ""
     , title = Maybe.withDefault "" content.title
     , text = content.text
-    , date =
-        case content.date of
-            DateExists date _ ->
-                String.fromInt (day date) ++ "." ++ String.fromInt (monthNumber date) ++ "." ++ String.fromInt (year date)
-
-            DateNotExists _ ->
-                ""
-    , publishOrderInDay =
-        case content.date of
-            DateExists _ publishOrderInDay ->
-                String.fromInt publishOrderInDay
-
-            DateNotExists publishOrderInDay ->
-                String.fromInt publishOrderInDay
     , tags = String.join "," (List.map (\tag -> tag.name) content.tags)
     , refs =
         case content.refs of
@@ -143,20 +125,6 @@ contentToUpdateContentPageModel : Content -> UpdateContentPageModel
 contentToUpdateContentPageModel content =
     { title = Maybe.withDefault "" content.title
     , text = content.text
-    , date =
-        case content.date of
-            DateExists date _ ->
-                String.fromInt (day date) ++ "." ++ String.fromInt (monthNumber date) ++ "." ++ String.fromInt (year date)
-
-            DateNotExists _ ->
-                ""
-    , publishOrderInDay =
-        case content.date of
-            DateExists _ publishOrderInDay ->
-                String.fromInt publishOrderInDay
-
-            DateNotExists publishOrderInDay ->
-                String.fromInt publishOrderInDay
     , tags = String.join "," (List.map (\tag -> tag.name) content.tags)
     , refs =
         case content.refs of
@@ -175,8 +143,6 @@ createContentPageModelEncoder model =
         [ ( "id", Encode.string model.id )
         , ( "title", Encode.string model.title )
         , ( "text", Encode.string model.text )
-        , ( "date", Encode.string model.date )
-        , ( "publishOrderInDay", Encode.string model.publishOrderInDay )
         , ( "tags", Encode.string model.tags )
         , ( "refs", Encode.string model.refs )
         , ( "password", Encode.string model.password )
@@ -189,8 +155,6 @@ updateContentPageModelEncoder contentId model =
         [ ( "id", Encode.string (String.fromInt contentId) )
         , ( "title", Encode.string model.title )
         , ( "text", Encode.string model.text )
-        , ( "date", Encode.string model.date )
-        , ( "publishOrderInDay", Encode.string model.publishOrderInDay )
         , ( "tags", Encode.string model.tags )
         , ( "refs", Encode.string model.refs )
         , ( "password", Encode.string model.password )

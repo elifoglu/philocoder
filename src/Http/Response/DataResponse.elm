@@ -1,7 +1,7 @@
-module DataResponse exposing (ContentID, ContentsResponse, DateAndPublishOrder, GotAllRefs, GotContent, GotContentDate(..), GotRef, GotTag, JustPublishOrder, TagsResponse, allRefsDecoder, contentDecoder, contentsResponseDecoder, tagsDecoder)
+module DataResponse exposing (ContentID, ContentsResponse, GotAllRefs, GotContent, GotContentDate, GotRef, GotTag, TagsResponse, allRefsDecoder, contentDecoder, contentsResponseDecoder, tagsDecoder)
 
 import Content.Model exposing (Ref)
-import Json.Decode as D exposing (Decoder, andThen, bool, field, int, map, map2, map4, map6, map8, maybe, oneOf, string, succeed)
+import Json.Decode as D exposing (Decoder, andThen, bool, field, int, map, map2, map3, map6, map8, maybe, oneOf, string, succeed)
 import Tag.Model exposing (ContentRenderType(..))
 
 
@@ -33,17 +33,8 @@ type alias ContentID =
     Int
 
 
-type GotContentDate
-    = DateExists DateAndPublishOrder
-    | DateNotExists JustPublishOrder
-
-
-type alias DateAndPublishOrder =
-    { year : Int, month : Int, day : Int, publishOrderInDay : Int }
-
-
-type alias JustPublishOrder =
-    { publishOrderInDay : Int }
+type alias GotContentDate =
+    { year : Int, month : Int, day : Int }
 
 
 type alias GotAllRefs =
@@ -114,24 +105,10 @@ contentDecoder =
 
 contentDateDecoder : Decoder GotContentDate
 contentDateDecoder =
-    oneOf
-        [ map DateExists dateAndPublishOrderDecoder
-        , map DateNotExists justPublishOrderDecoder
-        ]
-
-
-dateAndPublishOrderDecoder : Decoder DateAndPublishOrder
-dateAndPublishOrderDecoder =
-    map4 DateAndPublishOrder
+    map3 GotContentDate
         (field "year" int)
         (field "month" int)
         (field "day" int)
-        (field "publishOrderInDay" int)
-
-
-justPublishOrderDecoder : Decoder JustPublishOrder
-justPublishOrderDecoder =
-    map JustPublishOrder (field "publishOrderInDay" int)
 
 
 refDecoder : Decoder Ref

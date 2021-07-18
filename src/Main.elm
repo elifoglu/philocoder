@@ -306,12 +306,6 @@ update msg model =
                                         Text ->
                                             { createContentPageModel | text = input }
 
-                                        Date ->
-                                            { createContentPageModel | date = input }
-
-                                        PublishOrderInDay ->
-                                            { createContentPageModel | publishOrderInDay = input }
-
                                         Tags ->
                                             { createContentPageModel | tags = input }
 
@@ -343,12 +337,6 @@ update msg model =
 
                                         Text ->
                                             { updateContentPageModel | text = input }
-
-                                        Date ->
-                                            { updateContentPageModel | date = input }
-
-                                        PublishOrderInDay ->
-                                            { updateContentPageModel | publishOrderInDay = input }
 
                                         Tags ->
                                             { updateContentPageModel | tags = input }

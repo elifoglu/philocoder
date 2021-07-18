@@ -1,7 +1,7 @@
 module Content.View exposing (viewContentDiv)
 
 import App.Msg exposing (Msg)
-import Content.Model exposing (Content, ContentDate(..))
+import Content.Model exposing (Content)
 import Content.Util exposing (maybeDateText, maybeDisplayableTagsOfContent)
 import Html exposing (Html, a, br, div, img, p, span, text)
 import Html.Attributes exposing (class, href, src, style)

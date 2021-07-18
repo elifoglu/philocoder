@@ -17,8 +17,6 @@ viewUpdateContentDiv model updateContentPageModel maybeContentToPreview contentI
         List.intersperse (br [] [])
             [ viewDisabledInput "text" (String.fromInt contentId)
             , viewInput "text" "title (empty if does not exist)" updateContentPageModel.title (ContentInputChanged Title)
-            , viewInput "text" "dd.mm.yyyy (e.g. 3.4.2021 or 29.12.2021)" updateContentPageModel.date (ContentInputChanged Date)
-            , viewInput "text" "publishOrderInDay (1, 2, 3...)" updateContentPageModel.publishOrderInDay (ContentInputChanged PublishOrderInDay)
             , viewInput "text" "tagNames (use comma to separate)" updateContentPageModel.tags (ContentInputChanged Tags)
             , viewInput "text" "refIDs (use comma to separate)" updateContentPageModel.refs (ContentInputChanged Refs)
             , viewInput "password" "password" updateContentPageModel.password (ContentInputChanged Password)

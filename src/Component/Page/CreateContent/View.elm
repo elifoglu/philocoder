@@ -20,8 +20,6 @@ viewCreateContentDiv model createContentPageModel maybeContentToPreview =
             ++ List.intersperse (br [] [])
                 [ viewInput "text" "id" createContentPageModel.id (ContentInputChanged Id)
                 , viewInput "text" "title (empty if does not exist)" createContentPageModel.title (ContentInputChanged Title)
-                , viewInput "text" "dd.mm.yyyy (e.g. 3.4.2021 or 29.12.2021)" createContentPageModel.date (ContentInputChanged Date)
-                , viewInput "text" "publishOrderInDay (1, 2, 3...)" createContentPageModel.publishOrderInDay (ContentInputChanged PublishOrderInDay)
                 , viewInput "text" "tagNames (use comma to separate)" createContentPageModel.tags (ContentInputChanged Tags)
                 , viewInput "text" "refIDs (use comma to separate)" createContentPageModel.refs (ContentInputChanged Refs)
                 , viewInput "password" "password" createContentPageModel.password (ContentInputChanged Password)

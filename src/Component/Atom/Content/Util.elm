@@ -1,6 +1,6 @@
 module Content.Util exposing (contentById, gotContentToContent, maybeDateText, maybeDisplayableTagsOfContent)
 
-import Content.Model exposing (Content, ContentDate(..))
+import Content.Model exposing (Content, ContentDate)
 import DataResponse exposing (GotContent, GotContentDate, GotTag)
 import Date exposing (format, fromCalendarDate, numberToMonth)
 import Maybe.Extra exposing (values)
@@ -31,12 +31,7 @@ gotContentToContent allTags gotContent =
 
 gotContentDateToContentDate : GotContentDate -> ContentDate
 gotContentDateToContentDate gotContentDate =
-    case gotContentDate of
-        DataResponse.DateExists dateAndPublishOrder ->
-            DateExists (fromCalendarDate dateAndPublishOrder.year (numberToMonth dateAndPublishOrder.month) dateAndPublishOrder.day) dateAndPublishOrder.publishOrderInDay
-
-        DataResponse.DateNotExists justPublishOrder ->
-            DateNotExists justPublishOrder.publishOrderInDay
+    fromCalendarDate gotContentDate.year (numberToMonth gotContentDate.month) gotContentDate.day
 
 
 contentHasDisplayableTags : Content -> Bool
@@ -64,16 +59,13 @@ maybeDisplayableTagsOfContent content =
 maybeDateText : Content -> Maybe String
 maybeDateText content =
     let
+        dateText : String
         dateText =
-            case content.date of
-                DateExists date _ ->
-                    format "dd.MM.yy" date
-
-                DateNotExists _ ->
-                    ""
+            format "dd.MM.yy" content.date
     in
     if String.isEmpty dateText then
-        Nothing
+        --will be updated
+        Just "sase"
 
     else
         Just dateText

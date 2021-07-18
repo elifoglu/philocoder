@@ -44,8 +44,6 @@ type ContentInputType
     = Id
     | Title
     | Text
-    | Date
-    | PublishOrderInDay
     | Tags
     | Refs
     | Password
