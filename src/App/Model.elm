@@ -3,12 +3,12 @@ module App.Model exposing (CreateContentPageModel, CreateTagPageModel, Drag, Ent
 import Browser.Navigation as Nav
 import Content.Model exposing (Content)
 import DataResponse exposing (ContentID, GotRef)
-import Date exposing (day, monthNumber, year)
 import Force
 import Graph exposing (Graph, NodeId)
 import Json.Encode as Encode
 import Pagination.Model exposing (Pagination)
 import Tag.Model exposing (Tag)
+import Time
 
 
 type NoVal
@@ -22,6 +22,7 @@ type alias Model =
     , allTags : List Tag
     , allRefs : List GotRef
     , graphModel : Maybe GraphModel
+    , timeZone : Time.Zone
     }
 
 

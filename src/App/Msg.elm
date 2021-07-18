@@ -33,6 +33,7 @@ type Msg
     | DragEnd ( Float, Float )
     | Tick Time.Posix
     | GoToContent ContentID
+    | GotTimeZone Time.Zone
 
 
 type PreviewContentModel

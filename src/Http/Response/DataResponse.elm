@@ -26,7 +26,7 @@ type alias GotTag =
 
 
 type alias GotContent =
-    { title : Maybe String, date : GotContentDate, contentId : Int, content : String, tags : List String, refs : Maybe (List Ref) }
+    { title : Maybe String, dateAsTimestamp : GotContentDate, contentId : Int, content : String, tags : List String, refs : Maybe (List Ref) }
 
 
 type alias ContentID =
@@ -34,7 +34,7 @@ type alias ContentID =
 
 
 type alias GotContentDate =
-    { year : Int, month : Int, day : Int }
+    String
 
 
 type alias GotAllRefs =
@@ -96,7 +96,7 @@ contentDecoder : Decoder GotContent
 contentDecoder =
     map6 GotContent
         (maybe (field "title" string))
-        (field "date" contentDateDecoder)
+        (field "dateAsTimestamp" contentDateDecoder)
         (field "contentId" int)
         (field "content" string)
         (field "tags" (D.list string))
@@ -105,10 +105,7 @@ contentDecoder =
 
 contentDateDecoder : Decoder GotContentDate
 contentDateDecoder =
-    map3 GotContentDate
-        (field "year" int)
-        (field "month" int)
-        (field "day" int)
+    D.string
 
 
 refDecoder : Decoder Ref

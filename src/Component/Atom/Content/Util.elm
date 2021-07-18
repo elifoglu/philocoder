@@ -1,11 +1,13 @@
 module Content.Util exposing (contentById, gotContentToContent, maybeDateText, maybeDisplayableTagsOfContent)
 
+import App.Model exposing (Model)
 import Content.Model exposing (Content, ContentDate)
 import DataResponse exposing (GotContent, GotContentDate, GotTag)
-import Date exposing (format, fromCalendarDate, numberToMonth)
+import Date exposing (format)
 import Maybe.Extra exposing (values)
 import Tag.Model exposing (Tag)
 import Tag.Util exposing (tagNameToTag)
+import Time
 
 
 contentById : List Content -> Int -> Maybe Content
@@ -15,23 +17,32 @@ contentById contents id =
         |> List.head
 
 
-gotContentToContent : List GotTag -> GotContent -> Content
-gotContentToContent allTags gotContent =
+gotContentToContent : Model -> GotContent -> Content
+gotContentToContent model gotContent =
     { title = gotContent.title
-    , date = gotContentDateToContentDate gotContent.date
+    , date = gotContentDateToContentDate model.timeZone gotContent.dateAsTimestamp
     , contentId = gotContent.contentId
     , text = gotContent.content
     , tags =
         gotContent.tags
-            |> List.map (tagNameToTag allTags)
+            |> List.map (tagNameToTag model.allTags)
             |> values
     , refs = gotContent.refs
     }
 
 
-gotContentDateToContentDate : GotContentDate -> ContentDate
-gotContentDateToContentDate gotContentDate =
-    fromCalendarDate gotContentDate.year (numberToMonth gotContentDate.month) gotContentDate.day
+jan2000 =
+    946688437314
+
+
+gotContentDateToContentDate : Time.Zone -> GotContentDate -> ContentDate
+gotContentDateToContentDate timeZone gotContentDate =
+    case String.toInt gotContentDate of
+        Just ms ->
+            Date.fromPosix timeZone (Time.millisToPosix ms)
+
+        Nothing ->
+            Date.fromPosix timeZone (Time.millisToPosix jan2000)
 
 
 contentHasDisplayableTags : Content -> Bool

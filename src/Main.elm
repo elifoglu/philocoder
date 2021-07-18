@@ -11,8 +11,9 @@ import Content.Util exposing (gotContentToContent)
 import ForceDirectedGraph exposing (graphSubscriptions, initGraphModel, updateGraph)
 import List
 import Pagination.Model exposing (Pagination)
-import Requests exposing (createNewTag, getAllReferences, getAllTags, getContent, getTagContents, postNewContent, previewContent, updateExistingContent, updateExistingTag)
+import Requests exposing (createNewTag, getAllReferences, getAllTags, getContent, getTagContents, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
 import Tag.Util exposing (gotTagToTag, tagById)
+import Time
 import Url
 
 
@@ -29,8 +30,8 @@ main =
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
-    ( Model "log" key (pageBy url) [] [] Nothing
-    , getAllTags
+    ( Model "log" key (pageBy url) [] [] Nothing Time.utc
+    , Cmd.batch [ getAllTags, getTimeZone ]
     )
 
 
@@ -120,7 +121,7 @@ update msg model =
                 Ok gotContent ->
                     let
                         content =
-                            gotContentToContent model.allTags gotContent
+                            gotContentToContent model gotContent
 
                         newActivePage =
                             case model.activePage of
@@ -168,7 +169,7 @@ update msg model =
                 Ok gotContentToPreview ->
                     let
                         content =
-                            gotContentToContent model.allTags gotContentToPreview
+                            gotContentToContent model gotContentToPreview
                     in
                     ( { model
                         | activePage = CreateContentPage <| NoRequestSentYet ( createContentPageModel, Just content )
@@ -186,7 +187,7 @@ update msg model =
                 Ok gotContentToPreview ->
                     let
                         content =
-                            gotContentToContent model.allTags gotContentToPreview
+                            gotContentToContent model gotContentToPreview
                     in
                     ( { model
                         | activePage = UpdateContentPage <| NoRequestSentYet ( updateContentPageModel, Just content, contentID )
@@ -224,7 +225,7 @@ update msg model =
                                 | activePage =
                                     TagPage <|
                                         Initialized
-                                            ( tag, List.map (gotContentToContent model.allTags) contentsResponse.contents, pagination )
+                                            ( tag, List.map (gotContentToContent model) contentsResponse.contents, pagination )
                             }
                     in
                     ( newModel
@@ -481,6 +482,9 @@ update msg model =
                     ( model
                     , Cmd.none
                     )
+
+        GotTimeZone zone ->
+            ( { model | timeZone = zone }, Cmd.none )
 
         otherMsg ->
             case model.graphModel of

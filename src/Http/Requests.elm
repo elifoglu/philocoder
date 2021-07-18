@@ -1,14 +1,21 @@
-module Requests exposing (createNewTag, getAllReferences, getAllTags, getContent, getTagContents, postNewContent, previewContent, updateExistingContent, updateExistingTag)
+module Requests exposing (createNewTag, getAllReferences, getAllTags, getContent, getTagContents, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
 
 import App.Model exposing (CreateContentPageModel, CreateTagPageModel, UpdateContentPageModel, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
 import App.Msg exposing (Msg(..), PreviewContentModel(..))
 import DataResponse exposing (ContentID, allRefsDecoder, contentDecoder, contentsResponseDecoder, tagsDecoder)
 import Http
 import Tag.Model exposing (Tag)
+import Task
+import Time
 
 
 apiURL =
     "http://localhost:8090/"
+
+
+getTimeZone : Cmd Msg
+getTimeZone =
+    Task.perform GotTimeZone Time.here
 
 
 getAllTags : Cmd Msg
