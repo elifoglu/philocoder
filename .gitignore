@@ -4,4 +4,5 @@ elm-stuff
 repl-temp-*
 philocoder.iml
 todo
+ec2_instance_init
 backup/*
