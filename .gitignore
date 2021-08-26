@@ -5,4 +5,6 @@ repl-temp-*
 philocoder.iml
 todo
 ec2_instance_init
+backup_philocoder.sh
+put_backup_to_philocoder.sh
 backup/*
