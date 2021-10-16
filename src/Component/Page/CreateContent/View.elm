@@ -45,7 +45,7 @@ viewInput t p v toMsg =
 
 viewContentTextArea : String -> String -> (String -> msg) -> Html msg
 viewContentTextArea p v toMsg =
-    textarea [ placeholder p, value v, onInput toMsg, style "width" "1000px" ] []
+    textarea [ placeholder p, value v, onInput toMsg, style "width" "1000px", style "height" "500px" ] []
 
 
 viewCreateContentButton : msg -> Html msg
