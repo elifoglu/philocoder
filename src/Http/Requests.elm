@@ -1,6 +1,6 @@
-module Requests exposing (createNewTag, getAllReferences, getAllTags, getContent, getTagContents, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
+module Requests exposing (createNewTag, getAllReferences, getAllTags, getContent, getIconData, getTagContents, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
 
-import App.Model exposing (CreateContentPageModel, CreateTagPageModel, UpdateContentPageModel, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
+import App.Model exposing (CreateContentPageModel, CreateTagPageModel, IconInfo, UpdateContentPageModel, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
 import App.Msg exposing (Msg(..), PreviewContentModel(..))
 import DataResponse exposing (ContentID, allRefsDecoder, contentDecoder, contentsResponseDecoder, tagsDecoder)
 import Http
@@ -112,3 +112,12 @@ updateExistingTag tagId model =
         , body = Http.jsonBody (updateTagPageModelEncoder model)
         , expect = Http.expectString GotDoneResponse
         }
+
+
+getIconData : List IconInfo
+getIconData =
+    [ { urlToNavigate = "https://open.spotify.com/user/215irwufih45cpoovmxs2r25q/", iconImageUrl = "/spotify.svg", marginRight = "5px" }
+    , { urlToNavigate = "https://github.com/elifoglu", iconImageUrl = "/github.svg", marginRight = "0px" }
+    , { urlToNavigate = "https://eksisozluk.com/biri/ajora", iconImageUrl = "/eksi.svg", marginRight = "0px" }
+    , { urlToNavigate = "https://twitter.com/philocoder", iconImageUrl = "/twitter.svg", marginRight = "0px" }
+    ]

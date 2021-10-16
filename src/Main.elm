@@ -11,7 +11,7 @@ import Content.Util exposing (gotContentToContent)
 import ForceDirectedGraph exposing (graphSubscriptions, initGraphModel, updateGraph)
 import List
 import Pagination.Model exposing (Pagination)
-import Requests exposing (createNewTag, getAllReferences, getAllTags, getContent, getTagContents, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
+import Requests exposing (createNewTag, getAllReferences, getAllTags, getContent, getIconData, getTagContents, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
 import Tag.Util exposing (gotTagToTag, tagById)
 import Time
 import Url
@@ -30,7 +30,7 @@ main =
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
-    ( Model "log" key (pageBy url) [] [] Nothing Time.utc
+    ( Model "log" key (pageBy url) [] [] getIconData Nothing Time.utc
     , Cmd.batch [ getAllTags, getTimeZone ]
     )
 

@@ -1,4 +1,4 @@
-module App.Model exposing (CreateContentPageModel, CreateTagPageModel, Drag, Entity, GraphModel, Initializable(..), MaySendRequest(..), Model, NoVal(..), Page(..), UpdateContentPageModel, UpdateTagPageModel, contentToCreateContentPageModel, contentToUpdateContentPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
+module App.Model exposing (CreateContentPageModel, CreateTagPageModel, Drag, Entity, GraphModel, IconInfo, Initializable(..), MaySendRequest(..), Model, NoVal(..), Page(..), UpdateContentPageModel, UpdateTagPageModel, contentToCreateContentPageModel, contentToUpdateContentPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
 
 import Browser.Navigation as Nav
 import Content.Model exposing (Content)
@@ -21,8 +21,16 @@ type alias Model =
     , activePage : Page
     , allTags : List Tag
     , allRefs : List GotRef
+    , icons : List IconInfo
     , graphModel : Maybe GraphModel
     , timeZone : Time.Zone
+    }
+
+
+type alias IconInfo =
+    { urlToNavigate : String
+    , iconImageUrl : String
+    , marginRight : String
     }
 
 
