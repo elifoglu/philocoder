@@ -117,7 +117,8 @@ updateExistingTag tagId model =
 getIconData : List IconInfo
 getIconData =
     [ { urlToNavigate = "https://open.spotify.com/user/215irwufih45cpoovmxs2r25q/", iconImageUrl = "/spotify.svg", marginRight = "5px" }
-    , { urlToNavigate = "https://github.com/elifoglu", iconImageUrl = "/github.svg", marginRight = "0px" }
+    , { urlToNavigate = "https://github.com/elifoglu", iconImageUrl = "/github.svg", marginRight = "5px" }
+    , { urlToNavigate = "https://philocoder.medium.com/", iconImageUrl = "/medium.svg", marginRight = "0px" }
     , { urlToNavigate = "https://eksisozluk.com/biri/ajora", iconImageUrl = "/eksi.svg", marginRight = "0px" }
     , { urlToNavigate = "https://twitter.com/philocoder", iconImageUrl = "/twitter.svg", marginRight = "0px" }
     ]
