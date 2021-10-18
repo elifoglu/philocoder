@@ -20,11 +20,23 @@ viewHomePageDiv model =
         )
 
 
+tagToBeBold =
+    --todo "make 'beni_oku.txt' bold" action should be done in a more clear way
+    "beni_oku.txt"
+
+
 viewTag : Tag -> Html Msg
 viewTag tag =
     span []
         [ a
             [ style "text-decoration" "none"
+            , style "font-weight"
+                (if tag.name /= tagToBeBold then
+                    "normal"
+
+                 else
+                    "bold"
+                )
             , href ("/tags/" ++ tag.tagId)
             ]
             [ text
