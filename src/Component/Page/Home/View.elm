@@ -54,10 +54,20 @@ viewTag tag =
         ]
 
 
+areTagsLoaded : Model -> Bool
+areTagsLoaded model =
+    model.allTags /= []
+
+
 viewIconsDiv : Model -> List (Html Msg)
 viewIconsDiv model =
-    model.icons
-        |> List.map viewIcon
+    if areTagsLoaded model then
+        --this 'if expression' is just to show icons 'after' tags are shown; not before. it is just about aesthetics
+        model.icons
+            |> List.map viewIcon
+
+    else
+        []
 
 
 viewIcon : IconInfo -> Html Msg
