@@ -10,7 +10,7 @@ import TagInfoIcon.View exposing (viewTagInfoIcon)
 
 viewHomePageDiv : Model -> Html Msg
 viewHomePageDiv model =
-    div [ style "width" "auto", style "float" "left" ]
+    div [ class "homepageTagsFont", style "width" "auto", style "float" "left" ]
         ((model.allTags
             |> List.map viewTag
             |> List.intersperse (br [] [])

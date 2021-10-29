@@ -8,7 +8,6 @@ import DataResponse exposing (ContentID)
 import Html exposing (Html, br, button, div, hr, input, text, textarea)
 import Html.Attributes exposing (placeholder, style, type_, value)
 import Html.Events exposing (onClick, onInput)
-import Tag.Util exposing (tagWithMostContents)
 
 
 viewUpdateContentDiv : Model -> UpdateContentPageModel -> Maybe Content -> ContentID -> Html Msg
@@ -28,7 +27,7 @@ viewUpdateContentDiv model updateContentPageModel maybeContentToPreview contentI
             , hr [] []
             , case maybeContentToPreview of
                 Just content ->
-                    viewContentDiv (tagWithMostContents model) content
+                    viewContentDiv content
 
                 Nothing ->
                     text "invalid content, or no content at all"

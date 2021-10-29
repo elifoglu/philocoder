@@ -31,7 +31,7 @@ viewCreateContentDiv model createContentPageModel maybeContentToPreview =
                 , hr [] []
                 , case maybeContentToPreview of
                     Just content ->
-                        viewContentDiv (tagWithMostContents model) content
+                        viewContentDiv content
 
                     Nothing ->
                         text "invalid content, or no content at all"

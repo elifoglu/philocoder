@@ -9,67 +9,42 @@ import Markdown
 import Tag.Model exposing (ContentRenderType(..), Tag)
 
 
-type alias ContentRenderFn =
-    Content -> Html Msg
-
-
-viewContentDiv : Maybe Tag -> Content -> Html Msg
-viewContentDiv maybeActiveTag content =
-    case maybeActiveTag of
-        Just tag ->
-            viewContentFn tag.contentRenderType content
-
-        Nothing ->
-            viewContentFn Normal content
-
-
-viewContentFn : ContentRenderType -> ContentRenderFn
-viewContentFn contentRenderType =
-    case contentRenderType of
-        Normal ->
-            viewContentInNormalView
-
-        Minified ->
-            viewContentInMinifiedView
-
-
-viewContentInNormalView : ContentRenderFn
-viewContentInNormalView content =
-    p []
-        [ span [ class "title" ] [ viewContentText content.title, viewContentLinkWithLinkIcon content ]
-        , viewContentInfoDiv content
-        , div []
-            [ viewMarkdownTextOfContent content
-            , br [] []
-            ]
-        ]
-
-
-viewContentInMinifiedView : ContentRenderFn
-viewContentInMinifiedView content =
+viewContentDiv : Content -> Html Msg
+viewContentDiv content =
     p []
         [ div []
-            [ viewContentLinkWithLinkIcon content
+            [ div [ class "title" ] [ viewContentTitle content.title ]
+            , viewRefsTextOfContent content
+            , addBrIfContentEitherHasTitleOrRefs content
             , viewMarkdownTextOfContent content
             ]
+        , viewContentInfoDiv content
         ]
 
 
-viewContentText : Maybe String -> Html Msg
-viewContentText maybeTitle =
-    text
-        (case maybeTitle of
-            Just title ->
-                title ++ " "
+addBrIfContentEitherHasTitleOrRefs : Content -> Html Msg
+addBrIfContentEitherHasTitleOrRefs content =
+    case ( content.title, content.refs ) of
+        ( Nothing, Nothing ) ->
+            text ""
 
-            Nothing ->
-                ""
-        )
+        ( _, _ ) ->
+            text ""
+
+
+viewContentTitle : Maybe String -> Html Msg
+viewContentTitle maybeTitle =
+    case maybeTitle of
+        Just title ->
+            text (title ++ " ")
+
+        Nothing ->
+            text ""
 
 
 viewContentInfoDiv : Content -> Html Msg
 viewContentInfoDiv content =
-    div [ style "margin-bottom" "25px" ]
+    div [ class "contentInfoDiv" ]
         ((case ( maybeDisplayableTagsOfContent content, maybeDateText content ) of
             ( Just displayableTagsOfContent, Just dateText ) ->
                 viewTagLinks displayableTagsOfContent
@@ -78,7 +53,7 @@ viewContentInfoDiv content =
             ( _, _ ) ->
                 []
          )
-            ++ [ viewRefsTextOfContent content ]
+            ++ [ text " ", viewContentLinkWithLinkIcon content ]
         )
 
 
@@ -101,33 +76,14 @@ viewContentLink htmlToClick contentId =
         ]
 
 
-
---viewContentLinkWithDate function may be useful for later
-
-
-viewContentLinkWithDate : Content -> Html msg
-viewContentLinkWithDate content =
-    case maybeDateText content of
-        Just dateText ->
-            viewContentLink (text dateText) (String.fromInt content.contentId)
-
-        Nothing ->
-            text ""
-
-
 viewContentLinkWithLinkIcon : Content -> Html msg
 viewContentLinkWithLinkIcon content =
     viewContentLink (img [ class "navToContent", src "/link.svg" ] []) (String.fromInt content.contentId)
 
 
-viewContentLinkWithContentTitle : String -> String -> Html msg
-viewContentLinkWithContentTitle txt id =
-    viewContentLink (text txt) id
-
-
 viewMarkdownTextOfContent : Content -> Html msg
 viewMarkdownTextOfContent content =
-    Markdown.toHtml [ class "markdownDiv" ] content.text
+    Markdown.toHtml [ class "markdownDiv contentFont" ] content.text
 
 
 viewRefsTextOfContent : Content -> Html msg
@@ -138,16 +94,28 @@ viewRefsTextOfContent content =
                 text ""
 
             else
-                div [ style "margin-top" "2px" ]
-                    [ span []
-                        (text
-                            "ilgili: "
-                            :: (refs
-                                    |> List.map (\r -> viewContentLinkWithContentTitle r.text r.id)
-                                    |> List.intersperse (text ", ")
-                               )
+                div [ class "refsDiv" ]
+                    [ span [ style "font-style" "italic" ] [ text "ilgili: " ]
+                    , span []
+                        (refs
+                            |> List.map (\r -> viewContentLink (text r.text) r.id)
+                            |> List.intersperse (text ", ")
                         )
                     ]
 
+        {-
+
+           else
+               div [ class "refsDiv" ]
+                   [ span []
+                       (text
+                           "ilgili: "
+                           :: (refs
+                                   |> List.map (\r -> viewContentLink (text r.text) r.id)
+                                   |> List.intersperse (text ", ")
+                              )
+                       )
+                   ]
+        -}
         Nothing ->
             text ""

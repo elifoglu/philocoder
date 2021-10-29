@@ -9,22 +9,11 @@ import Tag.Model exposing (ContentRenderType(..), Tag)
 import Tag.Util exposing (contentRenderTypeOf)
 
 
-viewContentDivs : List Content -> Maybe Tag -> List (Html Msg)
-viewContentDivs contents maybeTag =
-    contents
-        |> List.map (viewContentDiv maybeTag)
-        |> List.intersperse (viewContentSeparator (contentRenderTypeOf maybeTag))
-
-
-viewContentSeparator : ContentRenderType -> Html Msg
-viewContentSeparator contentRenderType =
-    case contentRenderType of
-        Normal ->
-            div []
-                [ hr [] []
-                , br [] []
-                ]
-
-        Minified ->
-            div [ style "margin-bottom" "30px" ]
-                []
+viewContentDivs : List Content -> List (Html Msg)
+viewContentDivs contents =
+    [ div [ style "margin-top" "20px" ]
+        (contents
+            |> List.map viewContentDiv
+            |> List.intersperse (hr [] [])
+        )
+    ]

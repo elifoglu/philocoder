@@ -7,7 +7,7 @@ import Html.Attributes exposing (class, href, style)
 
 viewHomeNavigator : Html Msg
 viewHomeNavigator =
-    a [ class "headerItem homeNavigator", style "text-decoration" "none", href "/" ]
+    a [ class "headerItem homeNavigator", href "/" ]
         [ b [ style "font-weight" "bolder" ]
             [ text "philocoder" ]
         ]
