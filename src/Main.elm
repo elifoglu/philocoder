@@ -11,7 +11,7 @@ import Content.Util exposing (gotContentToContent)
 import ForceDirectedGraph exposing (graphSubscriptions, initGraphModel, updateGraph)
 import List
 import Pagination.Model exposing (Pagination)
-import Requests exposing (createNewTag, getAllReferences, getAllTags, getContent, getIconData, getTagContents, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
+import Requests exposing (createNewTag, getAllRefData, getAllTags, getContent, getIconData, getTagContents, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
 import Tag.Util exposing (gotTagToTag, tagById)
 import Time
 import Url
@@ -30,7 +30,7 @@ main =
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
-    ( Model "log" key (pageBy url) [] [] getIconData Nothing Time.utc
+    ( Model "log" key (pageBy url) [] Nothing getIconData Nothing Time.utc
     , Cmd.batch [ getAllTags, getTimeZone ]
     )
 
@@ -103,7 +103,7 @@ update msg model =
                                     Cmd.none
 
                         HomePage ->
-                            getAllReferences
+                            getAllRefData
 
                         _ ->
                             Cmd.none
@@ -469,12 +469,12 @@ update msg model =
             , getContent <| Maybe.withDefault 0 (String.toInt contentId)
             )
 
-        GotAllReferences res ->
+        GotAllRefData res ->
             case res of
-                Ok allRefs ->
+                Ok allRefData ->
                     let
                         newModel =
-                            { model | allRefs = allRefs, graphModel = Just <| initGraphModel allRefs }
+                            { model | allRefData = Just allRefData, graphModel = Just <| initGraphModel allRefData }
                     in
                     ( newModel, Cmd.none )
 

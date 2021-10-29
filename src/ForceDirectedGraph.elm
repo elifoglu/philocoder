@@ -4,54 +4,33 @@ import App.Model exposing (Entity, GraphModel, Model)
 import App.Msg exposing (Msg(..))
 import Browser.Events
 import Color
-import DataResponse exposing (GotRef)
+import DataResponse exposing (GotAllRefData, GotRefConnection)
 import Force exposing (State)
 import Graph exposing (Edge, Graph, Node, NodeContext, NodeId)
 import Html.Events.Extra.Mouse as Mouse
 import Json.Decode as Decode
-import List.Extra exposing (elemIndex, unique)
+import List.Extra exposing (getAt)
 import Tuple exposing (first, second)
 import TypedSvg exposing (circle, defs, g, line, marker, polygon, svg, title)
-import TypedSvg.Attributes exposing (class, end, fill, id, markerEnd, orient, points, refX, refY, stroke, viewBox)
+import TypedSvg.Attributes exposing (class, fill, id, markerEnd, orient, points, refX, refY, stroke, viewBox)
 import TypedSvg.Attributes.InPx exposing (cx, cy, markerHeight, markerWidth, r, strokeWidth, x1, x2, y1, y2)
 import TypedSvg.Core exposing (Attribute, Svg, text)
 import TypedSvg.Types exposing (Paint(..))
 
 
-contentsGraph : List GotRef -> Graph String ()
-contentsGraph allRefs =
-    let
-        uniqueRefList : List String
-        uniqueRefList =
-            flattenAllRefs allRefs
-    in
+contentsGraph : GotAllRefData -> Graph String ()
+contentsGraph gotAllRefData =
     Graph.fromNodeLabelsAndEdgePairs
-        uniqueRefList
-        (allRefs
+        gotAllRefData.titlesToShow
+        (gotAllRefData.connections
             |> List.map gotRefToPair
-            |> List.map (mapToIndexOfEach uniqueRefList)
         )
 
 
-flattenAllRefs : List GotRef -> List String
-flattenAllRefs gotRefs =
-    gotRefs
-        |> List.concatMap (\ref -> [ ref.a, ref.b ])
-        |> unique
-        |> List.map (\ref -> String.fromInt ref)
-
-
-gotRefToPair : GotRef -> ( Int, Int )
+gotRefToPair : GotRefConnection -> ( Int, Int )
 gotRefToPair gotRef =
     ( gotRef.a
     , gotRef.b
-    )
-
-
-mapToIndexOfEach : List String -> ( Int, Int ) -> ( Int, Int )
-mapToIndexOfEach contentIdList ( a, b ) =
-    ( Maybe.withDefault -1 <| elemIndex (String.fromInt a) contentIdList
-    , Maybe.withDefault -1 <| elemIndex (String.fromInt b) contentIdList
     )
 
 
@@ -67,24 +46,24 @@ h =
 
 clientPosXCorrectionValue : Float
 clientPosXCorrectionValue =
-    205
+    60
 
 
 clientPosYCorrectionValue : Float
 clientPosYCorrectionValue =
-    95
+    505
 
 
 
 --INIT--
 
 
-initGraphModel : List GotRef -> GraphModel
-initGraphModel allRefs =
+initGraphModel : GotAllRefData -> GraphModel
+initGraphModel allRefData =
     let
         graph : Graph Entity ()
         graph =
-            contentsGraph allRefs
+            contentsGraph allRefData
                 |> Graph.mapContexts initializeNode
 
         link : { a | from : b, to : c } -> ( b, c )
@@ -187,8 +166,8 @@ updateContextWithValue nodeCtx value =
 --VIEW--
 
 
-viewGraph : Maybe GraphModel -> Svg Msg
-viewGraph maybeModel =
+viewGraph : List Int -> Maybe GraphModel -> Svg Msg
+viewGraph contentIds maybeModel =
     svg [ viewBox 0 0 w h ] <|
         case maybeModel of
             Just model ->
@@ -198,7 +177,7 @@ viewGraph maybeModel =
                     |> List.map (linkElement model.graph)
                     |> g [ class [ "links" ] ]
                 , Graph.nodes model.graph
-                    |> List.map nodeElement
+                    |> List.map (nodeElement contentIds)
                     |> g [ class [ "nodes" ] ]
                 ]
 
@@ -251,8 +230,8 @@ linkElement graph edge =
         []
 
 
-nodeElement : { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Svg Msg
-nodeElement node =
+nodeElement : List Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Svg Msg
+nodeElement contentIds node =
     circle
         [ r 2.5
         , fill <| Paint nodeColor
@@ -260,7 +239,7 @@ nodeElement node =
         , strokeWidth 7
         , cx node.label.x
         , cy node.label.y
-        , onMouseClick node
+        , onMouseClick contentIds node
         , onMouseDown node.id
         ]
         [ title [] [ text node.label.value ]
@@ -272,9 +251,9 @@ onMouseDown index =
     Mouse.onDown (\event -> DragStart index ( first event.clientPos - clientPosXCorrectionValue, second event.clientPos - clientPosYCorrectionValue ))
 
 
-onMouseClick : { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Attribute Msg
-onMouseClick node =
-    Mouse.onContextMenu (\_ -> GoToContent (Maybe.withDefault 0 (String.toInt node.label.value)))
+onMouseClick : List Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Attribute Msg
+onMouseClick contentIds node =
+    Mouse.onContextMenu (\_ -> GoToContent (Maybe.withDefault 0 (getAt node.id contentIds)))
 
 
 

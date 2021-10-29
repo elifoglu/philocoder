@@ -34,7 +34,13 @@ view model =
                             , style "display" "block"
                             , style "align-items" "center"
                             ]
-                            [ viewGraph model.graphModel ]
+                            (case model.allRefData of
+                                Just allRefData ->
+                                    [ viewGraph allRefData.contentIds model.graphModel ]
+
+                                Nothing ->
+                                    []
+                            )
                         ]
 
                     ContentPage status ->

@@ -1,8 +1,8 @@
-module Requests exposing (createNewTag, getAllReferences, getAllTags, getContent, getIconData, getTagContents, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
+module Requests exposing (createNewTag, getAllRefData, getAllTags, getContent, getIconData, getTagContents, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
 
 import App.Model exposing (CreateContentPageModel, CreateTagPageModel, IconInfo, UpdateContentPageModel, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
 import App.Msg exposing (Msg(..), PreviewContentModel(..))
-import DataResponse exposing (ContentID, allRefsDecoder, contentDecoder, contentsResponseDecoder, tagsDecoder)
+import DataResponse exposing (ContentID, contentDecoder, contentsResponseDecoder, gotAllRefDataDecoder, tagsDecoder)
 import Http
 import Tag.Model exposing (Tag)
 import Task
@@ -52,11 +52,11 @@ getContent contentId =
         }
 
 
-getAllReferences : Cmd Msg
-getAllReferences =
+getAllRefData : Cmd Msg
+getAllRefData =
     Http.get
-        { url = apiURL ++ "content-refs"
-        , expect = Http.expectJson GotAllReferences allRefsDecoder
+        { url = apiURL ++ "ref-data"
+        , expect = Http.expectJson GotAllRefData gotAllRefDataDecoder
         }
 
 

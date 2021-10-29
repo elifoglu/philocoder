@@ -2,7 +2,7 @@ module App.Model exposing (CreateContentPageModel, CreateTagPageModel, Drag, Ent
 
 import Browser.Navigation as Nav
 import Content.Model exposing (Content)
-import DataResponse exposing (ContentID, GotRef)
+import DataResponse exposing (ContentID, GotAllRefData, GotRefConnection)
 import Force
 import Graph exposing (Graph, NodeId)
 import Json.Encode as Encode
@@ -20,7 +20,7 @@ type alias Model =
     , key : Nav.Key
     , activePage : Page
     , allTags : List Tag
-    , allRefs : List GotRef
+    , allRefData : Maybe GotAllRefData
     , icons : List IconInfo
     , graphModel : Maybe GraphModel
     , timeZone : Time.Zone

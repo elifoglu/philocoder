@@ -1,4 +1,4 @@
-module DataResponse exposing (ContentID, ContentsResponse, GotAllRefs, GotContent, GotContentDate, GotRef, GotTag, TagsResponse, allRefsDecoder, contentDecoder, contentsResponseDecoder, tagsDecoder)
+module DataResponse exposing (ContentID, ContentsResponse, GotAllRefData, GotContent, GotContentDate, GotRefConnection, GotTag, TagsResponse, contentDecoder, contentsResponseDecoder, gotAllRefDataDecoder, tagsDecoder)
 
 import Content.Model exposing (Ref)
 import Json.Decode as D exposing (Decoder, andThen, bool, field, int, map, map2, map3, map6, map8, maybe, oneOf, string, succeed)
@@ -37,11 +37,14 @@ type alias GotContentDate =
     String
 
 
-type alias GotAllRefs =
-    List GotRef
+type alias GotAllRefData =
+    { titlesToShow : List String
+    , contentIds : List Int
+    , connections : List GotRefConnection
+    }
 
 
-type alias GotRef =
+type alias GotRefConnection =
     { a : Int, b : Int }
 
 
@@ -57,12 +60,19 @@ contentsResponseDecoder =
         (field "contents" (D.list contentDecoder))
 
 
-allRefsDecoder : Decoder GotAllRefs
-allRefsDecoder =
-    D.list <|
-        map2 GotRef
-            (field "a" int)
-            (field "b" int)
+gotAllRefDataDecoder : Decoder GotAllRefData
+gotAllRefDataDecoder =
+    map3 GotAllRefData
+        (field "titlesToShow" (D.list string))
+        (field "contentIds" (D.list int))
+        (field "connections" (D.list refConnectionDecoder))
+
+
+refConnectionDecoder : Decoder GotRefConnection
+refConnectionDecoder =
+    map2 GotRefConnection
+        (field "a" int)
+        (field "b" int)
 
 
 tagDecoder : Decoder GotTag
