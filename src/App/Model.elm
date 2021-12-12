@@ -1,4 +1,4 @@
-module App.Model exposing (CreateContentPageModel, CreateTagPageModel, Drag, Entity, GraphModel, IconInfo, Initializable(..), MaySendRequest(..), Model, NoVal(..), Page(..), UpdateContentPageModel, UpdateTagPageModel, contentToCreateContentPageModel, contentToUpdateContentPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
+module App.Model exposing (CreateContentPageModel, CreateTagPageModel, Drag, Entity, GraphModel, IconInfo, Initializable(..), MaySendRequest(..), Model, NoVal(..), Page(..), ReadingMode(..), UpdateContentPageModel, UpdateTagPageModel, contentToCreateContentPageModel, contentToUpdateContentPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
 
 import Browser.Navigation as Nav
 import Content.Model exposing (Content)
@@ -18,6 +18,7 @@ type NoVal
 type alias Model =
     { log : String
     , key : Nav.Key
+    , readingMode : ReadingMode
     , activePage : Page
     , allTags : List Tag
     , allRefData : Maybe GotAllRefData
@@ -52,6 +53,12 @@ type alias Drag =
     }
 
 
+type ReadingMode
+    = NotSelectedYet
+    | BlogContents
+    | AllContents
+
+
 type Initializable a b
     = NonInitialized a
     | Initialized b
@@ -65,7 +72,7 @@ type MaySendRequest pageData
 type Page
     = HomePage
     | ContentPage (Initializable Int Content)
-    | TagPage (Initializable ( String, Maybe Int ) ( Tag, List Content, Pagination ))
+    | TagPage (Initializable ( String, Maybe Int, Maybe String ) ( Tag, List Content, Pagination ))
     | CreateContentPage (MaySendRequest ( CreateContentPageModel, Maybe Content ))
     | UpdateContentPage (MaySendRequest ( UpdateContentPageModel, Maybe Content, Int ))
     | CreateTagPage (MaySendRequest CreateTagPageModel)

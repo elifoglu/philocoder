@@ -1,6 +1,6 @@
 module App.Msg exposing (..)
 
-import App.Model exposing (CreateContentPageModel, CreateTagPageModel, UpdateContentPageModel, UpdateTagPageModel)
+import App.Model exposing (CreateContentPageModel, CreateTagPageModel, ReadingMode, UpdateContentPageModel, UpdateTagPageModel)
 import Browser
 import DataResponse exposing (ContentID, ContentsResponse, GotAllRefData, GotContent, TagsResponse)
 import Graph exposing (NodeId)
@@ -28,6 +28,7 @@ type Msg
     | CreateTag CreateTagPageModel
     | UpdateTag String UpdateTagPageModel
     | GotDoneResponse (Result Http.Error String)
+    | ReadingModeChanged ReadingMode
     | DragStart NodeId ( Float, Float )
     | DragAt ( Float, Float )
     | DragEnd ( Float, Float )

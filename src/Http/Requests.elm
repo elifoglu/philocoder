@@ -1,6 +1,6 @@
 module Requests exposing (createNewTag, getAllRefData, getAllTags, getContent, getIconData, getTagContents, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
 
-import App.Model exposing (CreateContentPageModel, CreateTagPageModel, IconInfo, UpdateContentPageModel, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
+import App.Model exposing (CreateContentPageModel, CreateTagPageModel, IconInfo, ReadingMode(..), UpdateContentPageModel, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
 import App.Msg exposing (Msg(..), PreviewContentModel(..))
 import DataResponse exposing (ContentID, contentDecoder, contentsResponseDecoder, gotAllRefDataDecoder, tagsDecoder)
 import Http
@@ -18,16 +18,28 @@ getTimeZone =
     Task.perform GotTimeZone Time.here
 
 
-getAllTags : Cmd Msg
-getAllTags =
+getAllTags : ReadingMode -> Cmd Msg
+getAllTags mode =
     Http.get
-        { url = apiURL ++ "tags"
+        { url =
+            apiURL
+                ++ "tags?blogMode="
+                ++ (case mode of
+                        NotSelectedYet ->
+                            "true"
+
+                        BlogContents ->
+                            "true"
+
+                        AllContents ->
+                            "false"
+                   )
         , expect = Http.expectJson GotAllTags tagsDecoder
         }
 
 
-getTagContents : Tag -> Maybe Int -> Cmd Msg
-getTagContents tag maybePage =
+getTagContents : Tag -> Maybe Int -> ReadingMode -> Cmd Msg
+getTagContents tag maybePage readingMode =
     Http.get
         { url =
             apiURL
@@ -39,6 +51,16 @@ getTagContents tag maybePage =
 
                         Nothing ->
                             ""
+                   )
+                ++ (case readingMode of
+                        NotSelectedYet ->
+                            "&blogMode=false"
+
+                        BlogContents ->
+                            "&blogMode=true"
+
+                        AllContents ->
+                            "&blogMode=false"
                    )
         , expect = Http.expectJson (GotContentsOfTag tag) contentsResponseDecoder
         }

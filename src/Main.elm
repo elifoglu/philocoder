@@ -30,8 +30,8 @@ main =
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
-    ( Model "log" key (pageBy url) [] Nothing getIconData Nothing Time.utc
-    , Cmd.batch [ getAllTags, getTimeZone ]
+    ( Model "log" key NotSelectedYet (pageBy url) [] Nothing getIconData Nothing Time.utc
+    , Cmd.batch [ getAllTags BlogContents, getTimeZone ]
     )
 
 
@@ -59,10 +59,18 @@ update msg model =
 
                         TagPage status ->
                             case status of
-                                NonInitialized ( tagId, maybePage ) ->
+                                NonInitialized ( tagId, maybePage, maybeMode ) ->
                                     case tagById allTags tagId of
                                         Just tag ->
-                                            getTagContents tag maybePage
+                                            case maybeMode of
+                                                Nothing ->
+                                                    getTagContents tag maybePage model.readingMode
+
+                                                Just "blog" ->
+                                                    getTagContents tag maybePage BlogContents
+
+                                                Just _ ->
+                                                    getTagContents tag maybePage model.readingMode
 
                                         Nothing ->
                                             Cmd.none
@@ -208,7 +216,7 @@ update msg model =
                             case model.activePage of
                                 TagPage status ->
                                     case status of
-                                        NonInitialized ( _, maybePage ) ->
+                                        NonInitialized ( _, maybePage, _ ) ->
                                             Maybe.withDefault 1 maybePage
 
                                         _ ->
@@ -274,10 +282,18 @@ update msg model =
 
                     TagPage status ->
                         case status of
-                            NonInitialized ( tagId, maybePage ) ->
+                            NonInitialized ( tagId, maybePage, maybeMode ) ->
                                 case tagById model.allTags tagId of
                                     Just tag ->
-                                        getTagContents tag maybePage
+                                        case maybeMode of
+                                            Nothing ->
+                                                getTagContents tag maybePage newModel.readingMode
+
+                                            Just "blog" ->
+                                                getTagContents tag maybePage BlogContents
+
+                                            Just _ ->
+                                                getTagContents tag maybePage newModel.readingMode
 
                                     Nothing ->
                                         Cmd.none
@@ -485,6 +501,9 @@ update msg model =
 
         GotTimeZone zone ->
             ( { model | timeZone = zone }, Cmd.none )
+
+        ReadingModeChanged readingMode ->
+            ( { model | readingMode = readingMode }, getAllTags readingMode )
 
         otherMsg ->
             case model.graphModel of

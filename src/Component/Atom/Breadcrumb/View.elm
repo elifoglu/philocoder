@@ -12,7 +12,7 @@ viewBreadcrumb model =
     case model.activePage of
         TagPage initializable ->
             case initializable of
-                NonInitialized ( _, _ ) ->
+                NonInitialized ( _, _, _ ) ->
                     [ viewHomeNavigator ]
 
                 Initialized ( tag, _, _ ) ->

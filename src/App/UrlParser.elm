@@ -10,7 +10,7 @@ routeParser : Parser (Page -> a) a
 routeParser =
     oneOf
         [ map HomePage top
-        , map nonInitializedTagPageMapper (s "tags" </> string <?> Query.int "page")
+        , map nonInitializedTagPageMapper (s "tags" </> string <?> Query.int "page" <?> Query.string "mode")
         , map nonInitializedContentPageMapper (s "contents" </> int)
         , map (CreateContentPage (NoRequestSentYet ( CreateContentPageModel "" "" "" "" "" "" "", Nothing ))) (s "create" </> s "content")
         , map nonInitializedUpdateContentPageMapper (s "update" </> s "content" </> int)
@@ -19,9 +19,9 @@ routeParser =
         ]
 
 
-nonInitializedTagPageMapper : String -> Maybe Int -> Page
-nonInitializedTagPageMapper tagId maybePage =
-    TagPage (NonInitialized ( tagId, maybePage ))
+nonInitializedTagPageMapper : String -> Maybe Int -> Maybe String -> Page
+nonInitializedTagPageMapper tagId maybePage maybeMode =
+    TagPage (NonInitialized ( tagId, maybePage, maybeMode ))
 
 
 nonInitializedContentPageMapper : Int -> Page
