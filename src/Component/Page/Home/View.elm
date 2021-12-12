@@ -95,30 +95,35 @@ viewIcon iconInfo =
 
 viewReadingModeDiv : Model -> List (Html Msg)
 viewReadingModeDiv model =
-    [ div [ style "margin-top" "10px", style "margin-bottom" "10px" ]
-        [ text "mod:"
-        , span []
-            [ input
-                [ type_ "radio"
-                , name "readingMode"
-                , checked (readingModeCheckFn model)
-                , on "change" (Decode.succeed (ReadingModeChanged BlogContents))
+    if areTagsLoaded model then
+        --this 'if expression' is just to show icons 'after' tags are shown; not before. it is just about aesthetics
+        [ div [ style "margin-top" "10px", style "margin-bottom" "10px" ]
+            [ text "mod:"
+            , span []
+                [ input
+                    [ type_ "radio"
+                    , name "readingMode"
+                    , checked (readingModeCheckFn model)
+                    , on "change" (Decode.succeed (ReadingModeChanged BlogContents))
+                    ]
+                    []
+                , text "blog"
                 ]
-                []
-            , text "blog"
-            ]
-        , span []
-            [ input
-                [ type_ "radio"
-                , name "readingMode"
-                , checked (flip (readingModeCheckFn model))
-                , on "change" (Decode.succeed (ReadingModeChanged AllContents))
+            , span []
+                [ input
+                    [ type_ "radio"
+                    , name "readingMode"
+                    , checked (flip (readingModeCheckFn model))
+                    , on "change" (Decode.succeed (ReadingModeChanged AllContents))
+                    ]
+                    []
+                , text "tümü"
                 ]
-                []
-            , text "tümü"
             ]
         ]
-    ]
+
+    else
+        []
 
 
 readingModeCheckFn : Model -> Bool
