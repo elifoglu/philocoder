@@ -1,13 +1,14 @@
 module CreateContent.View exposing (viewCreateContentDiv)
 
-import App.Model exposing (CreateContentPageModel, Model)
+import App.Model exposing (CreateContentPageModel, Model, ReadingMode(..))
 import App.Msg exposing (ContentInputType(..), Msg(..), PreviewContentModel(..))
+import Component.Page.Util exposing (flipBoolAndToStr)
 import Content.Model exposing (Content)
 import Content.View exposing (viewContentDiv)
-import Html exposing (Html, br, button, div, hr, input, text, textarea)
-import Html.Attributes exposing (placeholder, style, type_, value)
-import Html.Events exposing (onClick, onInput)
-import Tag.Util exposing (tagWithMostContents)
+import Html exposing (Html, br, button, div, hr, input, label, span, text, textarea)
+import Html.Attributes exposing (checked, name, placeholder, style, type_, value)
+import Html.Events exposing (on, onClick, onInput)
+import Json.Decode as Decode
 
 
 viewCreateContentDiv : Model -> CreateContentPageModel -> Maybe Content -> Html Msg
@@ -22,6 +23,7 @@ viewCreateContentDiv model createContentPageModel maybeContentToPreview =
                 , viewInput "text" "title (empty if does not exist)" createContentPageModel.title (ContentInputChanged Title)
                 , viewInput "text" "tagNames (use comma to separate)" createContentPageModel.tags (ContentInputChanged Tags)
                 , viewInput "text" "refIDs (use comma to separate)" createContentPageModel.refs (ContentInputChanged Refs)
+                , viewCheckBoxInput createContentPageModel.okForBlogMode (ContentInputChanged OkForBlogMode)
                 , viewInput "password" "password" createContentPageModel.password (ContentInputChanged Password)
                 , viewContentTextArea "content" createContentPageModel.text (ContentInputChanged Text)
                 , div []
@@ -61,3 +63,19 @@ viewPreviewContentButton msg =
 viewGetContentToCopyButton : msg -> Html msg
 viewGetContentToCopyButton msg =
     button [ onClick msg ] [ text "get content to copy" ]
+
+
+viewCheckBoxInput : Bool -> (String -> Msg) -> Html Msg
+viewCheckBoxInput okForBlogMode msgFn =
+    span []
+        [ label [] [ text "okForBlogMode" ]
+        , span []
+            [ input
+                [ type_ "checkbox"
+                , name "okForBlogMode"
+                , checked okForBlogMode
+                , on "change" (Decode.succeed (msgFn (flipBoolAndToStr okForBlogMode)))
+                ]
+                []
+            ]
+        ]

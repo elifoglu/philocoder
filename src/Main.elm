@@ -329,6 +329,17 @@ update msg model =
                                         Refs ->
                                             { createContentPageModel | refs = input }
 
+                                        OkForBlogMode ->
+                                            case input of
+                                                "true" ->
+                                                    { createContentPageModel | okForBlogMode = True }
+
+                                                "false" ->
+                                                    { createContentPageModel | okForBlogMode = False }
+
+                                                _ ->
+                                                    { createContentPageModel | okForBlogMode = False }
+
                                         Password ->
                                             { createContentPageModel | password = input }
 
@@ -364,7 +375,18 @@ update msg model =
                                         Password ->
                                             { updateContentPageModel | password = input }
 
-                                        _ ->
+                                        OkForBlogMode ->
+                                            case input of
+                                                "true" ->
+                                                    { updateContentPageModel | okForBlogMode = True }
+
+                                                "false" ->
+                                                    { updateContentPageModel | okForBlogMode = False }
+
+                                                _ ->
+                                                    { updateContentPageModel | okForBlogMode = False }
+
+                                        ContentToCopy ->
                                             updateContentPageModel
                             in
                             ( { model | activePage = UpdateContentPage <| NoRequestSentYet ( newCurrentPageModel, maybeContentToPreview, contentId ) }, Cmd.none )

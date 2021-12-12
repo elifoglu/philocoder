@@ -111,6 +111,7 @@ viewReadingModeDiv model =
         [ input
             [ type_ "radio"
             , name "readingMode"
+            , checked (flip (readingModeCheckFn model))
             , on "change" (Decode.succeed (ReadingModeChanged AllContents))
             ]
             []
@@ -130,3 +131,12 @@ readingModeCheckFn model =
 
         AllContents ->
             False
+
+
+flip : Bool -> Bool
+flip bool =
+    if bool == True then
+        False
+
+    else
+        True

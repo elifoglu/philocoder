@@ -48,6 +48,7 @@ type ContentInputType
     | Text
     | Tags
     | Refs
+    | OkForBlogMode
     | Password
     | ContentToCopy
 

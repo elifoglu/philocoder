@@ -5,7 +5,7 @@ import Tag.Model exposing (Tag)
 
 
 type alias Content =
-    { title : Maybe String, date : ContentDate, contentId : ContentID, text : String, tags : List Tag, refs : Maybe (List Ref) }
+    { title : Maybe String, date : ContentDate, contentId : ContentID, text : String, tags : List Tag, refs : Maybe (List Ref), okForBlogMode : Bool }
 
 
 type alias Ref =

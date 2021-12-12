@@ -87,6 +87,7 @@ type alias CreateContentPageModel =
     , text : String
     , tags : String
     , refs : String
+    , okForBlogMode : Bool
     , password : String
     , contentIdToCopy : String
     }
@@ -97,6 +98,7 @@ type alias UpdateContentPageModel =
     , text : String
     , tags : String
     , refs : String
+    , okForBlogMode : Bool
     , password : String
     }
 
@@ -132,6 +134,7 @@ contentToCreateContentPageModel content =
 
             Nothing ->
                 ""
+    , okForBlogMode = content.okForBlogMode
     , password = ""
     , contentIdToCopy = ""
     }
@@ -149,6 +152,7 @@ contentToUpdateContentPageModel content =
 
             Nothing ->
                 ""
+    , okForBlogMode = content.okForBlogMode
     , password = ""
     }
 
@@ -161,6 +165,7 @@ createContentPageModelEncoder model =
         , ( "text", Encode.string model.text )
         , ( "tags", Encode.string model.tags )
         , ( "refs", Encode.string model.refs )
+        , ( "okForBlogMode", Encode.bool model.okForBlogMode )
         , ( "password", Encode.string model.password )
         ]
 
@@ -173,6 +178,7 @@ updateContentPageModelEncoder contentId model =
         , ( "text", Encode.string model.text )
         , ( "tags", Encode.string model.tags )
         , ( "refs", Encode.string model.refs )
+        , ( "okForBlogMode", Encode.bool model.okForBlogMode )
         , ( "password", Encode.string model.password )
         ]
 

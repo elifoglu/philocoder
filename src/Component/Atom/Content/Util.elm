@@ -28,6 +28,7 @@ gotContentToContent model gotContent =
             |> List.map (tagNameToTag model.allTags)
             |> values
     , refs = gotContent.refs
+    , okForBlogMode = gotContent.okForBlogMode
     }
 
 
