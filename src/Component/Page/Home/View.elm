@@ -17,9 +17,8 @@ viewHomePageDiv model =
             |> List.map (viewTag model.readingMode)
             |> List.intersperse (br [] [])
          )
-            ++ [ br [] [], br [] [] ]
+            ++ [ br [] [] ]
             ++ viewReadingModeDiv model
-            ++ [ br [] [], br [] [] ]
             ++ viewIconsDiv model
         )
 
@@ -96,26 +95,28 @@ viewIcon iconInfo =
 
 viewReadingModeDiv : Model -> List (Html Msg)
 viewReadingModeDiv model =
-    [ text "mod:"
-    , span []
-        [ input
-            [ type_ "radio"
-            , name "readingMode"
-            , checked (readingModeCheckFn model)
-            , on "change" (Decode.succeed (ReadingModeChanged BlogContents))
+    [ div [ style "margin-top" "10px", style "margin-bottom" "10px" ]
+        [ text "mod:"
+        , span []
+            [ input
+                [ type_ "radio"
+                , name "readingMode"
+                , checked (readingModeCheckFn model)
+                , on "change" (Decode.succeed (ReadingModeChanged BlogContents))
+                ]
+                []
+            , text "blog"
             ]
-            []
-        , text "blog"
-        ]
-    , span []
-        [ input
-            [ type_ "radio"
-            , name "readingMode"
-            , checked (flip (readingModeCheckFn model))
-            , on "change" (Decode.succeed (ReadingModeChanged AllContents))
+        , span []
+            [ input
+                [ type_ "radio"
+                , name "readingMode"
+                , checked (flip (readingModeCheckFn model))
+                , on "change" (Decode.succeed (ReadingModeChanged AllContents))
+                ]
+                []
+            , text "tümü"
             ]
-            []
-        , text "tümü"
         ]
     ]
 

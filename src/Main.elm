@@ -512,7 +512,12 @@ update msg model =
                 Ok allRefData ->
                     let
                         newModel =
-                            { model | allRefData = Just allRefData, graphModel = Just <| initGraphModel allRefData }
+                            case model.graphModel of
+                                Nothing ->
+                                    { model | allRefData = Just allRefData, graphModel = Just <| initGraphModel allRefData }
+
+                                Just _ ->
+                                    model
                     in
                     ( newModel, Cmd.none )
 
