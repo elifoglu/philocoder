@@ -13,12 +13,12 @@ import TagInfoIcon.View exposing (viewTagInfoIcon)
 viewHomePageDiv : Model -> Html Msg
 viewHomePageDiv model =
     div [ class "homepageTagsFont", style "width" "auto", style "float" "left" ]
-        (viewReadingModeDiv model
+        ((model.allTags
+            |> List.map (viewTag model.readingMode)
+            |> List.intersperse (br [] [])
+         )
             ++ [ br [] [], br [] [] ]
-            ++ (model.allTags
-                    |> List.map (viewTag model.readingMode)
-                    |> List.intersperse (br [] [])
-               )
+            ++ viewReadingModeDiv model
             ++ [ br [] [], br [] [] ]
             ++ viewIconsDiv model
         )
