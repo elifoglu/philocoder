@@ -10,6 +10,7 @@ import Graph exposing (Edge, Graph, Node, NodeContext, NodeId)
 import Html.Events.Extra.Mouse as Mouse
 import Json.Decode as Decode
 import List.Extra exposing (getAt)
+import Tag.Model exposing (Tag)
 import Tuple exposing (first, second)
 import TypedSvg exposing (circle, defs, g, line, marker, polygon, svg, title)
 import TypedSvg.Attributes exposing (class, fill, id, markerEnd, orient, points, refX, refY, stroke, viewBox)
@@ -46,12 +47,12 @@ h =
 
 clientPosXCorrectionValue : Float
 clientPosXCorrectionValue =
-    60
+    58
 
 
-clientPosYCorrectionValue : Float
-clientPosYCorrectionValue =
-    505
+clientPosYCorrectionValue : Int -> Float
+clientPosYCorrectionValue totalTagCount =
+    toFloat (198 + (20 * totalTagCount))
 
 
 
@@ -166,8 +167,8 @@ updateContextWithValue nodeCtx value =
 --VIEW--
 
 
-viewGraph : List Int -> Maybe GraphModel -> Svg Msg
-viewGraph contentIds maybeModel =
+viewGraph : List Int -> Maybe GraphModel -> Int -> Svg Msg
+viewGraph contentIds maybeModel totalTagCount =
     svg [ viewBox 0 0 w h ] <|
         case maybeModel of
             Just model ->
@@ -177,7 +178,7 @@ viewGraph contentIds maybeModel =
                     |> List.map (linkElement model.graph)
                     |> g [ class [ "links" ] ]
                 , Graph.nodes model.graph
-                    |> List.map (nodeElement contentIds)
+                    |> List.map (nodeElement contentIds totalTagCount)
                     |> g [ class [ "nodes" ] ]
                 ]
 
@@ -230,8 +231,8 @@ linkElement graph edge =
         []
 
 
-nodeElement : List Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Svg Msg
-nodeElement contentIds node =
+nodeElement : List Int -> Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Svg Msg
+nodeElement contentIds totalTagCount node =
     circle
         [ r 2.5
         , fill <| Paint nodeColor
@@ -240,15 +241,15 @@ nodeElement contentIds node =
         , cx node.label.x
         , cy node.label.y
         , onMouseClick contentIds node
-        , onMouseDown node.id
+        , onMouseDown node.id totalTagCount
         ]
         [ title [] [ text node.label.value ]
         ]
 
 
-onMouseDown : NodeId -> Attribute Msg
-onMouseDown index =
-    Mouse.onDown (\event -> DragStart index ( first event.clientPos - clientPosXCorrectionValue, second event.clientPos - clientPosYCorrectionValue ))
+onMouseDown : NodeId -> Int -> Attribute Msg
+onMouseDown index totalTagCount =
+    Mouse.onDown (\event -> DragStart index ( first event.clientPos - clientPosXCorrectionValue, second event.clientPos - clientPosYCorrectionValue totalTagCount ))
 
 
 onMouseClick : List Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Attribute Msg
@@ -260,8 +261,8 @@ onMouseClick contentIds node =
 --SUBSCRIPTIONS--
 
 
-graphSubscriptions : GraphModel -> Sub Msg
-graphSubscriptions model =
+graphSubscriptions : GraphModel -> Int -> Sub Msg
+graphSubscriptions model totalTagCount =
     case model.drag of
         Nothing ->
             -- This allows us to save resources, as if the simulation is done, there is no point in subscribing
@@ -274,7 +275,7 @@ graphSubscriptions model =
 
         Just _ ->
             Sub.batch
-                [ Browser.Events.onMouseMove (Decode.map (\event -> DragAt ( first event.clientPos - clientPosXCorrectionValue, second event.clientPos - clientPosYCorrectionValue )) Mouse.eventDecoder)
-                , Browser.Events.onMouseUp (Decode.map (\event -> DragEnd ( first event.clientPos - clientPosXCorrectionValue, second event.clientPos - clientPosYCorrectionValue )) Mouse.eventDecoder)
+                [ Browser.Events.onMouseMove (Decode.map (\event -> DragAt ( first event.clientPos - clientPosXCorrectionValue, second event.clientPos - clientPosYCorrectionValue totalTagCount )) Mouse.eventDecoder)
+                , Browser.Events.onMouseUp (Decode.map (\event -> DragEnd ( first event.clientPos - clientPosXCorrectionValue, second event.clientPos - clientPosYCorrectionValue totalTagCount )) Mouse.eventDecoder)
                 , Browser.Events.onAnimationFrame Tick
                 ]

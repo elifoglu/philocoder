@@ -36,7 +36,7 @@ view model =
                             ]
                             (case model.allRefData of
                                 Just allRefData ->
-                                    [ viewGraph allRefData.contentIds model.graphModel ]
+                                    [ viewGraph allRefData.contentIds model.graphModel (List.length model.allTags) ]
 
                                 Nothing ->
                                     []

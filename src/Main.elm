@@ -518,7 +518,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     case model.graphModel of
         Just graphModel ->
-            graphSubscriptions graphModel
+            graphSubscriptions graphModel (List.length model.allTags)
 
         Nothing ->
             Sub.none
