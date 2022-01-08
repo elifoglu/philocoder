@@ -58,7 +58,7 @@ view model =
 
                             Initialized ( tag, contents, pagination ) ->
                                 viewContentDivs contents
-                                    ++ [ viewPagination tag pagination
+                                    ++ [ viewPagination tag pagination model.readingMode
                                        ]
 
                     CreateContentPage status ->
