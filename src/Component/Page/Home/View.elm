@@ -13,7 +13,7 @@ import TagInfoIcon.View exposing (viewTagInfoIcon)
 viewHomePageDiv : Model -> Html Msg
 viewHomePageDiv model =
     div [ class "homepageTagsFont", style "width" "auto", style "float" "left" ]
-        ((model.allTags
+        ((tagsToShow model
             |> List.map (viewTag model.readingMode)
             |> List.intersperse (br [] [])
          )
@@ -21,6 +21,19 @@ viewHomePageDiv model =
             ++ viewReadingModeDiv model
             ++ viewIconsDiv model
         )
+
+
+tagsToShow : Model -> List Tag
+tagsToShow model =
+    case model.readingMode of
+        NotSelectedYet ->
+            model.blogModeTags
+
+        BlogContents ->
+            model.blogModeTags
+
+        AllContents ->
+            model.allTags
 
 
 tagToBeBold =

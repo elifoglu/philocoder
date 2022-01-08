@@ -21,6 +21,7 @@ type alias Model =
     , readingMode : ReadingMode
     , activePage : Page
     , allTags : List Tag
+    , blogModeTags : List Tag
     , allRefData : Maybe GotAllRefData
     , icons : List IconInfo
     , graphModel : Maybe GraphModel

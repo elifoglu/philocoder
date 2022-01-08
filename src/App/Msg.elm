@@ -2,7 +2,7 @@ module App.Msg exposing (..)
 
 import App.Model exposing (CreateContentPageModel, CreateTagPageModel, ReadingMode, UpdateContentPageModel, UpdateTagPageModel)
 import Browser
-import DataResponse exposing (ContentID, ContentsResponse, GotAllRefData, GotContent, TagsResponse)
+import DataResponse exposing (ContentID, ContentsResponse, GotAllRefData, GotContent, TagDataResponse)
 import Graph exposing (NodeId)
 import Http
 import Tag.Model exposing (Tag)
@@ -13,7 +13,7 @@ import Url
 type Msg
     = UrlRequested Browser.UrlRequest
     | UrlChanged Url.Url
-    | GotAllTags (Result Http.Error TagsResponse)
+    | GotTagDataResponse (Result Http.Error TagDataResponse)
     | GotContentsOfTag Tag (Result Http.Error ContentsResponse)
     | GotContent (Result Http.Error GotContent)
     | GotAllRefData (Result Http.Error GotAllRefData)

@@ -1,12 +1,12 @@
-module DataResponse exposing (ContentID, ContentsResponse, GotAllRefData, GotContent, GotContentDate, GotRefConnection, GotTag, TagsResponse, contentDecoder, contentsResponseDecoder, gotAllRefDataDecoder, tagsDecoder)
+module DataResponse exposing (ContentID, ContentsResponse, GotAllRefData, GotContent, GotContentDate, GotRefConnection, GotTag, TagDataResponse, contentDecoder, contentsResponseDecoder, gotAllRefDataDecoder, tagDataResponseDecoder)
 
 import Content.Model exposing (Ref)
 import Json.Decode as D exposing (Decoder, andThen, bool, field, int, map2, map3, map7, map8, maybe, string, succeed)
 import Tag.Model exposing (ContentRenderType(..))
 
 
-type alias TagsResponse =
-    List GotTag
+type alias TagDataResponse =
+    { allTags : List GotTag, blogModeTags : List GotTag }
 
 
 type alias ContentsResponse =
@@ -48,9 +48,11 @@ type alias GotRefConnection =
     { a : Int, b : Int }
 
 
-tagsDecoder : Decoder TagsResponse
-tagsDecoder =
-    D.list tagDecoder
+tagDataResponseDecoder : Decoder TagDataResponse
+tagDataResponseDecoder =
+    map2 TagDataResponse
+        (field "allTags" (D.list tagDecoder))
+        (field "blogModeTags" (D.list tagDecoder))
 
 
 contentsResponseDecoder : Decoder ContentsResponse

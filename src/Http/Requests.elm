@@ -1,8 +1,8 @@
-module Requests exposing (createNewTag, getAllRefData, getAllTags, getContent, getIconData, getTagContents, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
+module Requests exposing (createNewTag, getAllRefData, getContent, getIconData, getTagContents, getTagDataResponse, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
 
 import App.Model exposing (CreateContentPageModel, CreateTagPageModel, IconInfo, ReadingMode(..), UpdateContentPageModel, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
 import App.Msg exposing (Msg(..), PreviewContentModel(..))
-import DataResponse exposing (ContentID, contentDecoder, contentsResponseDecoder, gotAllRefDataDecoder, tagsDecoder)
+import DataResponse exposing (ContentID, contentDecoder, contentsResponseDecoder, gotAllRefDataDecoder, tagDataResponseDecoder)
 import Http
 import Tag.Model exposing (Tag)
 import Task
@@ -18,23 +18,12 @@ getTimeZone =
     Task.perform GotTimeZone Time.here
 
 
-getAllTags : ReadingMode -> Cmd Msg
-getAllTags mode =
+getTagDataResponse : Cmd Msg
+getTagDataResponse =
     Http.get
         { url =
-            apiURL
-                ++ "tags?blogMode="
-                ++ (case mode of
-                        NotSelectedYet ->
-                            "true"
-
-                        BlogContents ->
-                            "true"
-
-                        AllContents ->
-                            "false"
-                   )
-        , expect = Http.expectJson GotAllTags tagsDecoder
+            apiURL ++ "tags"
+        , expect = Http.expectJson GotTagDataResponse tagDataResponseDecoder
         }
 
 

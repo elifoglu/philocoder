@@ -11,7 +11,7 @@ import Content.Util exposing (gotContentToContent)
 import ForceDirectedGraph exposing (graphSubscriptions, initGraphModel, updateGraph)
 import List
 import Pagination.Model exposing (Pagination)
-import Requests exposing (createNewTag, getAllRefData, getAllTags, getContent, getIconData, getTagContents, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
+import Requests exposing (createNewTag, getAllRefData, getContent, getIconData, getTagContents, getTagDataResponse, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
 import Tag.Util exposing (gotTagToTag, tagById)
 import Time
 import Url
@@ -30,23 +30,27 @@ main =
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
-    ( Model "log" key NotSelectedYet (pageBy url) [] Nothing getIconData Nothing Time.utc
-    , Cmd.batch [ getAllTags BlogContents, getTimeZone ]
+    ( Model "log" key NotSelectedYet (pageBy url) [] [] Nothing getIconData Nothing Time.utc
+    , Cmd.batch [ getTagDataResponse, getTimeZone ]
     )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        GotAllTags res ->
+        GotTagDataResponse res ->
             case res of
-                Ok gotTags ->
+                Ok gotTagDataResponse ->
                     let
                         allTags =
-                            List.map gotTagToTag gotTags
+                            List.map gotTagToTag gotTagDataResponse.allTags
+
+                        blogModeTags =
+                            List.map gotTagToTag gotTagDataResponse.blogModeTags
                     in
                     ( { model
                         | allTags = allTags
+                        , blogModeTags = blogModeTags
                       }
                     , case model.activePage of
                         ContentPage status ->
@@ -530,7 +534,7 @@ update msg model =
             ( { model | timeZone = zone }, Cmd.none )
 
         ReadingModeChanged readingMode ->
-            ( { model | readingMode = readingMode }, getAllTags readingMode )
+            ( { model | readingMode = readingMode }, Cmd.none )
 
         otherMsg ->
             case model.graphModel of
