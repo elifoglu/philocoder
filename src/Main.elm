@@ -51,6 +51,13 @@ update msg model =
                     ( { model
                         | allTags = allTags
                         , blogModeTags = blogModeTags
+                        , readingMode =
+                            case model.activePage of
+                                HomePage ->
+                                    NotSelectedYet
+
+                                _ ->
+                                    AllContents
                       }
                     , case model.activePage of
                         ContentPage status ->
