@@ -1,5 +1,7 @@
-module App.Model exposing (CreateContentPageModel, CreateTagPageModel, Drag, Entity, GraphModel, IconInfo, Initializable(..), MaySendRequest(..), Model, NoVal(..), Page(..), ReadingMode(..), UpdateContentPageModel, UpdateTagPageModel, contentToCreateContentPageModel, contentToUpdateContentPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
+module App.Model exposing (BioPageModel, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GraphModel, IconInfo, Initializable(..), MaySendRequest(..), Model, NoVal(..), Page(..), ReadingMode(..), UpdateContentPageModel, UpdateTagPageModel, contentToCreateContentPageModel, contentToUpdateContentPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
 
+import BioGroup.Model exposing (BioGroup)
+import BioItem.Model exposing (BioItem)
 import Browser.Navigation as Nav
 import Content.Model exposing (Content)
 import DataResponse exposing (ContentID, GotAllRefData, GotRefConnection)
@@ -78,6 +80,7 @@ type Page
     | UpdateContentPage (MaySendRequest ( UpdateContentPageModel, Maybe Content, Int ))
     | CreateTagPage (MaySendRequest CreateTagPageModel)
     | UpdateTagPage (MaySendRequest ( UpdateTagPageModel, String ))
+    | BioPage (Maybe BioPageModel)
     | NotFoundPage
     | MaintenancePage
 
@@ -119,6 +122,12 @@ type alias CreateTagPageModel =
 type alias UpdateTagPageModel =
     { infoContentId : String
     , password : String
+    }
+
+
+type alias BioPageModel =
+    { bioGroups : List BioGroup
+    , bioItems : List BioItem
     }
 
 

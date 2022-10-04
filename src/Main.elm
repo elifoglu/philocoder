@@ -5,13 +5,16 @@ import App.Msg exposing (ContentInputType(..), Msg(..), TagInputType(..))
 import App.Ports exposing (sendTitle)
 import App.UrlParser exposing (pageBy)
 import App.View exposing (view)
+import BioGroup.Util exposing (changeActivenessIfIdMatches, changeDisplayInfoIfIdMatches, gotBioGroupToBioGroup)
+import BioGroups.View exposing (makeAllBioGroupsNonActive)
+import BioItem.Util exposing (gotBioItemToBioItem)
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
 import Content.Util exposing (gotContentToContent)
 import ForceDirectedGraph exposing (graphSubscriptions, initGraphModel, updateGraph)
 import List
 import Pagination.Model exposing (Pagination)
-import Requests exposing (createNewTag, getAllRefData, getContent, getIconData, getTagContents, getTagDataResponse, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
+import Requests exposing (createNewTag, getAllRefData, getBio, getContent, getIconData, getTagContents, getTagDataResponse, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
 import Tag.Util exposing (gotTagToTag, tagById)
 import Time
 import Url
@@ -123,6 +126,14 @@ update msg model =
 
                         HomePage ->
                             getAllRefData
+
+                        BioPage maybeData ->
+                            case maybeData of
+                                Just data ->
+                                    Cmd.none
+
+                                Nothing ->
+                                    getBio
 
                         _ ->
                             Cmd.none
@@ -542,6 +553,73 @@ update msg model =
 
         ReadingModeChanged readingMode ->
             ( { model | readingMode = readingMode }, Cmd.none )
+
+        GotBioResponse result ->
+            case result of
+                Ok bio ->
+                    let
+                        bioGroups =
+                            List.map gotBioGroupToBioGroup bio.groups
+
+                        bioItems =
+                            List.map gotBioItemToBioItem bio.items
+
+                        bioPage =
+                            BioPage (Just (BioPageModel bioGroups bioItems))
+                    in
+                    ( { model | activePage = bioPage }, Cmd.none )
+
+                Err _ ->
+                    ( model, Cmd.none )
+
+        ClickOnABioGroup bioGroupId ->
+            case model.activePage of
+                BioPage maybeData ->
+                    case maybeData of
+                        Just bioPageModel ->
+                            let
+                                newBioGroupsTemp =
+                                    makeAllBioGroupsNonActive bioPageModel.bioGroups
+
+                                newBioGroups =
+                                    List.map (changeActivenessIfIdMatches bioGroupId) newBioGroupsTemp
+
+                                newBioPageModel =
+                                    { bioPageModel | bioGroups = newBioGroups }
+
+                                newBioPage =
+                                    BioPage (Just newBioPageModel)
+                            in
+                            ( { model | activePage = newBioPage }, Cmd.none )
+
+                        Nothing ->
+                            ( model, Cmd.none )
+
+                _ ->
+                    ( model, Cmd.none )
+
+        BioGroupDisplayInfoChanged bioGroup _ ->
+            case model.activePage of
+                BioPage maybeData ->
+                    case maybeData of
+                        Just bioPageModel ->
+                            let
+                                newBioGroups =
+                                    List.map (changeDisplayInfoIfIdMatches bioGroup.bioGroupID) bioPageModel.bioGroups
+
+                                newBioPageModel =
+                                    { bioPageModel | bioGroups = newBioGroups }
+
+                                newBioPage =
+                                    BioPage (Just newBioPageModel)
+                            in
+                            ( { model | activePage = newBioPage }, Cmd.none )
+
+                        Nothing ->
+                            ( model, Cmd.none )
+
+                _ ->
+                    ( model, Cmd.none )
 
         otherMsg ->
             case model.graphModel of

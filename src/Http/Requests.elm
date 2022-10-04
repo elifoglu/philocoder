@@ -1,8 +1,8 @@
-module Requests exposing (createNewTag, getAllRefData, getContent, getIconData, getTagContents, getTagDataResponse, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
+module Requests exposing (createNewTag, getAllRefData, getBio, getContent, getIconData, getTagContents, getTagDataResponse, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
 
 import App.Model exposing (CreateContentPageModel, CreateTagPageModel, IconInfo, ReadingMode(..), UpdateContentPageModel, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
 import App.Msg exposing (Msg(..), PreviewContentModel(..))
-import DataResponse exposing (ContentID, contentDecoder, contentsResponseDecoder, gotAllRefDataDecoder, tagDataResponseDecoder)
+import DataResponse exposing (ContentID, bioResponseDecoder, contentDecoder, contentsResponseDecoder, gotAllRefDataDecoder, tagDataResponseDecoder)
 import Http
 import Tag.Model exposing (Tag)
 import Task
@@ -135,3 +135,11 @@ getIconData =
     , { urlToNavigate = "https://eksisozluk.com/biri/ajora", iconImageUrl = "/eksi.svg", marginRight = "0px" }
     , { urlToNavigate = "https://twitter.com/philocoder", iconImageUrl = "/twitter.svg", marginRight = "0px" }
     ]
+
+
+getBio : Cmd Msg
+getBio =
+    Http.get
+        { url = apiURL ++ "bio"
+        , expect = Http.expectJson GotBioResponse bioResponseDecoder
+        }

@@ -2,6 +2,7 @@ module App.View exposing (view)
 
 import App.Model exposing (..)
 import App.Msg exposing (Msg(..))
+import Bio.View exposing (viewBioPageDiv)
 import Breadcrumb.View exposing (viewBreadcrumb)
 import Browser exposing (Document)
 import Content.View exposing (viewContentDiv)
@@ -92,6 +93,14 @@ view model =
 
                             RequestSent infoToShowAfterRequest ->
                                 [ text infoToShowAfterRequest ]
+
+                    BioPage data ->
+                        case data of
+                            Just bioPageModel ->
+                                [ viewBioPageDiv bioPageModel ]
+
+                            Nothing ->
+                                [ text "..." ]
 
                     NotFoundPage ->
                         [ view404Div ]

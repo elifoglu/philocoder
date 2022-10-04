@@ -1,7 +1,7 @@
-module DataResponse exposing (ContentID, ContentsResponse, GotAllRefData, GotContent, GotContentDate, GotRefConnection, GotTag, TagDataResponse, contentDecoder, contentsResponseDecoder, gotAllRefDataDecoder, tagDataResponseDecoder)
+module DataResponse exposing (BioGroupID, BioItemID, BioResponse, ContentID, ContentsResponse, GotAllRefData, GotBioGroup, GotBioItem, GotContent, GotContentDate, GotRefConnection, GotTag, TagDataResponse, bioResponseDecoder, contentDecoder, contentsResponseDecoder, gotAllRefDataDecoder, tagDataResponseDecoder)
 
 import Content.Model exposing (Ref)
-import Json.Decode as D exposing (Decoder, andThen, bool, field, int, map2, map3, map7, map8, maybe, string, succeed)
+import Json.Decode as D exposing (Decoder, andThen, bool, field, int, map2, map3, map4, map5, map7, map8, maybe, string, succeed)
 import Tag.Model exposing (ContentRenderType(..))
 
 
@@ -46,6 +46,37 @@ type alias GotAllRefData =
 
 type alias GotRefConnection =
     { a : Int, b : Int }
+
+
+type alias BioResponse =
+    { groups : List GotBioGroup
+    , items : List GotBioItem
+    }
+
+
+type alias GotBioGroup =
+    { bioGroupID : BioGroupID
+    , title : String
+    , displayIndex : Int
+    , info : Maybe String
+    , bioItemOrder : List Int
+    }
+
+
+type alias BioGroupID =
+    Int
+
+
+type alias BioItemID =
+    Int
+
+
+type alias GotBioItem =
+    { bioItemID : Int
+    , name : String
+    , groups : List Int
+    , colorHex : Maybe String
+    }
 
 
 tagDataResponseDecoder : Decoder TagDataResponse
@@ -126,3 +157,29 @@ refDecoder =
     map2 Ref
         (field "text" string)
         (field "id" string)
+
+
+bioResponseDecoder : Decoder BioResponse
+bioResponseDecoder =
+    map2 BioResponse
+        (field "groups" (D.list bioGroupDecoder))
+        (field "items" (D.list bioItemDecoder))
+
+
+bioGroupDecoder : Decoder GotBioGroup
+bioGroupDecoder =
+    map5 GotBioGroup
+        (field "bioGroupID" int)
+        (field "title" string)
+        (field "displayIndex" int)
+        (field "info" (maybe string))
+        (field "bioItemOrder" (D.list int))
+
+
+bioItemDecoder : Decoder GotBioItem
+bioItemDecoder =
+    map4 GotBioItem
+        (field "bioItemID" int)
+        (field "name" string)
+        (field "groups" (D.list int))
+        (field "colorHex" (maybe string))

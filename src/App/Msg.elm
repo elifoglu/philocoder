@@ -1,8 +1,9 @@
 module App.Msg exposing (..)
 
 import App.Model exposing (CreateContentPageModel, CreateTagPageModel, ReadingMode, UpdateContentPageModel, UpdateTagPageModel)
+import BioGroup.Model exposing (BioGroup)
 import Browser
-import DataResponse exposing (ContentID, ContentsResponse, GotAllRefData, GotContent, TagDataResponse)
+import DataResponse exposing (BioGroupID, BioResponse, ContentID, ContentsResponse, GotAllRefData, GotContent, TagDataResponse)
 import Graph exposing (NodeId)
 import Http
 import Tag.Model exposing (Tag)
@@ -28,6 +29,9 @@ type Msg
     | CreateTag CreateTagPageModel
     | UpdateTag String UpdateTagPageModel
     | GotDoneResponse (Result Http.Error String)
+    | GotBioResponse (Result Http.Error BioResponse)
+    | ClickOnABioGroup BioGroupID
+    | BioGroupDisplayInfoChanged BioGroup Bool
     | ReadingModeChanged ReadingMode
     | DragStart NodeId ( Float, Float )
     | DragAt ( Float, Float )
