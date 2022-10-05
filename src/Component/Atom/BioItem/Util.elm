@@ -6,7 +6,17 @@ import DataResponse exposing (BioItemID, GotBioGroup, GotBioItem, GotContent, Go
 
 gotBioItemToBioItem : GotBioItem -> BioItem
 gotBioItemToBioItem got =
-    BioItem got.bioItemID got.name got.groups got.colorHex
+    BioItem got.bioItemID got.name got.groups got.colorHex (gotBioItemInfoToBioItemInfo got.info)
+
+
+gotBioItemInfoToBioItemInfo : Maybe String -> Maybe String
+gotBioItemInfoToBioItemInfo gotBioItemInfo =
+    case gotBioItemInfo of
+        Just "null" ->
+            Nothing
+
+        _ ->
+            gotBioItemInfo
 
 
 getBioItemById : List BioItem -> BioItemID -> BioItem
@@ -19,4 +29,4 @@ getBioItemById bioItems bioItemID =
 
 dummyBioItem : BioItem
 dummyBioItem =
-    BioItem 0 "" [] Nothing
+    BioItem 0 "" [] Nothing Nothing

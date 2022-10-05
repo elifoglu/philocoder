@@ -621,6 +621,24 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
+        ClickOnABioItemInfo bioGroupId ->
+            case model.activePage of
+                BioPage maybeData ->
+                    case maybeData of
+                        Just bioPageModel ->
+                            let
+                                --complete here
+                                newBioPage =
+                                    BioPage (Just bioPageModel)
+                            in
+                            ( { model | activePage = newBioPage }, Cmd.none )
+
+                        Nothing ->
+                            ( model, Cmd.none )
+
+                _ ->
+                    ( model, Cmd.none )
+
         otherMsg ->
             case model.graphModel of
                 Just graphModel ->

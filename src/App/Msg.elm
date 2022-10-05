@@ -3,7 +3,7 @@ module App.Msg exposing (..)
 import App.Model exposing (CreateContentPageModel, CreateTagPageModel, ReadingMode, UpdateContentPageModel, UpdateTagPageModel)
 import BioGroup.Model exposing (BioGroup)
 import Browser
-import DataResponse exposing (BioGroupID, BioResponse, ContentID, ContentsResponse, GotAllRefData, GotContent, TagDataResponse)
+import DataResponse exposing (BioGroupID, BioItemID, BioResponse, ContentID, ContentsResponse, GotAllRefData, GotContent, TagDataResponse)
 import Graph exposing (NodeId)
 import Http
 import Tag.Model exposing (Tag)
@@ -32,6 +32,7 @@ type Msg
     | GotBioResponse (Result Http.Error BioResponse)
     | ClickOnABioGroup BioGroupID
     | BioGroupDisplayInfoChanged BioGroup Bool
+    | ClickOnABioItemInfo BioItemID
     | ReadingModeChanged ReadingMode
     | DragStart NodeId ( Float, Float )
     | DragAt ( Float, Float )

@@ -8,4 +8,5 @@ type alias BioItem =
     , name : String
     , groups : List Int
     , colorHex : Maybe String
+    , info : Maybe String
     }
