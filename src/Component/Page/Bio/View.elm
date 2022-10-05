@@ -21,6 +21,6 @@ viewBioPageDiv bioPageModel =
     in
     div [ style "width" "auto", style "float" "left" ]
         ([ viewBioGroupsDiv bioPageModel.bioGroups ]
-            ++ [ viewBioGroupInfoDiv activeBioGroup ]
-            ++ [ viewBioItemsDiv bioPageModel.bioItems activeBioGroup ]
+            ++ [ viewBioGroupInfoDiv activeBioGroup bioPageModel.bioGroups ]
+            ++ [ viewBioItemsDiv bioPageModel.bioItemToShowInfo bioPageModel.bioItems activeBioGroup ]
         )

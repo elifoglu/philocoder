@@ -565,7 +565,7 @@ update msg model =
                             List.map gotBioItemToBioItem bio.items
 
                         bioPage =
-                            BioPage (Just (BioPageModel bioGroups bioItems))
+                            BioPage (Just (BioPageModel bioGroups bioItems Nothing))
                     in
                     ( { model | activePage = bioPage }, Cmd.none )
 
@@ -621,15 +621,29 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
-        ClickOnABioItemInfo bioGroupId ->
+        ClickOnABioItemInfo bioItem ->
             case model.activePage of
                 BioPage maybeData ->
                     case maybeData of
                         Just bioPageModel ->
                             let
-                                --complete here
+                                newBioItemToShowInfo =
+                                    case bioPageModel.bioItemToShowInfo of
+                                        Just activeBioItemToShowInfo ->
+                                            if activeBioItemToShowInfo.bioItemID == bioItem.bioItemID then
+                                                Nothing
+
+                                            else
+                                                Just bioItem
+
+                                        Nothing ->
+                                            Just bioItem
+
+                                newBioPageModel =
+                                    { bioPageModel | bioItemToShowInfo = newBioItemToShowInfo }
+
                                 newBioPage =
-                                    BioPage (Just bioPageModel)
+                                    BioPage (Just newBioPageModel)
                             in
                             ( { model | activePage = newBioPage }, Cmd.none )
 

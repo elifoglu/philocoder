@@ -9,8 +9,8 @@ import Html exposing (Html, div, span)
 import Html.Attributes exposing (style)
 
 
-viewBioItemsDiv : List BioItem -> BioGroup -> Html Msg
-viewBioItemsDiv bioItems activeBioGroup =
+viewBioItemsDiv : Maybe BioItem -> List BioItem -> BioGroup -> Html Msg
+viewBioItemsDiv bioItemInfoToShow bioItems activeBioGroup =
     let
         orderedBioItems =
             activeBioGroup.bioItemOrder
@@ -19,7 +19,7 @@ viewBioItemsDiv bioItems activeBioGroup =
     div [ style "margin-top" "20px" ]
         (orderedBioItems
             |> List.filter (bioItemIsMemberOfActiveGroup activeBioGroup)
-            |> List.map viewBioItemDiv
+            |> List.map (viewBioItemDiv bioItemInfoToShow)
             |> List.intersperse (span [] [])
         )
 

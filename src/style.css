@@ -170,3 +170,38 @@ a {
     margin-left: 2px;
     font-size: 14px;
 }
+
+.openBioItemInfo {
+    width: 13px;
+    vertical-align: middle;
+    margin-bottom: 5px;
+    margin-right: -1px;
+}
+
+.openBioItemInfo:hover {
+    cursor: pointer;
+}
+
+.bioItemInfoContainer {
+    display: inline-block;
+    margin: 0px;
+    margin-top: -10px;
+    font-size: 13px;
+}
+
+.bioItemInfoMarkdownP p{
+    border-radius: 0px;
+    border: 1px solid #bcbcbc;
+    padding: 1px 3px 1px 1px;
+    margin-left: 4px;
+}
+
+.bioItemInfoMarkdownP p:before {
+    content: "";
+    display: block;
+    background: url("/public/info-gray.svg") no-repeat;
+    width: 15px;
+    height: 15px;
+    float: left;
+    margin: 0 3px 0 0;
+}

@@ -128,6 +128,7 @@ type alias UpdateTagPageModel =
 type alias BioPageModel =
     { bioGroups : List BioGroup
     , bioItems : List BioItem
+    , bioItemToShowInfo : Maybe BioItem
     }
 
 
