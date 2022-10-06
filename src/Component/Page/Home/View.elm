@@ -18,7 +18,7 @@ viewHomePageDiv model =
             |> List.intersperse (br [] [])
          )
             ++ [ br [] [] ]
-            ++ [ a [ class "bioHrefAtHomePage", href "/me" ] [ text "künye" ] ]
+            ++ viewBioHref model
             ++ [ br [] [] ]
             ++ viewReadingModeDiv model
             ++ viewIconsDiv model
@@ -88,6 +88,15 @@ viewTag readingMode tag =
 areTagsLoaded : Model -> Bool
 areTagsLoaded model =
     model.allTags /= []
+
+
+viewBioHref : Model -> List (Html Msg)
+viewBioHref model =
+    if areTagsLoaded model then
+        [ a [ class "bioHrefAtHomePage", href "/me" ] [ text "künye" ] ]
+
+    else
+        []
 
 
 viewIconsDiv : Model -> List (Html Msg)
