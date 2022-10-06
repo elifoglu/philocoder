@@ -11,7 +11,7 @@ routeParser =
     oneOf
         [ map HomePage top
         , map nonInitializedTagPageMapper (s "tags" </> string <?> Query.int "page" <?> Query.string "mode")
-        , map nonInitializedBioPageMapper (s "bio")
+        , map nonInitializedBioPageMapper (s "me")
         , map nonInitializedContentPageMapper (s "contents" </> int)
         , map (CreateContentPage (NoRequestSentYet ( CreateContentPageModel "" "" "" "" "" False "" "", Nothing ))) (s "create" </> s "content")
         , map nonInitializedUpdateContentPageMapper (s "update" </> s "content" </> int)

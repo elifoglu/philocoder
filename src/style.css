@@ -178,6 +178,14 @@ a {
     margin-right: -1px;
 }
 
+.goToBioItemExternalLink {
+    width: 11px;
+    vertical-align: middle;
+    margin-bottom: 5px;
+    margin-left: 2px;
+    margin-right: -1px;
+}
+
 .openBioItemInfo:hover {
     cursor: pointer;
 }
@@ -204,4 +212,23 @@ a {
     height: 15px;
     float: left;
     margin: 0 3px 0 0;
+}
+
+.bioHrefAtHomePage {
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.bioGroupInfoContainer{
+    display: flex;
+    margin-bottom: -5px;
+    margin-top: -5px;
+}
+
+.bioGroupInfoCheckBoxDiv{
+    width: auto;
+    text-align: center;
+    margin-top: 23px;
+    margin-left: 3px;
+    alignment: left;
 }

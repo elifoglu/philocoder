@@ -18,6 +18,8 @@ viewHomePageDiv model =
             |> List.intersperse (br [] [])
          )
             ++ [ br [] [] ]
+            ++ [ a [ class "bioHrefAtHomePage", href "/me" ] [ text "künye" ] ]
+            ++ [ br [] [] ]
             ++ viewReadingModeDiv model
             ++ viewIconsDiv model
         )

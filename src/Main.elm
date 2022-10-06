@@ -129,7 +129,7 @@ update msg model =
 
                         BioPage maybeData ->
                             case maybeData of
-                                Just data ->
+                                Just _ ->
                                     Cmd.none
 
                                 Nothing ->
@@ -322,6 +322,14 @@ update msg model =
 
                             _ ->
                                 Cmd.none
+
+                    BioPage maybeData ->
+                        case maybeData of
+                            Just _ ->
+                                Cmd.none
+
+                            Nothing ->
+                                getBio
 
                     _ ->
                         Cmd.none

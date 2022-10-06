@@ -2,8 +2,8 @@ module BioItem.View exposing (viewBioItemDiv)
 
 import App.Msg exposing (Msg(..))
 import BioItem.Model exposing (BioItem)
-import Html exposing (Html, div, img, span, text)
-import Html.Attributes exposing (class, src)
+import Html exposing (Html, a, div, img, span, text)
+import Html.Attributes exposing (class, href, src, target)
 import Html.Events exposing (onClick)
 import Markdown
 
@@ -16,10 +16,16 @@ viewBioItemDiv maybeBioItemInfoToShow bioItem =
             ]
         , case bioItem.info of
             Just info ->
-                span []
-                    [ img [ onClick (ClickOnABioItemInfo bioItem), class "openBioItemInfo", src (getProperInfoIcon maybeBioItemInfoToShow bioItem) ] []
-                    , viewBioItemInfoModal bioItem info maybeBioItemInfoToShow
-                    ]
+                if String.startsWith "http" info then
+                    a [ href info ]
+                        [ img [ class "goToBioItemExternalLink", src "/external-link.svg", target "_blank" ] []
+                        ]
+
+                else
+                    span []
+                        [ img [ onClick (ClickOnABioItemInfo bioItem), class "openBioItemInfo", src (getProperInfoIcon maybeBioItemInfoToShow bioItem) ] []
+                        , viewBioItemInfoModal bioItem info maybeBioItemInfoToShow
+                        ]
 
             Nothing ->
                 text ""
