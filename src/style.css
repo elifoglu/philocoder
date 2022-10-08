@@ -166,6 +166,10 @@ a {
     border: 1px solid #00c8ff;
 }
 
+.bioItemHasAnInfo {
+    cursor: pointer;
+}
+
 .bioGroupInfoP {
     margin-left: 2px;
     font-size: 14px;

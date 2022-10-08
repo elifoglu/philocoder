@@ -11,9 +11,24 @@ import Markdown
 viewBioItemDiv : Maybe BioItem -> BioItem -> Html Msg
 viewBioItemDiv maybeBioItemInfoToShow bioItem =
     span []
-        [ span [ class "bioItem" ]
-            [ text bioItem.name
-            ]
+        [ case bioItem.info of
+            Just info ->
+                if String.startsWith "http" info then
+                    a [ href info, src "/external-link.svg", target "_blank" ]
+                        [ span [ class "bioItem bioItemHasAnInfo", onClick (ClickOnABioItemInfo bioItem) ]
+                            [ text bioItem.name
+                            ]
+                        ]
+
+                else
+                    span [ class "bioItem bioItemHasAnInfo", onClick (ClickOnABioItemInfo bioItem) ]
+                        [ text bioItem.name
+                        ]
+
+            Nothing ->
+                span [ class "bioItem" ]
+                    [ text bioItem.name
+                    ]
         , case bioItem.info of
             Just info ->
                 if String.startsWith "http" info then
