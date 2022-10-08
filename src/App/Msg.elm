@@ -32,7 +32,7 @@ type Msg
     | GotDoneResponse (Result Http.Error String)
     | GotBioResponse (Result Http.Error BioResponse)
     | ClickOnABioGroup BioGroupID
-    | BioGroupDisplayInfoChanged BioGroup Bool
+    | BioGroupDisplayInfoChanged BioGroup
     | ClickOnABioItemInfo BioItem
     | ReadingModeChanged ReadingMode
     | DragStart NodeId ( Float, Float )

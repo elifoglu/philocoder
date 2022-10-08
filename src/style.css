@@ -207,6 +207,13 @@ a {
     cursor: pointer;
 }
 
+.openBioGroupInfo {
+    width: 13px;
+    vertical-align: middle;
+    margin-bottom: 5px;
+    margin-right: -2px;
+}
+
 .goToBioItemExternalLink {
     width: 11px;
     vertical-align: middle;
@@ -246,14 +253,6 @@ a {
 
 .bioGroupInfoContainer{
     display: flex;
-    margin-bottom: -5px;
-    margin-top: -5px;
-}
-
-.bioGroupInfoCheckBoxDiv{
-    width: auto;
-    text-align: center;
-    margin-top: 23px;
-    margin-left: 3px;
-    alignment: left;
+    margin-bottom: -15px;
+    margin-top: -20px;
 }

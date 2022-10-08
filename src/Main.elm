@@ -606,7 +606,7 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
-        BioGroupDisplayInfoChanged bioGroup _ ->
+        BioGroupDisplayInfoChanged bioGroup ->
             case model.activePage of
                 BioPage maybeData ->
                     case maybeData of
