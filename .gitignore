@@ -3,7 +3,6 @@ nohup.out
 elm-stuff
 repl-temp-*
 philocoder.iml
-todo and ec2 instance init
 backup_philocoder.sh
 put_backup_to_philocoder.sh
 backup/*
