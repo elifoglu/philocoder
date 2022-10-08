@@ -586,11 +586,11 @@ update msg model =
                     case maybeData of
                         Just bioPageModel ->
                             let
-                                newBioGroupsTemp =
+                                newBioGroupsAllNonActive =
                                     makeAllBioGroupsNonActive bioPageModel.bioGroups
 
                                 newBioGroups =
-                                    List.map (changeActivenessIfIdMatches bioGroupId) newBioGroupsTemp
+                                    List.map (changeActivenessIfIdMatches bioGroupId) newBioGroupsAllNonActive
 
                                 newBioPageModel =
                                     { bioPageModel | bioGroups = newBioGroups }
