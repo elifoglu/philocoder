@@ -151,7 +151,15 @@ a {
     background: white;
 }
 
+.bioGroup:hover {
+    background: #EBEBEB;
+}
+
 .bioGroup-active {
+    background: #00c8ff;
+}
+
+.bioGroup-active:hover {
     background: #00c8ff;
 }
 
@@ -164,6 +172,10 @@ a {
     font-size: 14px;
     border-radius: 0px;
     border: 1px solid #00c8ff;
+}
+
+.bioItem:hover {
+    background: #EBEBEB;
 }
 
 .bioItemHasAnInfo {

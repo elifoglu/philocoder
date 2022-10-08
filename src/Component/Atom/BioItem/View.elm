@@ -16,40 +16,33 @@ viewBioItemDiv maybeBioItemInfoToShow bioItem =
 
     else
         span []
-            [ case bioItem.info of
+            (case bioItem.info of
                 Just info ->
                     if String.startsWith "http" info then
-                        a [ href info, src "/external-link.svg", target "_blank" ]
-                            [ span [ class "bioItem bioItemHasAnInfo", onClick (ClickOnABioItemInfo bioItem) ]
+                        [ a [ href info, target "_blank" ]
+                            [ span [ class "bioItem bioItemHasAnInfo" ]
                                 [ text bioItem.name
                                 ]
+                            , img [ class "goToBioItemExternalLink", src "/external-link.svg" ] []
                             ]
+                        ]
 
                     else
-                        span [ class "bioItem bioItemHasAnInfo", onClick (ClickOnABioItemInfo bioItem) ]
+                        [ span [ class "bioItem bioItemHasAnInfo", onClick (ClickOnABioItemInfo bioItem) ]
                             [ text bioItem.name
                             ]
-
-                Nothing ->
-                    span [ class "bioItem" ]
-                        [ text bioItem.name
-                        ]
-            , case bioItem.info of
-                Just info ->
-                    if String.startsWith "http" info then
-                        a [ href info ]
-                            [ img [ class "goToBioItemExternalLink", src "/external-link.svg", target "_blank" ] []
-                            ]
-
-                    else
-                        span []
+                        , span []
                             [ img [ onClick (ClickOnABioItemInfo bioItem), class "openBioItemInfo", src (getProperInfoIcon maybeBioItemInfoToShow bioItem) ] []
                             , viewBioItemInfoModal bioItem info maybeBioItemInfoToShow
                             ]
+                        ]
 
                 Nothing ->
-                    text ""
-            ]
+                    [ span [ class "bioItem" ]
+                        [ text bioItem.name
+                        ]
+                    ]
+            )
 
 
 getProperInfoIcon : Maybe BioItem -> BioItem -> String
