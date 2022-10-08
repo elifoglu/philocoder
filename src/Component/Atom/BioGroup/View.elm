@@ -10,7 +10,7 @@ import Markdown
 
 viewBioGroup : BioGroup -> Html Msg
 viewBioGroup bioGroup =
-    span []
+    span [ style "white-space" "nowrap" ]
         [ button [ class (decideBioGroupClass bioGroup), onClick (ClickOnABioGroup bioGroup.bioGroupID) ] [ text bioGroup.title ]
         , case bioGroup.info of
             Just _ ->

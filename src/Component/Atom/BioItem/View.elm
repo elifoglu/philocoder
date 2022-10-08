@@ -4,7 +4,7 @@ import App.Msg exposing (Msg(..))
 import BioItem.Model exposing (BioItem)
 import BioItem.Util exposing (separatorBioItem)
 import Html exposing (Html, a, div, img, span, text)
-import Html.Attributes exposing (class, href, src, target)
+import Html.Attributes exposing (class, href, src, style, target)
 import Html.Events exposing (onClick)
 import Markdown
 
@@ -15,7 +15,7 @@ viewBioItemDiv maybeBioItemInfoToShow bioItem =
         span [ class "bioItemSeparator" ] [ text "|" ]
 
     else
-        span []
+        span [ style "white-space" "nowrap" ]
             (case bioItem.info of
                 Just info ->
                     if String.startsWith "http" info then
