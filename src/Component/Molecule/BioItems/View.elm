@@ -3,7 +3,7 @@ module BioItems.View exposing (viewBioItemsDiv)
 import App.Msg exposing (Msg)
 import BioGroup.Model exposing (BioGroup)
 import BioItem.Model exposing (BioItem)
-import BioItem.Util exposing (separatorBioItem, getBioItemById)
+import BioItem.Util exposing (getBioItemById, separatorBioItem)
 import BioItem.View exposing (viewBioItemDiv)
 import Html exposing (Html, div, span)
 import Html.Attributes exposing (style)
@@ -26,7 +26,9 @@ viewBioItemsDiv bioItemInfoToShow bioItems activeBioGroup =
 
 bioItemIsMemberOfActiveGroup : BioGroup -> BioItem -> Bool
 bioItemIsMemberOfActiveGroup activeBioGroup bioItem =
-    if bioItem == separatorBioItem
-    then True
-    else bioItem.groups
-        |> List.any (\bioGroupId -> bioGroupId == activeBioGroup.bioGroupID)
+    if bioItem == separatorBioItem then
+        True
+
+    else
+        bioItem.groups
+            |> List.any (\bioGroupId -> bioGroupId == activeBioGroup.bioGroupID)
