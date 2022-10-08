@@ -1,4 +1,4 @@
-module BioGroup.Util exposing (changeActivenessIfIdMatches, gotBioGroupToBioGroup, changeDisplayInfoIfIdMatches)
+module BioGroup.Util exposing (changeActivenessIfIdMatches, changeDisplayInfoIfIdMatches, gotBioGroupToBioGroup)
 
 import BioGroup.Model exposing (BioGroup)
 import DataResponse exposing (BioGroupID, GotBioGroup, GotContent, GotContentDate, GotTag)
@@ -15,8 +15,11 @@ gotBioGroupInfoToBioGroupInfo gotBioGroupInfo =
         Just "null" ->
             Nothing
 
-        _ ->
-            gotBioGroupInfo
+        Just info ->
+            Just (String.replace "*pipe*" "|" info)
+
+        Nothing ->
+            Nothing
 
 
 changeActivenessIfIdMatches : BioGroupID -> BioGroup -> BioGroup
@@ -35,6 +38,7 @@ changeDisplayInfoIfIdMatches id bioGroup =
 
     else
         bioGroup
+
 
 getActivenessOnInit : BioGroupID -> Bool
 getActivenessOnInit bioGroupID =

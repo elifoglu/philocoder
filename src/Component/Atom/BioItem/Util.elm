@@ -15,8 +15,11 @@ gotBioItemInfoToBioItemInfo gotBioItemInfo =
         Just "null" ->
             Nothing
 
-        _ ->
-            gotBioItemInfo
+        Just info ->
+            Just (String.replace "*pipe*" "|" info)
+
+        Nothing ->
+            Nothing
 
 
 getBioItemById : List BioItem -> BioItemID -> BioItem
