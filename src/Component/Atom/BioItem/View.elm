@@ -2,6 +2,7 @@ module BioItem.View exposing (viewBioItemDiv)
 
 import App.Msg exposing (Msg(..))
 import BioItem.Model exposing (BioItem)
+import BioItem.Util exposing (separatorBioItem)
 import Html exposing (Html, a, div, img, span, text)
 import Html.Attributes exposing (class, href, src, target)
 import Html.Events exposing (onClick)
@@ -10,41 +11,45 @@ import Markdown
 
 viewBioItemDiv : Maybe BioItem -> BioItem -> Html Msg
 viewBioItemDiv maybeBioItemInfoToShow bioItem =
-    span []
-        [ case bioItem.info of
-            Just info ->
-                if String.startsWith "http" info then
-                    a [ href info, src "/external-link.svg", target "_blank" ]
-                        [ span [ class "bioItem bioItemHasAnInfo", onClick (ClickOnABioItemInfo bioItem) ]
+    if bioItem == separatorBioItem then
+        span [ class "bioItemSeparator" ] [ text "|" ]
+
+    else
+        span []
+            [ case bioItem.info of
+                Just info ->
+                    if String.startsWith "http" info then
+                        a [ href info, src "/external-link.svg", target "_blank" ]
+                            [ span [ class "bioItem bioItemHasAnInfo", onClick (ClickOnABioItemInfo bioItem) ]
+                                [ text bioItem.name
+                                ]
+                            ]
+
+                    else
+                        span [ class "bioItem bioItemHasAnInfo", onClick (ClickOnABioItemInfo bioItem) ]
                             [ text bioItem.name
                             ]
-                        ]
 
-                else
-                    span [ class "bioItem bioItemHasAnInfo", onClick (ClickOnABioItemInfo bioItem) ]
+                Nothing ->
+                    span [ class "bioItem" ]
                         [ text bioItem.name
                         ]
+            , case bioItem.info of
+                Just info ->
+                    if String.startsWith "http" info then
+                        a [ href info ]
+                            [ img [ class "goToBioItemExternalLink", src "/external-link.svg", target "_blank" ] []
+                            ]
 
-            Nothing ->
-                span [ class "bioItem" ]
-                    [ text bioItem.name
-                    ]
-        , case bioItem.info of
-            Just info ->
-                if String.startsWith "http" info then
-                    a [ href info ]
-                        [ img [ class "goToBioItemExternalLink", src "/external-link.svg", target "_blank" ] []
-                        ]
+                    else
+                        span []
+                            [ img [ onClick (ClickOnABioItemInfo bioItem), class "openBioItemInfo", src (getProperInfoIcon maybeBioItemInfoToShow bioItem) ] []
+                            , viewBioItemInfoModal bioItem info maybeBioItemInfoToShow
+                            ]
 
-                else
-                    span []
-                        [ img [ onClick (ClickOnABioItemInfo bioItem), class "openBioItemInfo", src (getProperInfoIcon maybeBioItemInfoToShow bioItem) ] []
-                        , viewBioItemInfoModal bioItem info maybeBioItemInfoToShow
-                        ]
-
-            Nothing ->
-                text ""
-        ]
+                Nothing ->
+                    text ""
+            ]
 
 
 getProperInfoIcon : Maybe BioItem -> BioItem -> String

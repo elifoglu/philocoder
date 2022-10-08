@@ -170,6 +170,15 @@ a {
     cursor: pointer;
 }
 
+.bioItemSeparator {
+    display: inline-block;
+    padding-left: 3px;
+    padding-right: 3px;
+    margin-left: 5px;
+    margin-bottom: 10px;
+    font-size: 17px;
+}
+
 .bioGroupInfoP {
     margin-left: 2px;
     font-size: 14px;

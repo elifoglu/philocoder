@@ -1,4 +1,4 @@
-module BioItem.Util exposing (getBioItemById, gotBioItemToBioItem)
+module BioItem.Util exposing (getBioItemById, gotBioItemToBioItem, separatorBioItem)
 
 import BioItem.Model exposing (BioItem)
 import DataResponse exposing (BioItemID, GotBioGroup, GotBioItem, GotContent, GotContentDate, GotTag)
@@ -27,9 +27,9 @@ getBioItemById bioItems bioItemID =
     bioItems
         |> List.filter (\bioItem -> bioItem.bioItemID == bioItemID)
         |> List.head
-        |> Maybe.withDefault dummyBioItem
+        |> Maybe.withDefault separatorBioItem
 
 
-dummyBioItem : BioItem
-dummyBioItem =
+separatorBioItem : BioItem --if there is an invalid bioItemId in the bioItems of a bioGroup, it is on purpose and used as a separator to create a meaningful separation for different kind of bioItem groups in the same bioGroup
+separatorBioItem =
     BioItem 0 "" [] Nothing Nothing
