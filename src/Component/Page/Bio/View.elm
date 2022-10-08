@@ -24,7 +24,7 @@ viewBioPageDiv model bioPageModel =
         ([ viewBioGroupsDiv bioPageModel.bioGroups ]
             ++ [ viewBioGroupInfoDiv activeBioGroup ]
             ++ [ viewBioItemsDiv bioPageModel.bioItemToShowInfo bioPageModel.bioItems activeBioGroup ]
-            ++ [ hr [] [] ]
+            ++ [ hr [ style "margin-top" "22px" ] [] ]
             ++ viewIconsDiv model
             ++ [ span [ style "padding-bottom" "30px" ] [ p [] [ br [] [] ] ] ]
         )
