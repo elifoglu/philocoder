@@ -1,9 +1,9 @@
-module BioGroups.View exposing (allBioGroupsAreActive, makeAllBioGroupsNonActive, viewBioGroupsDiv)
+module BioGroups.View exposing (makeAllBioGroupsNonActive, viewBioGroupsDiv)
 
 import App.Msg exposing (Msg(..))
 import BioGroup.Model exposing (BioGroup)
 import BioGroup.View exposing (viewBioGroup)
-import Html exposing (Html, div, span)
+import Html exposing (Html, div)
 import Html.Attributes exposing (style)
 
 
@@ -17,16 +17,6 @@ viewBioGroups : List BioGroup -> List (Html Msg)
 viewBioGroups bioGroups =
     bioGroups
         |> List.map viewBioGroup
-        |> List.intersperse (span [] [])
-
-
-allBioGroupsAreActive : List BioGroup -> Bool
-allBioGroupsAreActive bioGroups =
-    let
-        bioGroupsButTumuIsExcluded =
-            List.filter (\bioGroup -> bioGroup.bioGroupID /= 0) bioGroups
-    in
-    List.all (\bioGroup -> bioGroup.isActive) bioGroupsButTumuIsExcluded
 
 
 makeAllBioGroupsNonActive : List BioGroup -> List BioGroup
