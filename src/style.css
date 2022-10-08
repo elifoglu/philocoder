@@ -175,7 +175,11 @@ a {
     width: 13px;
     vertical-align: middle;
     margin-bottom: 5px;
-    margin-right: -1px;
+    margin-right: -2px;
+}
+
+.openBioItemInfo:hover {
+    cursor: pointer;
 }
 
 .goToBioItemExternalLink {
@@ -184,10 +188,6 @@ a {
     margin-bottom: 5px;
     margin-left: 2px;
     margin-right: -1px;
-}
-
-.openBioItemInfo:hover {
-    cursor: pointer;
 }
 
 .bioItemInfoContainer {
