@@ -47,12 +47,12 @@ h =
 
 clientPosXCorrectionValue : Float
 clientPosXCorrectionValue =
-    59
+    57
 
 
 clientPosYCorrectionValue : Int -> Float
 clientPosYCorrectionValue totalTagCount =
-    toFloat (59 + (20 * totalTagCount))
+    toFloat (55 + (20 * totalTagCount))
 
 
 
