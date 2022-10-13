@@ -78,19 +78,6 @@ viewTag readingMode tag =
              else
                 [ text tag.name ]
             )
-
-        {- span [ class "contentCountOfTag" ]
-           [ text
-               (tag.name
-                   ++ (if tag.showContentCount then
-                           " (" ++ String.fromInt tag.contentCount ++ ")"
-
-                       else
-                           ""
-                      )
-               )
-           ]
-        -}
         , text " "
         , viewTagInfoIcon tag
         ]
