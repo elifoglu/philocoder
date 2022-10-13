@@ -70,16 +70,27 @@ viewTag readingMode tag =
                        )
                 )
             ]
-            [ text
-                (tag.name
-                    ++ (if tag.showContentCount then
-                            " (" ++ String.fromInt tag.contentCount ++ ")"
+            (if tag.showContentCount then
+                [ text tag.name
+                , span [ class "contentCountOfTag" ] [ text (" (" ++ String.fromInt tag.contentCount ++ ")") ]
+                ]
 
-                        else
-                            ""
-                       )
-                )
-            ]
+             else
+                [ text tag.name ]
+            )
+
+        {- span [ class "contentCountOfTag" ]
+           [ text
+               (tag.name
+                   ++ (if tag.showContentCount then
+                           " (" ++ String.fromInt tag.contentCount ++ ")"
+
+                       else
+                           ""
+                      )
+               )
+           ]
+        -}
         , text " "
         , viewTagInfoIcon tag
         ]

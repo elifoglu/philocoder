@@ -45,6 +45,10 @@ body {
     word-spacing: 0.2px;
 }
 
+.contentCountOfTag {
+    font-size: 11.6px;
+}
+
 .contentInfoDiv {
     font-size: 12px;
     letter-spacing: 0.5px;
