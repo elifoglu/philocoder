@@ -21,7 +21,7 @@ import UpdateTag.View exposing (viewUpdateTagDiv)
 
 view : Model -> Document Msg
 view model =
-    { title = "Philocoder"
+    { title = "philocoder"
     , body =
         [ div []
             [ div [ class "header headerFont" ] <| viewBreadcrumb model

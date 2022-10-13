@@ -326,10 +326,10 @@ update msg model =
                     BioPage maybeData ->
                         case maybeData of
                             Just _ ->
-                                Cmd.none
+                                sendTitle model
 
                             Nothing ->
-                                getBio
+                                Cmd.batch [ getBio, sendTitle model ]
 
                     _ ->
                         Cmd.none
@@ -574,8 +574,11 @@ update msg model =
 
                         bioPage =
                             BioPage (Just (BioPageModel bioGroups bioItems Nothing))
+
+                        newModel =
+                            { model | activePage = bioPage }
                     in
-                    ( { model | activePage = bioPage }, Cmd.none )
+                    ( newModel, sendTitle newModel )
 
                 Err _ ->
                     ( model, Cmd.none )
@@ -597,8 +600,11 @@ update msg model =
 
                                 newBioPage =
                                     BioPage (Just newBioPageModel)
+
+                                newModel =
+                                    { model | activePage = newBioPage }
                             in
-                            ( { model | activePage = newBioPage }, Cmd.none )
+                            ( newModel, sendTitle newModel )
 
                         Nothing ->
                             ( model, Cmd.none )

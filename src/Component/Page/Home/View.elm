@@ -40,14 +40,14 @@ tagsToShow model =
 
 tagToBeBold =
     --todo "make 'beni_oku.txt' bold" action should be done in a more clear way
-    "beni_oku.txt"
+    "beni oku"
 
 
 viewTag : ReadingMode -> Tag -> Html Msg
 viewTag readingMode tag =
     span []
         [ a
-            [ style "text-decoration" "none"
+            [ class "homepageTagA"
             , style "font-weight"
                 (if tag.name /= tagToBeBold then
                     "normal"
@@ -93,7 +93,7 @@ areTagsLoaded model =
 viewBioHref : Model -> List (Html Msg)
 viewBioHref model =
     if areTagsLoaded model then
-        [ a [ class "bioHrefAtHomePage", href "/me" ] [ text "künye" ] ]
+        [ a [ class "bioHrefAtHomePage homepageTagA", href "/me" ] [ text "kim bu" ] ]
 
     else
         []
@@ -112,7 +112,7 @@ viewIconsDiv model =
 
 viewIcon : IconInfo -> Html Msg
 viewIcon iconInfo =
-    a [ href iconInfo.urlToNavigate ]
+    a [ class "iconA", href iconInfo.urlToNavigate ]
         [ img [ class "icon", src iconInfo.iconImageUrl, style "margin-right" iconInfo.marginRight ] []
         ]
 
@@ -121,9 +121,8 @@ viewReadingModeDiv : Model -> List (Html Msg)
 viewReadingModeDiv model =
     if areTagsLoaded model then
         --this 'if expression' is just to show icons 'after' tags are shown; not before. it is just about aesthetics
-        [ div [ style "margin-top" "10px", style "margin-bottom" "10px" ]
-            [ text "mod:"
-            , span []
+        [ div [ style "margin-top" "5px", style "margin-bottom" "10px", style "margin-left" "-5px" ]
+            [ span []
                 [ input
                     [ type_ "radio"
                     , name "readingMode"
