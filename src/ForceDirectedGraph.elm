@@ -166,23 +166,18 @@ updateContextWithValue nodeCtx value =
 --VIEW--
 
 
-viewGraph : List Int -> Maybe GraphModel -> Int -> Svg Msg
-viewGraph contentIds maybeModel totalTagCount =
+viewGraph : List Int -> GraphModel -> Int -> Svg Msg
+viewGraph contentIds graphModel totalTagCount =
     svg [ viewBox 0 0 w h ] <|
-        case maybeModel of
-            Just model ->
-                [ defs []
-                    [ arrowHead ]
-                , Graph.edges model.graph
-                    |> List.map (linkElement model.graph)
-                    |> g [ class [ "links" ] ]
-                , Graph.nodes model.graph
-                    |> List.map (nodeElement contentIds totalTagCount)
-                    |> g [ class [ "nodes" ] ]
-                ]
-
-            Nothing ->
-                []
+        [ defs []
+            [ arrowHead ]
+        , Graph.edges graphModel.graph
+            |> List.map (linkElement graphModel.graph)
+            |> g [ class [ "links" ] ]
+        , Graph.nodes graphModel.graph
+            |> List.map (nodeElement contentIds totalTagCount)
+            |> g [ class [ "nodes" ] ]
+        ]
 
 
 linkColor : Color.Color

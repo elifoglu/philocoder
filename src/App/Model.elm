@@ -1,4 +1,4 @@
-module App.Model exposing (BioPageModel, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GraphModel, IconInfo, Initializable(..), InitializedTagPageModel, MaySendRequest(..), Model, NoVal(..), NonInitializedYetTagPageModel, Page(..), ReadingMode(..), UpdateContentPageModel, UpdateTagPageModel, contentToCreateContentPageModel, contentToUpdateContentPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
+module App.Model exposing (BioPageModel, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GraphData, GraphModel, IconInfo, Initializable(..), InitializedTagPageModel, MaySendRequest(..), Model, NoVal(..), NonInitializedYetTagPageModel, Page(..), ReadingMode(..), UpdateContentPageModel, UpdateTagPageModel, contentToCreateContentPageModel, contentToUpdateContentPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
 
 import BioGroup.Model exposing (BioGroup)
 import BioItem.Model exposing (BioItem)
@@ -86,7 +86,7 @@ type alias InitializedTagPageModel =
 
 
 type Page
-    = HomePage (List Tag) (List Tag) ReadingMode (Maybe GotAllRefData) (Maybe GraphModel)
+    = HomePage (List Tag) (List Tag) ReadingMode (Maybe GraphData)
     | ContentPage (Initializable ( Int, Maybe (List Tag) ) ( Content, List Tag ))
     | TagPage (Initializable NonInitializedYetTagPageModel InitializedTagPageModel)
     | CreateContentPage (MaySendRequest ( CreateContentPageModel, Maybe Content ))
@@ -96,6 +96,12 @@ type Page
     | BioPage (Maybe BioPageModel)
     | NotFoundPage
     | MaintenancePage
+
+
+type alias GraphData =
+    { allRefData : GotAllRefData
+    , graphModel : GraphModel
+    }
 
 
 type alias CreateContentPageModel =
