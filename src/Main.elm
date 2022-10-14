@@ -74,7 +74,7 @@ getCmdToSendByPage model =
                 Nothing ->
                     Cmd.batch [ getBio, sendTitle model ]
 
-        HomePage _ _ _ ->
+        HomePage _ _ _ _ _ ->
             getTagDataResponseForHomePage
 
         _ ->
@@ -88,7 +88,7 @@ init flags url key =
             pageBy url
 
         model =
-            Model "log" key page Nothing False Nothing Time.utc
+            Model "log" key page False Time.utc
     in
     ( model
     , Cmd.batch [ getCmdToSendByPage model, getTimeZone ]
@@ -110,8 +110,8 @@ update msg model =
 
                         updatedHomePage =
                             case model.activePage of
-                                HomePage _ _ readingMode ->
-                                    HomePage allTags blogModeTags readingMode
+                                HomePage _ _ readingMode maybeAllRefData maybeGraphModel ->
+                                    HomePage allTags blogModeTags readingMode maybeAllRefData maybeGraphModel
 
                                 _ ->
                                     MaintenancePage
@@ -586,7 +586,7 @@ update msg model =
                     ( { model
                         | activePage =
                             if tagId == "done" then
-                                HomePage [] [] AllContents
+                                HomePage [] [] AllContents Nothing Nothing
 
                             else
                                 NotFoundPage
@@ -607,11 +607,16 @@ update msg model =
                 Ok allRefData ->
                     let
                         newModel =
-                            case model.graphModel of
-                                Nothing ->
-                                    { model | allRefData = Just allRefData, graphModel = Just <| initGraphModel allRefData }
+                            case model.activePage of
+                                HomePage allTags allBlogModeTags readingMode _ maybeGraphModel ->
+                                    case maybeGraphModel of
+                                        Just _ ->
+                                            model
 
-                                Just _ ->
+                                        Nothing ->
+                                            { model | activePage = HomePage allTags allBlogModeTags readingMode (Just allRefData) (Just <| initGraphModel allRefData) }
+
+                                _ ->
                                     model
                     in
                     ( newModel, Cmd.none )
@@ -628,8 +633,8 @@ update msg model =
             let
                 newPage =
                     case model.activePage of
-                        HomePage allTags blogModeTags _ ->
-                            HomePage allTags blogModeTags readingMode
+                        HomePage allTags blogModeTags _ maybeAllRefData maybeGraphModel ->
+                            HomePage allTags blogModeTags readingMode maybeAllRefData maybeGraphModel
 
                         _ ->
                             model.activePage
@@ -749,19 +754,24 @@ update msg model =
                     ( model, Cmd.none )
 
         otherMsg ->
-            case model.graphModel of
-                Just graphModel ->
-                    ( { model | graphModel = Just <| updateGraph otherMsg graphModel }, Cmd.none )
+            case model.activePage of
+                HomePage allTags allBlogModeTags readingMode maybeAllRefData maybeGraphModel ->
+                    case maybeGraphModel of
+                        Just graphModel ->
+                            ( { model | activePage = HomePage allTags allBlogModeTags readingMode maybeAllRefData (Just <| updateGraph otherMsg graphModel) }, Cmd.none )
 
-                Nothing ->
+                        Nothing ->
+                            ( model, Cmd.none )
+
+                _ ->
                     ( model, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
     case model.activePage of
-        HomePage allTags _ _ ->
-            case model.graphModel of
+        HomePage allTags _ _ _ maybeGraphModel ->
+            case maybeGraphModel of
                 Just graphModel ->
                     graphSubscriptions graphModel (List.length allTags)
 

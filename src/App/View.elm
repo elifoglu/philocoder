@@ -28,7 +28,7 @@ view model =
             [ div [ class "header headerFont" ] <| viewBreadcrumb model
             , div [ class "body" ]
                 (case model.activePage of
-                    HomePage allTags blogModeTags readingMode ->
+                    HomePage allTags blogModeTags readingMode maybeAllRefData maybeGraphModel ->
                         [ viewHomePageDiv allTags blogModeTags readingMode
                         , case readingMode of
                             AllContents ->
@@ -37,9 +37,9 @@ view model =
                             _ ->
                                 if areTagsLoaded allTags then
                                     div [ class "graph" ]
-                                        (case model.allRefData of
+                                        (case maybeAllRefData of
                                             Just allRefData ->
-                                                [ viewGraph allRefData.contentIds model.graphModel (List.length allTags) ]
+                                                [ viewGraph allRefData.contentIds maybeGraphModel (List.length allTags) ]
 
                                             Nothing ->
                                                 []

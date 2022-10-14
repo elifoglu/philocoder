@@ -21,9 +21,7 @@ type alias Model =
     { log : String
     , key : Nav.Key
     , activePage : Page
-    , allRefData : Maybe GotAllRefData
     , showAdditionalIcons : Bool
-    , graphModel : Maybe GraphModel
     , timeZone : Time.Zone
     }
 
@@ -88,7 +86,7 @@ type alias InitializedTagPageModel =
 
 
 type Page
-    = HomePage (List Tag) (List Tag) ReadingMode
+    = HomePage (List Tag) (List Tag) ReadingMode (Maybe GotAllRefData) (Maybe GraphModel)
     | ContentPage (Initializable ( Int, Maybe (List Tag) ) ( Content, List Tag ))
     | TagPage (Initializable NonInitializedYetTagPageModel InitializedTagPageModel)
     | CreateContentPage (MaySendRequest ( CreateContentPageModel, Maybe Content ))
