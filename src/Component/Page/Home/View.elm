@@ -2,6 +2,7 @@ module Home.View exposing (..)
 
 import App.Model exposing (IconInfo, Model, Page(..), ReadingMode(..))
 import App.Msg exposing (Msg(..))
+import Component.Page.Util exposing (areTagsLoaded)
 import Html exposing (Html, a, br, div, img, input, span, text)
 import Html.Attributes exposing (checked, class, href, name, src, style, type_)
 import Html.Events exposing (on, onClick)
@@ -73,11 +74,6 @@ viewTag readingMode tag =
         , text " "
         , viewTagInfoIcon tag
         ]
-
-
-areTagsLoaded : Model -> Bool
-areTagsLoaded model =
-    model.allTags /= []
 
 
 viewIcons : Model -> List (Html Msg)

@@ -1,5 +1,7 @@
 module Component.Page.Util exposing (..)
 
+import App.Model exposing (Model)
+
 
 flipBoolAndToStr : Bool -> String
 flipBoolAndToStr bool =
@@ -8,3 +10,8 @@ flipBoolAndToStr bool =
 
     else
         "true"
+
+
+areTagsLoaded : Model -> Bool
+areTagsLoaded model =
+    model.allTags /= []

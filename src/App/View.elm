@@ -5,6 +5,7 @@ import App.Msg exposing (Msg(..))
 import Bio.View exposing (viewBioPageDiv)
 import Breadcrumb.View exposing (viewBreadcrumb)
 import Browser exposing (Document)
+import Component.Page.Util exposing (areTagsLoaded)
 import Content.View exposing (viewContentDiv)
 import Contents.View exposing (viewContentDivs)
 import CreateContent.View exposing (viewCreateContentDiv)
@@ -34,6 +35,7 @@ view model =
                                 text ""
 
                             _ ->
+                                if areTagsLoaded model then
                                 div [ class "graph" ]
                                     (case model.allRefData of
                                         Just allRefData ->
@@ -42,6 +44,7 @@ view model =
                                         Nothing ->
                                             []
                                     )
+                                else text ""
                         ]
 
                     ContentPage status ->
