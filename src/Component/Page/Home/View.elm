@@ -93,7 +93,7 @@ viewIcons model =
     )
         ++ (if not model.showAdditionalIcons then
                 [ div [ class "iconDiv" ]
-                    [ img [ class "icon showMoreIconsIcon", onClick ShowAdditionalIcons, src "more.svg" ] []
+                    [ img [ class "icon showMoreIconsIcon", onClick ShowAdditionalIcons, src "/more.svg" ] []
                     ]
                 ]
 
