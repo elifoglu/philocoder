@@ -1,4 +1,4 @@
-module BioGroup.Util exposing (changeActivenessIfIdMatches, changeDisplayInfoIfIdMatches, gotBioGroupToBioGroup)
+module BioGroup.Util exposing (changeActivenessIfIdMatches, changeDisplayInfoIfIdMatchesAndGroupIsActive, gotBioGroupToBioGroup)
 
 import BioGroup.Model exposing (BioGroup)
 import DataResponse exposing (BioGroupID, GotBioGroup, GotContent, GotContentDate, GotTag)
@@ -31,9 +31,9 @@ changeActivenessIfIdMatches id bioGroup =
         bioGroup
 
 
-changeDisplayInfoIfIdMatches : BioGroupID -> BioGroup -> BioGroup
-changeDisplayInfoIfIdMatches id bioGroup =
-    if bioGroup.bioGroupID == id then
+changeDisplayInfoIfIdMatchesAndGroupIsActive : BioGroupID -> BioGroup -> BioGroup
+changeDisplayInfoIfIdMatchesAndGroupIsActive id bioGroup =
+    if bioGroup.bioGroupID == id && bioGroup.isActive then
         { bioGroup | displayInfo = not bioGroup.displayInfo }
 
     else

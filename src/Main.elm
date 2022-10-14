@@ -5,7 +5,7 @@ import App.Msg exposing (ContentInputType(..), Msg(..), TagInputType(..))
 import App.Ports exposing (sendTitle)
 import App.UrlParser exposing (pageBy)
 import App.View exposing (view)
-import BioGroup.Util exposing (changeActivenessIfIdMatches, changeDisplayInfoIfIdMatches, gotBioGroupToBioGroup)
+import BioGroup.Util exposing (changeActivenessIfIdMatches, changeDisplayInfoIfIdMatchesAndGroupIsActive, gotBioGroupToBioGroup)
 import BioGroups.View exposing (makeAllBioGroupsNonActive)
 import BioItem.Util exposing (gotBioItemToBioItem)
 import Browser exposing (UrlRequest)
@@ -626,7 +626,7 @@ update msg model =
                         Just bioPageModel ->
                             let
                                 newBioGroups =
-                                    List.map (changeDisplayInfoIfIdMatches bioGroup.bioGroupID) bioPageModel.bioGroups
+                                    List.map (changeDisplayInfoIfIdMatchesAndGroupIsActive bioGroup.bioGroupID) bioPageModel.bioGroups
 
                                 newBioPageModel =
                                     { bioPageModel | bioGroups = newBioGroups }
