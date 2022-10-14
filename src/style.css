@@ -138,6 +138,7 @@ a {
     border: none;
     border-radius: 4px;
     color: #828282;
+    cursor: pointer;
 }
 
 .paginationButton:hover {
