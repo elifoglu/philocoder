@@ -97,7 +97,7 @@ view model =
                     BioPage data ->
                         case data of
                             Just bioPageModel ->
-                                [ viewBioPageDiv model bioPageModel ]
+                                [ viewBioPageDiv bioPageModel ]
 
                             Nothing ->
                                 [ text "..." ]

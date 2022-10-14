@@ -2,6 +2,7 @@ module Breadcrumb.View exposing (..)
 
 import App.Model exposing (Initializable(..), Model, Page(..))
 import App.Msg exposing (Msg)
+import Home.View exposing (viewIcons)
 import HomeNavigator.View exposing (viewHomeNavigator)
 import Html exposing (Html, b, text)
 import Html.Attributes exposing (class)
@@ -20,9 +21,8 @@ viewBreadcrumb model =
                     , viewHeaderText " >> "
                     , viewHeaderText tag.name
                     ]
-
         _ ->
-            [ viewHomeNavigator ]
+            viewHomeNavigator :: (viewIcons model)
 
 
 viewHeaderText : String -> Html Msg

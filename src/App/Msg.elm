@@ -35,6 +35,7 @@ type Msg
     | BioGroupDisplayInfoChanged BioGroup
     | ClickOnABioItemInfo BioItem
     | ReadingModeChanged ReadingMode
+    | ShowAdditionalIcons
     | DragStart NodeId ( Float, Float )
     | DragAt ( Float, Float )
     | DragEnd ( Float, Float )

@@ -10,7 +10,6 @@ import Graph exposing (Edge, Graph, Node, NodeContext, NodeId)
 import Html.Events.Extra.Mouse as Mouse
 import Json.Decode as Decode
 import List.Extra exposing (getAt)
-import Tag.Model exposing (Tag)
 import Tuple exposing (first, second)
 import TypedSvg exposing (circle, defs, g, line, marker, polygon, svg, title)
 import TypedSvg.Attributes exposing (class, fill, id, markerEnd, orient, points, refX, refY, stroke, viewBox)
@@ -47,12 +46,12 @@ h =
 
 clientPosXCorrectionValue : Float
 clientPosXCorrectionValue =
-    57
+    55
 
 
 clientPosYCorrectionValue : Int -> Float
 clientPosYCorrectionValue totalTagCount =
-    toFloat (55 + (20 * totalTagCount))
+    toFloat (5 + (20 * (totalTagCount - 1)))
 
 
 
@@ -188,12 +187,12 @@ viewGraph contentIds maybeModel totalTagCount =
 
 linkColor : Color.Color
 linkColor =
-    Color.rgb255 123 123 123
+    Color.rgb255 195 195 195
 
 
 nodeColor : Color.Color
 nodeColor =
-    Color.rgb255 0 169 255
+    Color.rgb255 0 0 0
 
 
 arrowHead : Svg msg

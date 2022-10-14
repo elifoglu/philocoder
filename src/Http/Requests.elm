@@ -1,4 +1,4 @@
-module Requests exposing (createNewTag, getAllRefData, getBio, getContent, getIconData, getTagContents, getTagDataResponse, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
+module Requests exposing (createNewTag, getAllRefData, getBio, getBioPageIcons, getContent, getIcons, getTagContents, getTagDataResponse, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
 
 import App.Model exposing (CreateContentPageModel, CreateTagPageModel, IconInfo, ReadingMode(..), UpdateContentPageModel, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
 import App.Msg exposing (Msg(..), PreviewContentModel(..))
@@ -125,17 +125,45 @@ updateExistingTag tagId model =
         }
 
 
-getIconData : List IconInfo
-getIconData =
-    [ { urlToNavigate = "https://about.me/m.e", iconImageUrl = "/aboutme.svg", marginRight = "5px" }
-    , { urlToNavigate = "https://github.com/elifoglu", iconImageUrl = "/github.svg", marginRight = "4px" }
-    , { urlToNavigate = "https://philocoder.medium.com/", iconImageUrl = "/medium.svg", marginRight = "4px" }
-    , { urlToNavigate = "https://open.spotify.com/user/215irwufih45cpoovmxs2r25q/", iconImageUrl = "/spotify.svg", marginRight = "4px" }
-    , { urlToNavigate = "https://youtube.com/ajora", iconImageUrl = "/youtube.png", marginRight = "4px" }
-    , { urlToNavigate = "https://soundcloud.com/mertelifoglu", iconImageUrl = "/soundcloud.png", marginRight = "0px" }
-    , { urlToNavigate = "https://eksisozluk.com/biri/ajora", iconImageUrl = "/eksi.svg", marginRight = "-1px" }
-    , { urlToNavigate = "https://twitter.com/philocoder", iconImageUrl = "/twitter.svg", marginRight = "0px" }
-    ]
+aboutMeIcon : IconInfo
+aboutMeIcon =
+    { urlToNavigate = "https://about.me/m.e", iconImageUrl = "/aboutme.svg", marginLeft = "4px" }
+
+
+bioPageIcon : IconInfo
+bioPageIcon =
+    { urlToNavigate = "/me", iconImageUrl = "/bio.svg", marginLeft = "5px" }
+
+readMeIcon : IconInfo
+readMeIcon =
+    { urlToNavigate = "/tags/beni_oku", iconImageUrl = "/question-mark.svg", marginLeft = "4px" }
+
+
+getBioPageIcons : Bool -> List IconInfo
+getBioPageIcons showAdditionalIcons =
+    [ aboutMeIcon, readMeIcon ]
+        ++ getAdditionalIcons showAdditionalIcons
+
+
+getIcons : Bool -> List IconInfo
+getIcons showAdditionalIcons =
+    [ aboutMeIcon, bioPageIcon, readMeIcon ]
+        ++ getAdditionalIcons showAdditionalIcons
+
+
+getAdditionalIcons : Bool -> List IconInfo
+getAdditionalIcons showAdditionalIcons =
+    if not showAdditionalIcons then
+        []
+
+    else
+        [ { urlToNavigate = "https://philocoder.medium.com/", iconImageUrl = "/medium.svg", marginLeft = "4px" }
+        , { urlToNavigate = "https://github.com/elifoglu", iconImageUrl = "/github.svg", marginLeft = "4px" }
+        , { urlToNavigate = "https://open.spotify.com/user/215irwufih45cpoovmxs2r25q/", iconImageUrl = "/spotify.svg", marginLeft = "4px" }
+        , { urlToNavigate = "https://eksisozluk.com/biri/ajora", iconImageUrl = "/eksi.svg", marginLeft = "4px" }
+        , { urlToNavigate = "https://twitter.com/philocoder", iconImageUrl = "/twitter.svg", marginLeft = "4px" }
+        , { urlToNavigate = "https://youtube.com/ajora", iconImageUrl = "/youtube.svg", marginLeft = "4px" }
+        ]
 
 
 getBio : Cmd Msg

@@ -77,13 +77,17 @@ sendTitle model =
                     in
                     case maybeActiveBioGroup of
                         Just activeBioGroup ->
-                            title <| (activeBioGroup.title ++ " - kim - philocoder")
+                            if activeBioGroup.title == "tümü" then
+                                title <| "bio - philocoder"
+
+                            else
+                                title <| (activeBioGroup.title ++ " - bio - philocoder")
 
                         Nothing ->
-                            title <| "kim - philocoder"
+                            title <| "bio - philocoder"
 
                 _ ->
-                    title <| "kim - philocoder"
+                    title <| "bio - philocoder"
 
         _ ->
             Cmd.none

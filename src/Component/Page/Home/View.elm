@@ -1,27 +1,31 @@
 module Home.View exposing (..)
 
-import App.Model exposing (IconInfo, Model, ReadingMode(..))
+import App.Model exposing (IconInfo, Model, Page(..), ReadingMode(..))
 import App.Msg exposing (Msg(..))
 import Html exposing (Html, a, br, div, img, input, span, text)
 import Html.Attributes exposing (checked, class, href, name, src, style, type_)
-import Html.Events exposing (on)
+import Html.Events exposing (on, onClick)
 import Json.Decode as Decode
+import Requests exposing (getBioPageIcons, getIcons)
 import Tag.Model exposing (Tag)
 import TagInfoIcon.View exposing (viewTagInfoIcon)
+
+
+tagNameToHide : String
+tagNameToHide =
+    "beni oku"
 
 
 viewHomePageDiv : Model -> Html Msg
 viewHomePageDiv model =
     div [ class "homepageTagsFont", style "width" "auto", style "float" "left" ]
         ((tagsToShow model
+            |> List.filter (\tag -> tag.name /= tagNameToHide)
             |> List.map (viewTag model.readingMode)
             |> List.intersperse (br [] [])
          )
             ++ [ br [] [] ]
-            ++ viewBioHref model
-            ++ [ br [] [] ]
             ++ viewReadingModeDiv model
-            ++ viewIconsDiv model
         )
 
 
@@ -38,23 +42,11 @@ tagsToShow model =
             model.allTags
 
 
-tagToBeBold =
-    --todo "make 'beni_oku.txt' bold" action should be done in a more clear way
-    "beni oku"
-
-
 viewTag : ReadingMode -> Tag -> Html Msg
 viewTag readingMode tag =
     span []
         [ a
             [ class "homepageTagA"
-            , style "font-weight"
-                (if tag.name /= tagToBeBold then
-                    "normal"
-
-                 else
-                    "bold"
-                )
             , href
                 ("/tags/"
                     ++ tag.tagId
@@ -88,30 +80,34 @@ areTagsLoaded model =
     model.allTags /= []
 
 
-viewBioHref : Model -> List (Html Msg)
-viewBioHref model =
-    if areTagsLoaded model then
-        [ a [ class "bioHrefAtHomePage homepageTagA", href "/me" ] [ text "kim bu" ] ]
+viewIcons : Model -> List (Html Msg)
+viewIcons model =
+    (case model.activePage of
+        BioPage _ ->
+            getBioPageIcons model.showAdditionalIcons
+                |> List.map viewIcon
 
-    else
-        []
+        _ ->
+            getIcons model.showAdditionalIcons
+                |> List.map viewIcon
+    )
+        ++ (if not model.showAdditionalIcons then
+                [ div [ class "iconDiv" ]
+                    [ img [ class "icon showMoreIconsIcon", onClick ShowAdditionalIcons, src "more.svg" ] []
+                    ]
+                ]
 
-
-viewIconsDiv : Model -> List (Html Msg)
-viewIconsDiv model =
-    if areTagsLoaded model then
-        --this 'if expression' is just to show icons 'after' tags are shown; not before. it is just about aesthetics
-        model.icons
-            |> List.map viewIcon
-
-    else
-        []
+            else
+                []
+           )
 
 
 viewIcon : IconInfo -> Html Msg
 viewIcon iconInfo =
-    a [ class "iconA", href iconInfo.urlToNavigate ]
-        [ img [ class "icon", src iconInfo.iconImageUrl, style "margin-right" iconInfo.marginRight ] []
+    div [ class "iconDiv" ]
+        [ a [ href iconInfo.urlToNavigate ]
+            [ img [ class "icon", src iconInfo.iconImageUrl, style "margin-left" iconInfo.marginLeft ] []
+            ]
         ]
 
 

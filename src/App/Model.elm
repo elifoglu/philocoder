@@ -25,7 +25,7 @@ type alias Model =
     , allTags : List Tag
     , blogModeTags : List Tag
     , allRefData : Maybe GotAllRefData
-    , icons : List IconInfo
+    , showAdditionalIcons : Bool
     , graphModel : Maybe GraphModel
     , timeZone : Time.Zone
     }
@@ -34,7 +34,7 @@ type alias Model =
 type alias IconInfo =
     { urlToNavigate : String
     , iconImageUrl : String
-    , marginRight : String
+    , marginLeft : String
     }
 
 
