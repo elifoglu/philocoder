@@ -32,9 +32,9 @@ main =
         }
 
 
-getCmdToSendByPage : Page -> Model -> Cmd Msg
-getCmdToSendByPage page model =
-    case page of
+getCmdToSendByPage : Model -> Cmd Msg
+getCmdToSendByPage model =
+    case model.activePage of
         ContentPage status ->
             case status of
                 NonInitialized ( contentId, maybeAllTags ) ->
@@ -45,7 +45,7 @@ getCmdToSendByPage page model =
                         Nothing ->
                             getTagDataResponseForContentPage
 
-                _ ->
+                Initialized _ ->
                     Cmd.none
 
         TagPage status ->
@@ -63,7 +63,7 @@ getCmdToSendByPage page model =
                                 Nothing ->
                                     Cmd.none
 
-                _ ->
+                Initialized _ ->
                     Cmd.none
 
         BioPage maybeData ->
@@ -91,7 +91,7 @@ init flags url key =
             Model "log" key page Nothing False Nothing Time.utc
     in
     ( model
-    , Cmd.batch [ getCmdToSendByPage page model, getTimeZone ]
+    , Cmd.batch [ getCmdToSendByPage model, getTimeZone ]
     )
 
 
@@ -146,10 +146,11 @@ update msg model =
 
                                 _ ->
                                     model.activePage
+
+                        newModel =
+                            { model | activePage = updatedTagPage }
                     in
-                    ( { model | activePage = updatedTagPage }
-                    , getCmdToSendByPage model.activePage model
-                    )
+                    ( newModel, getCmdToSendByPage newModel )
 
                 Err _ ->
                     ( { model
@@ -162,23 +163,26 @@ update msg model =
             case res of
                 Ok gotTagDataResponse ->
                     let
-                        updatedContentPage : Page
+                        allTags =
+                            List.map gotTagToTag gotTagDataResponse.allTags
+
                         updatedContentPage =
                             case model.activePage of
                                 ContentPage status ->
                                     case status of
                                         NonInitialized ( contentId, _ ) ->
-                                            ContentPage (NonInitialized ( contentId, Just (List.map gotTagToTag gotTagDataResponse.allTags) ))
+                                            ContentPage (NonInitialized ( contentId, Just allTags ))
 
                                         _ ->
-                                            model.activePage
+                                            MaintenancePage
 
                                 _ ->
-                                    model.activePage
+                                    MaintenancePage
+
+                        newModel =
+                            { model | activePage = updatedContentPage }
                     in
-                    ( { model | activePage = updatedContentPage }
-                    , getCmdToSendByPage model.activePage model
-                    )
+                    ( newModel, getCmdToSendByPage newModel )
 
                 Err _ ->
                     ( { model
@@ -346,10 +350,10 @@ update msg model =
                                             nonInitialized.readingMode
 
                                         _ ->
-                                            NotSelectedYet
+                                            AllContents
 
                                 _ ->
-                                    NotSelectedYet
+                                    AllContents
 
                         newPage =
                             TagPage <|
@@ -393,7 +397,7 @@ update msg model =
             ( newModel
             , Cmd.batch
                 [ sendTitle newModel
-                , getCmdToSendByPage activePage newModel
+                , getCmdToSendByPage newModel
                 ]
             )
 
@@ -582,7 +586,7 @@ update msg model =
                     ( { model
                         | activePage =
                             if tagId == "done" then
-                                HomePage [] [] NotSelectedYet
+                                HomePage [] [] AllContents
 
                             else
                                 NotFoundPage

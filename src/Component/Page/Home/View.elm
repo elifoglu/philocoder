@@ -33,9 +33,6 @@ viewHomePageDiv allTags blogModeTags readingMode =
 tagsToShow : ReadingMode -> List Tag -> List Tag -> List Tag
 tagsToShow readingMode allTags blogModeTags =
     case readingMode of
-        NotSelectedYet ->
-            blogModeTags
-
         BlogContents ->
             blogModeTags
 
@@ -52,9 +49,6 @@ viewTag readingMode tag =
                 ("/tags/"
                     ++ tag.tagId
                     ++ (case readingMode of
-                            NotSelectedYet ->
-                                "?mode=blog"
-
                             BlogContents ->
                                 "?mode=blog"
 
@@ -142,9 +136,6 @@ viewReadingModeDiv readingMode allTags =
 readingModeCheckFn : ReadingMode -> Bool
 readingModeCheckFn readingMode =
     case readingMode of
-        NotSelectedYet ->
-            True
-
         BlogContents ->
             True
 

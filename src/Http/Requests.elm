@@ -60,9 +60,6 @@ getTagContents tag maybePage readingMode =
                             ""
                    )
                 ++ (case readingMode of
-                        NotSelectedYet ->
-                            "&blogMode=false"
-
                         BlogContents ->
                             "&blogMode=true"
 

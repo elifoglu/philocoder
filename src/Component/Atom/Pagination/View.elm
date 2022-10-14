@@ -37,9 +37,6 @@ viewPageLinkForTagPage tag currentPageNumber readingMode pageNumber =
 blogModeParamString : ReadingMode -> String
 blogModeParamString readingMode =
     case readingMode of
-        NotSelectedYet ->
-            "?mode=blog"
-
         BlogContents ->
             "?mode=blog"
 
@@ -54,9 +51,6 @@ pageParamString pageNumber readingMode =
 
     else
         (case readingMode of
-            NotSelectedYet ->
-                "&"
-
             BlogContents ->
                 "&"
 

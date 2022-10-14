@@ -54,8 +54,7 @@ type alias Drag =
 
 
 type ReadingMode
-    = NotSelectedYet
-    | BlogContents
+    = BlogContents
     | AllContents
 
 
