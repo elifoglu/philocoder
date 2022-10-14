@@ -29,14 +29,19 @@ view model =
                 (case model.activePage of
                     HomePage ->
                         [ viewHomePageDiv model
-                        , div [ class "graph" ]
-                            (case model.allRefData of
-                                Just allRefData ->
-                                    [ viewGraph allRefData.contentIds model.graphModel (List.length model.allTags) ]
+                        , case model.readingMode of
+                            AllContents ->
+                                text ""
 
-                                Nothing ->
-                                    []
-                            )
+                            _ ->
+                                div [ class "graph" ]
+                                    (case model.allRefData of
+                                        Just allRefData ->
+                                            [ viewGraph allRefData.contentIds model.graphModel (List.length model.allTags) ]
+
+                                        Nothing ->
+                                            []
+                                    )
                         ]
 
                     ContentPage status ->
