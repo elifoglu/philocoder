@@ -23,8 +23,7 @@ viewPagination tag pagination readingMode =
 viewPageLinkForTagPage : Tag -> Int -> ReadingMode -> Int -> Html Msg
 viewPageLinkForTagPage tag currentPageNumber readingMode pageNumber =
     if currentPageNumber == pageNumber then
-        button [ class "paginationButton", style "color" "black", disabled True ]
-            [ text <| String.fromInt pageNumber ]
+        text ""
 
     else
         a [ href ("/tags/" ++ tag.tagId ++ blogModeParamString readingMode ++ pageParamString pageNumber readingMode) ]
