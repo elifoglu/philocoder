@@ -312,3 +312,14 @@ input[type='radio'] {
     margin-bottom: -22px;
     margin-top: -20px;
 }
+
+.graph {
+    position: fixed;
+    margin-top: 200px;
+    box-shadow: 0 0 3px 1px #555;
+    z-index: -1;
+    width: 275px;
+    height: 275px;
+    display: block;
+    align-items: center;
+}

@@ -18,7 +18,7 @@ tagNameToHide =
 
 viewHomePageDiv : Model -> Html Msg
 viewHomePageDiv model =
-    div [ class "homepageTagsFont", style "width" "auto", style "float" "left" ]
+    div [ class "homepage homepageTagsFont", style "width" "auto", style "float" "left" ]
         ((tagsToShow model
             |> List.filter (\tag -> tag.name /= tagNameToHide)
             |> List.map (viewTag model.readingMode)
