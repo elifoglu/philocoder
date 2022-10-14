@@ -4,7 +4,7 @@ import App.Msg exposing (Msg(..))
 import BioItem.Model exposing (BioItem)
 import BioItem.Util exposing (separatorBioItem)
 import Html exposing (Html, a, div, img, span, text)
-import Html.Attributes exposing (class, href, src, style, target)
+import Html.Attributes exposing (class, href, src, style, target, title)
 import Html.Events exposing (onClick)
 import Markdown
 
@@ -20,7 +20,7 @@ viewBioItemDiv maybeBioItemInfoToShow bioItem =
                 Just info ->
                     if String.startsWith "http" info then
                         [ a [ href info, target "_blank" ]
-                            [ span [ class "bioItem bioItemHasAnInfo" ]
+                            [ span [ class "bioItem bioItemHasAnInfo", title (getBioItemTitleText bioItem) ]
                                 [ text bioItem.name
                                 ]
                             , img [ class "goToBioItemExternalLink", src "/external-link.svg" ] []
@@ -28,7 +28,7 @@ viewBioItemDiv maybeBioItemInfoToShow bioItem =
                         ]
 
                     else
-                        [ span [ class "bioItem bioItemHasAnInfo", onClick (ClickOnABioItemInfo bioItem) ]
+                        [ span [ class "bioItem bioItemHasAnInfo", onClick (ClickOnABioItemInfo bioItem), title (getBioItemTitleText bioItem) ]
                             [ text bioItem.name
                             ]
                         , span []
@@ -38,12 +38,16 @@ viewBioItemDiv maybeBioItemInfoToShow bioItem =
                         ]
 
                 Nothing ->
-                    [ span [ class "bioItem" ]
+                    [ span [ class "bioItem", title (getBioItemTitleText bioItem) ]
                         [ text bioItem.name
                         ]
                     ]
             )
 
+getBioItemTitleText: BioItem -> String
+getBioItemTitleText bioItem =
+    bioItem.groupNames
+    |> String.join ", "
 
 getProperInfoIcon : Maybe BioItem -> BioItem -> String
 getProperInfoIcon maybeBioItemToShowInfo bioItem =

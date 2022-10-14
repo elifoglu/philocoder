@@ -584,7 +584,11 @@ update msg model =
                     ( newModel, sendTitle newModel )
 
                 Err _ ->
-                    ( model, Cmd.none )
+                    ( { model
+                        | activePage = MaintenancePage
+                      }
+                    , Cmd.none
+                    )
 
         ClickOnABioGroup bioGroupId ->
             case model.activePage of
