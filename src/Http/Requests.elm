@@ -127,7 +127,7 @@ updateExistingTag tagId model =
 
 aboutMeIcon : IconInfo
 aboutMeIcon =
-    { urlToNavigate = "https://about.me/m.e", iconImageUrl = "/aboutme.svg", marginLeft = "4px" }
+    { urlToNavigate = "https://about.me/m.e", iconImageUrl = "/about-me.svg", marginLeft = "4px" }
 
 
 bioPageIcon : IconInfo
