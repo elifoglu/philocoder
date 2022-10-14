@@ -3,7 +3,7 @@ module Content.View exposing (viewContentDiv)
 import App.Msg exposing (Msg)
 import Content.Model exposing (Content)
 import Content.Util exposing (maybeDateText, maybeDisplayableTagsOfContent)
-import Html exposing (Html, a, br, div, img, p, span, text)
+import Html exposing (Html, a, div, img, p, span, text)
 import Html.Attributes exposing (class, href, src, style)
 import Markdown
 import Tag.Model exposing (ContentRenderType(..), Tag)
@@ -103,19 +103,5 @@ viewRefsTextOfContent content =
                         )
                     ]
 
-        {-
-
-           else
-               div [ class "refsDiv" ]
-                   [ span []
-                       (text
-                           "ilgili: "
-                           :: (refs
-                                   |> List.map (\r -> viewContentLink (text r.text) r.id)
-                                   |> List.intersperse (text ", ")
-                              )
-                       )
-                   ]
-        -}
         Nothing ->
             text ""

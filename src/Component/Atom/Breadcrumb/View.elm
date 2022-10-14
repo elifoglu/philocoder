@@ -13,16 +13,17 @@ viewBreadcrumb model =
     case model.activePage of
         TagPage initializable ->
             case initializable of
-                NonInitialized ( _, _, _ ) ->
+                NonInitialized _ ->
                     [ viewHomeNavigator ]
 
-                Initialized ( tag, _, _ ) ->
+                Initialized initialized ->
                     [ viewHomeNavigator
                     , viewHeaderText " >> "
-                    , viewHeaderText tag.name
+                    , viewHeaderText initialized.tag.name
                     ]
+
         _ ->
-            viewHomeNavigator :: (viewIcons model)
+            viewHomeNavigator :: viewIcons model
 
 
 viewHeaderText : String -> Html Msg

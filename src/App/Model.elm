@@ -1,4 +1,4 @@
-module App.Model exposing (BioPageModel, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GraphModel, IconInfo, Initializable(..), MaySendRequest(..), Model, NoVal(..), Page(..), ReadingMode(..), UpdateContentPageModel, UpdateTagPageModel, contentToCreateContentPageModel, contentToUpdateContentPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
+module App.Model exposing (BioPageModel, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GraphModel, IconInfo, Initializable(..), InitializedTagPageModel, MaySendRequest(..), Model, NoVal(..), NonInitializedYetTagPageModel, Page(..), ReadingMode(..), UpdateContentPageModel, UpdateTagPageModel, contentToCreateContentPageModel, contentToUpdateContentPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
 
 import BioGroup.Model exposing (BioGroup)
 import BioItem.Model exposing (BioItem)
@@ -20,10 +20,7 @@ type NoVal
 type alias Model =
     { log : String
     , key : Nav.Key
-    , readingMode : ReadingMode
     , activePage : Page
-    , allTags : List Tag
-    , blogModeTags : List Tag
     , allRefData : Maybe GotAllRefData
     , showAdditionalIcons : Bool
     , graphModel : Maybe GraphModel
@@ -72,10 +69,29 @@ type MaySendRequest pageData
     | RequestSent String
 
 
+type alias NonInitializedYetTagPageModel =
+    { tagId : String
+    , maybePage : Maybe Int
+    , readingMode : ReadingMode
+    , maybeAllTags : Maybe (List Tag)
+    , maybeBlogModeTags : Maybe (List Tag)
+    }
+
+
+type alias InitializedTagPageModel =
+    { tag : Tag
+    , contents : List Content
+    , pagination : Pagination
+    , readingMode : ReadingMode
+    , allTags : List Tag
+    , blogModeTags : List Tag
+    }
+
+
 type Page
-    = HomePage
-    | ContentPage (Initializable Int Content)
-    | TagPage (Initializable ( String, Maybe Int, Maybe String ) ( Tag, List Content, Pagination ))
+    = HomePage (List Tag) (List Tag) ReadingMode
+    | ContentPage (Initializable ( Int, Maybe (List Tag) ) ( Content, List Tag ))
+    | TagPage (Initializable NonInitializedYetTagPageModel InitializedTagPageModel)
     | CreateContentPage (MaySendRequest ( CreateContentPageModel, Maybe Content ))
     | UpdateContentPage (MaySendRequest ( UpdateContentPageModel, Maybe Content, Int ))
     | CreateTagPage (MaySendRequest CreateTagPageModel)

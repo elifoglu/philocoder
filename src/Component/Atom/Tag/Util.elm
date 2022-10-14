@@ -18,8 +18,8 @@ nameOfActiveTag model =
     case model.activePage of
         TagPage status ->
             case status of
-                Initialized ( tag, _, _ ) ->
-                    tag.name
+                Initialized initialized ->
+                    initialized.tag.name
 
                 _ ->
                     ""
@@ -28,9 +28,9 @@ nameOfActiveTag model =
             ""
 
 
-tagWithMostContents : Model -> Maybe Tag
-tagWithMostContents model =
-    model.allTags
+tagWithMostContents : List Tag -> Model -> Maybe Tag
+tagWithMostContents allTags model =
+    allTags
         |> List.sortBy (\tag -> tag.contentCount)
         |> List.reverse
         |> List.head

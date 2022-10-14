@@ -1,4 +1,4 @@
-module Requests exposing (createNewTag, getAllRefData, getBio, getBioPageIcons, getContent, getIcons, getTagContents, getTagDataResponse, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
+module Requests exposing (createNewTag, getAllRefData, getBio, getBioPageIcons, getContent, getIcons, getTagContents, getTagDataResponseForContentPage, getTagDataResponseForHomePage, getTagDataResponseForTagPage, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
 
 import App.Model exposing (CreateContentPageModel, CreateTagPageModel, IconInfo, ReadingMode(..), UpdateContentPageModel, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
 import App.Msg exposing (Msg(..), PreviewContentModel(..))
@@ -18,12 +18,30 @@ getTimeZone =
     Task.perform GotTimeZone Time.here
 
 
-getTagDataResponse : Cmd Msg
-getTagDataResponse =
+getTagDataResponseForHomePage : Cmd Msg
+getTagDataResponseForHomePage =
     Http.get
         { url =
             apiURL ++ "tags"
-        , expect = Http.expectJson GotTagDataResponse tagDataResponseDecoder
+        , expect = Http.expectJson GotTagDataResponseForHomePage tagDataResponseDecoder
+        }
+
+
+getTagDataResponseForTagPage : Cmd Msg
+getTagDataResponseForTagPage =
+    Http.get
+        { url =
+            apiURL ++ "tags"
+        , expect = Http.expectJson GotTagDataResponseForTagPage tagDataResponseDecoder
+        }
+
+
+getTagDataResponseForContentPage : Cmd Msg
+getTagDataResponseForContentPage =
+    Http.get
+        { url =
+            apiURL ++ "tags"
+        , expect = Http.expectJson GotTagDataResponseForContentPage tagDataResponseDecoder
         }
 
 
@@ -133,6 +151,7 @@ aboutMeIcon =
 bioPageIcon : IconInfo
 bioPageIcon =
     { urlToNavigate = "/me", iconImageUrl = "/bio.svg", marginLeft = "5px" }
+
 
 readMeIcon : IconInfo
 readMeIcon =

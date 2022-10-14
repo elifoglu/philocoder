@@ -13,7 +13,7 @@ sendDefaultTitle =
 sendTitle : Model -> Cmd msg
 sendTitle model =
     case model.activePage of
-        HomePage ->
+        HomePage _ _ _ ->
             sendDefaultTitle
 
         ContentPage status ->
@@ -21,7 +21,7 @@ sendTitle model =
                 NonInitialized _ ->
                     Cmd.none
 
-                Initialized content ->
+                Initialized ( content, _ ) ->
                     case content.title of
                         Just exists ->
                             title (exists ++ " - philocoder")
@@ -34,12 +34,12 @@ sendTitle model =
                 NonInitialized _ ->
                     Cmd.none
 
-                Initialized ( tag, _, pagination ) ->
-                    if pagination.currentPage == 1 then
-                        title (tag.name ++ " - philocoder")
+                Initialized initialized ->
+                    if initialized.pagination.currentPage == 1 then
+                        title (initialized.tag.name ++ " - philocoder")
 
                     else
-                        title (tag.name ++ " " ++ " (" ++ String.fromInt pagination.currentPage ++ ") - philocoder")
+                        title (initialized.tag.name ++ " " ++ " (" ++ String.fromInt initialized.pagination.currentPage ++ ") - philocoder")
 
         NotFoundPage ->
             title "oops - Not Found"

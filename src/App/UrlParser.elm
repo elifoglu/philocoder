@@ -1,6 +1,6 @@
 module App.UrlParser exposing (pageBy)
 
-import App.Model exposing (CreateContentPageModel, CreateTagPageModel, Initializable(..), MaySendRequest(..), NoVal(..), Page(..), UpdateContentPageModel, UpdateTagPageModel)
+import App.Model exposing (CreateContentPageModel, CreateTagPageModel, Initializable(..), MaySendRequest(..), NoVal(..), NonInitializedYetTagPageModel, Page(..), ReadingMode(..), UpdateContentPageModel, UpdateTagPageModel)
 import Url
 import Url.Parser exposing ((</>), (<?>), Parser, int, map, oneOf, parse, s, string, top)
 import Url.Parser.Query as Query
@@ -9,7 +9,7 @@ import Url.Parser.Query as Query
 routeParser : Parser (Page -> a) a
 routeParser =
     oneOf
-        [ map HomePage top
+        [ map (HomePage [] [] NotSelectedYet) top
         , map nonInitializedTagPageMapper (s "tags" </> string <?> Query.int "page" <?> Query.string "mode")
         , map nonInitializedBioPageMapper (s "me")
         , map nonInitializedContentPageMapper (s "contents" </> int)
@@ -21,13 +21,23 @@ routeParser =
 
 
 nonInitializedTagPageMapper : String -> Maybe Int -> Maybe String -> Page
-nonInitializedTagPageMapper tagId maybePage maybeMode =
-    TagPage (NonInitialized ( tagId, maybePage, maybeMode ))
+nonInitializedTagPageMapper tagId maybePage maybeReadingMode =
+    TagPage (NonInitialized (NonInitializedYetTagPageModel tagId maybePage (getReadingMode maybeReadingMode) Nothing Nothing))
+
+
+getReadingMode : Maybe String -> ReadingMode
+getReadingMode maybeString =
+    case maybeString of
+        Just "blog" ->
+            BlogContents
+
+        _ ->
+            NotSelectedYet
 
 
 nonInitializedContentPageMapper : Int -> Page
 nonInitializedContentPageMapper contentId =
-    ContentPage (NonInitialized contentId)
+    ContentPage (NonInitialized ( contentId, Nothing ))
 
 
 nonInitializedUpdateContentPageMapper : Int -> Page

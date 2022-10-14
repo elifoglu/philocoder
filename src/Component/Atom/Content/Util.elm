@@ -17,15 +17,15 @@ contentById contents id =
         |> List.head
 
 
-gotContentToContent : Model -> GotContent -> Content
-gotContentToContent model gotContent =
+gotContentToContent : Model -> List Tag -> GotContent -> Content
+gotContentToContent model allTags gotContent =
     { title = gotContent.title
     , date = gotContentDateToContentDate model.timeZone gotContent.dateAsTimestamp
     , contentId = gotContent.contentId
     , text = gotContent.content
     , tags =
         gotContent.tags
-            |> List.map (tagNameToTag model.allTags)
+            |> List.map (tagNameToTag allTags)
             |> values
     , refs = gotContent.refs
     , okForBlogMode = gotContent.okForBlogMode

@@ -10,11 +10,12 @@ import BioGroups.View exposing (makeAllBioGroupsNonActive)
 import BioItem.Util exposing (gotBioItemToBioItem)
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
+import Content.Model exposing (Content)
 import Content.Util exposing (gotContentToContent)
 import ForceDirectedGraph exposing (graphSubscriptions, initGraphModel, updateGraph)
 import List
 import Pagination.Model exposing (Pagination)
-import Requests exposing (createNewTag, getAllRefData, getBio, getContent, getTagContents, getTagDataResponse, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
+import Requests exposing (createNewTag, getAllRefData, getBio, getContent, getTagContents, getTagDataResponseForContentPage, getTagDataResponseForHomePage, getTagDataResponseForTagPage, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
 import Tag.Util exposing (gotTagToTag, tagById)
 import Time
 import Url
@@ -31,17 +32,73 @@ main =
         }
 
 
+getCmdToSendByPage : Page -> Model -> Cmd Msg
+getCmdToSendByPage page model =
+    case page of
+        ContentPage status ->
+            case status of
+                NonInitialized ( contentId, maybeAllTags ) ->
+                    case maybeAllTags of
+                        Just _ ->
+                            getContent contentId
+
+                        Nothing ->
+                            getTagDataResponseForContentPage
+
+                _ ->
+                    Cmd.none
+
+        TagPage status ->
+            case status of
+                NonInitialized initializableTagPageModel ->
+                    case initializableTagPageModel.maybeAllTags of
+                        Nothing ->
+                            getTagDataResponseForTagPage
+
+                        Just allTags ->
+                            case tagById allTags initializableTagPageModel.tagId of
+                                Just tag ->
+                                    getTagContents tag initializableTagPageModel.maybePage initializableTagPageModel.readingMode
+
+                                Nothing ->
+                                    Cmd.none
+
+                _ ->
+                    Cmd.none
+
+        BioPage maybeData ->
+            case maybeData of
+                Just _ ->
+                    sendTitle model
+
+                Nothing ->
+                    Cmd.batch [ getBio, sendTitle model ]
+
+        HomePage _ _ _ ->
+            getTagDataResponseForHomePage
+
+        _ ->
+            Cmd.none
+
+
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
-    ( Model "log" key NotSelectedYet (pageBy url) [] [] Nothing False Nothing Time.utc
-    , Cmd.batch [ getTagDataResponse, getTimeZone ]
+    let
+        page =
+            pageBy url
+
+        model =
+            Model "log" key page Nothing False Nothing Time.utc
+    in
+    ( model
+    , Cmd.batch [ getCmdToSendByPage page model, getTimeZone ]
     )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        GotTagDataResponse res ->
+        GotTagDataResponseForHomePage res ->
             case res of
                 Ok gotTagDataResponse ->
                     let
@@ -50,93 +107,77 @@ update msg model =
 
                         blogModeTags =
                             List.map gotTagToTag gotTagDataResponse.blogModeTags
+
+                        updatedHomePage =
+                            case model.activePage of
+                                HomePage _ _ readingMode ->
+                                    HomePage allTags blogModeTags readingMode
+
+                                _ ->
+                                    MaintenancePage
                     in
                     ( { model
-                        | allTags = allTags
-                        , blogModeTags = blogModeTags
-                        , readingMode =
-                            case model.activePage of
-                                HomePage ->
-                                    NotSelectedYet
-
-                                _ ->
-                                    AllContents
+                        | activePage = updatedHomePage
                       }
-                    , case model.activePage of
-                        ContentPage status ->
-                            case status of
-                                NonInitialized contentId ->
-                                    getContent contentId
+                    , getAllRefData
+                    )
 
-                                Initialized _ ->
-                                    Cmd.none
+                Err _ ->
+                    ( { model
+                        | activePage = MaintenancePage
+                      }
+                    , Cmd.none
+                    )
 
-                        TagPage status ->
-                            case status of
-                                NonInitialized ( tagId, maybePage, maybeMode ) ->
-                                    case tagById allTags tagId of
-                                        Just tag ->
-                                            case maybeMode of
-                                                Nothing ->
-                                                    getTagContents tag maybePage model.readingMode
+        GotTagDataResponseForTagPage res ->
+            case res of
+                Ok gotTagDataResponse ->
+                    let
+                        updatedTagPage : Page
+                        updatedTagPage =
+                            case model.activePage of
+                                TagPage status ->
+                                    case status of
+                                        NonInitialized initializableTagPageModel ->
+                                            TagPage (NonInitialized { initializableTagPageModel | maybeAllTags = Just (List.map gotTagToTag gotTagDataResponse.allTags), maybeBlogModeTags = Just (List.map gotTagToTag gotTagDataResponse.blogModeTags) })
 
-                                                Just "blog" ->
-                                                    getTagContents tag maybePage BlogContents
-
-                                                Just _ ->
-                                                    getTagContents tag maybePage model.readingMode
-
-                                        Nothing ->
-                                            Cmd.none
-
-                                Initialized _ ->
-                                    Cmd.none
-
-                        CreateContentPage status ->
-                            case status of
-                                NoRequestSentYet _ ->
-                                    sendTitle model
+                                        _ ->
+                                            model.activePage
 
                                 _ ->
-                                    Cmd.none
+                                    model.activePage
+                    in
+                    ( { model | activePage = updatedTagPage }
+                    , getCmdToSendByPage model.activePage model
+                    )
 
-                        UpdateContentPage status ->
-                            case status of
-                                NoRequestSentYet ( _, _, contentId ) ->
-                                    Cmd.batch [ getContent contentId, sendTitle model ]
+                Err _ ->
+                    ( { model
+                        | activePage = MaintenancePage
+                      }
+                    , Cmd.none
+                    )
+
+        GotTagDataResponseForContentPage res ->
+            case res of
+                Ok gotTagDataResponse ->
+                    let
+                        updatedContentPage : Page
+                        updatedContentPage =
+                            case model.activePage of
+                                ContentPage status ->
+                                    case status of
+                                        NonInitialized ( contentId, _ ) ->
+                                            ContentPage (NonInitialized ( contentId, Just (List.map gotTagToTag gotTagDataResponse.allTags) ))
+
+                                        _ ->
+                                            model.activePage
 
                                 _ ->
-                                    Cmd.none
-
-                        CreateTagPage status ->
-                            case status of
-                                NoRequestSentYet _ ->
-                                    sendTitle model
-
-                                _ ->
-                                    Cmd.none
-
-                        UpdateTagPage status ->
-                            case status of
-                                NoRequestSentYet ( _, _ ) ->
-                                    sendTitle model
-
-                                _ ->
-                                    Cmd.none
-
-                        HomePage ->
-                            getAllRefData
-
-                        BioPage maybeData ->
-                            case maybeData of
-                                Just _ ->
-                                    Cmd.none
-
-                                Nothing ->
-                                    getBio
-
-                        _ ->
-                            Cmd.none
+                                    model.activePage
+                    in
+                    ( { model | activePage = updatedContentPage }
+                    , getCmdToSendByPage model.activePage model
                     )
 
                 Err _ ->
@@ -150,8 +191,21 @@ update msg model =
             case result of
                 Ok gotContent ->
                     let
+                        allTags =
+                            case model.activePage of
+                                ContentPage status ->
+                                    case status of
+                                        NonInitialized ( _, maybeAllTags ) ->
+                                            Maybe.withDefault [] maybeAllTags
+
+                                        Initialized ( _, tags ) ->
+                                            tags
+
+                                _ ->
+                                    []
+
                         content =
-                            gotContentToContent model gotContent
+                            gotContentToContent model allTags gotContent
 
                         newActivePage =
                             case model.activePage of
@@ -162,7 +216,7 @@ update msg model =
                                                 NoRequestSentYet ( contentToCreateContentPageModel content, Nothing )
 
                                         _ ->
-                                            ContentPage <| Initialized content
+                                            ContentPage <| Initialized ( content, allTags )
 
                                 UpdateContentPage status ->
                                     case status of
@@ -171,10 +225,10 @@ update msg model =
                                                 NoRequestSentYet ( contentToUpdateContentPageModel content, Just content, contentId )
 
                                         _ ->
-                                            ContentPage <| Initialized content
+                                            ContentPage <| Initialized ( content, allTags )
 
                                 _ ->
-                                    ContentPage <| Initialized content
+                                    ContentPage <| Initialized ( content, allTags )
 
                         newModel =
                             { model
@@ -199,7 +253,9 @@ update msg model =
                 Ok gotContentToPreview ->
                     let
                         content =
-                            gotContentToContent model gotContentToPreview
+                            gotContentToContent model [] gotContentToPreview
+
+                        --FIX TODO all tags geçmen gerekirken empty geçtin, sıkıntı!!!!!!!!
                     in
                     ( { model
                         | activePage = CreateContentPage <| NoRequestSentYet ( createContentPageModel, Just content )
@@ -217,7 +273,9 @@ update msg model =
                 Ok gotContentToPreview ->
                     let
                         content =
-                            gotContentToContent model gotContentToPreview
+                            gotContentToContent model [] gotContentToPreview
+
+                        --FIX TODO all tags geçmen gerekirken empty geçtin, sıkıntı!!!!!!!!
                     in
                     ( { model
                         | activePage = UpdateContentPage <| NoRequestSentYet ( updateContentPageModel, Just content, contentID )
@@ -238,8 +296,8 @@ update msg model =
                             case model.activePage of
                                 TagPage status ->
                                     case status of
-                                        NonInitialized ( _, maybePage, _ ) ->
-                                            Maybe.withDefault 1 maybePage
+                                        NonInitialized nonInitialized ->
+                                            Maybe.withDefault 1 nonInitialized.maybePage
 
                                         _ ->
                                             1
@@ -250,13 +308,55 @@ update msg model =
                         pagination =
                             Pagination currentPage contentsResponse.totalPageCount
 
+                        allTags =
+                            case model.activePage of
+                                TagPage status ->
+                                    case status of
+                                        NonInitialized nonInitialized ->
+                                            Maybe.withDefault [] nonInitialized.maybeAllTags
+
+                                        _ ->
+                                            []
+
+                                _ ->
+                                    []
+
+                        allBlogModeTags =
+                            case model.activePage of
+                                TagPage status ->
+                                    case status of
+                                        NonInitialized nonInitialized ->
+                                            Maybe.withDefault [] nonInitialized.maybeBlogModeTags
+
+                                        _ ->
+                                            []
+
+                                _ ->
+                                    []
+
+                        contents : List Content
+                        contents =
+                            List.map (gotContentToContent model allTags) contentsResponse.contents
+
+                        readingMode =
+                            case model.activePage of
+                                TagPage status ->
+                                    case status of
+                                        NonInitialized nonInitialized ->
+                                            nonInitialized.readingMode
+
+                                        _ ->
+                                            NotSelectedYet
+
+                                _ ->
+                                    NotSelectedYet
+
+                        newPage =
+                            TagPage <|
+                                Initialized (InitializedTagPageModel tag contents pagination readingMode allTags allBlogModeTags)
+
                         newModel =
-                            { model
-                                | activePage =
-                                    TagPage <|
-                                        Initialized
-                                            ( tag, List.map (gotContentToContent model) contentsResponse.contents, pagination )
-                            }
+                            { model | activePage = newPage }
                     in
                     ( newModel
                     , sendTitle newModel
@@ -293,46 +393,7 @@ update msg model =
             ( newModel
             , Cmd.batch
                 [ sendTitle newModel
-                , case activePage of
-                    ContentPage status ->
-                        case status of
-                            NonInitialized contentId ->
-                                getContent contentId
-
-                            _ ->
-                                Cmd.none
-
-                    TagPage status ->
-                        case status of
-                            NonInitialized ( tagId, maybePage, maybeMode ) ->
-                                case tagById model.allTags tagId of
-                                    Just tag ->
-                                        case maybeMode of
-                                            Nothing ->
-                                                getTagContents tag maybePage newModel.readingMode
-
-                                            Just "blog" ->
-                                                getTagContents tag maybePage BlogContents
-
-                                            Just _ ->
-                                                getTagContents tag maybePage newModel.readingMode
-
-                                    Nothing ->
-                                        Cmd.none
-
-                            _ ->
-                                Cmd.none
-
-                    BioPage maybeData ->
-                        case maybeData of
-                            Just _ ->
-                                sendTitle model
-
-                            Nothing ->
-                                Cmd.batch [ getBio, sendTitle model ]
-
-                    _ ->
-                        Cmd.none
+                , getCmdToSendByPage activePage newModel
                 ]
             )
 
@@ -521,7 +582,7 @@ update msg model =
                     ( { model
                         | activePage =
                             if tagId == "done" then
-                                HomePage
+                                HomePage [] [] NotSelectedYet
 
                             else
                                 NotFoundPage
@@ -560,7 +621,16 @@ update msg model =
             ( { model | timeZone = zone }, Cmd.none )
 
         ReadingModeChanged readingMode ->
-            ( { model | readingMode = readingMode }, Cmd.none )
+            let
+                newPage =
+                    case model.activePage of
+                        HomePage allTags blogModeTags _ ->
+                            HomePage allTags blogModeTags readingMode
+
+                        _ ->
+                            model.activePage
+            in
+            ( { model | activePage = newPage }, Cmd.none )
 
         ShowAdditionalIcons ->
             ( { model | showAdditionalIcons = not model.showAdditionalIcons }, Cmd.none )
@@ -685,9 +755,14 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    case model.graphModel of
-        Just graphModel ->
-            graphSubscriptions graphModel (List.length model.allTags)
+    case model.activePage of
+        HomePage allTags _ _ ->
+            case model.graphModel of
+                Just graphModel ->
+                    graphSubscriptions graphModel (List.length allTags)
 
-        Nothing ->
+                Nothing ->
+                    Sub.none
+
+        _ ->
             Sub.none

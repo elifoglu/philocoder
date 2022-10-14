@@ -15,7 +15,9 @@ import Url
 type Msg
     = UrlRequested Browser.UrlRequest
     | UrlChanged Url.Url
-    | GotTagDataResponse (Result Http.Error TagDataResponse)
+    | GotTagDataResponseForHomePage (Result Http.Error TagDataResponse)
+    | GotTagDataResponseForTagPage (Result Http.Error TagDataResponse)
+    | GotTagDataResponseForContentPage (Result Http.Error TagDataResponse)
     | GotContentsOfTag Tag (Result Http.Error ContentsResponse)
     | GotContent (Result Http.Error GotContent)
     | GotAllRefData (Result Http.Error GotAllRefData)

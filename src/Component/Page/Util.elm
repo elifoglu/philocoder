@@ -1,6 +1,6 @@
 module Component.Page.Util exposing (..)
 
-import App.Model exposing (Model)
+import Tag.Model exposing (Tag)
 
 
 flipBoolAndToStr : Bool -> String
@@ -12,6 +12,6 @@ flipBoolAndToStr bool =
         "true"
 
 
-areTagsLoaded : Model -> Bool
-areTagsLoaded model =
-    model.allTags /= []
+areTagsLoaded : List Tag -> Bool
+areTagsLoaded allTags =
+    allTags /= []

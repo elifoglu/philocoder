@@ -17,30 +17,30 @@ tagNameToHide =
     "beni oku"
 
 
-viewHomePageDiv : Model -> Html Msg
-viewHomePageDiv model =
+viewHomePageDiv : List Tag -> List Tag -> ReadingMode -> Html Msg
+viewHomePageDiv allTags blogModeTags readingMode =
     div [ class "homepage homepageTagsFont", style "width" "auto", style "float" "left" ]
-        ((tagsToShow model
+        ((tagsToShow readingMode allTags blogModeTags
             |> List.filter (\tag -> tag.name /= tagNameToHide)
-            |> List.map (viewTag model.readingMode)
+            |> List.map (viewTag readingMode)
             |> List.intersperse (br [] [])
          )
             ++ [ br [] [] ]
-            ++ viewReadingModeDiv model
+            ++ viewReadingModeDiv readingMode allTags
         )
 
 
-tagsToShow : Model -> List Tag
-tagsToShow model =
-    case model.readingMode of
+tagsToShow : ReadingMode -> List Tag -> List Tag -> List Tag
+tagsToShow readingMode allTags blogModeTags =
+    case readingMode of
         NotSelectedYet ->
-            model.blogModeTags
+            blogModeTags
 
         BlogContents ->
-            model.blogModeTags
+            blogModeTags
 
         AllContents ->
-            model.allTags
+            allTags
 
 
 viewTag : ReadingMode -> Tag -> Html Msg
@@ -107,16 +107,16 @@ viewIcon iconInfo =
         ]
 
 
-viewReadingModeDiv : Model -> List (Html Msg)
-viewReadingModeDiv model =
-    if areTagsLoaded model then
+viewReadingModeDiv : ReadingMode -> List Tag -> List (Html Msg)
+viewReadingModeDiv readingMode allTags =
+    if areTagsLoaded allTags then
         --this 'if expression' is just to show icons 'after' tags are shown; not before. it is just about aesthetics
         [ div [ style "margin-top" "5px", style "margin-bottom" "10px", style "margin-left" "-5px" ]
             [ span []
                 [ input
                     [ type_ "radio"
                     , name "readingMode"
-                    , checked (readingModeCheckFn model)
+                    , checked (readingModeCheckFn readingMode)
                     , on "change" (Decode.succeed (ReadingModeChanged BlogContents))
                     ]
                     []
@@ -126,7 +126,7 @@ viewReadingModeDiv model =
                 [ input
                     [ type_ "radio"
                     , name "readingMode"
-                    , checked (flip (readingModeCheckFn model))
+                    , checked (flip (readingModeCheckFn readingMode))
                     , on "change" (Decode.succeed (ReadingModeChanged AllContents))
                     ]
                     []
@@ -139,9 +139,9 @@ viewReadingModeDiv model =
         []
 
 
-readingModeCheckFn : Model -> Bool
-readingModeCheckFn model =
-    case model.readingMode of
+readingModeCheckFn : ReadingMode -> Bool
+readingModeCheckFn readingMode =
+    case readingMode of
         NotSelectedYet ->
             True
 

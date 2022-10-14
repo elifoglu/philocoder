@@ -28,23 +28,25 @@ view model =
             [ div [ class "header headerFont" ] <| viewBreadcrumb model
             , div [ class "body" ]
                 (case model.activePage of
-                    HomePage ->
-                        [ viewHomePageDiv model
-                        , case model.readingMode of
+                    HomePage allTags blogModeTags readingMode ->
+                        [ viewHomePageDiv allTags blogModeTags readingMode
+                        , case readingMode of
                             AllContents ->
                                 text ""
 
                             _ ->
-                                if areTagsLoaded model then
-                                div [ class "graph" ]
-                                    (case model.allRefData of
-                                        Just allRefData ->
-                                            [ viewGraph allRefData.contentIds model.graphModel (List.length model.allTags) ]
+                                if areTagsLoaded allTags then
+                                    div [ class "graph" ]
+                                        (case model.allRefData of
+                                            Just allRefData ->
+                                                [ viewGraph allRefData.contentIds model.graphModel (List.length allTags) ]
 
-                                        Nothing ->
-                                            []
-                                    )
-                                else text ""
+                                            Nothing ->
+                                                []
+                                        )
+
+                                else
+                                    text ""
                         ]
 
                     ContentPage status ->
@@ -52,7 +54,7 @@ view model =
                             NonInitialized _ ->
                                 []
 
-                            Initialized content ->
+                            Initialized ( content, _ ) ->
                                 [ viewContentDiv content ]
 
                     TagPage status ->
@@ -60,9 +62,9 @@ view model =
                             NonInitialized _ ->
                                 []
 
-                            Initialized ( tag, contents, pagination ) ->
-                                viewContentDivs contents
-                                    ++ [ viewPagination tag pagination model.readingMode
+                            Initialized initialized ->
+                                viewContentDivs initialized.contents
+                                    ++ [ viewPagination initialized.tag initialized.pagination initialized.readingMode
                                        ]
 
                     CreateContentPage status ->
