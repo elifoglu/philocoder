@@ -144,7 +144,20 @@ a {
 }
 
 .paginationButton:hover {
-    color: black;
+    color: #c2c2c2;
+}
+
+.currentPaginationButton {
+    background: transparent;
+    color: #212121;
+    min-width: 0;
+    cursor: default;
+    font-size: 20px;
+    padding: 2px;
+}
+
+.currentPaginationButton:hover {
+    color: #212121;
 }
 
 .navToContent {

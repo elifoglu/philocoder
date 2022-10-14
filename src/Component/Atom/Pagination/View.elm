@@ -3,7 +3,7 @@ module Pagination.View exposing (viewPagination)
 import App.Model exposing (ReadingMode(..))
 import App.Msg exposing (Msg)
 import Html exposing (Html, a, button, div, text)
-import Html.Attributes exposing (class, disabled, href, style)
+import Html.Attributes exposing (class, href, style)
 import Pagination.Model exposing (Pagination)
 import Tag.Model exposing (Tag)
 
@@ -16,14 +16,20 @@ viewPagination tag pagination readingMode =
     else
         div [ style "margin-top" "30px", style "margin-bottom" "30px" ]
             (List.range 1 pagination.totalPageCount
-                |> List.map (viewPageLinkForTagPage tag pagination.currentPage readingMode)
+                |> List.map (viewPageLinkForTagPage tag pagination.currentPage pagination.totalPageCount readingMode)
             )
 
 
-viewPageLinkForTagPage : Tag -> Int -> ReadingMode -> Int -> Html Msg
-viewPageLinkForTagPage tag currentPageNumber readingMode pageNumber =
+viewPageLinkForTagPage : Tag -> Int -> Int -> ReadingMode -> Int -> Html Msg
+viewPageLinkForTagPage tag currentPageNumber totalPageCount readingMode pageNumber =
     if currentPageNumber == pageNumber then
-        text ""
+        if currentPageNumber == 1 || currentPageNumber == totalPageCount then
+            text ""
+
+        else
+            button [ class "paginationButton currentPaginationButton" ]
+                [ text "|"
+                ]
 
     else
         a [ href ("/tags/" ++ tag.tagId ++ blogModeParamString readingMode ++ pageParamString pageNumber readingMode) ]
