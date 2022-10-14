@@ -10,6 +10,7 @@ import BioGroups.View exposing (makeAllBioGroupsNonActive)
 import BioItem.Util exposing (gotBioItemToBioItem)
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
+import Component.Page.Util exposing (areTagsLoaded)
 import Content.Model exposing (Content)
 import Content.Util exposing (gotContentToContent)
 import ForceDirectedGraph exposing (graphSubscriptions, initGraphModel, updateGraph)
@@ -74,8 +75,15 @@ getCmdToSendByPage model =
                 Nothing ->
                     Cmd.batch [ getBio, sendTitle model ]
 
-        HomePage _ _ _ _ ->
-            getTagDataResponseForHomePage
+        HomePage allTags _ _ maybeGraphData ->
+            if not (areTagsLoaded allTags) then
+                getTagDataResponseForHomePage
+
+            else if maybeGraphData == Nothing then
+                getAllRefData
+
+            else
+                Cmd.none
 
         _ ->
             Cmd.none
@@ -119,15 +127,11 @@ update msg model =
                     ( { model
                         | activePage = updatedHomePage
                       }
-                    , getAllRefData
+                    , getCmdToSendByPage model
                     )
 
                 Err _ ->
-                    ( { model
-                        | activePage = MaintenancePage
-                      }
-                    , Cmd.none
-                    )
+                    ( { model | activePage = MaintenancePage }, Cmd.none )
 
         GotTagDataResponseForTagPage res ->
             case res of
@@ -153,9 +157,7 @@ update msg model =
                     ( newModel, getCmdToSendByPage newModel )
 
                 Err _ ->
-                    ( { model
-                        | activePage = MaintenancePage
-                      }
+                    ( { model | activePage = MaintenancePage }
                     , Cmd.none
                     )
 
@@ -235,22 +237,16 @@ update msg model =
                                     ContentPage <| Initialized ( content, allTags )
 
                         newModel =
-                            { model
-                                | activePage = newActivePage
-                            }
+                            { model | activePage = newActivePage }
                     in
-                    ( newModel
-                    , sendTitle newModel
-                    )
+                    ( newModel, sendTitle newModel )
 
                 Err _ ->
                     let
                         newModel =
                             { model | activePage = NotFoundPage }
                     in
-                    ( newModel
-                    , sendTitle newModel
-                    )
+                    ( newModel, sendTitle newModel )
 
         GotContentToPreviewForCreatePage createContentPageModel result ->
             case result of
@@ -261,9 +257,7 @@ update msg model =
 
                         --FIX TODO all tags geçmen gerekirken empty geçtin, sıkıntı!!!!!!!!
                     in
-                    ( { model
-                        | activePage = CreateContentPage <| NoRequestSentYet ( createContentPageModel, Just content )
-                      }
+                    ( { model | activePage = CreateContentPage <| NoRequestSentYet ( createContentPageModel, Just content ) }
                     , Cmd.none
                     )
 
