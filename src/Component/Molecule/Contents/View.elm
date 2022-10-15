@@ -5,8 +5,6 @@ import Content.Model exposing (Content)
 import Content.View exposing (viewContentDiv)
 import Html exposing (Html, br, div, hr)
 import Html.Attributes exposing (style)
-import Tag.Model exposing (ContentRenderType(..), Tag)
-import Tag.Util exposing (contentRenderTypeOf)
 
 
 viewContentDivs : List Content -> List (Html Msg)
