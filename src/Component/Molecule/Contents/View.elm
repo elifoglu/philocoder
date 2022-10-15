@@ -3,7 +3,7 @@ module Contents.View exposing (viewContentDivs)
 import App.Msg exposing (Msg)
 import Content.Model exposing (Content)
 import Content.View exposing (viewContentDiv)
-import Html exposing (Html, br, div, hr)
+import Html exposing (Html, div, hr)
 import Html.Attributes exposing (style)
 
 
