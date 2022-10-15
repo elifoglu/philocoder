@@ -1,18 +1,12 @@
-module Tag.Model exposing (ContentRenderType(..), Tag)
+module Tag.Model exposing (Tag)
 
 
 type alias Tag =
     { tagId : String
     , name : String
     , showAsTag : Bool
-    , contentRenderType : ContentRenderType
     , showContentCount : Bool
-    , headerIndex : Maybe Int
+    , orderIndex : Maybe Int
     , contentCount : Int
     , infoContentId : Maybe Int
     }
-
-
-type ContentRenderType
-    = Normal
-    | Minified

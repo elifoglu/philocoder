@@ -11,7 +11,6 @@ import BioItem.Util exposing (gotBioItemToBioItem)
 import Browser exposing (UrlRequest)
 import Browser.Navigation as Nav
 import Component.Page.Util exposing (tagsNotLoaded)
-import Content.Model exposing (Content)
 import Content.Util exposing (gotContentToContent)
 import ForceDirectedGraph exposing (graphSubscriptions, initGraphModel, updateGraph)
 import Home.View exposing (tagCountCurrentlyShownOnPage)
@@ -429,14 +428,11 @@ update msg model =
                                         ShowAsTag input ->
                                             { createTagPageModel | showAsTag = input }
 
-                                        ContentRenderType input ->
-                                            { createTagPageModel | contentRenderType = input }
-
                                         ShowContentCount input ->
                                             { createTagPageModel | showContentCount = input }
 
-                                        HeaderIndex input ->
-                                            { createTagPageModel | headerIndex = input }
+                                        OrderIndex input ->
+                                            { createTagPageModel | orderIndex = input }
 
                                         InfoContentId _ ->
                                             createTagPageModel

@@ -130,9 +130,8 @@ type alias CreateTagPageModel =
     , name : String
     , contentSortStrategy : String
     , showAsTag : Bool
-    , contentRenderType : String
     , showContentCount : Bool
-    , headerIndex : String
+    , orderIndex : String
     , password : String
     }
 
@@ -221,9 +220,8 @@ createTagPageModelEncoder model =
         , ( "name", Encode.string model.name )
         , ( "contentSortStrategy", Encode.string model.contentSortStrategy )
         , ( "showAsTag", Encode.bool model.showAsTag )
-        , ( "contentRenderType", Encode.string model.contentRenderType )
         , ( "showContentCount", Encode.bool model.showContentCount )
-        , ( "headerIndex", Encode.string model.headerIndex )
+        , ( "orderIndex", Encode.string model.orderIndex )
         , ( "password", Encode.string model.password )
         ]
 

@@ -1,7 +1,7 @@
 module Tag.Util exposing (tagById, tagNameToTag)
 
 import List
-import Tag.Model exposing (ContentRenderType, Tag)
+import Tag.Model exposing (Tag)
 
 
 tagById : List Tag -> String -> Maybe Tag

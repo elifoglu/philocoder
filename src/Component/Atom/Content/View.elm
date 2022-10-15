@@ -6,7 +6,7 @@ import Content.Util exposing (maybeDateText, maybeDisplayableTagsOfContent)
 import Html exposing (Html, a, div, img, p, span, text)
 import Html.Attributes exposing (class, href, src, style)
 import Markdown
-import Tag.Model exposing (ContentRenderType(..), Tag)
+import Tag.Model exposing (Tag)
 
 
 viewContentDiv : Content -> Html Msg

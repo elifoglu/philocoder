@@ -2,10 +2,9 @@ module CreateTag.View exposing (viewCreateTagDiv)
 
 import App.Model exposing (CreateContentPageModel, CreateTagPageModel, Model)
 import App.Msg exposing (Msg(..), PreviewContentModel(..), TagInputType(..))
-import Html exposing (Html, br, button, div, input, label, select, span, text)
-import Html.Attributes exposing (checked, for, id, placeholder, selected, style, type_, value)
+import Html exposing (Html, br, button, div, input, label, span, text)
+import Html.Attributes exposing (checked, placeholder, selected, style, type_, value)
 import Html.Events exposing (onCheck, onClick, onInput)
-import Tag.Model exposing (Tag)
 
 
 viewCreateTagDiv : Model -> CreateTagPageModel -> Html Msg
@@ -16,9 +15,8 @@ viewCreateTagDiv model createTagPageModel =
             , viewInput "text" "name" createTagPageModel.name (createTagInputMessage Name)
             , viewInput "text" "contentSortStrategy" createTagPageModel.contentSortStrategy (createTagInputMessage ContentSortStrategy)
             , viewCheckBox "showAsTag" createTagPageModel.showAsTag (createTagInputMessage ShowAsTag)
-            , viewInput "text" "contentRenderType" createTagPageModel.contentRenderType (createTagInputMessage ContentRenderType)
             , viewCheckBox "showContentcount" createTagPageModel.showContentCount (createTagInputMessage ShowContentCount)
-            , viewInput "text" "headerIndex" createTagPageModel.headerIndex (createTagInputMessage HeaderIndex)
+            , viewInput "text" "orderIndex" createTagPageModel.orderIndex (createTagInputMessage OrderIndex)
             , viewInput "password" "password" createTagPageModel.password (createTagInputMessage Pw)
             , div []
                 [ viewCreateTagButton (CreateTag createTagPageModel)

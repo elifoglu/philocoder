@@ -66,8 +66,7 @@ type TagInputType
     | Name String
     | ContentSortStrategy String
     | ShowAsTag Bool
-    | ContentRenderType String
     | ShowContentCount Bool
-    | HeaderIndex String
+    | OrderIndex String
     | InfoContentId String
     | Pw String

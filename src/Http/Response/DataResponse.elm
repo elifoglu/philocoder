@@ -1,8 +1,7 @@
 module DataResponse exposing (AllTagsResponse, BioGroupID, BioItemID, BioResponse, BlogTagsResponse, ContentID, ContentsResponse, GotAllRefData, GotBioGroup, GotBioItem, GotContent, GotContentDate, GotRefConnection, GotTag, allTagsResponseDecoder, bioResponseDecoder, blogTagsResponseDecoder, contentDecoder, contentsResponseDecoder, gotAllRefDataDecoder)
 
 import Content.Model exposing (Ref)
-import Json.Decode as D exposing (Decoder, andThen, bool, field, int, map, map2, map3, map5, map6, map8, maybe, string, succeed)
-import Tag.Model exposing (ContentRenderType(..))
+import Json.Decode as D exposing (Decoder, bool, field, int, map, map2, map3, map5, map6, map7, map8, maybe, string)
 
 
 type alias AllTagsResponse =
@@ -21,9 +20,8 @@ type alias GotTag =
     { tagId : String
     , name : String
     , showAsTag : Bool
-    , contentRenderType : ContentRenderType
     , showContentCount : Bool
-    , headerIndex : Maybe Int
+    , orderIndex : Maybe Int
     , contentCount : Int
     , infoContentId : Maybe Int
     }
@@ -121,29 +119,14 @@ refConnectionDecoder =
 
 tagDecoder : Decoder GotTag
 tagDecoder =
-    map8 GotTag
+    map7 GotTag
         (field "tagId" string)
         (field "name" string)
         (field "showAsTag" bool)
-        (field "contentRenderType" contentRenderTypeDecoder)
         (field "showContentCount" bool)
-        (field "headerIndex" (maybe int))
+        (field "orderIndex" (maybe int))
         (field "contentCount" int)
         (field "infoContentId" (maybe int))
-
-
-contentRenderTypeDecoder : Decoder ContentRenderType
-contentRenderTypeDecoder =
-    string
-        |> andThen
-            (\str ->
-                case str of
-                    "minified" ->
-                        succeed Minified
-
-                    _ ->
-                        succeed Normal
-            )
 
 
 contentDecoder : Decoder GotContent
