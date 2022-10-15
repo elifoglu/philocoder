@@ -34,6 +34,20 @@ main =
         }
 
 
+init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
+init flags url key =
+    let
+        page =
+            pageBy url
+
+        model =
+            Model "log" key page False Time.utc
+    in
+    ( model
+    , Cmd.batch [ getCmdToSendByPage model, getTimeZone ]
+    )
+
+
 getCmdToSendByPage : Model -> Cmd Msg
 getCmdToSendByPage model =
     Cmd.batch
@@ -127,20 +141,6 @@ getCmdToSendByPage model =
             _ ->
                 Cmd.none
         ]
-
-
-init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
-init flags url key =
-    let
-        page =
-            pageBy url
-
-        model =
-            Model "log" key page False Time.utc
-    in
-    ( model
-    , Cmd.batch [ getCmdToSendByPage model, getTimeZone ]
-    )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -691,9 +691,9 @@ update msg model =
                 Err _ ->
                     ( { model | activePage = NotFoundPage }, Cmd.none )
 
-        GetContentToCopy contentId ->
+        GetContentToCopyForContentCreation contentId ->
             ( model
-            , getContent <| Maybe.withDefault 0 (String.toInt contentId)
+            , getContent contentId
             )
 
         GotAllRefData res ->

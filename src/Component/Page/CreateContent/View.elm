@@ -15,7 +15,7 @@ viewCreateContentDiv createContentPageModel =
     div [] <|
         [ text "Create a new content using this content's data:"
         , viewInput "text" "id of content to copy" createContentPageModel.contentIdToCopy (ContentInputChanged ContentToCopy)
-        , viewGetContentToCopyButton (GetContentToCopy createContentPageModel.contentIdToCopy)
+        , viewGetContentToCopyButton (GetContentToCopyForContentCreation (Maybe.withDefault 0 (String.toInt createContentPageModel.contentIdToCopy)))
         ]
             ++ List.intersperse (br [] [])
                 [ viewInput "text" "id" createContentPageModel.id (ContentInputChanged Id)

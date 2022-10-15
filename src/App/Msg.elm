@@ -30,7 +30,7 @@ type Msg
     | GotContentToPreviewForUpdatePage ContentID UpdateContentPageModel (Result Http.Error GotContent)
     | ContentInputChanged ContentInputType String
     | TagInputChanged TagInputType
-    | GetContentToCopy String
+    | GetContentToCopyForContentCreation Int
     | PreviewContent PreviewContentModel
     | CreateContent CreateContentPageModel
     | UpdateContent ContentID UpdateContentPageModel
