@@ -4,7 +4,7 @@ import App.Model exposing (CreateContentPageModel, CreateTagPageModel, Page, Rea
 import BioGroup.Model exposing (BioGroup)
 import BioItem.Model exposing (BioItem)
 import Browser
-import DataResponse exposing (BioGroupID, BioItemID, BioResponse, ContentID, ContentsResponse, GotAllRefData, GotContent, TagDataResponse)
+import DataResponse exposing (AllTagsResponse, BioGroupID, BioItemID, BioResponse, BlogTagsResponse, ContentID, ContentsResponse, GotAllRefData, GotContent)
 import Graph exposing (NodeId)
 import Http
 import Tag.Model exposing (Tag)
@@ -15,7 +15,8 @@ import Url
 type Msg
     = UrlRequested Browser.UrlRequest
     | UrlChanged Url.Url
-    | GotTagDataResponseForPage GotTagDataResponseForWhichPage (Result Http.Error TagDataResponse)
+    | GotAllTagsResponse (Result Http.Error AllTagsResponse)
+    | GotBlogTagsResponse (Result Http.Error BlogTagsResponse)
     | GotAllRefData (Result Http.Error GotAllRefData)
     | ReadingModeChanged ReadingMode
     | ShowAdditionalIcons
@@ -42,14 +43,6 @@ type Msg
     | DragEnd ( Float, Float )
     | Tick Time.Posix
     | GotTimeZone Time.Zone
-
-
-type GotTagDataResponseForWhichPage
-    = PageHome
-    | PageTag
-    | PageContent
-    | PageCreateContent
-    | PageUpdateContent
 
 
 type PreviewContentModel

@@ -1,8 +1,8 @@
-module Requests exposing (createNewTag, getAllRefData, getBio, getBioPageIcons, getContent, getIcons, getTagContents, getTagDataResponseForPage, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
+module Requests exposing (createNewTag, getAllRefData, getAllTagsResponse, getBio, getBioPageIcons, getBlogTagsResponse, getContent, getIcons, getTagContents, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
 
 import App.Model exposing (CreateContentPageModel, CreateTagPageModel, IconInfo, ReadingMode(..), UpdateContentPageModel, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
-import App.Msg exposing (GotTagDataResponseForWhichPage(..), Msg(..), PreviewContentModel(..))
-import DataResponse exposing (ContentID, bioResponseDecoder, contentDecoder, contentsResponseDecoder, gotAllRefDataDecoder, tagDataResponseDecoder)
+import App.Msg exposing (Msg(..), PreviewContentModel(..))
+import DataResponse exposing (ContentID, allTagsResponseDecoder, bioResponseDecoder, blogTagsResponseDecoder, contentDecoder, contentsResponseDecoder, gotAllRefDataDecoder)
 import Http
 import Tag.Model exposing (Tag)
 import Task
@@ -18,12 +18,21 @@ getTimeZone =
     Task.perform GotTimeZone Time.here
 
 
-getTagDataResponseForPage : GotTagDataResponseForWhichPage -> Cmd Msg
-getTagDataResponseForPage allTagsDependentPage =
+getAllTagsResponse : Cmd Msg
+getAllTagsResponse =
     Http.get
         { url =
             apiURL ++ "tags"
-        , expect = Http.expectJson (GotTagDataResponseForPage allTagsDependentPage) tagDataResponseDecoder
+        , expect = Http.expectJson GotAllTagsResponse allTagsResponseDecoder
+        }
+
+
+getBlogTagsResponse : Cmd Msg
+getBlogTagsResponse =
+    Http.get
+        { url =
+            apiURL ++ "blogTags"
+        , expect = Http.expectJson GotBlogTagsResponse blogTagsResponseDecoder
         }
 
 

@@ -5,7 +5,7 @@ import App.Msg exposing (Msg(..))
 import Bio.View exposing (viewBioPageDiv)
 import Breadcrumb.View exposing (viewBreadcrumb)
 import Browser exposing (Document)
-import Component.Page.Util exposing (areTagsLoaded)
+import Component.Page.Util exposing (tagsLoaded)
 import Content.View exposing (viewContentDiv)
 import Contents.View exposing (viewContentDivs)
 import CreateContent.View exposing (viewCreateContentDiv)
@@ -28,12 +28,12 @@ view model =
             [ div [ class "header headerFont" ] <| viewBreadcrumb model
             , div [ class "body" ]
                 (case model.activePage of
-                    HomePage allTags blogModeTags readingMode maybeGraphData ->
-                        [ viewHomePageDiv allTags blogModeTags readingMode
-                        , if areTagsLoaded allTags then
+                    HomePage blogTags readingMode maybeGraphData ->
+                        [ viewHomePageDiv model.allTags blogTags readingMode
+                        , if tagsLoaded blogTags then
                             let
                                 tagsCount =
-                                    tagCountCurrentlyShownOnPage readingMode allTags blogModeTags
+                                    tagCountCurrentlyShownOnPage readingMode model.allTags blogTags
 
                                 initialMarginTop =
                                     40
@@ -63,7 +63,7 @@ view model =
                             NonInitialized _ ->
                                 []
 
-                            Initialized ( content, _ ) ->
+                            Initialized content ->
                                 [ viewContentDiv content ]
 
                     TagPage status ->

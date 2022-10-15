@@ -1,6 +1,5 @@
-module Tag.Util exposing (gotTagToTag, tagById, tagNameToTag)
+module Tag.Util exposing (tagById, tagNameToTag)
 
-import DataResponse exposing (GotTag)
 import List
 import Tag.Model exposing (ContentRenderType, Tag)
 
@@ -17,8 +16,3 @@ tagNameToTag allTags tagName =
     allTags
         |> List.filter (\tag -> tag.name == tagName)
         |> List.head
-
-
-gotTagToTag : GotTag -> Tag
-gotTagToTag gotTag =
-    gotTag

@@ -13,7 +13,7 @@ sendDefaultTitle =
 sendTitle : Model -> Cmd msg
 sendTitle model =
     case model.activePage of
-        HomePage _ _ _ _ ->
+        HomePage _ _ _ ->
             sendDefaultTitle
 
         ContentPage status ->
@@ -21,7 +21,7 @@ sendTitle model =
                 NonInitialized _ ->
                     Cmd.none
 
-                Initialized ( content, _ ) ->
+                Initialized content ->
                     title (content.beautifiedText ++ " - philocoder")
 
         TagPage status ->
@@ -35,9 +35,6 @@ sendTitle model =
 
                     else
                         title (initialized.tag.name ++ " " ++ " (" ++ String.fromInt initialized.pagination.currentPage ++ ") - philocoder")
-
-        NotFoundPage ->
-            title "*oops* - philocoder"
 
         CreateContentPage _ ->
             title "create new content - philocoder"
@@ -84,5 +81,8 @@ sendTitle model =
                 _ ->
                     title <| "bio - philocoder"
 
-        _ ->
-            Cmd.none
+        NotFoundPage ->
+            title "oops - philocoder"
+
+        MaintenancePage ->
+            title "bakım çalışması - philocoder"

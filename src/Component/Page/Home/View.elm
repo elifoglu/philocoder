@@ -2,7 +2,7 @@ module Home.View exposing (..)
 
 import App.Model exposing (IconInfo, Model, Page(..), ReadingMode(..))
 import App.Msg exposing (Msg(..))
-import Component.Page.Util exposing (areTagsLoaded)
+import Component.Page.Util exposing (tagsLoaded)
 import Html exposing (Html, a, br, div, img, input, span, text)
 import Html.Attributes exposing (checked, class, href, name, src, style, type_)
 import Html.Events exposing (on, onClick)
@@ -13,14 +13,14 @@ import TagInfoIcon.View exposing (viewTagInfoIcon)
 
 
 viewHomePageDiv : List Tag -> List Tag -> ReadingMode -> Html Msg
-viewHomePageDiv allTags blogModeTags readingMode =
+viewHomePageDiv allTags blogTags readingMode =
     div [ class "homepage homepageTagsFont", style "width" "auto", style "float" "left" ]
-        ((tagsToShow readingMode allTags blogModeTags
+        ((tagsToShow readingMode allTags blogTags
             |> List.map (viewTag readingMode)
             |> List.intersperse (br [] [])
          )
             ++ [ br [] [] ]
-            ++ viewReadingModeDiv readingMode allTags
+            ++ viewReadingModeDiv readingMode blogTags
         )
 
 
@@ -30,12 +30,12 @@ tagNamesToHideOnHomePage =
 
 
 tagsToShow : ReadingMode -> List Tag -> List Tag -> List Tag
-tagsToShow readingMode allTags blogModeTags =
+tagsToShow readingMode allTags blogTags =
     let
         tags =
             case readingMode of
                 BlogContents ->
-                    blogModeTags
+                    blogTags
 
                 AllContents ->
                     allTags
@@ -48,8 +48,8 @@ tagsToShow readingMode allTags blogModeTags =
 
 
 tagCountCurrentlyShownOnPage : ReadingMode -> List Tag -> List Tag -> Int
-tagCountCurrentlyShownOnPage readingMode allTags blogModeTags =
-    List.length (tagsToShow readingMode allTags blogModeTags)
+tagCountCurrentlyShownOnPage readingMode allTags blogTags =
+    List.length (tagsToShow readingMode allTags blogTags)
 
 
 viewTag : ReadingMode -> Tag -> Html Msg
@@ -114,9 +114,9 @@ viewIcon iconInfo =
 
 
 viewReadingModeDiv : ReadingMode -> List Tag -> List (Html Msg)
-viewReadingModeDiv readingMode allTags =
-    if areTagsLoaded allTags then
-        --this 'if expression' is just to show icons 'after' tags are shown; not before. it is just about aesthetics
+viewReadingModeDiv readingMode blogTags =
+    if tagsLoaded blogTags then
+        --this 'if expression' is just to show this div 'after' tags are shown; not before. it is just about aesthetics
         [ div [ style "margin-top" "5px", style "margin-bottom" "10px", style "margin-left" "-5px" ]
             [ span []
                 [ input

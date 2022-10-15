@@ -22,10 +22,11 @@ viewBreadcrumb model =
                     , viewHeaderText initialized.tag.name
                     ]
 
-        HomePage _ _ _ _ ->
-            (viewHomeNavigator True) :: viewIcons model
+        HomePage _ _ _ ->
+            viewHomeNavigator True :: viewIcons model
+
         _ ->
-            (viewHomeNavigator False) :: viewIcons model
+            viewHomeNavigator False :: viewIcons model
 
 
 viewHeaderText : String -> Html Msg

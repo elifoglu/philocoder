@@ -9,8 +9,9 @@ import Tag.Model exposing (Tag)
 import Tag.Util exposing (tagNameToTag)
 import Time
 
-gotContentToContent : Model -> List Tag -> GotContent -> Content
-gotContentToContent model allTags gotContent =
+
+gotContentToContent : Model -> GotContent -> Content
+gotContentToContent model gotContent =
     { title = gotContent.title
     , date = gotContentDateToContentDate model.timeZone gotContent.dateAsTimestamp
     , contentId = gotContent.contentId
@@ -18,7 +19,7 @@ gotContentToContent model allTags gotContent =
     , beautifiedText = gotContent.beautifiedContentText
     , tags =
         gotContent.tags
-            |> List.map (tagNameToTag allTags)
+            |> List.map (tagNameToTag model.allTags)
             |> values
     , refs = gotContent.refs
     , okForBlogMode = gotContent.okForBlogMode
@@ -68,9 +69,4 @@ maybeDateText content =
         dateText =
             format "dd.MM.yy" content.date
     in
-    if String.isEmpty dateText then
-        --will be updated
-        Just "sase"
-
-    else
-        Just dateText
+    Just dateText

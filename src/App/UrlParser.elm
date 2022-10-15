@@ -9,11 +9,11 @@ import Url.Parser.Query as Query
 routeParser : Parser (Page -> a) a
 routeParser =
     oneOf
-        [ map (HomePage [] [] BlogContents Nothing) top
+        [ map (HomePage [] BlogContents Nothing) top
         , map nonInitializedTagPageMapper (s "tags" </> string <?> Query.int "page" <?> Query.string "mode")
         , map nonInitializedBioPageMapper (s "me")
         , map nonInitializedContentPageMapper (s "contents" </> int)
-        , map (CreateContentPage (NoRequestSentYet (CreateContentPageModel [] Nothing "" "" "" "" "" False "" ""))) (s "create" </> s "content")
+        , map (CreateContentPage (NoRequestSentYet (CreateContentPageModel Nothing "" "" "" "" "" False "" ""))) (s "create" </> s "content")
         , map nonInitializedUpdateContentPageMapper (s "update" </> s "content" </> int)
         , map (CreateTagPage (NoRequestSentYet (CreateTagPageModel "" "" "DateDESC" True "normal" True "" ""))) (s "create" </> s "tag")
         , map nonInitializedUpdateTagPageMapper (s "update" </> s "tag" </> string)
@@ -22,7 +22,7 @@ routeParser =
 
 nonInitializedTagPageMapper : String -> Maybe Int -> Maybe String -> Page
 nonInitializedTagPageMapper tagId maybePage maybeReadingMode =
-    TagPage (NonInitialized (NonInitializedYetTagPageModel tagId maybePage (getReadingMode maybeReadingMode) Nothing Nothing))
+    TagPage (NonInitialized (NonInitializedYetTagPageModel tagId maybePage (getReadingMode maybeReadingMode)))
 
 
 getReadingMode : Maybe String -> ReadingMode
@@ -37,12 +37,12 @@ getReadingMode maybeString =
 
 nonInitializedContentPageMapper : Int -> Page
 nonInitializedContentPageMapper contentId =
-    ContentPage (NonInitialized ( contentId, Nothing ))
+    ContentPage (NonInitialized contentId)
 
 
 nonInitializedUpdateContentPageMapper : Int -> Page
 nonInitializedUpdateContentPageMapper contentId =
-    UpdateContentPage (NoRequestSentYet ( UpdateContentPageModel [] Nothing "" "" "" "" False "", contentId ))
+    UpdateContentPage (NoRequestSentYet ( UpdateContentPageModel Nothing "" "" "" "" False "", contentId ))
 
 
 nonInitializedUpdateTagPageMapper : String -> Page

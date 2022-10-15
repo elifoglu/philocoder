@@ -5,4 +5,4 @@ import Html exposing (Html, text)
 
 view404Div : Html msg
 view404Div =
-    text "böyle bir sayfa/içerik yok"
+    text "42"
