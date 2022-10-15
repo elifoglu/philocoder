@@ -76,6 +76,7 @@ hr {
     letter-spacing: 0.4px;
     word-spacing: 0.1px;
     font-weight: normal;
+    cursor: default;
 }
 
 .homeNavigator {
@@ -84,6 +85,7 @@ hr {
     word-spacing: 0.1px;
     font-weight: bold;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .homeNavigator:hover {
