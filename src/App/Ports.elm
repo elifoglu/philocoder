@@ -42,7 +42,7 @@ sendTitle model =
                         title (initialized.tag.name ++ " " ++ " (" ++ String.fromInt initialized.pagination.currentPage ++ ") - philocoder")
 
         NotFoundPage ->
-            title "oops - Not Found"
+            title "*oops* - philocoder"
 
         CreateContentPage _ ->
             title "create new content - philocoder"
