@@ -69,35 +69,35 @@ view model =
 
                     CreateContentPage status ->
                         case status of
-                            NoRequestSentYet ( createContentPageModel, maybeContentToPreview ) ->
-                                [ viewCreateContentDiv model createContentPageModel maybeContentToPreview ]
+                            NoRequestSentYet createContentPageModel ->
+                                [ viewCreateContentDiv createContentPageModel ]
 
-                            RequestSent infoToShowAfterRequest ->
-                                [ text infoToShowAfterRequest ]
+                            RequestSent _ ->
+                                [ text "..." ]
 
                     UpdateContentPage status ->
                         case status of
-                            NoRequestSentYet ( updateContentPageModel, maybeContentToPreview, contentId ) ->
-                                [ viewUpdateContentDiv model updateContentPageModel maybeContentToPreview contentId ]
+                            NoRequestSentYet ( updateContentPageModel, contentId ) ->
+                                [ viewUpdateContentDiv model updateContentPageModel updateContentPageModel.maybeContentToPreview contentId ]
 
-                            RequestSent infoToShowAfterRequest ->
-                                [ text infoToShowAfterRequest ]
+                            RequestSent _ ->
+                                [ text "..." ]
 
                     CreateTagPage status ->
                         case status of
                             NoRequestSentYet createTagPageModel ->
                                 [ viewCreateTagDiv model createTagPageModel ]
 
-                            RequestSent infoToShowAfterRequest ->
-                                [ text infoToShowAfterRequest ]
+                            RequestSent _ ->
+                                [ text "..." ]
 
                     UpdateTagPage status ->
                         case status of
                             NoRequestSentYet ( updateTagPageModel, tagId ) ->
                                 [ viewUpdateTagDiv updateTagPageModel tagId ]
 
-                            RequestSent infoToShowAfterRequest ->
-                                [ text infoToShowAfterRequest ]
+                            RequestSent updateTagPageModel ->
+                                [ text "..." ]
 
                     BioPage data ->
                         case data of

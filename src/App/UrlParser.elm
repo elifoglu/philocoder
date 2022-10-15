@@ -13,7 +13,7 @@ routeParser =
         , map nonInitializedTagPageMapper (s "tags" </> string <?> Query.int "page" <?> Query.string "mode")
         , map nonInitializedBioPageMapper (s "me")
         , map nonInitializedContentPageMapper (s "contents" </> int)
-        , map (CreateContentPage (NoRequestSentYet ( CreateContentPageModel "" "" "" "" "" False "" "", Nothing ))) (s "create" </> s "content")
+        , map (CreateContentPage (NoRequestSentYet (CreateContentPageModel [] Nothing "" "" "" "" "" False "" ""))) (s "create" </> s "content")
         , map nonInitializedUpdateContentPageMapper (s "update" </> s "content" </> int)
         , map (CreateTagPage (NoRequestSentYet (CreateTagPageModel "" "" "DateDESC" True "normal" True "" ""))) (s "create" </> s "tag")
         , map nonInitializedUpdateTagPageMapper (s "update" </> s "tag" </> string)
@@ -42,7 +42,7 @@ nonInitializedContentPageMapper contentId =
 
 nonInitializedUpdateContentPageMapper : Int -> Page
 nonInitializedUpdateContentPageMapper contentId =
-    UpdateContentPage (NoRequestSentYet ( UpdateContentPageModel "" "" "" "" False "", Nothing, contentId ))
+    UpdateContentPage (NoRequestSentYet ( UpdateContentPageModel [] Nothing "" "" "" "" False "", contentId ))
 
 
 nonInitializedUpdateTagPageMapper : String -> Page

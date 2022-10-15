@@ -3,7 +3,6 @@ module CreateContent.View exposing (viewCreateContentDiv)
 import App.Model exposing (CreateContentPageModel, Model, ReadingMode(..))
 import App.Msg exposing (ContentInputType(..), Msg(..), PreviewContentModel(..))
 import Component.Page.Util exposing (flipBoolAndToStr)
-import Content.Model exposing (Content)
 import Content.View exposing (viewContentDiv)
 import Html exposing (Html, br, button, div, hr, input, label, span, text, textarea)
 import Html.Attributes exposing (checked, name, placeholder, style, type_, value)
@@ -11,8 +10,8 @@ import Html.Events exposing (on, onClick, onInput)
 import Json.Decode as Decode
 
 
-viewCreateContentDiv : Model -> CreateContentPageModel -> Maybe Content -> Html Msg
-viewCreateContentDiv model createContentPageModel maybeContentToPreview =
+viewCreateContentDiv : CreateContentPageModel -> Html Msg
+viewCreateContentDiv createContentPageModel =
     div [] <|
         [ text "Create a new content using this content's data:"
         , viewInput "text" "id of content to copy" createContentPageModel.contentIdToCopy (ContentInputChanged ContentToCopy)
@@ -31,7 +30,7 @@ viewCreateContentDiv model createContentPageModel maybeContentToPreview =
                     , viewCreateContentButton (CreateContent createContentPageModel)
                     ]
                 , hr [] []
-                , case maybeContentToPreview of
+                , case createContentPageModel.maybeContentToPreview of
                     Just content ->
                         viewContentDiv content
 

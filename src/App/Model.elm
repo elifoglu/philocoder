@@ -1,4 +1,4 @@
-module App.Model exposing (BioPageModel, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GraphData, GraphModel, IconInfo, Initializable(..), InitializedTagPageModel, MaySendRequest(..), Model, NoVal(..), NonInitializedYetTagPageModel, Page(..), ReadingMode(..), UpdateContentPageModel, UpdateTagPageModel, contentToCreateContentPageModel, contentToUpdateContentPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
+module App.Model exposing (BioPageModel, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GraphData, GraphModel, IconInfo, Initializable(..), InitializedTagPageModel, MaySendRequest(..), Model, NoVal(..), NonInitializedYetTagPageModel, Page(..), ReadingMode(..), UpdateContentPageModel, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, setCreateContentPageModel, setUpdateContentPageModel, updateContentPageModelEncoder, updateTagPageModelEncoder)
 
 import BioGroup.Model exposing (BioGroup)
 import BioItem.Model exposing (BioItem)
@@ -61,9 +61,9 @@ type Initializable a b
     | Initialized b
 
 
-type MaySendRequest pageData
+type MaySendRequest pageData requestSentData
     = NoRequestSentYet pageData
-    | RequestSent String
+    | RequestSent requestSentData
 
 
 type alias NonInitializedYetTagPageModel =
@@ -89,10 +89,10 @@ type Page
     = HomePage (List Tag) (List Tag) ReadingMode (Maybe GraphData)
     | ContentPage (Initializable ( Int, Maybe (List Tag) ) ( Content, List Tag ))
     | TagPage (Initializable NonInitializedYetTagPageModel InitializedTagPageModel)
-    | CreateContentPage (MaySendRequest ( CreateContentPageModel, Maybe Content ))
-    | UpdateContentPage (MaySendRequest ( UpdateContentPageModel, Maybe Content, Int ))
-    | CreateTagPage (MaySendRequest CreateTagPageModel)
-    | UpdateTagPage (MaySendRequest ( UpdateTagPageModel, String ))
+    | CreateContentPage (MaySendRequest CreateContentPageModel CreateContentPageModel)
+    | UpdateContentPage (MaySendRequest ( UpdateContentPageModel, Int ) UpdateContentPageModel)
+    | CreateTagPage (MaySendRequest CreateTagPageModel CreateTagPageModel)
+    | UpdateTagPage (MaySendRequest ( UpdateTagPageModel, String ) UpdateTagPageModel)
     | BioPage (Maybe BioPageModel)
     | NotFoundPage
     | MaintenancePage
@@ -105,7 +105,9 @@ type alias GraphData =
 
 
 type alias CreateContentPageModel =
-    { id : String
+    { allTags : List Tag
+    , maybeContentToPreview : Maybe Content
+    , id : String
     , title : String
     , text : String
     , tags : String
@@ -117,7 +119,9 @@ type alias CreateContentPageModel =
 
 
 type alias UpdateContentPageModel =
-    { title : String
+    { allTags : List Tag
+    , maybeContentToPreview : Maybe Content
+    , title : String
     , text : String
     , tags : String
     , refs : String
@@ -151,9 +155,11 @@ type alias BioPageModel =
     }
 
 
-contentToCreateContentPageModel : Content -> CreateContentPageModel
-contentToCreateContentPageModel content =
-    { id = ""
+setCreateContentPageModel : Content -> List Tag -> CreateContentPageModel
+setCreateContentPageModel content allTags =
+    { allTags = allTags
+    , maybeContentToPreview = Just content
+    , id = ""
     , title = Maybe.withDefault "" content.title
     , text = content.text
     , tags = String.join "," (List.map (\tag -> tag.name) content.tags)
@@ -170,9 +176,11 @@ contentToCreateContentPageModel content =
     }
 
 
-contentToUpdateContentPageModel : Content -> UpdateContentPageModel
-contentToUpdateContentPageModel content =
-    { title = Maybe.withDefault "" content.title
+setUpdateContentPageModel : Content -> List Tag -> UpdateContentPageModel
+setUpdateContentPageModel content allTags =
+    { allTags = allTags
+    , maybeContentToPreview = Just content
+    , title = Maybe.withDefault "" content.title
     , text = content.text
     , tags = String.join "," (List.map (\tag -> tag.name) content.tags)
     , refs =

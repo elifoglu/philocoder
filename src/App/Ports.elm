@@ -49,8 +49,8 @@ sendTitle model =
 
         UpdateContentPage status ->
             case status of
-                NoRequestSentYet ( _, _, contentId ) ->
-                    title <| "update content " ++ String.fromInt contentId ++ " - philocoder"
+                NoRequestSentYet ( _, contentId ) ->
+                    title <| "update content - " ++ String.fromInt contentId ++ " - philocoder"
 
                 _ ->
                     Cmd.none
@@ -61,7 +61,7 @@ sendTitle model =
         UpdateTagPage status ->
             case status of
                 NoRequestSentYet ( _, tagId ) ->
-                    title <| "update content " ++ tagId ++ " - philocoder"
+                    title <| "update tag - " ++ tagId ++ " - philocoder"
 
                 _ ->
                     Cmd.none

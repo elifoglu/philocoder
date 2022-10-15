@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import App.Model exposing (..)
-import App.Msg exposing (ContentInputType(..), Msg(..), TagInputType(..))
+import App.Msg exposing (ContentInputType(..), GotTagDataResponseForWhichPage(..), Msg(..), TagInputType(..))
 import App.Ports exposing (sendTitle)
 import App.UrlParser exposing (pageBy)
 import App.View exposing (view)
@@ -16,7 +16,7 @@ import Content.Util exposing (gotContentToContent)
 import ForceDirectedGraph exposing (graphSubscriptions, initGraphModel, updateGraph)
 import List
 import Pagination.Model exposing (Pagination)
-import Requests exposing (createNewTag, getAllRefData, getBio, getContent, getTagContents, getTagDataResponseForContentPage, getTagDataResponseForHomePage, getTagDataResponseForTagPage, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
+import Requests exposing (createNewTag, getAllRefData, getBio, getContent, getTagContents, getTagDataResponseForPage, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
 import Tag.Util exposing (gotTagToTag, tagById)
 import Time
 import Url
@@ -35,58 +35,97 @@ main =
 
 getCmdToSendByPage : Model -> Cmd Msg
 getCmdToSendByPage model =
-    case model.activePage of
-        ContentPage status ->
-            case status of
-                NonInitialized ( contentId, maybeAllTags ) ->
-                    case maybeAllTags of
-                        Just _ ->
-                            getContent contentId
+    Cmd.batch
+        [ sendTitle model
+        , case model.activePage of
+            ContentPage status ->
+                case status of
+                    NonInitialized ( contentId, maybeAllTags ) ->
+                        case maybeAllTags of
+                            Just _ ->
+                                getContent contentId
 
-                        Nothing ->
-                            getTagDataResponseForContentPage
+                            Nothing ->
+                                getTagDataResponseForPage PageContent
 
-                Initialized _ ->
+                    Initialized _ ->
+                        Cmd.none
+
+            TagPage status ->
+                case status of
+                    NonInitialized initializableTagPageModel ->
+                        case initializableTagPageModel.maybeAllTags of
+                            Nothing ->
+                                getTagDataResponseForPage PageTag
+
+                            Just allTags ->
+                                case tagById allTags initializableTagPageModel.tagId of
+                                    Just tag ->
+                                        getTagContents tag initializableTagPageModel.maybePage initializableTagPageModel.readingMode
+
+                                    Nothing ->
+                                        Cmd.none
+
+                    Initialized _ ->
+                        Cmd.none
+
+            BioPage maybeData ->
+                case maybeData of
+                    Just _ ->
+                        Cmd.none
+
+                    Nothing ->
+                        getBio
+
+            HomePage allTags _ _ maybeGraphData ->
+                if not (areTagsLoaded allTags) then
+                    getTagDataResponseForPage PageHome
+
+                else if maybeGraphData == Nothing then
+                    getAllRefData
+
+                else
                     Cmd.none
 
-        TagPage status ->
-            case status of
-                NonInitialized initializableTagPageModel ->
-                    case initializableTagPageModel.maybeAllTags of
-                        Nothing ->
-                            getTagDataResponseForTagPage
+            CreateContentPage status ->
+                case status of
+                    NoRequestSentYet createContentPageModel ->
+                        let
+                            cmd =
+                                if List.isEmpty createContentPageModel.allTags then
+                                    getTagDataResponseForPage PageCreateContent
 
-                        Just allTags ->
-                            case tagById allTags initializableTagPageModel.tagId of
-                                Just tag ->
-                                    getTagContents tag initializableTagPageModel.maybePage initializableTagPageModel.readingMode
-
-                                Nothing ->
+                                else
                                     Cmd.none
+                        in
+                        cmd
 
-                Initialized _ ->
-                    Cmd.none
+                    _ ->
+                        Cmd.none
 
-        BioPage maybeData ->
-            case maybeData of
-                Just _ ->
-                    sendTitle model
+            UpdateContentPage status ->
+                case status of
+                    NoRequestSentYet pageData ->
+                        let
+                            updateContentPageModel : UpdateContentPageModel
+                            updateContentPageModel =
+                                Tuple.first pageData
 
-                Nothing ->
-                    Cmd.batch [ getBio, sendTitle model ]
+                            cmd =
+                                if List.isEmpty updateContentPageModel.allTags then
+                                    getTagDataResponseForPage PageUpdateContent
 
-        HomePage allTags _ _ maybeGraphData ->
-            if not (areTagsLoaded allTags) then
-                getTagDataResponseForHomePage
+                                else
+                                    getContent (Tuple.second pageData)
+                        in
+                        cmd
 
-            else if maybeGraphData == Nothing then
-                getAllRefData
+                    _ ->
+                        Cmd.none
 
-            else
+            _ ->
                 Cmd.none
-
-        _ ->
-            Cmd.none
+        ]
 
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -106,135 +145,190 @@ init flags url key =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        GotTagDataResponseForHomePage res ->
+        GotTagDataResponseForPage forWhichPage res ->
             case res of
                 Ok gotTagDataResponse ->
-                    let
-                        allTags =
-                            List.map gotTagToTag gotTagDataResponse.allTags
+                    case forWhichPage of
+                        PageHome ->
+                            let
+                                allTags =
+                                    List.map gotTagToTag gotTagDataResponse.allTags
 
-                        blogModeTags =
-                            List.map gotTagToTag gotTagDataResponse.blogModeTags
+                                blogModeTags =
+                                    List.map gotTagToTag gotTagDataResponse.blogModeTags
 
-                        updatedHomePage =
-                            case model.activePage of
-                                HomePage _ _ readingMode maybeGraphData ->
-                                    HomePage allTags blogModeTags readingMode maybeGraphData
+                                updatedHomePage =
+                                    case model.activePage of
+                                        HomePage _ _ readingMode maybeGraphData ->
+                                            HomePage allTags blogModeTags readingMode maybeGraphData
 
-                                _ ->
-                                    MaintenancePage
-                    in
-                    ( { model
-                        | activePage = updatedHomePage
-                      }
-                    , getCmdToSendByPage model
-                    )
+                                        _ ->
+                                            MaintenancePage
+                            in
+                            ( { model
+                                | activePage = updatedHomePage
+                              }
+                            , getCmdToSendByPage model
+                            )
 
-                Err _ ->
-                    ( { model | activePage = MaintenancePage }, Cmd.none )
+                        PageTag ->
+                            let
+                                updatedTagPage : Page
+                                updatedTagPage =
+                                    case model.activePage of
+                                        TagPage status ->
+                                            case status of
+                                                NonInitialized initializableTagPageModel ->
+                                                    TagPage (NonInitialized { initializableTagPageModel | maybeAllTags = Just (List.map gotTagToTag gotTagDataResponse.allTags), maybeBlogModeTags = Just (List.map gotTagToTag gotTagDataResponse.blogModeTags) })
 
-        GotTagDataResponseForTagPage res ->
-            case res of
-                Ok gotTagDataResponse ->
-                    let
-                        updatedTagPage : Page
-                        updatedTagPage =
-                            case model.activePage of
-                                TagPage status ->
-                                    case status of
-                                        NonInitialized initializableTagPageModel ->
-                                            TagPage (NonInitialized { initializableTagPageModel | maybeAllTags = Just (List.map gotTagToTag gotTagDataResponse.allTags), maybeBlogModeTags = Just (List.map gotTagToTag gotTagDataResponse.blogModeTags) })
+                                                _ ->
+                                                    model.activePage
 
                                         _ ->
                                             model.activePage
 
-                                _ ->
-                                    model.activePage
+                                newModel =
+                                    { model | activePage = updatedTagPage }
+                            in
+                            ( newModel, getCmdToSendByPage newModel )
 
-                        newModel =
-                            { model | activePage = updatedTagPage }
-                    in
-                    ( newModel, getCmdToSendByPage newModel )
+                        PageContent ->
+                            let
+                                allTags =
+                                    List.map gotTagToTag gotTagDataResponse.allTags
 
-                Err _ ->
-                    ( { model | activePage = MaintenancePage }
-                    , Cmd.none
-                    )
+                                updatedContentPage =
+                                    case model.activePage of
+                                        ContentPage status ->
+                                            case status of
+                                                NonInitialized ( contentId, _ ) ->
+                                                    ContentPage (NonInitialized ( contentId, Just allTags ))
 
-        GotTagDataResponseForContentPage res ->
-            case res of
-                Ok gotTagDataResponse ->
-                    let
-                        allTags =
-                            List.map gotTagToTag gotTagDataResponse.allTags
-
-                        updatedContentPage =
-                            case model.activePage of
-                                ContentPage status ->
-                                    case status of
-                                        NonInitialized ( contentId, _ ) ->
-                                            ContentPage (NonInitialized ( contentId, Just allTags ))
+                                                _ ->
+                                                    MaintenancePage
 
                                         _ ->
                                             MaintenancePage
 
-                                _ ->
-                                    MaintenancePage
+                                newModel =
+                                    { model | activePage = updatedContentPage }
+                            in
+                            ( newModel, getCmdToSendByPage newModel )
 
-                        newModel =
-                            { model | activePage = updatedContentPage }
-                    in
-                    ( newModel, getCmdToSendByPage newModel )
+                        PageCreateContent ->
+                            case model.activePage of
+                                CreateContentPage status ->
+                                    case status of
+                                        NoRequestSentYet createContentPageModel ->
+                                            let
+                                                createContentPageModelWithAllTags : CreateContentPageModel
+                                                createContentPageModelWithAllTags =
+                                                    { createContentPageModel | allTags = List.map gotTagToTag gotTagDataResponse.allTags }
+
+                                                newCreateContentPage : Page
+                                                newCreateContentPage =
+                                                    CreateContentPage (NoRequestSentYet createContentPageModelWithAllTags)
+                                            in
+                                            ( { model | activePage = newCreateContentPage }, Cmd.none )
+
+                                        _ ->
+                                            ( { model | activePage = MaintenancePage }, Cmd.none )
+
+                                _ ->
+                                    ( { model | activePage = MaintenancePage }, Cmd.none )
+
+                        PageUpdateContent ->
+                            case model.activePage of
+                                UpdateContentPage status ->
+                                    case status of
+                                        NoRequestSentYet pageData ->
+                                            let
+                                                updateContentPageModel : UpdateContentPageModel
+                                                updateContentPageModel =
+                                                    Tuple.first pageData
+
+                                                updateContentPageModelWithAllTags : UpdateContentPageModel
+                                                updateContentPageModelWithAllTags =
+                                                    { updateContentPageModel | allTags = List.map gotTagToTag gotTagDataResponse.allTags }
+
+                                                newUpdateContentPage : Page
+                                                newUpdateContentPage =
+                                                    UpdateContentPage (NoRequestSentYet ( updateContentPageModelWithAllTags, Tuple.second pageData ))
+
+                                                newModel =
+                                                    { model | activePage = newUpdateContentPage }
+                                            in
+                                            ( newModel, getCmdToSendByPage newModel )
+
+                                        _ ->
+                                            ( { model | activePage = MaintenancePage }, Cmd.none )
+
+                                _ ->
+                                    ( { model | activePage = MaintenancePage }, Cmd.none )
 
                 Err _ ->
-                    ( { model
-                        | activePage = MaintenancePage
-                      }
-                    , Cmd.none
-                    )
+                    ( { model | activePage = MaintenancePage }, Cmd.none )
 
         GotContent result ->
             case result of
                 Ok gotContent ->
                     let
-                        allTags =
-                            case model.activePage of
-                                ContentPage status ->
-                                    case status of
-                                        NonInitialized ( _, maybeAllTags ) ->
-                                            Maybe.withDefault [] maybeAllTags
-
-                                        Initialized ( _, tags ) ->
-                                            tags
-
-                                _ ->
-                                    []
-
-                        content =
-                            gotContentToContent model allTags gotContent
-
                         newActivePage =
                             case model.activePage of
+                                ContentPage status ->
+                                    let
+                                        allTags =
+                                            case status of
+                                                NonInitialized ( _, maybeAllTags ) ->
+                                                    Maybe.withDefault [] maybeAllTags
+
+                                                Initialized ( _, tags ) ->
+                                                    tags
+
+                                        content =
+                                            gotContentToContent model allTags gotContent
+                                    in
+                                    ContentPage <| Initialized ( content, allTags )
+
                                 CreateContentPage status ->
                                     case status of
-                                        NoRequestSentYet ( _, _ ) ->
+                                        NoRequestSentYet createContentPageModel ->
+                                            let
+                                                content =
+                                                    gotContentToContent model createContentPageModel.allTags gotContent
+                                            in
                                             CreateContentPage <|
-                                                NoRequestSentYet ( contentToCreateContentPageModel content, Nothing )
+                                                NoRequestSentYet (setCreateContentPageModel content createContentPageModel.allTags)
 
-                                        _ ->
-                                            ContentPage <| Initialized ( content, allTags )
+                                        RequestSent createContentPageModel ->
+                                            let
+                                                content =
+                                                    gotContentToContent model createContentPageModel.allTags gotContent
+                                            in
+                                            ContentPage <| Initialized ( content, createContentPageModel.allTags )
 
                                 UpdateContentPage status ->
                                     case status of
-                                        NoRequestSentYet ( _, _, contentId ) ->
-                                            UpdateContentPage <|
-                                                NoRequestSentYet ( contentToUpdateContentPageModel content, Just content, contentId )
+                                        NoRequestSentYet ( updateContentPageModel, contentId ) ->
+                                            let
+                                                allTags =
+                                                    updateContentPageModel.allTags
 
-                                        _ ->
-                                            ContentPage <| Initialized ( content, allTags )
+                                                content =
+                                                    gotContentToContent model updateContentPageModel.allTags gotContent
+                                            in
+                                            UpdateContentPage <|
+                                                NoRequestSentYet ( setUpdateContentPageModel content allTags, contentId )
+
+                                        RequestSent updateContentPageModel ->
+                                            let
+                                                content =
+                                                    gotContentToContent model updateContentPageModel.allTags gotContent
+                                            in
+                                            ContentPage <| Initialized ( content, updateContentPageModel.allTags )
 
                                 _ ->
-                                    ContentPage <| Initialized ( content, allTags )
+                                    MaintenancePage
 
                         newModel =
                             { model | activePage = newActivePage }
@@ -253,16 +347,21 @@ update msg model =
                 Ok gotContentToPreview ->
                     let
                         content =
-                            gotContentToContent model [] gotContentToPreview
+                            gotContentToContent model createContentPageModel.allTags gotContentToPreview
 
-                        --FIX TODO all tags geçmen gerekirken empty geçtin, sıkıntı!!!!!!!!
+                        newCreateContentPageModel =
+                            { createContentPageModel | maybeContentToPreview = Just content }
                     in
-                    ( { model | activePage = CreateContentPage <| NoRequestSentYet ( createContentPageModel, Just content ) }
+                    ( { model | activePage = CreateContentPage <| NoRequestSentYet newCreateContentPageModel }
                     , Cmd.none
                     )
 
                 Err _ ->
-                    ( { model | activePage = CreateContentPage <| NoRequestSentYet ( createContentPageModel, Nothing ) }
+                    let
+                        newCreateContentPageModel =
+                            { createContentPageModel | maybeContentToPreview = Nothing }
+                    in
+                    ( { model | activePage = CreateContentPage <| NoRequestSentYet newCreateContentPageModel }
                     , Cmd.none
                     )
 
@@ -271,18 +370,23 @@ update msg model =
                 Ok gotContentToPreview ->
                     let
                         content =
-                            gotContentToContent model [] gotContentToPreview
+                            gotContentToContent model updateContentPageModel.allTags gotContentToPreview
 
-                        --FIX TODO all tags geçmen gerekirken empty geçtin, sıkıntı!!!!!!!!
+                        newUpdateContentPageModel =
+                            { updateContentPageModel | maybeContentToPreview = Just content }
                     in
                     ( { model
-                        | activePage = UpdateContentPage <| NoRequestSentYet ( updateContentPageModel, Just content, contentID )
+                        | activePage = UpdateContentPage <| NoRequestSentYet ( newUpdateContentPageModel, contentID )
                       }
                     , Cmd.none
                     )
 
                 Err _ ->
-                    ( { model | activePage = UpdateContentPage <| NoRequestSentYet ( updateContentPageModel, Nothing, contentID ) }
+                    let
+                        newUpdateContentPageModel =
+                            { updateContentPageModel | maybeContentToPreview = Nothing }
+                    in
+                    ( { model | activePage = UpdateContentPage <| NoRequestSentYet ( newUpdateContentPageModel, contentID ) }
                     , Cmd.none
                     )
 
@@ -388,18 +492,13 @@ update msg model =
                 newModel =
                     { model | activePage = activePage }
             in
-            ( newModel
-            , Cmd.batch
-                [ sendTitle newModel
-                , getCmdToSendByPage newModel
-                ]
-            )
+            ( newModel, getCmdToSendByPage newModel )
 
         ContentInputChanged inputType input ->
             case model.activePage of
                 CreateContentPage status ->
                     case status of
-                        NoRequestSentYet ( createContentPageModel, maybeContentToPreview ) ->
+                        NoRequestSentYet createContentPageModel ->
                             let
                                 newCurrentPageModel =
                                     case inputType of
@@ -435,14 +534,14 @@ update msg model =
                                         ContentToCopy ->
                                             { createContentPageModel | contentIdToCopy = input }
                             in
-                            ( { model | activePage = CreateContentPage <| NoRequestSentYet ( newCurrentPageModel, maybeContentToPreview ) }, Cmd.none )
+                            ( { model | activePage = CreateContentPage <| NoRequestSentYet newCurrentPageModel }, Cmd.none )
 
                         _ ->
                             ( model, Cmd.none )
 
                 UpdateContentPage status ->
                     case status of
-                        NoRequestSentYet ( updateContentPageModel, maybeContentToPreview, contentId ) ->
+                        NoRequestSentYet ( updateContentPageModel, contentId ) ->
                             let
                                 newCurrentPageModel =
                                     case inputType of
@@ -478,7 +577,7 @@ update msg model =
                                         ContentToCopy ->
                                             updateContentPageModel
                             in
-                            ( { model | activePage = UpdateContentPage <| NoRequestSentYet ( newCurrentPageModel, maybeContentToPreview, contentId ) }, Cmd.none )
+                            ( { model | activePage = UpdateContentPage <| NoRequestSentYet ( newCurrentPageModel, contentId ) }, Cmd.none )
 
                         _ ->
                             ( model, Cmd.none )
@@ -487,7 +586,7 @@ update msg model =
                     ( model, Cmd.none )
 
         CreateContent createContentPageModel ->
-            ( { model | activePage = CreateContentPage <| RequestSent "creating content..." }
+            ( { model | activePage = CreateContentPage <| RequestSent createContentPageModel }
             , postNewContent createContentPageModel
             )
 
@@ -497,7 +596,7 @@ update msg model =
             )
 
         UpdateContent contentID updateContentPageModel ->
-            ( { model | activePage = UpdateContentPage <| RequestSent "updating content..." }
+            ( { model | activePage = UpdateContentPage <| RequestSent updateContentPageModel }
             , updateExistingContent contentID updateContentPageModel
             )
 
@@ -565,22 +664,22 @@ update msg model =
                     ( model, Cmd.none )
 
         CreateTag createTagPageModel ->
-            ( { model | activePage = CreateTagPage <| RequestSent "creating tag..." }
+            ( { model | activePage = CreateTagPage <| RequestSent createTagPageModel }
             , createNewTag createTagPageModel
             )
 
         UpdateTag tagId updateTagPageModel ->
-            ( { model | activePage = UpdateTagPage <| RequestSent "updating tag..." }
+            ( { model | activePage = UpdateTagPage <| RequestSent updateTagPageModel }
             , updateExistingTag tagId updateTagPageModel
             )
 
-        GotDoneResponse res ->
+        GotTagUpdateOrCreationDoneResponse res ->
             case res of
-                Ok tagId ->
+                Ok message ->
                     ( { model
                         | activePage =
-                            if tagId == "done" then
-                                HomePage [] [] AllContents Nothing
+                            if message == "done" then
+                                HomePage [] [] BlogContents Nothing
 
                             else
                                 NotFoundPage
@@ -616,9 +715,7 @@ update msg model =
                     ( newModel, Cmd.none )
 
                 Err _ ->
-                    ( model
-                    , Cmd.none
-                    )
+                    ( model, Cmd.none )
 
         GotTimeZone zone ->
             ( { model | timeZone = zone }, Cmd.none )
@@ -636,7 +733,7 @@ update msg model =
             ( { model | activePage = newPage }, Cmd.none )
 
         ShowAdditionalIcons ->
-            ( { model | showAdditionalIcons = not model.showAdditionalIcons }, Cmd.none )
+            ( { model | showAdditionalIcons = True }, Cmd.none )
 
         GotBioResponse result ->
             case result of

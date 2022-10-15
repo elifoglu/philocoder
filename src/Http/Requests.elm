@@ -1,7 +1,7 @@
-module Requests exposing (createNewTag, getAllRefData, getBio, getBioPageIcons, getContent, getIcons, getTagContents, getTagDataResponseForContentPage, getTagDataResponseForHomePage, getTagDataResponseForTagPage, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
+module Requests exposing (createNewTag, getAllRefData, getBio, getBioPageIcons, getContent, getIcons, getTagContents, getTagDataResponseForPage, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
 
 import App.Model exposing (CreateContentPageModel, CreateTagPageModel, IconInfo, ReadingMode(..), UpdateContentPageModel, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageModelEncoder, updateTagPageModelEncoder)
-import App.Msg exposing (Msg(..), PreviewContentModel(..))
+import App.Msg exposing (GotTagDataResponseForWhichPage(..), Msg(..), PreviewContentModel(..))
 import DataResponse exposing (ContentID, bioResponseDecoder, contentDecoder, contentsResponseDecoder, gotAllRefDataDecoder, tagDataResponseDecoder)
 import Http
 import Tag.Model exposing (Tag)
@@ -18,30 +18,12 @@ getTimeZone =
     Task.perform GotTimeZone Time.here
 
 
-getTagDataResponseForHomePage : Cmd Msg
-getTagDataResponseForHomePage =
+getTagDataResponseForPage : GotTagDataResponseForWhichPage -> Cmd Msg
+getTagDataResponseForPage allTagsDependentPage =
     Http.get
         { url =
             apiURL ++ "tags"
-        , expect = Http.expectJson GotTagDataResponseForHomePage tagDataResponseDecoder
-        }
-
-
-getTagDataResponseForTagPage : Cmd Msg
-getTagDataResponseForTagPage =
-    Http.get
-        { url =
-            apiURL ++ "tags"
-        , expect = Http.expectJson GotTagDataResponseForTagPage tagDataResponseDecoder
-        }
-
-
-getTagDataResponseForContentPage : Cmd Msg
-getTagDataResponseForContentPage =
-    Http.get
-        { url =
-            apiURL ++ "tags"
-        , expect = Http.expectJson GotTagDataResponseForContentPage tagDataResponseDecoder
+        , expect = Http.expectJson (GotTagDataResponseForPage allTagsDependentPage) tagDataResponseDecoder
         }
 
 
@@ -127,7 +109,7 @@ createNewTag model =
     Http.post
         { url = apiURL ++ "tags"
         , body = Http.jsonBody (createTagPageModelEncoder model)
-        , expect = Http.expectString GotDoneResponse
+        , expect = Http.expectString GotTagUpdateOrCreationDoneResponse
         }
 
 
@@ -136,7 +118,7 @@ updateExistingTag tagId model =
     Http.post
         { url = apiURL ++ "tags/" ++ tagId
         , body = Http.jsonBody (updateTagPageModelEncoder model)
-        , expect = Http.expectString GotDoneResponse
+        , expect = Http.expectString GotTagUpdateOrCreationDoneResponse
         }
 
 
