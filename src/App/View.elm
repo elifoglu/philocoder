@@ -36,7 +36,7 @@ view model =
                                     tagCountCurrentlyShownOnPage readingMode model.allTags blogTags
 
                                 initialMarginTop =
-                                    40
+                                    50
 
                                 heightOfASingleTagAsPx =
                                     20
