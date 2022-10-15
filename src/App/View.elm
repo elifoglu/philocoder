@@ -30,23 +30,39 @@ view model =
                 (case model.activePage of
                     HomePage allTags blogModeTags readingMode maybeGraphData ->
                         [ viewHomePageDiv allTags blogModeTags readingMode
-                        , case readingMode of
-                            AllContents ->
-                                text ""
+                        , if areTagsLoaded allTags then
+                            let
+                                tagsCount =
+                                    List.length
+                                        (case readingMode of
+                                            AllContents ->
+                                                allTags
 
-                            _ ->
-                                if areTagsLoaded allTags then
-                                    div [ class "graph" ]
-                                        (case maybeGraphData of
-                                            Just graphData ->
-                                                [ viewGraph graphData.allRefData.contentIds graphData.graphModel (List.length allTags) ]
-
-                                            Nothing ->
-                                                []
+                                            BlogContents ->
+                                                blogModeTags
                                         )
 
-                                else
-                                    text ""
+                                initialMarginTop =
+                                    40
+
+                                heightOfASingleTagAsPx =
+                                    20
+
+                                marginTopForGraph : Int
+                                marginTopForGraph =
+                                    initialMarginTop + round (toFloat (tagsCount - 1) * heightOfASingleTagAsPx)
+                            in
+                            div [ class "graph", style "margin-top" (String.fromInt marginTopForGraph ++ "px") ]
+                                (case maybeGraphData of
+                                    Just graphData ->
+                                        [ viewGraph graphData.allRefData.contentIds graphData.graphModel tagsCount ]
+
+                                    Nothing ->
+                                        []
+                                )
+
+                          else
+                            text ""
                         ]
 
                     ContentPage status ->

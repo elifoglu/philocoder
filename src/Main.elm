@@ -467,9 +467,9 @@ update msg model =
                 Err _ ->
                     ( model, Cmd.none )
 
-        GoToContent contentID ->
+        GoToContentViaContentGraph contentID ->
             ( model
-            , Cmd.batch [ Nav.pushUrl model.key ("/contents/" ++ String.fromInt contentID), getContent contentID ]
+            , Nav.pushUrl model.key ("/contents/" ++ String.fromInt contentID)
             )
 
         UrlRequested urlRequest ->
@@ -868,10 +868,22 @@ update msg model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     case model.activePage of
-        HomePage allTags _ _ maybeGraphData ->
+        HomePage allTags blogModeTags readingMode maybeGraphData ->
             case maybeGraphData of
                 Just graphData ->
-                    graphSubscriptions graphData.graphModel (List.length allTags)
+                    let
+                        shownTags =
+                            case readingMode of
+                                AllContents ->
+                                    allTags
+
+                                BlogContents ->
+                                    blogModeTags
+
+                        totalTagCountCurrentlyShownOnPage =
+                            List.length shownTags
+                    in
+                    graphSubscriptions graphData.graphModel totalTagCountCurrentlyShownOnPage
 
                 Nothing ->
                     Sub.none

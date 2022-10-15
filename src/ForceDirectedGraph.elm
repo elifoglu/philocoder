@@ -46,12 +46,12 @@ h =
 
 clientPosXCorrectionValue : Float
 clientPosXCorrectionValue =
-    55
+    68
 
 
 clientPosYCorrectionValue : Int -> Float
 clientPosYCorrectionValue totalTagCount =
-    toFloat (5 + (20 * (totalTagCount - 1)))
+    toFloat (150 + (20 * (totalTagCount - 1)))
 
 
 
@@ -167,7 +167,7 @@ updateContextWithValue nodeCtx value =
 
 
 viewGraph : List Int -> GraphModel -> Int -> Svg Msg
-viewGraph contentIds graphModel totalTagCount =
+viewGraph contentIds graphModel totalTagCountCurrentlyShownOnTheScreen =
     svg [ viewBox 0 0 w h ] <|
         [ defs []
             [ arrowHead ]
@@ -175,7 +175,7 @@ viewGraph contentIds graphModel totalTagCount =
             |> List.map (linkElement graphModel.graph)
             |> g [ class [ "links" ] ]
         , Graph.nodes graphModel.graph
-            |> List.map (nodeElement contentIds totalTagCount)
+            |> List.map (nodeElement contentIds totalTagCountCurrentlyShownOnTheScreen)
             |> g [ class [ "nodes" ] ]
         ]
 
@@ -248,7 +248,7 @@ onMouseDown index totalTagCount =
 
 onMouseClick : List Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Attribute Msg
 onMouseClick contentIds node =
-    Mouse.onContextMenu (\_ -> GoToContent (Maybe.withDefault 0 (getAt node.id contentIds)))
+    Mouse.onContextMenu (\_ -> GoToContentViaContentGraph (Maybe.withDefault 0 (getAt node.id contentIds)))
 
 
 
@@ -256,7 +256,7 @@ onMouseClick contentIds node =
 
 
 graphSubscriptions : GraphModel -> Int -> Sub Msg
-graphSubscriptions model totalTagCount =
+graphSubscriptions model totalTagCountCurrentlyShownOnPage =
     case model.drag of
         Nothing ->
             -- This allows us to save resources, as if the simulation is done, there is no point in subscribing
@@ -269,7 +269,7 @@ graphSubscriptions model totalTagCount =
 
         Just _ ->
             Sub.batch
-                [ Browser.Events.onMouseMove (Decode.map (\event -> DragAt ( first event.clientPos - clientPosXCorrectionValue, second event.clientPos - clientPosYCorrectionValue totalTagCount )) Mouse.eventDecoder)
-                , Browser.Events.onMouseUp (Decode.map (\event -> DragEnd ( first event.clientPos - clientPosXCorrectionValue, second event.clientPos - clientPosYCorrectionValue totalTagCount )) Mouse.eventDecoder)
+                [ Browser.Events.onMouseMove (Decode.map (\event -> DragAt ( first event.clientPos - clientPosXCorrectionValue, second event.clientPos - clientPosYCorrectionValue totalTagCountCurrentlyShownOnPage )) Mouse.eventDecoder)
+                , Browser.Events.onMouseUp (Decode.map (\event -> DragEnd ( first event.clientPos - clientPosXCorrectionValue, second event.clientPos - clientPosYCorrectionValue totalTagCountCurrentlyShownOnPage )) Mouse.eventDecoder)
                 , Browser.Events.onAnimationFrame Tick
                 ]

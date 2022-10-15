@@ -19,7 +19,7 @@ type Msg
     | GotAllRefData (Result Http.Error GotAllRefData)
     | ReadingModeChanged ReadingMode
     | ShowAdditionalIcons
-    | GoToContent ContentID
+    | GoToContentViaContentGraph ContentID
     | GotBioResponse (Result Http.Error BioResponse)
     | ClickOnABioGroup BioGroupID
     | BioGroupDisplayInfoChanged BioGroup
