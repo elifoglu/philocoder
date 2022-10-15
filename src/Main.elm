@@ -14,6 +14,7 @@ import Component.Page.Util exposing (areTagsLoaded)
 import Content.Model exposing (Content)
 import Content.Util exposing (gotContentToContent)
 import ForceDirectedGraph exposing (graphSubscriptions, initGraphModel, updateGraph)
+import Home.View exposing (tagCountCurrentlyShownOnPage)
 import List
 import Pagination.Model exposing (Pagination)
 import Requests exposing (createNewTag, getAllRefData, getBio, getContent, getTagContents, getTagDataResponseForPage, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
@@ -872,16 +873,8 @@ subscriptions model =
             case maybeGraphData of
                 Just graphData ->
                     let
-                        shownTags =
-                            case readingMode of
-                                AllContents ->
-                                    allTags
-
-                                BlogContents ->
-                                    blogModeTags
-
                         totalTagCountCurrentlyShownOnPage =
-                            List.length shownTags
+                            tagCountCurrentlyShownOnPage readingMode allTags blogModeTags
                     in
                     graphSubscriptions graphData.graphModel totalTagCountCurrentlyShownOnPage
 

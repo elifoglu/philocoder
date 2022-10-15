@@ -12,16 +12,10 @@ import Tag.Model exposing (Tag)
 import TagInfoIcon.View exposing (viewTagInfoIcon)
 
 
-tagNameToHide : String
-tagNameToHide =
-    "beni oku"
-
-
 viewHomePageDiv : List Tag -> List Tag -> ReadingMode -> Html Msg
 viewHomePageDiv allTags blogModeTags readingMode =
     div [ class "homepage homepageTagsFont", style "width" "auto", style "float" "left" ]
         ((tagsToShow readingMode allTags blogModeTags
-            |> List.filter (\tag -> tag.name /= tagNameToHide)
             |> List.map (viewTag readingMode)
             |> List.intersperse (br [] [])
          )
@@ -30,14 +24,32 @@ viewHomePageDiv allTags blogModeTags readingMode =
         )
 
 
+tagNamesToHideOnHomePage : List String
+tagNamesToHideOnHomePage =
+    [ "beni oku" ]
+
+
 tagsToShow : ReadingMode -> List Tag -> List Tag -> List Tag
 tagsToShow readingMode allTags blogModeTags =
-    case readingMode of
-        BlogContents ->
-            blogModeTags
+    let
+        tags =
+            case readingMode of
+                BlogContents ->
+                    blogModeTags
 
-        AllContents ->
-            allTags
+                AllContents ->
+                    allTags
+
+        removeTagsToHide =
+            tags
+                |> List.filter (\tag -> not (List.member tag.name tagNamesToHideOnHomePage))
+    in
+    removeTagsToHide
+
+
+tagCountCurrentlyShownOnPage : ReadingMode -> List Tag -> List Tag -> Int
+tagCountCurrentlyShownOnPage readingMode allTags blogModeTags =
+    List.length (tagsToShow readingMode allTags blogModeTags)
 
 
 viewTag : ReadingMode -> Tag -> Html Msg

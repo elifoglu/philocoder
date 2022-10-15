@@ -7,7 +7,7 @@ import Color
 import DataResponse exposing (GotAllRefData, GotRefConnection)
 import Force exposing (State)
 import Graph exposing (Edge, Graph, Node, NodeContext, NodeId)
-import Html.Events.Extra.Mouse as Mouse
+import Html.Events.Extra.Mouse as Mouse exposing (Event)
 import Json.Decode as Decode
 import List.Extra exposing (getAt)
 import Tuple exposing (first, second)
@@ -36,22 +36,22 @@ gotRefToPair gotRef =
 
 w : Float
 w =
-    180
+    230
 
 
 h : Float
 h =
-    180
+    230
 
 
 clientPosXCorrectionValue : Float
 clientPosXCorrectionValue =
-    68
+    44
 
 
 clientPosYCorrectionValue : Int -> Float
-clientPosYCorrectionValue totalTagCount =
-    toFloat (150 + (20 * (totalTagCount - 1)))
+clientPosYCorrectionValue totalTagCountCurrentlyShownOnPage =
+    toFloat (144 + (20 * (totalTagCountCurrentlyShownOnPage - 1)))
 
 
 
@@ -74,7 +74,7 @@ initGraphModel allRefData =
         forces =
             [ Force.links <| List.map link <| Graph.edges graph
             , Force.manyBodyStrength -2 <| List.map .id (Graph.nodes graph)
-            , Force.center (w / 2.5) (h / 2)
+            , Force.center (w / 2) (h / 2)
             ]
     in
     GraphModel Nothing graph (Force.simulation forces)
@@ -182,12 +182,12 @@ viewGraph contentIds graphModel totalTagCountCurrentlyShownOnTheScreen =
 
 linkColor : Color.Color
 linkColor =
-    Color.rgb255 195 195 195
+    Color.rgb255 206 204 204
 
 
 nodeColor : Color.Color
 nodeColor =
-    Color.rgb255 0 0 0
+    Color.rgb255 21 21 21
 
 
 arrowHead : Svg msg
@@ -243,7 +243,7 @@ nodeElement contentIds totalTagCount node =
 
 onMouseDown : NodeId -> Int -> Attribute Msg
 onMouseDown index totalTagCount =
-    Mouse.onDown (\event -> DragStart index ( first event.clientPos - clientPosXCorrectionValue, second event.clientPos - clientPosYCorrectionValue totalTagCount ))
+    Mouse.onDown (\event -> DragStart index ( setX event, setY event totalTagCount ))
 
 
 onMouseClick : List Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Attribute Msg
@@ -269,7 +269,17 @@ graphSubscriptions model totalTagCountCurrentlyShownOnPage =
 
         Just _ ->
             Sub.batch
-                [ Browser.Events.onMouseMove (Decode.map (\event -> DragAt ( first event.clientPos - clientPosXCorrectionValue, second event.clientPos - clientPosYCorrectionValue totalTagCountCurrentlyShownOnPage )) Mouse.eventDecoder)
-                , Browser.Events.onMouseUp (Decode.map (\event -> DragEnd ( first event.clientPos - clientPosXCorrectionValue, second event.clientPos - clientPosYCorrectionValue totalTagCountCurrentlyShownOnPage )) Mouse.eventDecoder)
+                [ Browser.Events.onMouseMove (Decode.map (\event -> DragAt ( setX event, setY event totalTagCountCurrentlyShownOnPage )) Mouse.eventDecoder)
+                , Browser.Events.onMouseUp (Decode.map (\event -> DragEnd ( setX event, setY event totalTagCountCurrentlyShownOnPage )) Mouse.eventDecoder)
                 , Browser.Events.onAnimationFrame Tick
                 ]
+
+
+setX : Event -> Float
+setX event =
+    first event.clientPos - clientPosXCorrectionValue
+
+
+setY : Event -> Int -> Float
+setY event totalTagCountCurrentlyShownOnPage =
+    second event.clientPos - clientPosYCorrectionValue totalTagCountCurrentlyShownOnPage

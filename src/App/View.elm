@@ -11,7 +11,7 @@ import Contents.View exposing (viewContentDivs)
 import CreateContent.View exposing (viewCreateContentDiv)
 import CreateTag.View exposing (viewCreateTagDiv)
 import ForceDirectedGraph exposing (viewGraph)
-import Home.View exposing (viewHomePageDiv)
+import Home.View exposing (tagCountCurrentlyShownOnPage, viewHomePageDiv)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import NotFound.View exposing (view404Div)
@@ -33,14 +33,7 @@ view model =
                         , if areTagsLoaded allTags then
                             let
                                 tagsCount =
-                                    List.length
-                                        (case readingMode of
-                                            AllContents ->
-                                                allTags
-
-                                            BlogContents ->
-                                                blogModeTags
-                                        )
+                                    tagCountCurrentlyShownOnPage readingMode allTags blogModeTags
 
                                 initialMarginTop =
                                     40
@@ -50,7 +43,7 @@ view model =
 
                                 marginTopForGraph : Int
                                 marginTopForGraph =
-                                    initialMarginTop + round (toFloat (tagsCount - 1) * heightOfASingleTagAsPx)
+                                    initialMarginTop + round (toFloat tagsCount * heightOfASingleTagAsPx)
                             in
                             div [ class "graph", style "margin-top" (String.fromInt marginTopForGraph ++ "px") ]
                                 (case maybeGraphData of
