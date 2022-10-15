@@ -146,6 +146,35 @@ getCmdToSendByPage model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        -- COMMON --
+        UrlRequested urlRequest ->
+            case urlRequest of
+                Browser.Internal url ->
+                    ( model, Nav.pushUrl model.key (Url.toString url) )
+
+                Browser.External href ->
+                    ( model
+                    , Nav.load href
+                    )
+
+        UrlChanged url ->
+            let
+                activePage : Page
+                activePage =
+                    pageBy url
+
+                newModel : Model
+                newModel =
+                    { model | activePage = activePage }
+            in
+            ( newModel, getCmdToSendByPage newModel )
+
+        GotTimeZone zone ->
+            ( { model | timeZone = zone }, Cmd.none )
+
+        ShowAdditionalIcons ->
+            ( { model | showAdditionalIcons = True }, Cmd.none )
+
         GotTagDataResponseForPage forWhichPage res ->
             case res of
                 Ok gotTagDataResponse ->
@@ -343,54 +372,7 @@ update msg model =
                     in
                     ( newModel, sendTitle newModel )
 
-        GotContentToPreviewForCreatePage createContentPageModel result ->
-            case result of
-                Ok gotContentToPreview ->
-                    let
-                        content =
-                            gotContentToContent model createContentPageModel.allTags gotContentToPreview
-
-                        newCreateContentPageModel =
-                            { createContentPageModel | maybeContentToPreview = Just content }
-                    in
-                    ( { model | activePage = CreateContentPage <| NoRequestSentYet newCreateContentPageModel }
-                    , Cmd.none
-                    )
-
-                Err _ ->
-                    let
-                        newCreateContentPageModel =
-                            { createContentPageModel | maybeContentToPreview = Nothing }
-                    in
-                    ( { model | activePage = CreateContentPage <| NoRequestSentYet newCreateContentPageModel }
-                    , Cmd.none
-                    )
-
-        GotContentToPreviewForUpdatePage contentID updateContentPageModel result ->
-            case result of
-                Ok gotContentToPreview ->
-                    let
-                        content =
-                            gotContentToContent model updateContentPageModel.allTags gotContentToPreview
-
-                        newUpdateContentPageModel =
-                            { updateContentPageModel | maybeContentToPreview = Just content }
-                    in
-                    ( { model
-                        | activePage = UpdateContentPage <| NoRequestSentYet ( newUpdateContentPageModel, contentID )
-                      }
-                    , Cmd.none
-                    )
-
-                Err _ ->
-                    let
-                        newUpdateContentPageModel =
-                            { updateContentPageModel | maybeContentToPreview = Nothing }
-                    in
-                    ( { model | activePage = UpdateContentPage <| NoRequestSentYet ( newUpdateContentPageModel, contentID ) }
-                    , Cmd.none
-                    )
-
+        -- TAG PAGE --
         GotContentsOfTag tag result ->
             case result of
                 Ok contentsResponse ->
@@ -468,33 +450,7 @@ update msg model =
                 Err _ ->
                     ( model, Cmd.none )
 
-        GoToContentViaContentGraph contentID ->
-            ( model
-            , Nav.pushUrl model.key ("/contents/" ++ String.fromInt contentID)
-            )
-
-        UrlRequested urlRequest ->
-            case urlRequest of
-                Browser.Internal url ->
-                    ( model, Nav.pushUrl model.key (Url.toString url) )
-
-                Browser.External href ->
-                    ( model
-                    , Nav.load href
-                    )
-
-        UrlChanged url ->
-            let
-                activePage : Page
-                activePage =
-                    pageBy url
-
-                newModel : Model
-                newModel =
-                    { model | activePage = activePage }
-            in
-            ( newModel, getCmdToSendByPage newModel )
-
+        -- CREATE/UPDATE CONTENT PAGES --
         ContentInputChanged inputType input ->
             case model.activePage of
                 CreateContentPage status ->
@@ -586,21 +542,75 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
+        PreviewContent previewContentModel ->
+            ( model
+            , previewContent previewContentModel
+            )
+
+        GetContentToCopyForContentCreation contentId ->
+            ( model
+            , getContent contentId
+            )
+
+        GotContentToPreviewForCreatePage createContentPageModel result ->
+            case result of
+                Ok gotContentToPreview ->
+                    let
+                        content =
+                            gotContentToContent model createContentPageModel.allTags gotContentToPreview
+
+                        newCreateContentPageModel =
+                            { createContentPageModel | maybeContentToPreview = Just content }
+                    in
+                    ( { model | activePage = CreateContentPage <| NoRequestSentYet newCreateContentPageModel }
+                    , Cmd.none
+                    )
+
+                Err _ ->
+                    let
+                        newCreateContentPageModel =
+                            { createContentPageModel | maybeContentToPreview = Nothing }
+                    in
+                    ( { model | activePage = CreateContentPage <| NoRequestSentYet newCreateContentPageModel }
+                    , Cmd.none
+                    )
+
         CreateContent createContentPageModel ->
             ( { model | activePage = CreateContentPage <| RequestSent createContentPageModel }
             , postNewContent createContentPageModel
             )
 
-        PreviewContent previewContentModel ->
-            ( model
-            , previewContent previewContentModel
-            )
+        GotContentToPreviewForUpdatePage contentID updateContentPageModel result ->
+            case result of
+                Ok gotContentToPreview ->
+                    let
+                        content =
+                            gotContentToContent model updateContentPageModel.allTags gotContentToPreview
+
+                        newUpdateContentPageModel =
+                            { updateContentPageModel | maybeContentToPreview = Just content }
+                    in
+                    ( { model
+                        | activePage = UpdateContentPage <| NoRequestSentYet ( newUpdateContentPageModel, contentID )
+                      }
+                    , Cmd.none
+                    )
+
+                Err _ ->
+                    let
+                        newUpdateContentPageModel =
+                            { updateContentPageModel | maybeContentToPreview = Nothing }
+                    in
+                    ( { model | activePage = UpdateContentPage <| NoRequestSentYet ( newUpdateContentPageModel, contentID ) }
+                    , Cmd.none
+                    )
 
         UpdateContent contentID updateContentPageModel ->
             ( { model | activePage = UpdateContentPage <| RequestSent updateContentPageModel }
             , updateExistingContent contentID updateContentPageModel
             )
 
+        -- CREATE/UPDATE TAG PAGES --
         TagInputChanged inputType ->
             case model.activePage of
                 CreateTagPage status ->
@@ -693,51 +703,7 @@ update msg model =
                 Err _ ->
                     ( { model | activePage = NotFoundPage }, Cmd.none )
 
-        GetContentToCopyForContentCreation contentId ->
-            ( model
-            , getContent contentId
-            )
-
-        GotAllRefData res ->
-            case res of
-                Ok allRefData ->
-                    let
-                        newModel =
-                            case model.activePage of
-                                HomePage allTags allBlogModeTags readingMode maybeGraphData ->
-                                    case maybeGraphData of
-                                        Just _ ->
-                                            model
-
-                                        Nothing ->
-                                            { model | activePage = HomePage allTags allBlogModeTags readingMode (Just (GraphData allRefData (initGraphModel allRefData))) }
-
-                                _ ->
-                                    model
-                    in
-                    ( newModel, Cmd.none )
-
-                Err _ ->
-                    ( model, Cmd.none )
-
-        GotTimeZone zone ->
-            ( { model | timeZone = zone }, Cmd.none )
-
-        ReadingModeChanged readingMode ->
-            let
-                newPage =
-                    case model.activePage of
-                        HomePage allTags blogModeTags _ maybeGraphData ->
-                            HomePage allTags blogModeTags readingMode maybeGraphData
-
-                        _ ->
-                            model.activePage
-            in
-            ( { model | activePage = newPage }, Cmd.none )
-
-        ShowAdditionalIcons ->
-            ( { model | showAdditionalIcons = True }, Cmd.none )
-
+        -- BIO PAGE --
         GotBioResponse result ->
             case result of
                 Ok bio ->
@@ -846,6 +812,46 @@ update msg model =
 
                 _ ->
                     ( model, Cmd.none )
+
+        -- HOME PAGE & GRAPH --
+        ReadingModeChanged readingMode ->
+            let
+                newPage =
+                    case model.activePage of
+                        HomePage allTags blogModeTags _ maybeGraphData ->
+                            HomePage allTags blogModeTags readingMode maybeGraphData
+
+                        _ ->
+                            model.activePage
+            in
+            ( { model | activePage = newPage }, Cmd.none )
+
+        GotAllRefData res ->
+            case res of
+                Ok allRefData ->
+                    let
+                        newModel =
+                            case model.activePage of
+                                HomePage allTags allBlogModeTags readingMode maybeGraphData ->
+                                    case maybeGraphData of
+                                        Just _ ->
+                                            model
+
+                                        Nothing ->
+                                            { model | activePage = HomePage allTags allBlogModeTags readingMode (Just (GraphData allRefData (initGraphModel allRefData))) }
+
+                                _ ->
+                                    model
+                    in
+                    ( newModel, Cmd.none )
+
+                Err _ ->
+                    ( model, Cmd.none )
+
+        GoToContentViaContentGraph contentID ->
+            ( model
+            , Nav.pushUrl model.key ("/contents/" ++ String.fromInt contentID)
+            )
 
         otherMsg ->
             case model.activePage of
