@@ -1,7 +1,7 @@
 module DataResponse exposing (BioGroupID, BioItemID, BioResponse, ContentID, ContentsResponse, GotAllRefData, GotBioGroup, GotBioItem, GotContent, GotContentDate, GotRefConnection, GotTag, TagDataResponse, bioResponseDecoder, contentDecoder, contentsResponseDecoder, gotAllRefDataDecoder, tagDataResponseDecoder)
 
 import Content.Model exposing (Ref)
-import Json.Decode as D exposing (Decoder, andThen, bool, field, int, map2, map3, map5, map6, map7, map8, maybe, string, succeed)
+import Json.Decode as D exposing (Decoder, andThen, bool, field, int, map2, map3, map5, map6, map8, maybe, string, succeed)
 import Tag.Model exposing (ContentRenderType(..))
 
 
@@ -26,7 +26,7 @@ type alias GotTag =
 
 
 type alias GotContent =
-    { title : Maybe String, dateAsTimestamp : GotContentDate, contentId : Int, content : String, tags : List String, refs : Maybe (List Ref), okForBlogMode : Bool }
+    { title : Maybe String, dateAsTimestamp : GotContentDate, contentId : Int, content : String, beautifiedContentText : String, tags : List String, refs : Maybe (List Ref), okForBlogMode : Bool }
 
 
 type alias ContentID =
@@ -77,7 +77,7 @@ type alias GotBioItem =
     , groups : List Int
     , groupNames : List String
     , colorHex : Maybe String
-    , info: Maybe String
+    , info : Maybe String
     }
 
 
@@ -139,11 +139,12 @@ contentRenderTypeDecoder =
 
 contentDecoder : Decoder GotContent
 contentDecoder =
-    map7 GotContent
+    map8 GotContent
         (maybe (field "title" string))
         (field "dateAsTimestamp" contentDateDecoder)
         (field "contentId" int)
         (field "content" string)
+        (field "beautifiedContentText" string)
         (field "tags" (D.list string))
         (maybe (field "refs" (D.list refDecoder)))
         (field "okForBlogMode" bool)

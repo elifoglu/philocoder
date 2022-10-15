@@ -1,4 +1,4 @@
-module Content.Util exposing (contentById, gotContentToContent, maybeDateText, maybeDisplayableTagsOfContent)
+module Content.Util exposing (gotContentToContent, maybeDateText, maybeDisplayableTagsOfContent)
 
 import App.Model exposing (Model)
 import Content.Model exposing (Content, ContentDate)
@@ -9,20 +9,13 @@ import Tag.Model exposing (Tag)
 import Tag.Util exposing (tagNameToTag)
 import Time
 
-
-contentById : List Content -> Int -> Maybe Content
-contentById contents id =
-    contents
-        |> List.filter (\a -> a.contentId == id)
-        |> List.head
-
-
 gotContentToContent : Model -> List Tag -> GotContent -> Content
 gotContentToContent model allTags gotContent =
     { title = gotContent.title
     , date = gotContentDateToContentDate model.timeZone gotContent.dateAsTimestamp
     , contentId = gotContent.contentId
     , text = gotContent.content
+    , beautifiedText = gotContent.beautifiedContentText
     , tags =
         gotContent.tags
             |> List.map (tagNameToTag allTags)
