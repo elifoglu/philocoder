@@ -51,7 +51,7 @@ clientPosXCorrectionValue =
 
 clientPosYCorrectionValue : Int -> Float
 clientPosYCorrectionValue totalTagCountCurrentlyShownOnPage =
-    toFloat (144 + (20 * (totalTagCountCurrentlyShownOnPage - 1)))
+    toFloat (154 + (20 * (totalTagCountCurrentlyShownOnPage - 1)))
 
 
 
