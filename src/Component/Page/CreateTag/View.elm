@@ -14,7 +14,7 @@ viewCreateTagDiv model createTagPageModel =
             [ viewInput "text" "tagId" createTagPageModel.tagId (createTagInputMessage TagId)
             , viewInput "text" "name" createTagPageModel.name (createTagInputMessage Name)
             , viewInput "text" "contentSortStrategy" createTagPageModel.contentSortStrategy (createTagInputMessage ContentSortStrategy)
-            , viewCheckBox "showAsTag" createTagPageModel.showAsTag (createTagInputMessage ShowAsTag)
+            , viewCheckBox "showInTagsOfContent" createTagPageModel.showInTagsOfContent (createTagInputMessage ShowInTagsOfContent)
             , viewCheckBox "showContentcount" createTagPageModel.showContentCount (createTagInputMessage ShowContentCount)
             , viewInput "text" "orderIndex" createTagPageModel.orderIndex (createTagInputMessage OrderIndex)
             , viewInput "password" "password" createTagPageModel.password (createTagInputMessage Pw)

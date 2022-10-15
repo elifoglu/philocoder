@@ -19,7 +19,7 @@ type alias ContentsResponse =
 type alias GotTag =
     { tagId : String
     , name : String
-    , showAsTag : Bool
+    , showInTagsOfContent : Bool
     , showContentCount : Bool
     , orderIndex : Maybe Int
     , contentCount : Int
@@ -122,7 +122,7 @@ tagDecoder =
     map7 GotTag
         (field "tagId" string)
         (field "name" string)
-        (field "showAsTag" bool)
+        (field "showInTagsOfContent" bool)
         (field "showContentCount" bool)
         (field "orderIndex" (maybe int))
         (field "contentCount" int)

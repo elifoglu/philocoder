@@ -65,7 +65,7 @@ type TagInputType
     = TagId String
     | Name String
     | ContentSortStrategy String
-    | ShowAsTag Bool
+    | ShowInTagsOfContent Bool
     | ShowContentCount Bool
     | OrderIndex String
     | InfoContentId String

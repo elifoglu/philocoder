@@ -43,7 +43,7 @@ gotContentDateToContentDate timeZone gotContentDate =
 contentHasDisplayableTags : Content -> Bool
 contentHasDisplayableTags content =
     (content.tags
-        |> List.filter (\tag -> tag.showAsTag)
+        |> List.filter (\tag -> tag.showInTagsOfContent)
         |> List.length
     )
         > 0
@@ -55,7 +55,7 @@ maybeDisplayableTagsOfContent content =
         True ->
             Just
                 (content.tags
-                    |> List.filter (\tag -> tag.showAsTag)
+                    |> List.filter (\tag -> tag.showInTagsOfContent)
                 )
 
         False ->

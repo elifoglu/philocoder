@@ -425,8 +425,8 @@ update msg model =
                                         ContentSortStrategy input ->
                                             { createTagPageModel | contentSortStrategy = input }
 
-                                        ShowAsTag input ->
-                                            { createTagPageModel | showAsTag = input }
+                                        ShowInTagsOfContent input ->
+                                            { createTagPageModel | showInTagsOfContent = input }
 
                                         ShowContentCount input ->
                                             { createTagPageModel | showContentCount = input }

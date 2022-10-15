@@ -129,7 +129,7 @@ type alias CreateTagPageModel =
     { tagId : String
     , name : String
     , contentSortStrategy : String
-    , showAsTag : Bool
+    , showInTagsOfContent : Bool
     , showContentCount : Bool
     , orderIndex : String
     , password : String
@@ -219,7 +219,7 @@ createTagPageModelEncoder model =
         [ ( "tagId", Encode.string model.tagId )
         , ( "name", Encode.string model.name )
         , ( "contentSortStrategy", Encode.string model.contentSortStrategy )
-        , ( "showAsTag", Encode.bool model.showAsTag )
+        , ( "showInTagsOfContent", Encode.bool model.showInTagsOfContent )
         , ( "showContentCount", Encode.bool model.showContentCount )
         , ( "orderIndex", Encode.string model.orderIndex )
         , ( "password", Encode.string model.password )
