@@ -677,16 +677,18 @@ update msg model =
         GotTagUpdateOrCreationDoneResponse res ->
             case res of
                 Ok message ->
-                    ( { model
-                        | activePage =
-                            if message == "done" then
-                                HomePage [] [] BlogContents Nothing
+                    let
+                        newModel =
+                            { model
+                                | activePage =
+                                    if message == "done" then
+                                        HomePage [] [] BlogContents Nothing
 
-                            else
-                                NotFoundPage
-                      }
-                    , Cmd.none
-                    )
+                                    else
+                                        NotFoundPage
+                            }
+                    in
+                    ( newModel, getCmdToSendByPage newModel )
 
                 Err _ ->
                     ( { model | activePage = NotFoundPage }, Cmd.none )
