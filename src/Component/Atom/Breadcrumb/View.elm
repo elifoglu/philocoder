@@ -14,16 +14,18 @@ viewBreadcrumb model =
         TagPage initializable ->
             case initializable of
                 NonInitialized _ ->
-                    [ viewHomeNavigator ]
+                    [ viewHomeNavigator False ]
 
                 Initialized initialized ->
-                    [ viewHomeNavigator
+                    [ viewHomeNavigator False
                     , viewHeaderText " >> "
                     , viewHeaderText initialized.tag.name
                     ]
 
+        HomePage _ _ _ _ ->
+            (viewHomeNavigator True) :: viewIcons model
         _ ->
-            viewHomeNavigator :: viewIcons model
+            (viewHomeNavigator False) :: viewIcons model
 
 
 viewHeaderText : String -> Html Msg
