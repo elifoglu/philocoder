@@ -216,51 +216,37 @@ update msg model =
         GotContentsOfTag tag result ->
             case result of
                 Ok contentsResponse ->
-                    let
-                        currentPage =
-                            case model.activePage of
-                                TagPage status ->
-                                    case status of
-                                        NonInitialized nonInitialized ->
+                    case model.activePage of
+                        TagPage status ->
+                            case status of
+                                NonInitialized nonInitialized ->
+                                    let
+                                        currentPage =
                                             Maybe.withDefault 1 nonInitialized.maybePage
 
-                                        _ ->
-                                            1
+                                        pagination =
+                                            Pagination currentPage contentsResponse.totalPageCount
+
+                                        contents =
+                                            List.map (gotContentToContent model) contentsResponse.contents
+
+                                        newPage =
+                                            TagPage <|
+                                                Initialized (InitializedTagPageModel tag contents pagination nonInitialized.readingMode)
+
+                                        newModel =
+                                            { model | activePage = newPage }
+                                    in
+                                    ( newModel, getCmdToSendByPage newModel )
 
                                 _ ->
-                                    1
+                                    createNewModelAndCmdMsg model NotFoundPage
 
-                        pagination =
-                            Pagination currentPage contentsResponse.totalPageCount
-
-                        contents : List Content
-                        contents =
-                            List.map (gotContentToContent model) contentsResponse.contents
-
-                        readingMode =
-                            case model.activePage of
-                                TagPage status ->
-                                    case status of
-                                        NonInitialized nonInitialized ->
-                                            nonInitialized.readingMode
-
-                                        _ ->
-                                            AllContents
-
-                                _ ->
-                                    AllContents
-
-                        newPage =
-                            TagPage <|
-                                Initialized (InitializedTagPageModel tag contents pagination readingMode)
-
-                        newModel =
-                            { model | activePage = newPage }
-                    in
-                    ( newModel, getCmdToSendByPage newModel )
+                        _ ->
+                            createNewModelAndCmdMsg model NotFoundPage
 
                 Err _ ->
-                    ( model, Cmd.none )
+                    createNewModelAndCmdMsg model MaintenancePage
 
         -- CREATE/UPDATE CONTENT PAGES --
         ContentInputChanged inputType input ->
