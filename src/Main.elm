@@ -64,13 +64,15 @@ getCmdToSendByPage model =
 
           else
             case model.activePage of
-                ContentPage status ->
-                    case status of
-                        NonInitialized contentId ->
-                            getContent contentId
+                HomePage blogTags _ maybeGraphData ->
+                    if blogTags == [] then
+                        getBlogTagsResponse
 
-                        Initialized _ ->
-                            Cmd.none
+                    else if maybeGraphData == Nothing then
+                        getAllRefData
+
+                    else
+                        Cmd.none
 
                 TagPage status ->
                     case status of
@@ -85,23 +87,13 @@ getCmdToSendByPage model =
                         Initialized _ ->
                             Cmd.none
 
-                BioPage maybeData ->
-                    case maybeData of
-                        Just _ ->
+                ContentPage status ->
+                    case status of
+                        NonInitialized contentId ->
+                            getContent contentId
+
+                        Initialized _ ->
                             Cmd.none
-
-                        Nothing ->
-                            getBio
-
-                HomePage blogTags _ maybeGraphData ->
-                    if blogTags == [] then
-                        getBlogTagsResponse
-
-                    else if maybeGraphData == Nothing then
-                        getAllRefData
-
-                    else
-                        Cmd.none
 
                 UpdateContentPage status ->
                     case status of
@@ -110,6 +102,14 @@ getCmdToSendByPage model =
 
                         _ ->
                             Cmd.none
+
+                BioPage maybeData ->
+                    case maybeData of
+                        Just _ ->
+                            Cmd.none
+
+                        Nothing ->
+                            getBio
 
                 _ ->
                     Cmd.none
