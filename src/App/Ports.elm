@@ -1,6 +1,6 @@
 port module App.Ports exposing (sendTitle, title)
 
-import App.Model exposing (Initializable(..), MaySendRequest(..), Model, Page(..), UpdateContentPageBaseModel(..))
+import App.Model exposing (Initializable(..), MaySendRequest(..), Model, Page(..), UpdateContentPageModel(..))
 
 
 port title : String -> Cmd a
@@ -44,12 +44,12 @@ sendTitle model =
                 NotInitializedYet _ ->
                     title <| "update content - philocoder"
 
-                GotContentToUpdate updateContentPageModel contentId ->
-                    if String.isEmpty updateContentPageModel.title then
-                        title <| "update content - " ++ String.fromInt contentId ++ " - philocoder"
+                GotContentToUpdate updateContentPageData ->
+                    if String.isEmpty updateContentPageData.title then
+                        title <| "update content - " ++ String.fromInt updateContentPageData.contentId ++ " - philocoder"
 
                     else
-                        title <| "update content - " ++ updateContentPageModel.title ++ " - philocoder"
+                        title <| "update content - " ++ updateContentPageData.title ++ " - philocoder"
 
                 UpdateRequestIsSent _ ->
                     Cmd.none

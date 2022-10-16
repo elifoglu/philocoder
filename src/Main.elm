@@ -219,13 +219,13 @@ update msg model =
 
                                 UpdateContentPage status ->
                                     case status of
-                                        NotInitializedYet contentId ->
+                                        NotInitializedYet _ ->
                                             UpdateContentPage <|
-                                                GotContentToUpdate (setUpdateContentPageModel content) contentId
+                                                GotContentToUpdate (setUpdateContentPageModel content)
 
-                                        GotContentToUpdate _ contentId ->
+                                        GotContentToUpdate _ ->
                                             UpdateContentPage <|
-                                                GotContentToUpdate (setUpdateContentPageModel content) contentId
+                                                GotContentToUpdate (setUpdateContentPageModel content)
 
                                         UpdateRequestIsSent _ ->
                                             contentPage
@@ -325,43 +325,43 @@ update msg model =
 
                 UpdateContentPage status ->
                     case status of
-                        GotContentToUpdate updateContentPageModel contentId ->
+                        GotContentToUpdate updateContentPageData ->
                             let
                                 newCurrentPageModel =
                                     case inputType of
                                         Id ->
-                                            updateContentPageModel
+                                            updateContentPageData
 
                                         Title ->
-                                            { updateContentPageModel | title = input }
+                                            { updateContentPageData | title = input }
 
                                         Text ->
-                                            { updateContentPageModel | text = input }
+                                            { updateContentPageData | text = input }
 
                                         Tags ->
-                                            { updateContentPageModel | tags = input }
+                                            { updateContentPageData | tags = input }
 
                                         Refs ->
-                                            { updateContentPageModel | refs = input }
+                                            { updateContentPageData | refs = input }
 
                                         Password ->
-                                            { updateContentPageModel | password = input }
+                                            { updateContentPageData | password = input }
 
                                         OkForBlogMode ->
                                             case input of
                                                 "true" ->
-                                                    { updateContentPageModel | okForBlogMode = True }
+                                                    { updateContentPageData | okForBlogMode = True }
 
                                                 "false" ->
-                                                    { updateContentPageModel | okForBlogMode = False }
+                                                    { updateContentPageData | okForBlogMode = False }
 
                                                 _ ->
-                                                    { updateContentPageModel | okForBlogMode = False }
+                                                    { updateContentPageData | okForBlogMode = False }
 
                                         ContentToCopy ->
-                                            updateContentPageModel
+                                            updateContentPageData
                             in
-                            ( { model | activePage = UpdateContentPage <| GotContentToUpdate newCurrentPageModel contentId }, Cmd.none )
+                            ( { model | activePage = UpdateContentPage <| GotContentToUpdate newCurrentPageModel }, Cmd.none )
 
                         _ ->
                             ( model, Cmd.none )
@@ -407,7 +407,7 @@ update msg model =
             , postNewContent createContentPageModel
             )
 
-        GotContentToPreviewForUpdatePage contentID updateContentPageModel result ->
+        GotContentToPreviewForUpdatePage contentID updateContentPageData result ->
             case result of
                 Ok gotContentToPreview ->
                     let
@@ -415,24 +415,24 @@ update msg model =
                             gotContentToContent model gotContentToPreview
 
                         newUpdateContentPageModel =
-                            { updateContentPageModel | maybeContentToPreview = Just content }
+                            { updateContentPageData | maybeContentToPreview = Just content }
                     in
-                    ( { model | activePage = UpdateContentPage <| GotContentToUpdate newUpdateContentPageModel contentID }
+                    ( { model | activePage = UpdateContentPage <| GotContentToUpdate newUpdateContentPageModel }
                     , Cmd.none
                     )
 
                 Err _ ->
                     let
                         newUpdateContentPageModel =
-                            { updateContentPageModel | maybeContentToPreview = Nothing }
+                            { updateContentPageData | maybeContentToPreview = Nothing }
                     in
-                    ( { model | activePage = UpdateContentPage <| GotContentToUpdate newUpdateContentPageModel contentID }
+                    ( { model | activePage = UpdateContentPage <| GotContentToUpdate newUpdateContentPageModel }
                     , Cmd.none
                     )
 
-        UpdateContent contentID updateContentPageModel ->
-            ( { model | activePage = UpdateContentPage <| UpdateRequestIsSent updateContentPageModel }
-            , updateExistingContent contentID updateContentPageModel
+        UpdateContent contentID updateContentPageData ->
+            ( { model | activePage = UpdateContentPage <| UpdateRequestIsSent updateContentPageData }
+            , updateExistingContent contentID updateContentPageData
             )
 
         -- CREATE/UPDATE TAG PAGES --

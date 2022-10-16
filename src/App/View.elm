@@ -84,10 +84,10 @@ view model =
                             RequestSent _ ->
                                 [ text "..." ]
 
-                    UpdateContentPage baseModel ->
-                        case baseModel of
-                            GotContentToUpdate updateContentPageModel contentId ->
-                                [ viewUpdateContentDiv model updateContentPageModel updateContentPageModel.maybeContentToPreview contentId ]
+                    UpdateContentPage updateContentPageModel ->
+                        case updateContentPageModel of
+                            GotContentToUpdate updateContentPageData ->
+                                [ viewUpdateContentDiv updateContentPageData updateContentPageData.maybeContentToPreview updateContentPageData.contentId ]
 
                             _ ->
                                 [ text "..." ]

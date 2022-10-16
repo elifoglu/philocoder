@@ -1,4 +1,4 @@
-module App.Model exposing (BioPageModel, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GraphData, GraphModel, IconInfo, Initializable(..), InitializedTagPageModel, MaySendRequest(..), Model, NoVal(..), NonInitializedYetTagPageModel, Page(..), ReadingMode(..), UpdateContentPageBaseModel(..), UpdateContentPageModel, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, setCreateContentPageModel, setUpdateContentPageModel, updateContentPageModelEncoder, updateTagPageModelEncoder)
+module App.Model exposing (BioPageModel, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GraphData, GraphModel, IconInfo, Initializable(..), InitializedTagPageModel, MaySendRequest(..), Model, NoVal(..), NonInitializedYetTagPageModel, Page(..), ReadingMode(..), UpdateContentPageData, UpdateContentPageModel(..), UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, setCreateContentPageModel, setUpdateContentPageModel, updateContentPageDataEncoder, updateTagPageModelEncoder)
 
 import BioGroup.Model exposing (BioGroup)
 import BioItem.Model exposing (BioItem)
@@ -67,10 +67,10 @@ type MaySendRequest pageData requestSentData
     | RequestSent requestSentData
 
 
-type UpdateContentPageBaseModel
+type UpdateContentPageModel
     = NotInitializedYet ContentID
-    | GotContentToUpdate UpdateContentPageModel ContentID
-    | UpdateRequestIsSent UpdateContentPageModel
+    | GotContentToUpdate UpdateContentPageData
+    | UpdateRequestIsSent UpdateContentPageData
 
 
 type alias NonInitializedYetTagPageModel =
@@ -93,7 +93,7 @@ type Page
     | ContentPage (Initializable Int Content)
     | TagPage (Initializable NonInitializedYetTagPageModel InitializedTagPageModel)
     | CreateContentPage (MaySendRequest CreateContentPageModel CreateContentPageModel)
-    | UpdateContentPage UpdateContentPageBaseModel
+    | UpdateContentPage UpdateContentPageModel
     | CreateTagPage (MaySendRequest CreateTagPageModel CreateTagPageModel)
     | UpdateTagPage (MaySendRequest ( UpdateTagPageModel, String ) UpdateTagPageModel)
     | BioPage (Maybe BioPageModel)
@@ -120,8 +120,9 @@ type alias CreateContentPageModel =
     }
 
 
-type alias UpdateContentPageModel =
-    { maybeContentToPreview : Maybe Content
+type alias UpdateContentPageData =
+    { contentId : ContentID
+    , maybeContentToPreview : Maybe Content
     , title : String
     , text : String
     , tags : String
@@ -175,9 +176,10 @@ setCreateContentPageModel content =
     }
 
 
-setUpdateContentPageModel : Content -> UpdateContentPageModel
+setUpdateContentPageModel : Content -> UpdateContentPageData
 setUpdateContentPageModel content =
-    { maybeContentToPreview = Just content
+    { contentId = content.contentId
+    , maybeContentToPreview = Just content
     , title = Maybe.withDefault "" content.title
     , text = content.text
     , tags = String.join "," (List.map (\tag -> tag.name) content.tags)
@@ -206,8 +208,8 @@ createContentPageModelEncoder model =
         ]
 
 
-updateContentPageModelEncoder : ContentID -> UpdateContentPageModel -> Encode.Value
-updateContentPageModelEncoder contentId model =
+updateContentPageDataEncoder : ContentID -> UpdateContentPageData -> Encode.Value
+updateContentPageDataEncoder contentId model =
     Encode.object
         [ ( "id", Encode.string (String.fromInt contentId) )
         , ( "title", Encode.string model.title )

@@ -1,6 +1,6 @@
 module App.UrlParser exposing (pageBy)
 
-import App.Model exposing (CreateContentPageModel, CreateTagPageModel, Initializable(..), MaySendRequest(..), NoVal(..), NonInitializedYetTagPageModel, Page(..), ReadingMode(..), UpdateContentPageBaseModel(..), UpdateContentPageModel, UpdateTagPageModel)
+import App.Model exposing (CreateContentPageModel, CreateTagPageModel, Initializable(..), MaySendRequest(..), NoVal(..), NonInitializedYetTagPageModel, Page(..), ReadingMode(..), UpdateContentPageData, UpdateContentPageModel(..), UpdateTagPageModel)
 import Url
 import Url.Parser exposing ((</>), (<?>), Parser, int, map, oneOf, parse, s, string, top)
 import Url.Parser.Query as Query
