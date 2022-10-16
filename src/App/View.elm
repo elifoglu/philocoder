@@ -31,32 +31,30 @@ view model =
                     HomePage blogTags readingMode maybeGraphData ->
                         [ viewHomePageDiv model.allTags blogTags readingMode
                         , if tagsLoaded blogTags then
-                            let
-                                tagsCount =
-                                    tagCountCurrentlyShownOnPage readingMode model.allTags blogTags
+                            case maybeGraphData of
+                                Just graphData ->
+                                    if graphData.veryFirstMomentOfGraphHasPassed then
+                                        let
+                                            tagsCount =
+                                                tagCountCurrentlyShownOnPage readingMode model.allTags blogTags
 
-                                initialMarginTop =
-                                    50
+                                            initialMarginTop =
+                                                50
 
-                                heightOfASingleTagAsPx =
-                                    20
+                                            heightOfASingleTagAsPx =
+                                                20
 
-                                marginTopForGraph : Int
-                                marginTopForGraph =
-                                    initialMarginTop + round (toFloat tagsCount * heightOfASingleTagAsPx)
-                            in
-                            div [ class "graph", style "margin-top" (String.fromInt marginTopForGraph ++ "px") ]
-                                (case maybeGraphData of
-                                    Just graphData ->
-                                        if graphData.veryFirstMomentOfGraphHasPassed then
-                                            [ viewGraph graphData.allRefData.contentIds graphData.graphModel tagsCount ]
+                                            marginTopForGraph : Int
+                                            marginTopForGraph =
+                                                initialMarginTop + round (toFloat tagsCount * heightOfASingleTagAsPx)
+                                        in
+                                        div [ class "graph", style "margin-top" (String.fromInt marginTopForGraph ++ "px") ] [ viewGraph graphData.allRefData.contentIds graphData.graphModel tagsCount ]
 
-                                        else
-                                            []
+                                    else
+                                        text ""
 
-                                    Nothing ->
-                                        []
-                                )
+                                Nothing ->
+                                    text ""
 
                           else
                             text ""
