@@ -677,7 +677,7 @@ update msg model =
                                             model
 
                                         Nothing ->
-                                            { model | activePage = HomePage blogTags readingMode (Just (GraphData allRefData (initGraphModel allRefData))) }
+                                            { model | activePage = HomePage blogTags readingMode (Just (GraphData allRefData (initGraphModel allRefData) False)) }
 
                                 _ ->
                                     model
@@ -699,7 +699,7 @@ update msg model =
                         Just graphData ->
                             let
                                 newGraphData =
-                                    Just (GraphData graphData.allRefData (updateGraph otherMsg graphData.graphModel))
+                                    Just (GraphData graphData.allRefData (updateGraph otherMsg graphData.graphModel) True)
 
                                 newHomePage =
                                     HomePage blogTags readingMode newGraphData

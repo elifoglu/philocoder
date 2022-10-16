@@ -104,6 +104,9 @@ type Page
 type alias GraphData =
     { allRefData : GotAllRefData
     , graphModel : GraphModel
+    , veryFirstMomentOfGraphHasPassed : Bool
+
+    -- When graph animation starts, it is buggy somehow: Nodes are not shown in the center of the box, instead, they are shown at the top left of the box at the "very first moment" of initialization. So, we are setting "veryFirstMomentOfGraphHasPassed" as True just after the very first Tick msg of the graph, and we don't show the graph until that value becomes True
     }
 
 

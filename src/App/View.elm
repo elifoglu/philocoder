@@ -48,7 +48,11 @@ view model =
                             div [ class "graph", style "margin-top" (String.fromInt marginTopForGraph ++ "px") ]
                                 (case maybeGraphData of
                                     Just graphData ->
-                                        [ viewGraph graphData.allRefData.contentIds graphData.graphModel tagsCount ]
+                                        if graphData.veryFirstMomentOfGraphHasPassed then
+                                            [ viewGraph graphData.allRefData.contentIds graphData.graphModel tagsCount ]
+
+                                        else
+                                            []
 
                                     Nothing ->
                                         []
