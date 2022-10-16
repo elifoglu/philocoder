@@ -1,4 +1,4 @@
-module App.Model exposing (BioPageModel, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GraphData, GraphModel, IconInfo, Initializable(..), InitializedTagPageModel, MaySendRequest(..), Model, NoVal(..), NonInitializedYetTagPageModel, Page(..), ReadingMode(..), UpdateContentPageModel, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, setCreateContentPageModel, setUpdateContentPageModel, updateContentPageModelEncoder, updateTagPageModelEncoder)
+module App.Model exposing (BioPageModel, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GraphData, GraphModel, IconInfo, Initializable(..), InitializedTagPageModel, MaySendRequest(..), Model, NoVal(..), NonInitializedYetTagPageModel, Page(..), ReadingMode(..), UpdateContentPageBaseModel(..), UpdateContentPageModel, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, setCreateContentPageModel, setUpdateContentPageModel, updateContentPageModelEncoder, updateTagPageModelEncoder)
 
 import BioGroup.Model exposing (BioGroup)
 import BioItem.Model exposing (BioItem)
@@ -67,6 +67,12 @@ type MaySendRequest pageData requestSentData
     | RequestSent requestSentData
 
 
+type UpdateContentPageBaseModel
+    = NotInitializedYet ContentID
+    | GotContentToUpdate UpdateContentPageModel ContentID
+    | UpdateRequestIsSent UpdateContentPageModel
+
+
 type alias NonInitializedYetTagPageModel =
     { tagId : String
     , maybePage : Maybe Int
@@ -87,7 +93,7 @@ type Page
     | ContentPage (Initializable Int Content)
     | TagPage (Initializable NonInitializedYetTagPageModel InitializedTagPageModel)
     | CreateContentPage (MaySendRequest CreateContentPageModel CreateContentPageModel)
-    | UpdateContentPage (MaySendRequest ( UpdateContentPageModel, Int ) UpdateContentPageModel)
+    | UpdateContentPage UpdateContentPageBaseModel
     | CreateTagPage (MaySendRequest CreateTagPageModel CreateTagPageModel)
     | UpdateTagPage (MaySendRequest ( UpdateTagPageModel, String ) UpdateTagPageModel)
     | BioPage (Maybe BioPageModel)

@@ -84,12 +84,12 @@ view model =
                             RequestSent _ ->
                                 [ text "..." ]
 
-                    UpdateContentPage status ->
-                        case status of
-                            NoRequestSentYet ( updateContentPageModel, contentId ) ->
+                    UpdateContentPage baseModel ->
+                        case baseModel of
+                            GotContentToUpdate updateContentPageModel contentId ->
                                 [ viewUpdateContentDiv model updateContentPageModel updateContentPageModel.maybeContentToPreview contentId ]
 
-                            RequestSent _ ->
+                            _ ->
                                 [ text "..." ]
 
                     CreateTagPage status ->

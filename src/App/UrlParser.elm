@@ -1,6 +1,6 @@
 module App.UrlParser exposing (pageBy)
 
-import App.Model exposing (CreateContentPageModel, CreateTagPageModel, Initializable(..), MaySendRequest(..), NoVal(..), NonInitializedYetTagPageModel, Page(..), ReadingMode(..), UpdateContentPageModel, UpdateTagPageModel)
+import App.Model exposing (CreateContentPageModel, CreateTagPageModel, Initializable(..), MaySendRequest(..), NoVal(..), NonInitializedYetTagPageModel, Page(..), ReadingMode(..), UpdateContentPageBaseModel(..), UpdateContentPageModel, UpdateTagPageModel)
 import Url
 import Url.Parser exposing ((</>), (<?>), Parser, int, map, oneOf, parse, s, string, top)
 import Url.Parser.Query as Query
@@ -42,7 +42,7 @@ nonInitializedContentPageMapper contentId =
 
 nonInitializedUpdateContentPageMapper : Int -> Page
 nonInitializedUpdateContentPageMapper contentId =
-    UpdateContentPage (NoRequestSentYet ( UpdateContentPageModel Nothing "" "" "" "" False "", contentId ))
+    UpdateContentPage (NotInitializedYet contentId)
 
 
 nonInitializedUpdateTagPageMapper : String -> Page

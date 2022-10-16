@@ -1,6 +1,6 @@
 port module App.Ports exposing (sendTitle, title)
 
-import App.Model exposing (Initializable(..), MaySendRequest(..), Model, Page(..))
+import App.Model exposing (Initializable(..), MaySendRequest(..), Model, Page(..), UpdateContentPageBaseModel(..))
 
 
 port title : String -> Cmd a
@@ -41,10 +41,17 @@ sendTitle model =
 
         UpdateContentPage status ->
             case status of
-                NoRequestSentYet ( _, contentId ) ->
-                    title <| "update content - " ++ String.fromInt contentId ++ " - philocoder"
+                NotInitializedYet _ ->
+                    title <| "update content - philocoder"
 
-                _ ->
+                GotContentToUpdate updateContentPageModel contentId ->
+                    if String.isEmpty updateContentPageModel.title then
+                        title <| "update content - " ++ String.fromInt contentId ++ " - philocoder"
+
+                    else
+                        title <| "update content - " ++ updateContentPageModel.title ++ " - philocoder"
+
+                UpdateRequestIsSent _ ->
                     Cmd.none
 
         CreateTagPage _ ->

@@ -47,20 +47,46 @@ init flags url key =
     )
 
 
+needAllTagsData : Page -> Bool
+needAllTagsData page =
+    case page of
+        HomePage _ _ _ ->
+            True
+
+        ContentPage _ ->
+            True
+
+        TagPage _ ->
+            True
+
+        UpdateContentPage _ ->
+            True
+
+        CreateContentPage _ ->
+            False
+
+        CreateTagPage _ ->
+            False
+
+        UpdateTagPage _ ->
+            False
+
+        BioPage _ ->
+            False
+
+        NotFoundPage ->
+            False
+
+        MaintenancePage ->
+            False
+
+
 getCmdToSendByPage : Model -> Cmd Msg
 getCmdToSendByPage model =
     Cmd.batch
         [ sendTitle model
-        , if tagsNotLoaded model then
-            case model.activePage of
-                MaintenancePage ->
-                    Cmd.none
-
-                NotFoundPage ->
-                    Cmd.none
-
-                _ ->
-                    getAllTagsResponse
+        , if tagsNotLoaded model && needAllTagsData model.activePage then
+            getAllTagsResponse
 
           else
             case model.activePage of
@@ -97,8 +123,8 @@ getCmdToSendByPage model =
 
                 UpdateContentPage status ->
                     case status of
-                        NoRequestSentYet pageData ->
-                            getContent (Tuple.second pageData)
+                        NotInitializedYet contentID ->
+                            getContent contentID
 
                         _ ->
                             Cmd.none
@@ -193,11 +219,15 @@ update msg model =
 
                                 UpdateContentPage status ->
                                     case status of
-                                        NoRequestSentYet ( _, contentId ) ->
+                                        NotInitializedYet contentId ->
                                             UpdateContentPage <|
-                                                NoRequestSentYet ( setUpdateContentPageModel content, contentId )
+                                                GotContentToUpdate (setUpdateContentPageModel content) contentId
 
-                                        RequestSent _ ->
+                                        GotContentToUpdate _ contentId ->
+                                            UpdateContentPage <|
+                                                GotContentToUpdate (setUpdateContentPageModel content) contentId
+
+                                        UpdateRequestIsSent _ ->
                                             contentPage
 
                                 _ ->
@@ -295,7 +325,7 @@ update msg model =
 
                 UpdateContentPage status ->
                     case status of
-                        NoRequestSentYet ( updateContentPageModel, contentId ) ->
+                        GotContentToUpdate updateContentPageModel contentId ->
                             let
                                 newCurrentPageModel =
                                     case inputType of
@@ -331,7 +361,7 @@ update msg model =
                                         ContentToCopy ->
                                             updateContentPageModel
                             in
-                            ( { model | activePage = UpdateContentPage <| NoRequestSentYet ( newCurrentPageModel, contentId ) }, Cmd.none )
+                            ( { model | activePage = UpdateContentPage <| GotContentToUpdate newCurrentPageModel contentId }, Cmd.none )
 
                         _ ->
                             ( model, Cmd.none )
@@ -387,9 +417,7 @@ update msg model =
                         newUpdateContentPageModel =
                             { updateContentPageModel | maybeContentToPreview = Just content }
                     in
-                    ( { model
-                        | activePage = UpdateContentPage <| NoRequestSentYet ( newUpdateContentPageModel, contentID )
-                      }
+                    ( { model | activePage = UpdateContentPage <| GotContentToUpdate newUpdateContentPageModel contentID }
                     , Cmd.none
                     )
 
@@ -398,12 +426,12 @@ update msg model =
                         newUpdateContentPageModel =
                             { updateContentPageModel | maybeContentToPreview = Nothing }
                     in
-                    ( { model | activePage = UpdateContentPage <| NoRequestSentYet ( newUpdateContentPageModel, contentID ) }
+                    ( { model | activePage = UpdateContentPage <| GotContentToUpdate newUpdateContentPageModel contentID }
                     , Cmd.none
                     )
 
         UpdateContent contentID updateContentPageModel ->
-            ( { model | activePage = UpdateContentPage <| RequestSent updateContentPageModel }
+            ( { model | activePage = UpdateContentPage <| UpdateRequestIsSent updateContentPageModel }
             , updateExistingContent contentID updateContentPageModel
             )
 
