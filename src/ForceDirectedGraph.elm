@@ -182,12 +182,12 @@ viewGraph contentIds graphModel totalTagCountCurrentlyShownOnTheScreen =
 
 linkColor : Color.Color
 linkColor =
-    Color.rgb255 206 204 204
+    Color.rgb255 225 225 225
 
 
 nodeColor : Color.Color
 nodeColor =
-    Color.rgb255 21 21 21
+    Color.rgb255 20 20 20
 
 
 arrowHead : Svg msg
