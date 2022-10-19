@@ -29,8 +29,7 @@ view model =
             , div [ class "body" ]
                 (case model.activePage of
                     HomePage blogTags readingMode maybeGraphData ->
-                        [ viewHomePageDiv model.allTags blogTags readingMode
-                        , if tagsLoaded blogTags then
+                        if tagsLoaded blogTags then
                             case maybeGraphData of
                                 Just graphData ->
                                     if graphData.veryFirstMomentOfGraphHasPassed then
@@ -48,17 +47,18 @@ view model =
                                             marginTopForGraph =
                                                 initialMarginTop + round (toFloat tagsCount * heightOfASingleTagAsPx)
                                         in
-                                        div [ class "graph", style "margin-top" (String.fromInt marginTopForGraph ++ "px") ] [ viewGraph graphData.allRefData.contentIds graphData.graphModel tagsCount ]
+                                        [ viewHomePageDiv model.allTags blogTags readingMode
+                                        , div [ class "graph", style "margin-top" (String.fromInt marginTopForGraph ++ "px") ] [ viewGraph graphData.allRefData.contentIds graphData.graphModel tagsCount ]
+                                        ]
 
                                     else
-                                        text ""
+                                        []
 
                                 Nothing ->
-                                    text ""
+                                    []
 
-                          else
-                            text ""
-                        ]
+                        else
+                            []
 
                     ContentPage status ->
                         case status of
