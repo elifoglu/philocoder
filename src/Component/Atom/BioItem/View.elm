@@ -31,7 +31,7 @@ viewBioItemDiv maybeBioItemInfoToShow bioItem =
                         [ span [ class "bioItem bioItemHasAnInfo", onClick (ClickOnABioItemInfo bioItem), title (getBioItemTitleText bioItem) ]
                             [ text bioItem.name
                             ]
-                        , span []
+                        , span [ style "white-space" "normal" ]
                             [ img [ onClick (ClickOnABioItemInfo bioItem), class "openBioItemInfo", src (getProperInfoIcon maybeBioItemInfoToShow bioItem) ] []
                             , viewBioItemInfoModal bioItem info maybeBioItemInfoToShow
                             ]
@@ -68,7 +68,7 @@ viewBioItemInfoModal bioItem info maybeBioItemToShowInfo =
     case maybeBioItemToShowInfo of
         Just bioItemToShowInfo ->
             if bioItemToShowInfo.bioItemID == bioItem.bioItemID then
-                div []
+                div [ ]
                     [ div [ class "bioItemInfoContainer" ] [ Markdown.toHtml [ class "bioItemInfoMarkdownP" ] info ]
                     ]
 

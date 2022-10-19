@@ -298,16 +298,18 @@ input[type='radio'] {
 
 .bioItemInfoContainer {
     display: inline-block;
-    margin: 0px;
-    margin-top: -10px;
+    margin: 0 20px 10px 4px;
+    padding-left: 8px;
+    padding-right: 8px;
     font-size: 13px;
+    border-radius: 1px;
+    border: 1px solid #bcbcbc;
 }
 
 .bioItemInfoMarkdownP p {
-    border-radius: 1px;
-    border: 1px solid #bcbcbc;
-    padding: 1px 3px 1px 1px;
-    margin-left: 4px;
+    margin: auto;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 .bioItemInfoMarkdownP p:before {
