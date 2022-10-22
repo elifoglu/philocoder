@@ -16,7 +16,7 @@ viewBioItemsDiv bioItemInfoToShow bioItems activeBioGroup =
             activeBioGroup.bioItemOrder
                 |> List.map (getBioItemById bioItems)
     in
-    div [ style "margin-top" "20px" ]
+    div [ style "margin-top" "20px", style "margin-bottom" "40px" ]
         (orderedBioItems
             |> List.filter (bioItemIsMemberOfActiveGroup activeBioGroup)
             |> List.map (viewBioItemDiv bioItemInfoToShow)
