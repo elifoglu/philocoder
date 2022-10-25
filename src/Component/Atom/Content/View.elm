@@ -4,7 +4,7 @@ import App.Msg exposing (Msg)
 import Content.Model exposing (Content)
 import Content.Util exposing (maybeDateText, maybeDisplayableTagsOfContent)
 import Html exposing (Html, a, div, img, p, span, text)
-import Html.Attributes exposing (class, href, src, style)
+import Html.Attributes exposing (class, href, src, style, title)
 import Markdown
 import Tag.Model exposing (Tag)
 
@@ -69,16 +69,16 @@ viewTagLink tag =
     a [ href ("/tags/" ++ tag.tagId), class "tagLink" ] [ text ("#" ++ tag.name) ]
 
 
-viewContentLink : Html msg -> String -> Html msg
-viewContentLink htmlToClick contentId =
-    a [ href ("/contents/" ++ contentId) ]
+viewContentLink : Html msg -> String -> String -> Html msg
+viewContentLink htmlToClick beautifiedText contentId =
+    a [ href ("/contents/" ++ contentId), title beautifiedText ]
         [ htmlToClick
         ]
 
 
 viewContentLinkWithLinkIcon : Content -> Html msg
 viewContentLinkWithLinkIcon content =
-    viewContentLink (img [ class "navToContent", src "/link.svg" ] []) (String.fromInt content.contentId)
+    viewContentLink (img [ class "navToContent", src "/link.svg" ] []) "" (String.fromInt content.contentId)
 
 
 viewMarkdownTextOfContent : Content -> Html msg
@@ -98,7 +98,7 @@ viewRefsTextOfContent content =
                     [ span [ style "font-style" "italic" ] [ text "ilgili: " ]
                     , span []
                         (refs
-                            |> List.map (\r -> viewContentLink (text r.text) r.id)
+                            |> List.map (\r -> viewContentLink (text r.text) r.beautifiedText r.id)
                             |> List.intersperse (text ", ")
                         )
                     ]

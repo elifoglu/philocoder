@@ -149,8 +149,9 @@ contentDateDecoder =
 
 refDecoder : Decoder Ref
 refDecoder =
-    map2 Ref
+    map3 Ref
         (field "text" string)
+        (field "beautifiedContentText" string)
         (field "id" string)
 
 

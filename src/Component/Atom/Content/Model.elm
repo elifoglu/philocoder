@@ -9,7 +9,7 @@ type alias Content =
 
 
 type alias Ref =
-    { text : String, id : String }
+    { text : String, beautifiedText: String, id : String }
 
 
 type alias ContentID =
