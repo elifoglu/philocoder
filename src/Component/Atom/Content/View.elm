@@ -13,7 +13,7 @@ viewContentDiv : Content -> Html Msg
 viewContentDiv content =
     p []
         [ div []
-            [ div [ class "title" ] [ viewContentTitle content.title ]
+            [ div [ class "title" ] [ viewContentTitle content.title content.beautifiedText ]
             , viewRefsTextOfContent content
             , addBrIfContentEitherHasTitleOrRefs content
             , viewMarkdownTextOfContent content
@@ -32,11 +32,15 @@ addBrIfContentEitherHasTitleOrRefs content =
             text ""
 
 
-viewContentTitle : Maybe String -> Html Msg
-viewContentTitle maybeTitle =
+viewContentTitle : Maybe String -> String -> Html Msg
+viewContentTitle maybeTitle beautifiedText =
     case maybeTitle of
         Just title ->
-            text (title ++ " ")
+            if title == beautifiedText then
+                text ""
+
+            else
+                text (title ++ " ")
 
         Nothing ->
             text ""

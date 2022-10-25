@@ -22,7 +22,11 @@ sendTitle model =
                     Cmd.none
 
                 Initialized content ->
-                    title (content.beautifiedText ++ " - philocoder")
+                    case content.title of
+                        Just t ->
+                            title (t ++ " - philocoder")
+                        Nothing ->
+                            title (content.beautifiedText ++ " - philocoder")
 
         TagPage status ->
             case status of
