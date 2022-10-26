@@ -44,10 +44,12 @@ viewBioItemDiv maybeBioItemInfoToShow bioItem =
                     ]
             )
 
-getBioItemTitleText: BioItem -> String
+
+getBioItemTitleText : BioItem -> String
 getBioItemTitleText bioItem =
     bioItem.groupNames
-    |> String.join ", "
+        |> String.join ", "
+
 
 getProperInfoIcon : Maybe BioItem -> BioItem -> String
 getProperInfoIcon maybeBioItemToShowInfo bioItem =
@@ -68,7 +70,7 @@ viewBioItemInfoModal bioItem info maybeBioItemToShowInfo =
     case maybeBioItemToShowInfo of
         Just bioItemToShowInfo ->
             if bioItemToShowInfo.bioItemID == bioItem.bioItemID then
-                div [ ]
+                div []
                     [ div [ class "bioItemInfoContainer" ] [ Markdown.toHtml [ class "bioItemInfoMarkdownP" ] info ]
                     ]
 
