@@ -1,4 +1,4 @@
-module BioGroup.Util exposing (changeActivenessIfIdMatches, changeDisplayInfoIfIdMatchesAndGroupIsActive, gotBioGroupToBioGroup)
+module BioGroup.Util exposing (changeActivenessIfIdMatches, changeDisplayInfoIfIdMatchesAndGroupIsActive, gotBioGroupToBioGroup, getActivenessOnInit)
 
 import BioGroup.Model exposing (BioGroup)
 import DataResponse exposing (BioGroupID, GotBioGroup, GotContent, GotContentDate, GotTag)

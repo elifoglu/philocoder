@@ -2,6 +2,7 @@ module BioGroup.View exposing (viewBioGroup, viewBioGroupInfoDiv)
 
 import App.Msg exposing (Msg(..))
 import BioGroup.Model exposing (BioGroup)
+import BioGroup.Util exposing (getActivenessOnInit)
 import Html exposing (Html, button, div, img, p, span, text)
 import Html.Attributes exposing (class, src, style)
 import Html.Events exposing (onClick)
@@ -12,7 +13,7 @@ viewBioGroup : BioGroup -> Html Msg
 viewBioGroup bioGroup =
     span [ style "white-space" "nowrap" ]
         [ if String.startsWith "/" bioGroup.title then
-            if bioGroup.bioGroupID == 4 then
+            if (getActivenessOnInit bioGroup.bioGroupID) then
                 text ""
 
             else
