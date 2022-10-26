@@ -90,8 +90,9 @@ hr {
 
 .bioPageIconsContainer {
     padding-left: 10px;
-    padding-top: 10px;
+    padding-top: 3px;
     cursor: pointer;
+    font-size: 25px;
 }
 
 .homeNavigator:hover {
