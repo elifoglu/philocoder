@@ -80,7 +80,7 @@ sendTitle model =
                     in
                     case maybeActiveBioGroup of
                         Just activeBioGroup ->
-                            if activeBioGroup.title == "tümü" then
+                            if String.startsWith "/" activeBioGroup.title  then
                                 title <| "me - philocoder"
 
                             else

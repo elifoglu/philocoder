@@ -6,7 +6,7 @@ import BioGroup.Model exposing (BioGroup)
 import BioGroup.View exposing (viewBioGroupInfoDiv)
 import BioGroups.View exposing (viewBioGroupsDiv)
 import BioItems.View exposing (viewBioItemsDiv)
-import Html exposing (Html, br, div, hr, p, span)
+import Html exposing (Html, div)
 import Html.Attributes exposing (style)
 
 
@@ -19,8 +19,8 @@ viewBioPageDiv bioPageModel =
                 |> List.head
                 |> Maybe.withDefault (BioGroup 0 "" 0 Nothing [] True False)
     in
-    div [ style "width" "auto", style "float" "left" ]
-        ([ viewBioGroupsDiv bioPageModel.bioGroups ]
-            ++ [ viewBioGroupInfoDiv activeBioGroup ]
+    div [ style "width" "auto", style "float" "left", style "margin-left" "-4px" ]
+        (viewBioGroupsDiv bioPageModel.bioGroups
+            :: [ viewBioGroupInfoDiv activeBioGroup ]
             ++ [ viewBioItemsDiv bioPageModel.bioItemToShowInfo bioPageModel.bioItems activeBioGroup ]
         )

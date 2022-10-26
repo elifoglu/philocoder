@@ -9,7 +9,7 @@ import Html.Attributes exposing (style)
 
 viewBioGroupsDiv : List BioGroup -> Html Msg
 viewBioGroupsDiv bioGroups =
-    div [ style "margin-top" "20px" ]
+    div [ style "margin-top" "10px" ]
         (viewBioGroups bioGroups)
 
 

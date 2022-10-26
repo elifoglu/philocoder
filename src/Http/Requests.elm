@@ -133,7 +133,7 @@ updateExistingTag tagId model =
 
 aboutMeIcon : IconInfo
 aboutMeIcon =
-    { urlToNavigate = "https://about.me/m.e", iconImageUrl = "/about-me.svg", marginLeft = "4px" }
+    { urlToNavigate = "https://about.me/m.e", iconImageUrl = "/about-me.svg", marginLeft = "0px" }
 
 
 bioPageIcon : IconInfo
@@ -148,8 +148,9 @@ readMeIcon =
 
 getBioPageIcons : Bool -> List IconInfo
 getBioPageIcons showAdditionalIcons =
-    [ aboutMeIcon, readMeIcon ]
-        ++ getAdditionalIcons showAdditionalIcons
+    aboutMeIcon
+        :: getAdditionalIcons showAdditionalIcons
+        ++ [ readMeIcon ]
 
 
 getIcons : Bool -> List IconInfo
@@ -164,9 +165,9 @@ getAdditionalIcons showAdditionalIcons =
         []
 
     else
-        [ { urlToNavigate = "https://philocoder.medium.com/", iconImageUrl = "/medium.svg", marginLeft = "4px" }
+        [ { urlToNavigate = "https://open.spotify.com/user/215irwufih45cpoovmxs2r25q/", iconImageUrl = "/spotify.svg", marginLeft = "4px" }
         , { urlToNavigate = "https://github.com/elifoglu", iconImageUrl = "/github.svg", marginLeft = "4px" }
-        , { urlToNavigate = "https://open.spotify.com/user/215irwufih45cpoovmxs2r25q/", iconImageUrl = "/spotify.svg", marginLeft = "4px" }
+        , { urlToNavigate = "https://philocoder.medium.com/", iconImageUrl = "/medium.svg", marginLeft = "4px" }
         , { urlToNavigate = "https://eksisozluk.com/biri/ajora", iconImageUrl = "/eksi.svg", marginLeft = "4px" }
         , { urlToNavigate = "https://twitter.com/philocoder", iconImageUrl = "/twitter.svg", marginLeft = "4px" }
         , { urlToNavigate = "https://youtube.com/ajora", iconImageUrl = "/youtube.svg", marginLeft = "4px" }

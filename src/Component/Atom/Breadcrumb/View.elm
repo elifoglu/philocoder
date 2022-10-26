@@ -4,7 +4,7 @@ import App.Model exposing (Initializable(..), Model, Page(..))
 import App.Msg exposing (Msg)
 import Home.View exposing (viewIcons)
 import HomeNavigator.View exposing (viewHomeNavigator)
-import Html exposing (Html, b, text)
+import Html exposing (Html, b, div, text)
 import Html.Attributes exposing (class)
 
 
@@ -24,6 +24,9 @@ viewBreadcrumb model =
 
         HomePage _ _ _ ->
             viewHomeNavigator True :: viewIcons model
+
+        BioPage _ ->
+            [ div [ class "bioPageIconsContainer" ] (viewIcons model) ]
 
         _ ->
             viewHomeNavigator False :: viewIcons model

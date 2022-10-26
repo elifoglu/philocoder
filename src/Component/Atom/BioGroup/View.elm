@@ -11,12 +11,25 @@ import Markdown
 viewBioGroup : BioGroup -> Html Msg
 viewBioGroup bioGroup =
     span [ style "white-space" "nowrap" ]
-        [ button [ class (decideBioGroupClass bioGroup), onClick (ClickOnABioGroup bioGroup.bioGroupID) ] [ text bioGroup.title ]
+        [ if String.startsWith "/" bioGroup.title then
+            if bioGroup.bioGroupID == 4 then
+                text ""
+
+            else
+                img [ class (decideBioGroupClass bioGroup), src bioGroup.title, onClick (ClickOnABioGroup bioGroup.bioGroupID) ] []
+
+          else
+            button [ class (decideBioGroupClass bioGroup), onClick (ClickOnABioGroup bioGroup.bioGroupID) ]
+                [ text bioGroup.title ]
         , case bioGroup.info of
             Just _ ->
-                span [ style "font-size" "12px" ]
-                    [ img [ onClick (BioGroupDisplayInfoChanged bioGroup), class "openBioGroupInfo", src (getProperInfoIcon bioGroup) ] []
-                    ]
+                if String.startsWith "/" bioGroup.title then
+                    text ""
+
+                else
+                    span [ style "font-size" "12px" ]
+                        [ img [ onClick (BioGroupDisplayInfoChanged bioGroup), class "openBioGroupInfo", src (getProperInfoIcon bioGroup) ] []
+                        ]
 
             Nothing ->
                 text ""
@@ -35,7 +48,14 @@ getProperInfoIcon bioGroup =
 decideBioGroupClass : BioGroup -> String
 decideBioGroupClass bioGroup =
     if bioGroup.isActive then
-        "bioGroup bioGroup-active"
+        if String.startsWith "/" bioGroup.title then
+            "bioGroup-iconish bioGroup-iconish-active"
+
+        else
+            "bioGroup bioGroup-active"
+
+    else if String.startsWith "/" bioGroup.title then
+        "bioGroup-iconish"
 
     else
         "bioGroup"
@@ -48,7 +68,7 @@ viewBioGroupInfoDiv bioGroup =
             if bioGroup.displayInfo then
                 div [ class "bioGroupInfoContainer" ]
                     [ p [ class "bioGroupInfoP" ]
-                        [ Markdown.toHtml [ class "markdownDiv bioGroupInfoP" ] info
+                        [ Markdown.toHtml [ class "markdownDiv" ] info
                         ]
                     ]
 

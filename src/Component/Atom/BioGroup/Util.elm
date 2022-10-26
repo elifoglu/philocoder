@@ -6,7 +6,13 @@ import DataResponse exposing (BioGroupID, GotBioGroup, GotContent, GotContentDat
 
 gotBioGroupToBioGroup : GotBioGroup -> BioGroup
 gotBioGroupToBioGroup got =
-    BioGroup got.bioGroupID got.title got.displayIndex (gotBioGroupInfoToBioGroupInfo got.info) got.bioItemOrder (getActivenessOnInit got.bioGroupID) True
+    BioGroup got.bioGroupID
+        got.title
+        got.displayIndex
+        (gotBioGroupInfoToBioGroupInfo got.info)
+        got.bioItemOrder
+        (getActivenessOnInit got.bioGroupID)
+        True
 
 
 gotBioGroupInfoToBioGroupInfo : Maybe String -> Maybe String
@@ -42,4 +48,4 @@ changeDisplayInfoIfIdMatchesAndGroupIsActive id bioGroup =
 
 getActivenessOnInit : BioGroupID -> Bool
 getActivenessOnInit bioGroupID =
-    bioGroupID == 0
+    bioGroupID == 4
