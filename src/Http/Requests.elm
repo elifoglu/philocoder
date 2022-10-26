@@ -133,12 +133,12 @@ updateExistingTag tagId model =
 
 aboutMeIcon : IconInfo
 aboutMeIcon =
-    { urlToNavigate = "https://about.me/m.e", iconImageUrl = "/about-me.svg", marginLeft = "0px" }
+    { urlToNavigate = "https://about.me/m.e", iconImageUrl = "/about-me.svg", marginLeft = "4px" }
 
 
 bioPageIcon : IconInfo
 bioPageIcon =
-    { urlToNavigate = "/me", iconImageUrl = "/bio.svg", marginLeft = "5px" }
+    { urlToNavigate = "/me", iconImageUrl = "/bio.svg", marginLeft = "4px" }
 
 
 readMeIcon : IconInfo
