@@ -88,10 +88,14 @@ hr {
     cursor: pointer;
 }
 
+.iconsContainer {
+    display: inline-block;
+    padding-left: 4px;
+}
+
 .bioPageIconsContainer {
-    padding-left: 10px;
+    padding-left: 6px;
     padding-top: 3px;
-    cursor: pointer;
     font-size: 25px;
 }
 

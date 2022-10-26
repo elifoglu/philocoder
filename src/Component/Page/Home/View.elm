@@ -82,26 +82,30 @@ viewTag readingMode tag =
         ]
 
 
-viewIcons : Model -> List (Html Msg)
-viewIcons model =
+viewIconsDiv : Model -> Html Msg
+viewIconsDiv model =
     case model.activePage of
         BioPage _ ->
-            getBioPageIcons True
-                |> List.map viewIcon
+            div [ class "bioPageIconsContainer" ]
+                (getBioPageIcons True
+                    |> List.map viewIcon
+                )
 
         _ ->
-            (getIcons model.showAdditionalIcons
-                |> List.map viewIcon
-            )
-                ++ (if not model.showAdditionalIcons then
-                        [ div [ class "iconDiv" ]
-                            [ img [ class "icon showMoreIconsIcon", onClick ShowAdditionalIcons, src "/more.svg" ] []
+            div [ class "iconsContainer" ]
+                ((getIcons model.showAdditionalIcons
+                    |> List.map viewIcon
+                 )
+                    ++ (if not model.showAdditionalIcons then
+                            [ div [ class "iconDiv" ]
+                                [ img [ class "icon showMoreIconsIcon", onClick ShowAdditionalIcons, src "/more.svg" ] []
+                                ]
                             ]
-                        ]
 
-                    else
-                        []
-                   )
+                        else
+                            []
+                       )
+                )
 
 
 viewIcon : IconInfo -> Html Msg
