@@ -141,6 +141,11 @@ bioPageIcon =
     { urlToNavigate = "/me", iconImageUrl = "/bio.svg", marginLeft = "4px" }
 
 
+homeIcon : IconInfo
+homeIcon =
+    { urlToNavigate = "/", iconImageUrl = "/home.svg", marginLeft = "4px" }
+
+
 readMeIcon : IconInfo
 readMeIcon =
     { urlToNavigate = "/tags/beni_oku", iconImageUrl = "/question-mark.svg", marginLeft = "4px" }
@@ -150,7 +155,7 @@ getBioPageIcons : Bool -> List IconInfo
 getBioPageIcons showAdditionalIcons =
     aboutMeIcon
         :: getAdditionalIcons showAdditionalIcons
-        ++ [ readMeIcon ]
+        ++ [ homeIcon, readMeIcon ]
 
 
 getIcons : Bool -> List IconInfo
