@@ -8,6 +8,7 @@ html, body {
     text-transform: none;
     background: rgba(255, 255, 255, 0.25);
     color: #202020;
+    font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 .header {
@@ -20,10 +21,7 @@ html, body {
     margin-left: 20px;
     margin-right: 20px;
     max-width: 600px;
-}
-
-body {
-    font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    width: auto;
 }
 
 .title {

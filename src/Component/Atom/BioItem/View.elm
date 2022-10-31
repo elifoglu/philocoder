@@ -15,7 +15,7 @@ viewBioItemDiv maybeBioItemInfoToShow bioItem =
         span [ class "bioItemSeparator" ] [ text "|" ]
 
     else
-        span [ style "white-space" "nowrap" ]
+        span [ ]
             (case bioItem.info of
                 Just info ->
                     if String.startsWith "http" info then
@@ -31,7 +31,7 @@ viewBioItemDiv maybeBioItemInfoToShow bioItem =
                         [ button [ class "bioItem bioItemHasAnInfo", onClick (ClickOnABioItemInfo bioItem), title (getBioItemTitleText bioItem) ]
                             [ text bioItem.name
                             ]
-                        , span [ style "white-space" "normal" ]
+                        , span [ style "white-space" "nowrap" ]
                             [ img [ onClick (ClickOnABioItemInfo bioItem), class "openBioItemInfo", src (getProperInfoIcon maybeBioItemInfoToShow bioItem) ] []
                             , viewBioItemInfoModal bioItem info maybeBioItemInfoToShow
                             ]

@@ -25,7 +25,7 @@ view model =
     { title = "philocoder"
     , body =
         [ div []
-            [ div [ class "header headerFont" ] <| viewBreadcrumb model
+            [ div [ class "header" ] <| viewBreadcrumb model
             , div [ class "body" ]
                 (case model.activePage of
                     HomePage blogTags readingMode maybeGraphData ->

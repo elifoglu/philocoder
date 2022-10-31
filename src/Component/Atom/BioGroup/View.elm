@@ -11,7 +11,7 @@ import Markdown
 
 viewBioGroup : BioGroup -> Html Msg
 viewBioGroup bioGroup =
-    span [ style "white-space" "nowrap" ]
+    span [ ]
         [ if String.startsWith "/" bioGroup.title then
             if (getActivenessOnInit bioGroup.bioGroupID) then
                 text ""

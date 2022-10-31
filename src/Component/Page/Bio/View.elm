@@ -19,7 +19,7 @@ viewBioPageDiv bioPageModel =
                 |> List.head
                 |> Maybe.withDefault (BioGroup 0 "" 0 Nothing [] True False)
     in
-    div [ style "width" "auto", style "float" "left", style "margin-left" "-4px" ]
+    div [ style "float" "left", style "margin-left" "-4px" ]
         (viewBioGroupsDiv bioPageModel.bioGroups
             :: [ viewBioGroupInfoDiv activeBioGroup ]
             ++ [ viewBioItemsDiv bioPageModel.bioItemToShowInfo bioPageModel.bioItems activeBioGroup ]
