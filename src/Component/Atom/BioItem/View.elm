@@ -31,7 +31,7 @@ viewBioItemDiv maybeBioItemInfoToShow bioItem =
                         [ button [ class "bioItem bioItemHasAnInfo", onClick (ClickOnABioItemInfo bioItem), title (getBioItemTitleText bioItem) ]
                             [ text bioItem.name
                             ]
-                        , span [ style "white-space" "nowrap" ]
+                        , span [ style "white-space" "normal" ]
                             [ img [ onClick (ClickOnABioItemInfo bioItem), class "openBioItemInfo", src (getProperInfoIcon maybeBioItemInfoToShow bioItem) ] []
                             , viewBioItemInfoModal bioItem info maybeBioItemInfoToShow
                             ]
