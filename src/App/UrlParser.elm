@@ -17,6 +17,7 @@ routeParser =
         , map nonInitializedUpdateContentPageMapper (s "update" </> s "content" </> int)
         , map (CreateTagPage (NoRequestSentYet (CreateTagPageModel "" "" "DateDESC" True True "" ""))) (s "create" </> s "tag")
         , map nonInitializedUpdateTagPageMapper (s "update" </> s "tag" </> string)
+        , map rPageMapper (s "r")
         ]
 
 
@@ -54,6 +55,9 @@ nonInitializedBioPageMapper : Page
 nonInitializedBioPageMapper =
     BioPage Nothing
 
+rPageMapper : Page
+rPageMapper =
+    ContentPage (NonInitialized 5)
 
 pageBy : Url.Url -> Page
 pageBy url =
