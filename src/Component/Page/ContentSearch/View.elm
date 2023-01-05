@@ -14,10 +14,10 @@ viewSearchContentDiv searchKeyword contents =
         [ input [ type_ "text", id "contentSearchInput", class "contentSearchInput", placeholder "ara...", value searchKeyword, onInput GotSearchInput, style "width" "100px" ] []
         , span [ class "searchContentInfoText" ]
             [ text
-                (if String.length searchKeyword > 5 && List.length contents > 0 then
+                (if String.length searchKeyword >= 5 && List.length contents > 0 then
                     String.fromInt (List.length contents) ++ " adet içerik bulundu"
 
-                 else if String.length searchKeyword > 5 && List.isEmpty contents then
+                 else if String.length searchKeyword >= 5 && List.isEmpty contents then
                     "içerik bulunamadı"
 
                  else
