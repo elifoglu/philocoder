@@ -24,6 +24,7 @@ viewCreateContentDiv createContentPageModel =
                 , viewInput "text" "refIDs (use comma to separate)" createContentPageModel.refs (ContentInputChanged Refs)
                 , viewCheckBoxInput createContentPageModel.okForBlogMode (ContentInputChanged OkForBlogMode)
                 , viewInput "password" "password" createContentPageModel.password (ContentInputChanged Password)
+                , span [] [ text "!!don't forget to add search text manually if you will give a reference to ekşi/medium instead of bringing the full text here!!" ]
                 , viewContentTextArea "content" createContentPageModel.text (ContentInputChanged Text)
                 , div []
                     [ viewPreviewContentButton (PreviewContent <| PreviewForContentCreate createContentPageModel)
