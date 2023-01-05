@@ -97,6 +97,7 @@ type Page
     | CreateTagPage (MaySendRequest CreateTagPageModel CreateTagPageModel)
     | UpdateTagPage (MaySendRequest ( UpdateTagPageModel, String ) UpdateTagPageModel)
     | BioPage (Maybe BioPageModel)
+    | ContentSearchPage String (List Content)
     | NotFoundPage
     | MaintenancePage
 

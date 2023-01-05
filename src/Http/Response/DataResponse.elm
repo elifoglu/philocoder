@@ -1,4 +1,4 @@
-module DataResponse exposing (AllTagsResponse, BioGroupID, BioItemID, BioResponse, BlogTagsResponse, ContentID, ContentsResponse, GotAllRefData, GotBioGroup, GotBioItem, GotContent, GotContentDate, GotRefConnection, GotTag, allTagsResponseDecoder, bioResponseDecoder, blogTagsResponseDecoder, contentDecoder, contentsResponseDecoder, gotAllRefDataDecoder)
+module DataResponse exposing (AllTagsResponse, BioGroupID, BioItemID, BioResponse, BlogTagsResponse, ContentID, ContentSearchResponse, ContentsResponse, GotAllRefData, GotBioGroup, GotBioItem, GotContent, GotContentDate, GotRefConnection, GotTag, allTagsResponseDecoder, bioResponseDecoder, blogTagsResponseDecoder, contentDecoder, contentSearchResponseDecoder, contentsResponseDecoder, gotAllRefDataDecoder)
 
 import Content.Model exposing (Ref)
 import Json.Decode as D exposing (Decoder, bool, field, int, map, map2, map3, map5, map6, map7, map8, maybe, string)
@@ -83,6 +83,11 @@ type alias GotBioItem =
     }
 
 
+type alias ContentSearchResponse =
+    { contents : List GotContent
+    }
+
+
 allTagsResponseDecoder : Decoder AllTagsResponse
 allTagsResponseDecoder =
     map AllTagsResponse
@@ -99,6 +104,12 @@ contentsResponseDecoder : Decoder ContentsResponse
 contentsResponseDecoder =
     map2 ContentsResponse
         (field "totalPageCount" int)
+        (field "contents" (D.list contentDecoder))
+
+
+contentSearchResponseDecoder : Decoder ContentSearchResponse
+contentSearchResponseDecoder =
+    map ContentSearchResponse
         (field "contents" (D.list contentDecoder))
 
 

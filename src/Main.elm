@@ -9,6 +9,7 @@ import BioGroup.Util exposing (changeActivenessIfIdMatches, changeDisplayInfoIfI
 import BioGroups.View exposing (makeAllBioGroupsNonActive)
 import BioItem.Util exposing (gotBioItemToBioItem)
 import Browser exposing (UrlRequest)
+import Browser.Dom as Dom
 import Browser.Navigation as Nav
 import Component.Page.Util exposing (tagsNotLoaded)
 import Content.Util exposing (gotContentToContent)
@@ -16,8 +17,9 @@ import ForceDirectedGraph exposing (graphSubscriptions, initGraphModel, updateGr
 import Home.View exposing (tagCountCurrentlyShownOnPage)
 import List
 import Pagination.Model exposing (Pagination)
-import Requests exposing (createNewTag, getAllRefData, getAllTagsResponse, getBio, getBlogTagsResponse, getContent, getTagContents, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
+import Requests exposing (createNewTag, getAllRefData, getAllTagsResponse, getBio, getBlogTagsResponse, getContent, getSearchResult, getTagContents, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
 import Tag.Util exposing (tagById)
+import Task
 import Time
 import Url
 
@@ -72,6 +74,9 @@ needAllTagsData page =
             False
 
         BioPage _ ->
+            False
+
+        ContentSearchPage _ _ ->
             False
 
         NotFoundPage ->
@@ -638,7 +643,6 @@ update msg model =
                     case model.activePage of
                         HomePage _ readingMode maybeGraphData ->
                             let
-                                -- TODO FIX: BU GOT TAG TO TAG Bİ İŞe ARAMIYORMUŞ, allTags için kullanımlarını süpürebilirsin süpürebildiğin noktalarda
                                 homePage =
                                     HomePage gotTagDataResponse.blogTags readingMode maybeGraphData
 
@@ -664,6 +668,38 @@ update msg model =
                             model.activePage
             in
             ( { model | activePage = newPage }, Cmd.none )
+
+        GotSearchInput searchKeyword ->
+            let
+                newPage =
+                    case model.activePage of
+                        HomePage _ _ _ ->
+                            ContentSearchPage searchKeyword []
+
+                        ContentSearchPage _ contentList ->
+                            ContentSearchPage searchKeyword contentList
+
+                        _ ->
+                            model.activePage
+            in
+            ( { model | activePage = newPage }, Cmd.batch [ getSearchResult searchKeyword, Dom.focus "contentSearchInput" |> Task.attempt FocusResult ] )
+
+        GotContentSearchResponse res ->
+            case res of
+                Ok gotContentSearchResponse ->
+                    let
+                        newPage =
+                            case model.activePage of
+                                ContentSearchPage searchKeyword _ ->
+                                    ContentSearchPage searchKeyword (List.map (gotContentToContent model) gotContentSearchResponse.contents)
+
+                                _ ->
+                                    model.activePage
+                    in
+                    ( { model | activePage = newPage }, Cmd.none )
+
+                Err _ ->
+                    createNewModelAndCmdMsg model MaintenancePage
 
         GotAllRefData res ->
             case res of

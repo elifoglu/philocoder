@@ -25,6 +25,7 @@ sendTitle model =
                     case content.title of
                         Just t ->
                             title (t ++ " - philocoder")
+
                         Nothing ->
                             title (content.beautifiedText ++ " - philocoder")
 
@@ -80,7 +81,7 @@ sendTitle model =
                     in
                     case maybeActiveBioGroup of
                         Just activeBioGroup ->
-                            if String.startsWith "/" activeBioGroup.title  then
+                            if String.startsWith "/" activeBioGroup.title then
                                 title <| "me - philocoder"
 
                             else
@@ -97,3 +98,6 @@ sendTitle model =
 
         MaintenancePage ->
             title "bakım çalışması - philocoder"
+
+        ContentSearchPage _ _ ->
+            title "search content - philocoder"

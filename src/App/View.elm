@@ -7,6 +7,7 @@ import Breadcrumb.View exposing (viewBreadcrumb)
 import Browser exposing (Document)
 import Component.Page.Util exposing (tagsLoaded)
 import Content.View exposing (viewContentDiv)
+import ContentSearch.View exposing (viewSearchContentDiv)
 import Contents.View exposing (viewContentDivs)
 import CreateContent.View exposing (viewCreateContentDiv)
 import CreateTag.View exposing (viewCreateTagDiv)
@@ -107,7 +108,7 @@ view model =
                             NoRequestSentYet ( updateTagPageModel, tagId ) ->
                                 [ viewUpdateTagDiv updateTagPageModel tagId ]
 
-                            RequestSent updateTagPageModel ->
+                            RequestSent _ ->
                                 [ text "..." ]
 
                     BioPage data ->
@@ -117,6 +118,9 @@ view model =
 
                             Nothing ->
                                 [ text "..." ]
+
+                    ContentSearchPage searchKeyword contents ->
+                        [ viewSearchContentDiv searchKeyword contents ]
 
                     NotFoundPage ->
                         [ view404Div ]

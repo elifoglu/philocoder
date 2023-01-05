@@ -4,7 +4,8 @@ import App.Model exposing (CreateContentPageModel, CreateTagPageModel, Page, Rea
 import BioGroup.Model exposing (BioGroup)
 import BioItem.Model exposing (BioItem)
 import Browser
-import DataResponse exposing (AllTagsResponse, BioGroupID, BioItemID, BioResponse, BlogTagsResponse, ContentID, ContentsResponse, GotAllRefData, GotContent)
+import Browser.Dom as Dom
+import DataResponse exposing (AllTagsResponse, BioGroupID, BioItemID, BioResponse, BlogTagsResponse, ContentID, ContentSearchResponse, ContentsResponse, GotAllRefData, GotContent)
 import Graph exposing (NodeId)
 import Http
 import Tag.Model exposing (Tag)
@@ -19,6 +20,9 @@ type Msg
     | GotBlogTagsResponse (Result Http.Error BlogTagsResponse)
     | GotAllRefData (Result Http.Error GotAllRefData)
     | ReadingModeChanged ReadingMode
+    | GotSearchInput String
+    | GotContentSearchResponse (Result Http.Error ContentSearchResponse)
+    | FocusResult (Result Dom.Error ())
     | ShowAdditionalIcons
     | GoToContentViaContentGraph ContentID
     | GotBioResponse (Result Http.Error BioResponse)

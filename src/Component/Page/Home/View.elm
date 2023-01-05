@@ -4,8 +4,8 @@ import App.Model exposing (IconInfo, Model, Page(..), ReadingMode(..))
 import App.Msg exposing (Msg(..))
 import Component.Page.Util exposing (tagsLoaded)
 import Html exposing (Html, a, br, div, img, input, span, text)
-import Html.Attributes exposing (checked, class, href, name, src, style, type_)
-import Html.Events exposing (on, onClick)
+import Html.Attributes exposing (checked, class, href, name, placeholder, src, style, type_, value)
+import Html.Events exposing (on, onClick, onInput)
 import Json.Decode as Decode
 import Requests exposing (getBioPageIcons, getIcons)
 import Tag.Model exposing (Tag)
@@ -132,7 +132,7 @@ viewReadingModeDiv readingMode blogTags =
                     []
                 , text "blog"
                 ]
-            , span []
+            , span [ style "padding-top" "-5px" ]
                 [ input
                     [ type_ "radio"
                     , name "readingMode"
@@ -142,6 +142,7 @@ viewReadingModeDiv readingMode blogTags =
                     []
                 , text "tümü"
                 ]
+            , input [ type_ "text", class "contentSearchInput", placeholder "ara...", value "", onInput GotSearchInput, style "margin-left" "5px" ] []
             ]
         ]
 

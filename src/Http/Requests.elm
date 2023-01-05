@@ -1,9 +1,10 @@
-module Requests exposing (createNewTag, getAllRefData, getAllTagsResponse, getBio, getBioPageIcons, getBlogTagsResponse, getContent, getIcons, getTagContents, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
+module Requests exposing (createNewTag, getAllRefData, getAllTagsResponse, getBio, getBioPageIcons, getBlogTagsResponse, getContent, getIcons, getSearchResult, getTagContents, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
 
 import App.Model exposing (CreateContentPageModel, CreateTagPageModel, IconInfo, ReadingMode(..), UpdateContentPageData, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
 import App.Msg exposing (Msg(..), PreviewContentModel(..))
-import DataResponse exposing (ContentID, allTagsResponseDecoder, bioResponseDecoder, blogTagsResponseDecoder, contentDecoder, contentsResponseDecoder, gotAllRefDataDecoder)
+import DataResponse exposing (ContentID, allTagsResponseDecoder, bioResponseDecoder, blogTagsResponseDecoder, contentDecoder, contentSearchResponseDecoder, contentsResponseDecoder, gotAllRefDataDecoder)
 import Http
+import Json.Encode as Encode
 import Tag.Model exposing (Tag)
 import Task
 import Time
@@ -184,4 +185,18 @@ getBio =
     Http.get
         { url = apiURL ++ "bio"
         , expect = Http.expectJson GotBioResponse bioResponseDecoder
+        }
+
+
+getSearchResult : String -> Cmd Msg
+getSearchResult searchKeyword =
+    Http.post
+        { url = apiURL ++ "search"
+        , body =
+            Http.jsonBody
+                (Encode.object
+                    [ ( "keyword", Encode.string searchKeyword )
+                    ]
+                )
+        , expect = Http.expectJson GotContentSearchResponse contentSearchResponseDecoder
         }
