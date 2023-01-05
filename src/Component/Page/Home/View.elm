@@ -132,7 +132,7 @@ viewReadingModeDiv readingMode blogTags =
                     []
                 , text "blog"
                 ]
-            , span [ style "padding-top" "-5px" ]
+            , span []
                 [ input
                     [ type_ "radio"
                     , name "readingMode"

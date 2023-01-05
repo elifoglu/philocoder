@@ -12,14 +12,18 @@ viewSearchContentDiv : String -> List Content -> Html Msg
 viewSearchContentDiv searchKeyword contents =
     div []
         [ input [ type_ "text", id "contentSearchInput", class "contentSearchInput", placeholder "ara...", value searchKeyword, onInput GotSearchInput, style "width" "100px" ] []
-        , if String.length searchKeyword > 5 && List.length contents > 0 then
-            span [ class "searchContentInfoText" ] [ text (String.fromInt (List.length contents) ++ " adet içerik bulundu") ]
+        , span [ class "searchContentInfoText" ]
+            [ text
+                (if String.length searchKeyword > 5 && List.length contents > 0 then
+                    String.fromInt (List.length contents) ++ " adet içerik bulundu"
 
-          else if String.length searchKeyword > 5 && List.isEmpty contents then
-            span [ class "searchContentInfoText" ] [ text "içerik bulunamadı" ]
+                 else if String.length searchKeyword > 5 && List.isEmpty contents then
+                    "içerik bulunamadı"
 
-          else
-            span [ class "searchContentInfoText" ] [ text "(en az 5 karakter girerek içerik ara)" ]
+                 else
+                    "(en az 5 karakter girerek içerik ara)"
+                )
+            ]
         , div [ style "margin-top" "20px" ]
             (contents
                 |> List.map viewContentDiv
