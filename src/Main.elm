@@ -36,27 +36,6 @@ main =
         , onUrlChange = UrlChanged
         }
 
-
-getUsernameFromCredentials : String -> String
-getUsernameFromCredentials credentialsString =
-    Maybe.withDefault "invalidUsername" (List.head (String.split "|||" credentialsString))
-
-
-getPasswordFromCredentials : String -> String
-getPasswordFromCredentials credentialsString =
-    Maybe.withDefault "invalidPassword" (List.Extra.getAt 1 (String.split "|||" credentialsString))
-
-
-getConsumeModeIsOnValueFromLocal : Maybe String -> Bool
-getConsumeModeIsOnValueFromLocal maybeString =
-    case maybeString of
-        Just "true" ->
-            True
-
-        _ ->
-            False
-
-
 init : { readingMode : Maybe String, consumeModeIsOn : Maybe String, contentReadClickedAtLeastOnce : Maybe String, credentials : Maybe String } -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
     let
@@ -69,10 +48,10 @@ init flags url key =
                     "invalidUsername|||invalidPassword"
 
         username =
-            getUsernameFromCredentials credentials
+            Maybe.withDefault "invalidUsername" (List.head (String.split "|||" credentials))
 
         password =
-            getPasswordFromCredentials credentials
+            Maybe.withDefault "invalidPassword" (List.Extra.getAt 1 (String.split "|||" credentials))
 
         readingMode =
             case flags.readingMode of
@@ -95,6 +74,14 @@ init flags url key =
 
         page =
             pageBy url readingMode
+
+        getConsumeModeIsOnValueFromLocal maybeString =
+            case maybeString of
+            Just "true" ->
+                True
+
+            _ ->
+                False
 
         model =
             Model "log" key [] page False (LocalStorage readingMode contentReadClickedAtLeastOnce username password) False (getConsumeModeIsOnValueFromLocal flags.consumeModeIsOn) Time.utc
