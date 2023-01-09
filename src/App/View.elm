@@ -67,7 +67,7 @@ view model =
                                 []
 
                             Initialized content ->
-                                [ viewContentDiv model.localStorage.contentReadClickedAtLeastOnce content ]
+                                [ viewContentDiv Nothing model.localStorage.contentReadClickedAtLeastOnce content ]
 
                     TagPage status ->
                         case status of
@@ -75,7 +75,7 @@ view model =
                                 []
 
                             Initialized initialized ->
-                                viewContentDivs model.localStorage.contentReadClickedAtLeastOnce initialized.contents
+                                viewContentDivs model.dataToFadeContent model.localStorage.contentReadClickedAtLeastOnce initialized.contents
                                     ++ [ viewPagination initialized.tag initialized.pagination initialized.readingMode
                                        ]
 

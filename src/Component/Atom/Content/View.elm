@@ -1,8 +1,10 @@
 module Content.View exposing (viewContentDiv)
 
+import App.Model exposing (DataToFadeContent)
 import App.Msg exposing (Msg(..))
 import Content.Model exposing (Content)
 import Content.Util exposing (maybeDateText, maybeDisplayableTagsOfContent)
+import DataResponse exposing (ContentID)
 import Html exposing (Html, a, div, img, input, label, p, span, text)
 import Html.Attributes exposing (checked, class, href, src, style, title, type_)
 import Html.Events exposing (on)
@@ -11,10 +13,10 @@ import Markdown
 import Tag.Model exposing (Tag)
 
 
-viewContentDiv : Bool -> Content -> Html Msg
-viewContentDiv contentReadClickedAtLeastOnce content =
-    p []
-        [ div []
+viewContentDiv : DataToFadeContent -> Bool -> Content -> Html Msg
+viewContentDiv dataToFadeContent contentReadClickedAtLeastOnce content =
+    p [ style "opacity" (getOpacityLevel content.contentId dataToFadeContent) ]
+        [ div [ ]
             [ div [ class "title" ] [ viewContentTitle content.title content.beautifiedText ]
             , viewRefsTextOfContent content
             , addBrIfContentEitherHasTitleOrRefs content
@@ -22,6 +24,19 @@ viewContentDiv contentReadClickedAtLeastOnce content =
             ]
         , viewContentInfoDiv content contentReadClickedAtLeastOnce
         ]
+
+
+getOpacityLevel : ContentID -> DataToFadeContent -> String
+getOpacityLevel contentId dataToFadeContent =
+    case dataToFadeContent of
+        Just pair ->
+            if contentId == Tuple.second pair then (String.fromFloat (Tuple.first pair))
+            else "1"
+
+
+        Nothing ->
+            "1"
+
 
 
 addBrIfContentEitherHasTitleOrRefs : Content -> Html Msg

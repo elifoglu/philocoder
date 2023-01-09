@@ -52,6 +52,7 @@ type Msg
     | Logout
     | GotContentReadResponse (Result Http.Error String)
     | GotTotalPageCountOfTag (Result Http.Error String)
+    | HideContentFromActiveTagPage ContentID
     | DragStart NodeId ( Float, Float )
     | DragAt ( Float, Float )
     | DragEnd ( Float, Float )

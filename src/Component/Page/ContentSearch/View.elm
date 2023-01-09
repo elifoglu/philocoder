@@ -26,7 +26,7 @@ viewSearchContentDiv contentReadClickedAtLeastOnce searchKeyword contents =
             ]
         , div [ style "margin-top" "20px" ]
             (contents
-                |> List.map (viewContentDiv contentReadClickedAtLeastOnce)
+                |> List.map (viewContentDiv Nothing contentReadClickedAtLeastOnce)
                 |> List.intersperse (hr [] [])
             )
         ]

@@ -1,4 +1,4 @@
-module App.Model exposing (BioPageModel, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GetContentRequestModel, GetTagContentsRequestModel, GraphData, GraphModel, IconInfo, Initializable(..), InitializedTagPageModel, LocalStorage, MaySendRequest(..), Model, NonInitializedYetTagPageModel, Page(..), ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateContentPageModel(..), UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, setCreateContentPageModel, setUpdateContentPageModel, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
+module App.Model exposing (BioPageModel, CreateContentPageModel, CreateTagPageModel, DataToFadeContent, Drag, Entity, GetContentRequestModel, GetTagContentsRequestModel, GraphData, GraphModel, IconInfo, Initializable(..), InitializedTagPageModel, LocalStorage, MaySendRequest(..), Model, NonInitializedYetTagPageModel, Page(..), ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateContentPageModel(..), UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, setCreateContentPageModel, setUpdateContentPageModel, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
 
 import BioGroup.Model exposing (BioGroup)
 import BioItem.Model exposing (BioItem)
@@ -22,12 +22,21 @@ type alias Model =
     , localStorage : LocalStorage
     , loggedIn : Bool
     , consumeModeIsOn : Bool
+    , dataToFadeContent : DataToFadeContent
     , timeZone : Time.Zone
     }
 
 
 type alias LocalStorage =
     { readingMode : ReadingMode, contentReadClickedAtLeastOnce : Bool, username : String, password : String }
+
+
+type alias OpacityLevel =
+    Float
+
+
+type alias DataToFadeContent =
+    Maybe ( OpacityLevel, ContentID )
 
 
 type alias IconInfo =
@@ -90,8 +99,14 @@ type alias InitializedTagPageModel =
     , readingMode : ReadingMode
     }
 
-type alias BlogTagsToShow = (Maybe (List Tag))
-type alias AllTagsToShow = (Maybe (List Tag))
+
+type alias BlogTagsToShow =
+    Maybe (List Tag)
+
+
+type alias AllTagsToShow =
+    Maybe (List Tag)
+
 
 type Page
     = HomePage BlogTagsToShow AllTagsToShow ReadingMode (Maybe GraphData)
@@ -129,7 +144,7 @@ type alias GetTagContentsRequestModel =
     { tagId : String
     , page : Maybe Int
     , blogMode : Bool
-    , loggedIn: Bool
+    , loggedIn : Bool
     , consumeMode : Bool
     , username : String
     , password : String
@@ -139,7 +154,7 @@ type alias GetTagContentsRequestModel =
 type alias TotalPageCountRequestModel =
     { tagId : String
     , blogMode : Bool
-    , loggedIn: Bool
+    , loggedIn : Bool
     , consumeMode : Bool
     , username : String
     , password : String

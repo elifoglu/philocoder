@@ -19,7 +19,7 @@ import Home.View exposing (tagCountCurrentlyShownOnPage)
 import List
 import List.Extra
 import Pagination.Model exposing (Pagination)
-import Requests exposing (createNewTag, getAllRefData, getAllTagsResponse, getBio, getHomePageDataResponse, getContent, getOnlyTotalPageCountForPagination, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
+import Requests exposing (createNewTag, getAllRefData, getAllTagsResponse, getBio, getContent, getHomePageDataResponse, getOnlyTotalPageCountForPagination, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
 import Tag.Util exposing (tagById)
 import Task
 import Time
@@ -35,6 +35,7 @@ main =
         , onUrlRequest = UrlRequested
         , onUrlChange = UrlChanged
         }
+
 
 init : { readingMode : Maybe String, consumeModeIsOn : Maybe String, contentReadClickedAtLeastOnce : Maybe String, credentials : Maybe String } -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
@@ -77,14 +78,14 @@ init flags url key =
 
         getConsumeModeIsOnValueFromLocal maybeString =
             case maybeString of
-            Just "true" ->
-                True
+                Just "true" ->
+                    True
 
-            _ ->
-                False
+                _ ->
+                    False
 
         model =
-            Model "log" key [] page False (LocalStorage readingMode contentReadClickedAtLeastOnce username password) False (getConsumeModeIsOnValueFromLocal flags.consumeModeIsOn) Time.utc
+            Model "log" key [] page False (LocalStorage readingMode contentReadClickedAtLeastOnce username password) False (getConsumeModeIsOnValueFromLocal flags.consumeModeIsOn) Nothing Time.utc
     in
     ( model
     , Cmd.batch [ login AttemptAtInitialization username password, getTimeZone ]
@@ -293,7 +294,17 @@ update msg model =
 
         ContentReadChecked contentID ->
             if model.loggedIn then
-                ( model, setContentAsRead contentID model )
+                case model.dataToFadeContent of
+                    -- do not allow to check if the content is fading out
+                    Just data ->
+                        if Tuple.second data == contentID then
+                            ( model, Cmd.none )
+
+                        else
+                            ( model, setContentAsRead contentID model )
+
+                    Nothing ->
+                        ( model, setContentAsRead contentID model )
 
             else
                 let
@@ -342,7 +353,10 @@ update msg model =
 
                                     Initialized pageModel ->
                                         if model.consumeModeIsOn then
-                                            ( { model | activePage = TagPage (Initialized { pageModel | contents = pageModel.contents |> List.filter (\c -> String.fromInt c.contentId /= contentId) }) }
+                                            ( { model
+                                                | activePage = TagPage (Initialized { pageModel | contents = List.map revertRead pageModel.contents })
+                                                , dataToFadeContent = Just ( 1, Maybe.withDefault 0 (String.toInt contentId) )
+                                              }
                                             , getOnlyTotalPageCountForPagination pageModel.tag pageModel.readingMode model
                                               --since we hid a content on the screen, we have to recalculate total page count and set pagination again
                                             )
@@ -417,6 +431,23 @@ update msg model =
                             ( model, Cmd.none )
 
                 Err _ ->
+                    ( model, Cmd.none )
+
+        HideContentFromActiveTagPage contentId ->
+            case model.activePage of
+                TagPage status ->
+                    case status of
+                        Initialized pageModel ->
+                            if model.consumeModeIsOn then
+                                ( { model | activePage = TagPage (Initialized { pageModel | contents = pageModel.contents |> List.filter (\c -> c.contentId /= contentId) }) }, Cmd.none )
+
+                            else
+                                ( model, Cmd.none )
+
+                        _ ->
+                            ( model, Cmd.none )
+
+                _ ->
                     ( model, Cmd.none )
 
         -- CREATE/UPDATE CONTENT PAGES --
@@ -787,7 +818,8 @@ update msg model =
                         _ ->
                             model.activePage
 
-                newModel = { model | activePage = newPage }
+                newModel =
+                    { model | activePage = newPage }
             in
             ( newModel, Cmd.batch [ sendTitle newModel, getSearchResult searchKeyword newModel, Dom.focus "contentSearchInput" |> Task.attempt FocusResult ] )
 
@@ -1046,6 +1078,31 @@ update msg model =
                         Nothing ->
                             ( model, Cmd.none )
 
+                TagPage _ ->
+                    case model.dataToFadeContent of
+                        Just ( opacityLevel, contentId ) ->
+                            let
+                                t =
+                                    0.05
+
+                                dataToFadeContent =
+                                    if opacityLevel <= t then
+                                        Nothing
+
+                                    else
+                                        Just ( opacityLevel - t, contentId )
+                            in
+                            ( { model | dataToFadeContent = dataToFadeContent }
+                            , if dataToFadeContent == Nothing then
+                                Task.perform (always (HideContentFromActiveTagPage contentId)) (Task.succeed ())
+
+                              else
+                                Cmd.none
+                            )
+
+                        Nothing ->
+                            ( model, Cmd.none )
+
                 _ ->
                     ( model, Cmd.none )
 
@@ -1064,6 +1121,13 @@ subscriptions model =
 
                 Nothing ->
                     Sub.none
+
+        TagPage _ ->
+            if model.dataToFadeContent /= Nothing then
+                Time.every 80 Tick
+
+            else
+                Sub.none
 
         _ ->
             Sub.none
