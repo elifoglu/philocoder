@@ -5,7 +5,7 @@ import BioGroup.Model exposing (BioGroup)
 import BioItem.Model exposing (BioItem)
 import Browser
 import Browser.Dom as Dom
-import DataResponse exposing (AllTagsResponse, BioGroupID, BioItemID, BioResponse, BlogTagsResponse, ContentID, ContentSearchResponse, ContentsResponse, GotAllRefData, GotContent)
+import DataResponse exposing (AllTagsResponse, BioGroupID, BioItemID, BioResponse, HomePageDataResponse, ContentID, ContentSearchResponse, ContentsResponse, GotAllRefData, GotContent)
 import Graph exposing (NodeId)
 import Http
 import Tag.Model exposing (Tag)
@@ -17,7 +17,7 @@ type Msg
     = UrlRequested Browser.UrlRequest
     | UrlChanged Url.Url
     | GotAllTagsResponse (Result Http.Error AllTagsResponse)
-    | GotBlogTagsResponse (Result Http.Error BlogTagsResponse)
+    | GotHomePageDataResponse (Result Http.Error HomePageDataResponse)
     | GotAllRefData (Result Http.Error GotAllRefData)
     | ReadingModeChanged ReadingMode
     | ConsumeModeChanged Bool

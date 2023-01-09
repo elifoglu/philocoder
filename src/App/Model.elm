@@ -90,9 +90,11 @@ type alias InitializedTagPageModel =
     , readingMode : ReadingMode
     }
 
+type alias BlogTagsToShow = (Maybe (List Tag))
+type alias AllTagsToShow = (Maybe (List Tag))
 
 type Page
-    = HomePage (List Tag) ReadingMode (Maybe GraphData)
+    = HomePage BlogTagsToShow AllTagsToShow ReadingMode (Maybe GraphData)
     | ContentPage (Initializable Int Content)
     | TagPage (Initializable NonInitializedYetTagPageModel InitializedTagPageModel)
     | CreateContentPage (MaySendRequest CreateContentPageModel CreateContentPageModel)
@@ -117,6 +119,7 @@ type alias GraphData =
 
 type alias GetContentRequestModel =
     { contentID : Int
+    , loggedIn : Bool
     , username : String
     , password : String
     }
@@ -126,6 +129,7 @@ type alias GetTagContentsRequestModel =
     { tagId : String
     , page : Maybe Int
     , blogMode : Bool
+    , loggedIn: Bool
     , consumeMode : Bool
     , username : String
     , password : String
@@ -251,6 +255,7 @@ getTagContentsRequestModelEncoder model =
                     Encode.int 1
           )
         , ( "blogMode", Encode.bool model.blogMode )
+        , ( "loggedIn", Encode.bool model.loggedIn )
         , ( "consumeMode", Encode.bool model.consumeMode )
         , ( "username", Encode.string model.username )
         , ( "password", Encode.string model.password )

@@ -1,8 +1,8 @@
-module Requests exposing (createNewTag, getAllRefData, getAllTagsResponse, getBio, getBioPageIcons, getBlogTagsResponse, getContent, getIcons, getOnlyTotalPageCountForPagination, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
+module Requests exposing (createNewTag, getAllRefData, getAllTagsResponse, getBio, getBioPageIcons, getHomePageDataResponse, getContent, getIcons, getOnlyTotalPageCountForPagination, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
 
 import App.Model exposing (CreateContentPageModel, CreateTagPageModel, GetContentRequestModel, GetTagContentsRequestModel, IconInfo, Model, ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
 import App.Msg exposing (LoginRequestType, Msg(..), PreviewContentModel(..))
-import DataResponse exposing (ContentID, allTagsResponseDecoder, bioResponseDecoder, blogTagsResponseDecoder, contentDecoder, contentSearchResponseDecoder, contentsResponseDecoder, gotAllRefDataDecoder)
+import DataResponse exposing (ContentID, allTagsResponseDecoder, bioResponseDecoder, homePageDataResponseDecoder, contentDecoder, contentSearchResponseDecoder, contentsResponseDecoder, gotAllRefDataDecoder)
 import Http
 import Json.Encode as Encode
 import Tag.Model exposing (Tag)
@@ -19,35 +19,28 @@ getTimeZone =
     Task.perform GotTimeZone Time.here
 
 
-getAllTagsResponse : Bool -> String -> String -> Cmd Msg
-getAllTagsResponse consumeMode username password =
-    Http.post
+getAllTagsResponse : Cmd Msg
+getAllTagsResponse =
+    Http.get
         { url = apiURL ++ "get-all-tags"
-        , body =
-            Http.jsonBody
-                (Encode.object
-                    [ ( "consumeMode", Encode.bool consumeMode )
-                    , ( "username", Encode.string username )
-                    , ( "password", Encode.string password )
-                    ]
-                )
         , expect = Http.expectJson GotAllTagsResponse allTagsResponseDecoder
         }
 
 
-getBlogTagsResponse : Bool -> String -> String -> Cmd Msg
-getBlogTagsResponse consumeMode username password =
+getHomePageDataResponse : Bool -> Bool -> String -> String -> Cmd Msg
+getHomePageDataResponse loggedIn consumeMode username password =
     Http.post
-        { url = apiURL ++ "get-blog-tags"
+        { url = apiURL ++ "get-homepage-data"
         , body =
             Http.jsonBody
                 (Encode.object
-                    [ ( "consumeMode", Encode.bool consumeMode )
+                    [ ( "loggedIn", Encode.bool loggedIn )
+                    , ( "consumeMode", Encode.bool consumeMode )
                     , ( "username", Encode.string username )
                     , ( "password", Encode.string password )
                     ]
                 )
-        , expect = Http.expectJson GotBlogTagsResponse blogTagsResponseDecoder
+        , expect = Http.expectJson GotHomePageDataResponse homePageDataResponseDecoder
         }
 
 
@@ -66,6 +59,7 @@ getTagContents tag maybePage readingMode model =
                         False
                 )
                 (model.loggedIn && model.consumeModeIsOn)
+                model.loggedIn
                 model.localStorage.username
                 model.localStorage.password
     in
@@ -80,7 +74,7 @@ getContent : Int -> Model -> Cmd Msg
 getContent contentId model =
     Http.post
         { url = apiURL ++ "get-content"
-        , body = Http.jsonBody (getContentRequestModelEncoder (GetContentRequestModel contentId model.localStorage.username model.localStorage.password))
+        , body = Http.jsonBody (getContentRequestModelEncoder (GetContentRequestModel contentId model.loggedIn model.localStorage.username model.localStorage.password))
         , expect = Http.expectJson GotContent contentDecoder
         }
 
@@ -211,6 +205,7 @@ getSearchResult searchKeyword model =
             Http.jsonBody
                 (Encode.object
                     [ ( "keyword", Encode.string searchKeyword )
+                    , ( "loggedIn", Encode.bool model.loggedIn )
                     , ( "username", Encode.string model.localStorage.username )
                     , ( "password", Encode.string model.localStorage.password )
                     ]

@@ -12,12 +12,6 @@ flipBoolAndToStr bool =
     else
         "true"
 
-
-tagsLoaded : List Tag -> Bool
-tagsLoaded allTags =
-    allTags /= []
-
-
 tagsNotLoaded : Model -> Bool
 tagsNotLoaded model =
     model.allTags == []

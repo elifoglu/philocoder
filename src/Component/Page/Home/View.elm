@@ -2,7 +2,6 @@ module Home.View exposing (..)
 
 import App.Model exposing (IconInfo, Model, Page(..), ReadingMode(..))
 import App.Msg exposing (Msg(..))
-import Component.Page.Util exposing (tagsLoaded)
 import Html exposing (Html, a, br, button, div, img, input, span, text)
 import Html.Attributes exposing (checked, class, href, name, placeholder, src, style, type_, value)
 import Html.Events exposing (on, onCheck, onClick, onInput)
@@ -12,15 +11,16 @@ import Tag.Model exposing (Tag)
 import TagInfoIcon.View exposing (viewTagInfoIcon)
 
 
-viewHomePageDiv : List Tag -> List Tag -> ReadingMode -> Bool -> Bool -> Html Msg
-viewHomePageDiv allTags blogTags readingMode loggedIn consumeModeIsOn =
+viewHomePageDiv : Maybe (List Tag) -> Maybe (List Tag) -> ReadingMode -> Bool -> Bool -> Html Msg
+viewHomePageDiv allTagsToShow blogTagsToShow readingMode loggedIn consumeModeIsOn =
     div [ class "homepage homepageTagsFont", style "width" "auto", style "float" "left" ]
-        ((tagsToShow readingMode allTags blogTags
+        ((tagsToShow readingMode allTagsToShow blogTagsToShow
             |> List.map (viewTag readingMode)
             |> List.intersperse (br [] [])
          )
+            ++ [ showAllContentsAreReadMessageIfNecessary allTagsToShow blogTagsToShow readingMode ]
             ++ [ br [] [] ]
-            ++ viewMiscDiv readingMode blogTags loggedIn consumeModeIsOn
+            ++ viewMiscDiv readingMode blogTagsToShow loggedIn consumeModeIsOn
         )
 
 
@@ -29,17 +29,21 @@ tagNamesToHideOnHomePage =
     [ "beni oku" ]
 
 
-tagsToShow : ReadingMode -> List Tag -> List Tag -> List Tag
-tagsToShow readingMode allTags blogTags =
+tagsToShow : ReadingMode -> Maybe (List Tag) -> Maybe (List Tag) -> List Tag
+tagsToShow readingMode allTagsToShow blogTagsToShow =
     let
-        tags =
+        maybeTags =
             case readingMode of
                 BlogContents ->
-                    blogTags
+                    blogTagsToShow
 
                 AllContents ->
-                    allTags
+                    allTagsToShow
 
+        tags =
+            Maybe.withDefault [] maybeTags
+
+        --this will never happen
         removeTagsToHide =
             tags
                 |> List.filter (\tag -> not (List.member tag.name tagNamesToHideOnHomePage))
@@ -47,9 +51,21 @@ tagsToShow readingMode allTags blogTags =
     removeTagsToHide
 
 
-tagCountCurrentlyShownOnPage : ReadingMode -> List Tag -> List Tag -> Int
+tagCountCurrentlyShownOnPage : ReadingMode -> Maybe (List Tag) -> Maybe (List Tag) -> Int
 tagCountCurrentlyShownOnPage readingMode allTags blogTags =
-    List.length (tagsToShow readingMode allTags blogTags)
+    let
+        tagsCount =
+            List.length (tagsToShow readingMode allTags blogTags)
+    in
+    if tagsCount == 0 then
+        1
+
+    else
+        tagsCount
+
+
+
+-- if all contents are read, we show an info message to user about it and its height is exactly one-tag-view-long. so, this is just a correction for "user read all blog/all contents" case
 
 
 viewTag : ReadingMode -> Tag -> Html Msg
@@ -80,6 +96,28 @@ viewTag readingMode tag =
         , text " "
         , viewTagInfoIcon tag
         ]
+
+
+showAllContentsAreReadMessageIfNecessary : Maybe (List Tag) -> Maybe (List Tag) -> ReadingMode -> Html Msg
+showAllContentsAreReadMessageIfNecessary allTagsToShow blogTagsToShow readingMode =
+    let
+        maybeTags =
+            case readingMode of
+                BlogContents ->
+                    blogTagsToShow
+
+                AllContents ->
+                    allTagsToShow
+
+        infoMessage =
+            case maybeTags of
+                Just [] ->
+                    span [] [ text "buradaki tüm içerikleri okudunuz" ]
+
+                _ ->
+                    text ""
+    in
+    infoMessage
 
 
 viewIconsDiv : Model -> Html Msg
@@ -117,9 +155,9 @@ viewIcon iconInfo =
         ]
 
 
-viewMiscDiv : ReadingMode -> List Tag -> Bool -> Bool -> List (Html Msg)
-viewMiscDiv readingMode blogTags loggedIn consumeModeIsOn =
-    if tagsLoaded blogTags then
+viewMiscDiv : ReadingMode -> Maybe (List Tag) -> Bool -> Bool -> List (Html Msg)
+viewMiscDiv readingMode blogTagsToShow loggedIn consumeModeIsOn =
+    if blogTagsToShow /= Nothing then
         --this 'if expression' is just to show this div 'after' tags are shown; not before. it is just about aesthetics
         [ div [ style "margin-top" "5px", style "margin-bottom" "10px", style "margin-left" "-5px" ]
             [ span []

@@ -1,4 +1,4 @@
-module DataResponse exposing (AllTagsResponse, BioGroupID, BioItemID, BioResponse, BlogTagsResponse, ContentID, ContentSearchResponse, ContentsResponse, GotAllRefData, GotBioGroup, GotBioItem, GotContent, GotContentDate, GotRefConnection, GotTag, allTagsResponseDecoder, bioResponseDecoder, blogTagsResponseDecoder, contentDecoder, contentSearchResponseDecoder, contentsResponseDecoder, gotAllRefDataDecoder)
+module DataResponse exposing (AllTagsResponse, BioGroupID, BioItemID, BioResponse, HomePageDataResponse, ContentID, ContentSearchResponse, ContentsResponse, GotAllRefData, GotBioGroup, GotBioItem, GotContent, GotContentDate, GotRefConnection, GotTag, allTagsResponseDecoder, bioResponseDecoder, homePageDataResponseDecoder, contentDecoder, contentSearchResponseDecoder, contentsResponseDecoder, gotAllRefDataDecoder)
 
 import Content.Model exposing (Ref)
 import Json.Decode as D exposing (Decoder, bool, field, int, map, map2, map3, map5, map6, map7, map8, maybe, string)
@@ -8,8 +8,9 @@ type alias AllTagsResponse =
     { allTags : List GotTag }
 
 
-type alias BlogTagsResponse =
-    { blogTags : List GotTag }
+type alias HomePageDataResponse =
+    { blogTagsToShow : List GotTag
+    , allTagsToShow : List GotTag }
 
 
 type alias ContentsResponse =
@@ -94,10 +95,11 @@ allTagsResponseDecoder =
         (field "allTags" (D.list tagDecoder))
 
 
-blogTagsResponseDecoder : Decoder BlogTagsResponse
-blogTagsResponseDecoder =
-    map BlogTagsResponse
-        (field "blogTags" (D.list tagDecoder))
+homePageDataResponseDecoder : Decoder HomePageDataResponse
+homePageDataResponseDecoder =
+    map2 HomePageDataResponse
+        (field "blogTagsToShow" (D.list tagDecoder))
+        (field "allTagsToShow" (D.list tagDecoder))
 
 
 contentsResponseDecoder : Decoder ContentsResponse

@@ -22,7 +22,7 @@ viewBreadcrumb model =
                     , viewHeaderText initialized.tag.name
                     ]
 
-        HomePage _ _ _ ->
+        HomePage _ _ _ _ ->
             [ viewHomeNavigator True, viewIconsDiv model ]
 
         BioPage _ ->

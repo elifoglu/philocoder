@@ -19,7 +19,7 @@ import Home.View exposing (tagCountCurrentlyShownOnPage)
 import List
 import List.Extra
 import Pagination.Model exposing (Pagination)
-import Requests exposing (createNewTag, getAllRefData, getAllTagsResponse, getBio, getBlogTagsResponse, getContent, getOnlyTotalPageCountForPagination, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
+import Requests exposing (createNewTag, getAllRefData, getAllTagsResponse, getBio, getHomePageDataResponse, getContent, getOnlyTotalPageCountForPagination, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
 import Tag.Util exposing (tagById)
 import Task
 import Time
@@ -94,9 +94,6 @@ init flags url key =
 needAllTagsData : Page -> Bool
 needAllTagsData page =
     case page of
-        HomePage _ _ _ ->
-            True
-
         ContentPage _ ->
             True
 
@@ -105,6 +102,9 @@ needAllTagsData page =
 
         UpdateContentPage _ ->
             True
+
+        HomePage _ _ _ _ ->
+            False
 
         CreateContentPage _ ->
             False
@@ -136,17 +136,13 @@ getCmdToSendByPage model =
     Cmd.batch
         [ sendTitle model
         , if tagsNotLoaded model && needAllTagsData model.activePage then
-            getAllTagsResponse (
-                        case model.activePage of
-                            HomePage _ _ _  -> model.consumeModeIsOn
-                            _ -> False --getAllTags endpoint, so, allTags data, is used for many pages; and except HomePage, all tags should be brought no matter what. so, "consumeMode" value, of course, should not be used for those pages
-            ) model.localStorage.username model.localStorage.password
+            getAllTagsResponse
 
           else
             case model.activePage of
-                HomePage blogTags _ maybeGraphData ->
-                    if blogTags == [] then
-                        getBlogTagsResponse model.consumeModeIsOn model.localStorage.username model.localStorage.password
+                HomePage blogTagsToShow allTagsToShow _ maybeGraphData ->
+                    if blogTagsToShow == Nothing && allTagsToShow == Nothing then
+                        getHomePageDataResponse model.loggedIn model.consumeModeIsOn model.localStorage.username model.localStorage.password
 
                     else if maybeGraphData == Nothing then
                         getAllRefData
@@ -658,7 +654,7 @@ update msg model =
                     let
                         newActivePage =
                             if message == "done" then
-                                HomePage [] BlogContents Nothing
+                                HomePage Nothing Nothing BlogContents Nothing
 
                             else
                                 NotFoundPage
@@ -782,7 +778,7 @@ update msg model =
             let
                 newPage =
                     case model.activePage of
-                        HomePage _ _ _ ->
+                        HomePage _ _ _ _ ->
                             ContentSearchPage searchKeyword []
 
                         ContentSearchPage _ contentList ->
@@ -888,7 +884,7 @@ update msg model =
                                     newActivePage =
                                         case model.activePage of
                                             LoginOrRegisterPage _ _ _ ->
-                                                HomePage [] BlogContents Nothing
+                                                HomePage Nothing Nothing BlogContents Nothing
 
                                             page ->
                                                 page
@@ -921,7 +917,7 @@ update msg model =
                             newActivePage =
                                 case model.activePage of
                                     LoginOrRegisterPage _ _ _ ->
-                                        HomePage [] BlogContents Nothing
+                                        HomePage Nothing Nothing BlogContents Nothing
 
                                     page ->
                                         page
@@ -935,14 +931,14 @@ update msg model =
                     createNewModelAndCmdMsg model NotFoundPage
 
         -- HOME PAGE & GRAPH --
-        GotBlogTagsResponse res ->
+        GotHomePageDataResponse res ->
             case res of
                 Ok gotTagDataResponse ->
                     case model.activePage of
-                        HomePage _ readingMode maybeGraphData ->
+                        HomePage _ _ readingMode maybeGraphData ->
                             let
                                 homePage =
-                                    HomePage gotTagDataResponse.blogTags readingMode maybeGraphData
+                                    HomePage (Just gotTagDataResponse.blogTagsToShow) (Just gotTagDataResponse.allTagsToShow) readingMode maybeGraphData
 
                                 newModel =
                                     { model | activePage = homePage }
@@ -959,8 +955,8 @@ update msg model =
             let
                 newPage =
                     case model.activePage of
-                        HomePage blogTags _ maybeGraphData ->
-                            HomePage blogTags readingMode maybeGraphData
+                        HomePage blogTags allTags _ maybeGraphData ->
+                            HomePage blogTags allTags readingMode maybeGraphData
 
                         _ ->
                             model.activePage
@@ -1012,13 +1008,13 @@ update msg model =
                     let
                         newModel =
                             case model.activePage of
-                                HomePage blogTags readingMode maybeGraphData ->
+                                HomePage blogTags allTags readingMode maybeGraphData ->
                                     case maybeGraphData of
                                         Just _ ->
                                             model
 
                                         Nothing ->
-                                            { model | activePage = HomePage blogTags readingMode (Just (GraphData allRefData (initGraphModel allRefData) False)) }
+                                            { model | activePage = HomePage blogTags allTags readingMode (Just (GraphData allRefData (initGraphModel allRefData) False)) }
 
                                 _ ->
                                     model
@@ -1035,7 +1031,7 @@ update msg model =
 
         otherMsg ->
             case model.activePage of
-                HomePage blogTags readingMode maybeGraphData ->
+                HomePage blogTags allTags readingMode maybeGraphData ->
                     case maybeGraphData of
                         Just graphData ->
                             let
@@ -1043,7 +1039,7 @@ update msg model =
                                     Just (GraphData graphData.allRefData (updateGraph otherMsg graphData.graphModel) True)
 
                                 newHomePage =
-                                    HomePage blogTags readingMode newGraphData
+                                    HomePage blogTags allTags readingMode newGraphData
                             in
                             ( { model | activePage = newHomePage }, Cmd.none )
 
@@ -1057,12 +1053,12 @@ update msg model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     case model.activePage of
-        HomePage blogTags readingMode maybeGraphData ->
+        HomePage blogTags allTags readingMode maybeGraphData ->
             case maybeGraphData of
                 Just graphData ->
                     let
                         totalTagCountCurrentlyShownOnPage =
-                            tagCountCurrentlyShownOnPage readingMode model.allTags blogTags
+                            tagCountCurrentlyShownOnPage readingMode allTags blogTags
                     in
                     graphSubscriptions graphData.graphModel totalTagCountCurrentlyShownOnPage
 

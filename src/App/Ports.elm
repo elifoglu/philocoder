@@ -13,7 +13,7 @@ sendDefaultTitle =
 sendTitle : Model -> Cmd msg
 sendTitle model =
     case model.activePage of
-        HomePage _ _ _ ->
+        HomePage _ _ _ _ ->
             sendDefaultTitle
 
         ContentPage status ->

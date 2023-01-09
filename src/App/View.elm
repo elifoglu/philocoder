@@ -5,7 +5,6 @@ import App.Msg exposing (Msg(..))
 import Bio.View exposing (viewBioPageDiv)
 import Breadcrumb.View exposing (viewBreadcrumb)
 import Browser exposing (Document)
-import Component.Page.Util exposing (tagsLoaded)
 import Content.View exposing (viewContentDiv)
 import ContentSearch.View exposing (viewSearchContentDiv)
 import Contents.View exposing (viewContentDivs)
@@ -30,14 +29,14 @@ view model =
             [ div [ class "header" ] <| viewBreadcrumb model
             , div [ class "body" ]
                 (case model.activePage of
-                    HomePage blogTags readingMode maybeGraphData ->
-                        if tagsLoaded blogTags then
+                    HomePage blogTagsToShow allTagsToShow readingMode maybeGraphData ->
+                        if blogTagsToShow /= Nothing then
                             case maybeGraphData of
                                 Just graphData ->
                                     if graphData.veryFirstMomentOfGraphHasPassed then
                                         let
                                             tagsCount =
-                                                tagCountCurrentlyShownOnPage readingMode model.allTags blogTags
+                                                tagCountCurrentlyShownOnPage readingMode allTagsToShow blogTagsToShow
 
                                             initialMarginTop =
                                                 50
@@ -49,7 +48,7 @@ view model =
                                             marginTopForGraph =
                                                 initialMarginTop + round (toFloat tagsCount * heightOfASingleTagAsPx)
                                         in
-                                        [ viewHomePageDiv model.allTags blogTags readingMode model.loggedIn model.consumeModeIsOn
+                                        [ viewHomePageDiv allTagsToShow blogTagsToShow readingMode model.loggedIn model.consumeModeIsOn
                                         , div [ class "graph", style "margin-top" (String.fromInt marginTopForGraph ++ "px") ] [ viewGraph graphData.allRefData.contentIds graphData.graphModel tagsCount ]
                                         ]
 
