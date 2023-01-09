@@ -139,6 +139,7 @@ type alias GetTagContentsRequestModel =
 type alias TotalPageCountRequestModel =
     { tagId : String
     , blogMode : Bool
+    , loggedIn: Bool
     , consumeMode : Bool
     , username : String
     , password : String
@@ -267,6 +268,7 @@ totalPageCountRequestModelEncoder model =
     Encode.object
         [ ( "tagId", Encode.string model.tagId )
         , ( "blogMode", Encode.bool model.blogMode )
+        , ( "loggedIn", Encode.bool model.loggedIn )
         , ( "consumeMode", Encode.bool model.consumeMode )
         , ( "username", Encode.string model.username )
         , ( "password", Encode.string model.password )

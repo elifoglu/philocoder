@@ -58,8 +58,8 @@ getTagContents tag maybePage readingMode model =
                     AllContents ->
                         False
                 )
-                (model.loggedIn && model.consumeModeIsOn)
                 model.loggedIn
+                model.consumeModeIsOn
                 model.localStorage.username
                 model.localStorage.password
     in
@@ -273,7 +273,8 @@ getOnlyTotalPageCountForPagination tag readingMode model =
                     AllContents ->
                         False
                 )
-                (model.loggedIn && model.consumeModeIsOn)
+                model.loggedIn
+                model.consumeModeIsOn
                 model.localStorage.username
                 model.localStorage.password
     in
