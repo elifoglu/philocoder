@@ -136,7 +136,11 @@ getCmdToSendByPage model =
     Cmd.batch
         [ sendTitle model
         , if tagsNotLoaded model && needAllTagsData model.activePage then
-            getAllTagsResponse model.consumeModeIsOn model.localStorage.username model.localStorage.password
+            getAllTagsResponse (
+                        case model.activePage of
+                            HomePage _ _ _  -> model.consumeModeIsOn
+                            _ -> False --getAllTags endpoint, so, allTags data, is used for many pages; and except HomePage, all tags should be brought no matter what. so, "consumeMode" value, of course, should not be used for those pages
+            ) model.localStorage.username model.localStorage.password
 
           else
             case model.activePage of
