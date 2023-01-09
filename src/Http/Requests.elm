@@ -22,7 +22,7 @@ getTimeZone =
 getAllTagsResponse : Bool -> String -> String -> Cmd Msg
 getAllTagsResponse consumeMode username password =
     Http.post
-        { url = apiURL ++ "allTags"
+        { url = apiURL ++ "get-all-tags"
         , body =
             Http.jsonBody
                 (Encode.object
@@ -38,7 +38,7 @@ getAllTagsResponse consumeMode username password =
 getBlogTagsResponse : Bool -> String -> String -> Cmd Msg
 getBlogTagsResponse consumeMode username password =
     Http.post
-        { url = apiURL ++ "blogTags"
+        { url = apiURL ++ "get-blog-tags"
         , body =
             Http.jsonBody
                 (Encode.object
@@ -79,7 +79,7 @@ getTagContents tag maybePage readingMode model =
 getContent : Int -> Model -> Cmd Msg
 getContent contentId model =
     Http.post
-        { url = apiURL ++ "getContent"
+        { url = apiURL ++ "get-content"
         , body = Http.jsonBody (getContentRequestModelEncoder (GetContentRequestModel contentId model.localStorage.username model.localStorage.password))
         , expect = Http.expectJson GotContent contentDecoder
         }
@@ -116,14 +116,14 @@ previewContent model =
     case model of
         PreviewForContentCreate createContentPageModel ->
             Http.post
-                { url = apiURL ++ "previewContent"
+                { url = apiURL ++ "preview-content"
                 , body = Http.jsonBody (createContentPageModelEncoder createContentPageModel)
                 , expect = Http.expectJson (GotContentToPreviewForCreatePage createContentPageModel) contentDecoder
                 }
 
         PreviewForContentUpdate contentID updateContentPageData ->
             Http.post
-                { url = apiURL ++ "previewContent"
+                { url = apiURL ++ "preview-content"
                 , body = Http.jsonBody (updateContentPageDataEncoder contentID updateContentPageData)
                 , expect = Http.expectJson (GotContentToPreviewForUpdatePage contentID updateContentPageData) contentDecoder
                 }
@@ -252,7 +252,7 @@ register username password =
 setContentAsRead : Int -> Model -> Cmd Msg
 setContentAsRead contentId model =
     Http.post
-        { url = apiURL ++ "setContentAsRead"
+        { url = apiURL ++ "set-content-as-read"
         , body =
             Http.jsonBody
                 (Encode.object
