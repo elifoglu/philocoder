@@ -3,24 +3,24 @@ module Home.View exposing (..)
 import App.Model exposing (IconInfo, Model, Page(..), ReadingMode(..))
 import App.Msg exposing (Msg(..))
 import Component.Page.Util exposing (tagsLoaded)
-import Html exposing (Html, a, br, div, img, input, span, text)
+import Html exposing (Html, a, br, button, div, img, input, span, text)
 import Html.Attributes exposing (checked, class, href, name, placeholder, src, style, type_, value)
-import Html.Events exposing (on, onClick, onInput)
+import Html.Events exposing (on, onCheck, onClick, onInput)
 import Json.Decode as Decode
 import Requests exposing (getBioPageIcons, getIcons)
 import Tag.Model exposing (Tag)
 import TagInfoIcon.View exposing (viewTagInfoIcon)
 
 
-viewHomePageDiv : List Tag -> List Tag -> ReadingMode -> Html Msg
-viewHomePageDiv allTags blogTags readingMode =
+viewHomePageDiv : List Tag -> List Tag -> ReadingMode -> Bool -> Bool -> Html Msg
+viewHomePageDiv allTags blogTags readingMode loggedIn consumeModeIsOn =
     div [ class "homepage homepageTagsFont", style "width" "auto", style "float" "left" ]
         ((tagsToShow readingMode allTags blogTags
             |> List.map (viewTag readingMode)
             |> List.intersperse (br [] [])
          )
             ++ [ br [] [] ]
-            ++ viewReadingModeDiv readingMode blogTags
+            ++ viewMiscDiv readingMode blogTags loggedIn consumeModeIsOn
         )
 
 
@@ -117,8 +117,8 @@ viewIcon iconInfo =
         ]
 
 
-viewReadingModeDiv : ReadingMode -> List Tag -> List (Html Msg)
-viewReadingModeDiv readingMode blogTags =
+viewMiscDiv : ReadingMode -> List Tag -> Bool -> Bool -> List (Html Msg)
+viewMiscDiv readingMode blogTags loggedIn consumeModeIsOn =
     if tagsLoaded blogTags then
         --this 'if expression' is just to show this div 'after' tags are shown; not before. it is just about aesthetics
         [ div [ style "margin-top" "5px", style "margin-bottom" "10px", style "margin-left" "-5px" ]
@@ -143,11 +143,28 @@ viewReadingModeDiv readingMode blogTags =
                 , text "tümü"
                 ]
             , input [ type_ "text", class "contentSearchInput", placeholder "ara...", value "", onInput GotSearchInput, style "margin-left" "5px" ] []
+            , if not loggedIn then
+                text ""
+
+              else
+                span []
+                    [ input [ type_ "checkbox", class "consumeModeToggle", checked consumeModeIsOn, onCheck ConsumeModeChanged ] []
+                    ]
+            , if not loggedIn then
+                text ""
+
+              else
+                logoutButton Logout
             ]
         ]
 
     else
         []
+
+
+logoutButton : msg -> Html msg
+logoutButton msg =
+    button [ onClick msg, class "logoutButton" ] [ text "çık" ]
 
 
 readingModeCheckFn : ReadingMode -> Bool

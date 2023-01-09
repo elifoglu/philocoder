@@ -1,6 +1,6 @@
 module UpdateContent.View exposing (viewUpdateContentDiv)
 
-import App.Model exposing (CreateContentPageModel, Model, UpdateContentPageData)
+import App.Model exposing (CreateContentPageRequestModel, Model, UpdateContentPageData)
 import App.Msg exposing (ContentInputType(..), Msg(..), PreviewContentModel(..))
 import Component.Page.Util exposing (flipBoolAndToStr)
 import Content.Model exposing (Content)
@@ -30,7 +30,7 @@ viewUpdateContentDiv updateContentPageData maybeContentToPreview contentId =
             , hr [] []
             , case maybeContentToPreview of
                 Just content ->
-                    viewContentDiv content
+                    viewContentDiv False content
 
                 Nothing ->
                     text "invalid content, or no content at all"

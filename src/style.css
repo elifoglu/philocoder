@@ -213,7 +213,7 @@ input[type='radio'] {
     font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
-input:focus{
+input:focus {
     outline: none;
 }
 
@@ -381,6 +381,33 @@ input:focus{
     padding-left: 5px;
     font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     font-size: 13px;
+}
+
+.logoutButton {
+    padding: 0px 4px 0px 4px;
+    border: 1px solid #202020;
+    border-radius: 3px;
+    color: #202020;
+    cursor: pointer;
+    background-color: #ffffff;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    word-spacing: 0.2px;
+    line-height: 20px;
+}
+
+.logoutButton:hover {
+    background-color: #202020;
+    color: #ffffff;
+}
+
+input[type='checkbox'] {
+    accent-color: #202020;
+}
+
+.consumeModeToggle {
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .graph {

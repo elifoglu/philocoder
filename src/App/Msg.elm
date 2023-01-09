@@ -1,6 +1,6 @@
 module App.Msg exposing (..)
 
-import App.Model exposing (CreateContentPageModel, CreateTagPageModel, Page, ReadingMode, UpdateContentPageData, UpdateTagPageModel)
+import App.Model exposing (CreateContentPageRequestModel, CreateTagPageModel, Page, ReadingMode, UpdateContentPageData, UpdateTagPageModel)
 import BioGroup.Model exposing (BioGroup)
 import BioItem.Model exposing (BioItem)
 import Browser
@@ -20,6 +20,8 @@ type Msg
     | GotBlogTagsResponse (Result Http.Error BlogTagsResponse)
     | GotAllRefData (Result Http.Error GotAllRefData)
     | ReadingModeChanged ReadingMode
+    | ConsumeModeChanged Bool
+    | ContentReadChecked ContentID
     | GotSearchInput String
     | GotContentSearchResponse (Result Http.Error ContentSearchResponse)
     | FocusResult (Result Dom.Error ())
@@ -31,17 +33,25 @@ type Msg
     | ClickOnABioItemInfo BioItem
     | GotContentsOfTag Tag (Result Http.Error ContentsResponse)
     | GotContent (Result Http.Error GotContent)
-    | GotContentToPreviewForCreatePage CreateContentPageModel (Result Http.Error GotContent)
+    | GotContentToPreviewForCreatePage CreateContentPageRequestModel (Result Http.Error GotContent)
     | GotContentToPreviewForUpdatePage ContentID UpdateContentPageData (Result Http.Error GotContent)
     | ContentInputChanged ContentInputType String
     | TagInputChanged TagInputType
+    | LoginRegisterPageInputChanged LoginRegisterPageInputType String
+    | TryLogin String String
+    | TryRegister String String
     | GetContentToCopyForContentCreation Int
     | PreviewContent PreviewContentModel
-    | CreateContent CreateContentPageModel
+    | CreateContent CreateContentPageRequestModel
     | UpdateContent ContentID UpdateContentPageData
     | CreateTag CreateTagPageModel
     | UpdateTag String UpdateTagPageModel
     | GotTagUpdateOrCreationDoneResponse (Result Http.Error String)
+    | GotLoginResponse LoginRequestType (Result Http.Error String)
+    | GotRegisterResponse (Result Http.Error String)
+    | Logout
+    | GotContentReadResponse (Result Http.Error String)
+    | GotTotalPageCountOfTag (Result Http.Error String)
     | DragStart NodeId ( Float, Float )
     | DragAt ( Float, Float )
     | DragEnd ( Float, Float )
@@ -50,7 +60,7 @@ type Msg
 
 
 type PreviewContentModel
-    = PreviewForContentCreate CreateContentPageModel
+    = PreviewForContentCreate CreateContentPageRequestModel
     | PreviewForContentUpdate ContentID UpdateContentPageData
 
 
@@ -74,3 +84,13 @@ type TagInputType
     | OrderIndex String
     | InfoContentId String
     | Pw String
+
+
+type LoginRegisterPageInputType
+    = Username
+    | Pass
+
+
+type LoginRequestType
+    = AttemptAtInitialization
+    | LoginRequestByUser

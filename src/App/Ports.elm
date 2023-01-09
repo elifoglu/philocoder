@@ -1,4 +1,4 @@
-port module App.Ports exposing (sendTitle, title)
+port module App.Ports exposing (consoleLog, sendTitle, storeConsumeMode, storeContentReadClickedForTheFirstTime, storeCredentials, storeReadingMode, title)
 
 import App.Model exposing (Initializable(..), MaySendRequest(..), Model, Page(..), UpdateContentPageModel(..))
 
@@ -100,4 +100,22 @@ sendTitle model =
             title "bakım çalışması - philocoder"
 
         ContentSearchPage _ _ ->
-            title "search content - philocoder"
+            title "içerik ara - philocoder"
+
+        LoginOrRegisterPage _ _ _ ->
+            title "giriş/kayıt - philocoder"
+
+
+port storeCredentials : String -> Cmd msg
+
+
+port storeReadingMode : String -> Cmd msg
+
+
+port storeConsumeMode : String -> Cmd msg
+
+
+port storeContentReadClickedForTheFirstTime : String -> Cmd msg
+
+
+port consoleLog : String -> Cmd msg

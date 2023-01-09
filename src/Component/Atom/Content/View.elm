@@ -1,16 +1,18 @@
 module Content.View exposing (viewContentDiv)
 
-import App.Msg exposing (Msg)
+import App.Msg exposing (Msg(..))
 import Content.Model exposing (Content)
 import Content.Util exposing (maybeDateText, maybeDisplayableTagsOfContent)
-import Html exposing (Html, a, div, img, p, span, text)
-import Html.Attributes exposing (class, href, src, style, title)
+import Html exposing (Html, a, div, img, input, label, p, span, text)
+import Html.Attributes exposing (checked, class, href, src, style, title, type_)
+import Html.Events exposing (on)
+import Json.Decode as Decode
 import Markdown
 import Tag.Model exposing (Tag)
 
 
-viewContentDiv : Content -> Html Msg
-viewContentDiv content =
+viewContentDiv : Bool -> Content -> Html Msg
+viewContentDiv contentReadClickedAtLeastOnce content =
     p []
         [ div []
             [ div [ class "title" ] [ viewContentTitle content.title content.beautifiedText ]
@@ -18,7 +20,7 @@ viewContentDiv content =
             , addBrIfContentEitherHasTitleOrRefs content
             , viewMarkdownTextOfContent content
             ]
-        , viewContentInfoDiv content
+        , viewContentInfoDiv content contentReadClickedAtLeastOnce
         ]
 
 
@@ -46,8 +48,8 @@ viewContentTitle maybeTitle beautifiedText =
             text ""
 
 
-viewContentInfoDiv : Content -> Html Msg
-viewContentInfoDiv content =
+viewContentInfoDiv : Content -> Bool -> Html Msg
+viewContentInfoDiv content contentReadClickedAtLeastOnce =
     div [ class "contentInfoDiv" ]
         ((case ( maybeDisplayableTagsOfContent content, maybeDateText content ) of
             ( Just displayableTagsOfContent, Just dateText ) ->
@@ -57,8 +59,26 @@ viewContentInfoDiv content =
             ( _, _ ) ->
                 []
          )
-            ++ [ text " ", viewContentLinkWithLinkIcon content ]
+            ++ [ text " ", viewContentLinkWithLinkIcon content, viewContentReadCheckSpan content contentReadClickedAtLeastOnce ]
         )
+
+
+viewContentReadCheckSpan : Content -> Bool -> Html Msg
+viewContentReadCheckSpan content contentReadClickedAtLeastOnce =
+    span []
+        [ input
+            [ type_ "checkbox"
+            , class "contentReadCheckBox"
+            , checked content.isContentRead
+            , on "change" (Decode.succeed (ContentReadChecked content.contentId))
+            ]
+            []
+        , if contentReadClickedAtLeastOnce then
+            text ""
+
+          else
+            label [] [ text "\"okundu\" olarak işaretle" ]
+        ]
 
 
 viewTagLinks : List Tag -> List (Html Msg)

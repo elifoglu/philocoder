@@ -23,6 +23,7 @@ gotContentToContent model gotContent =
             |> values
     , refs = gotContent.refs
     , okForBlogMode = gotContent.okForBlogMode
+    , isContentRead = gotContent.isContentRead
     }
 
 

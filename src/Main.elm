@@ -1,8 +1,8 @@
-module Main exposing (main)
+module Main exposing (main, needAllTagsData)
 
 import App.Model exposing (..)
-import App.Msg exposing (ContentInputType(..), Msg(..), TagInputType(..))
-import App.Ports exposing (sendTitle)
+import App.Msg exposing (ContentInputType(..), LoginRegisterPageInputType(..), LoginRequestType(..), Msg(..), TagInputType(..))
+import App.Ports exposing (sendTitle, storeConsumeMode, storeContentReadClickedForTheFirstTime, storeCredentials, storeReadingMode)
 import App.UrlParser exposing (pageBy)
 import App.View exposing (view)
 import BioGroup.Util exposing (changeActivenessIfIdMatches, changeDisplayInfoIfIdMatchesAndGroupIsActive, gotBioGroupToBioGroup)
@@ -12,12 +12,14 @@ import Browser exposing (UrlRequest)
 import Browser.Dom as Dom
 import Browser.Navigation as Nav
 import Component.Page.Util exposing (tagsNotLoaded)
+import Content.Model exposing (Content)
 import Content.Util exposing (gotContentToContent)
 import ForceDirectedGraph exposing (graphSubscriptions, initGraphModel, updateGraph)
 import Home.View exposing (tagCountCurrentlyShownOnPage)
 import List
+import List.Extra
 import Pagination.Model exposing (Pagination)
-import Requests exposing (createNewTag, getAllRefData, getAllTagsResponse, getBio, getBlogTagsResponse, getContent, getSearchResult, getTagContents, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
+import Requests exposing (createNewTag, getAllRefData, getAllTagsResponse, getBio, getBlogTagsResponse, getContent, getOnlyTotalPageCountForPagination, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
 import Tag.Util exposing (tagById)
 import Task
 import Time
@@ -35,17 +37,70 @@ main =
         }
 
 
-init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
+getUsernameFromCredentials : String -> String
+getUsernameFromCredentials credentialsString =
+    Maybe.withDefault "invalidUsername" (List.head (String.split "|||" credentialsString))
+
+
+getPasswordFromCredentials : String -> String
+getPasswordFromCredentials credentialsString =
+    Maybe.withDefault "invalidPassword" (List.Extra.getAt 1 (String.split "|||" credentialsString))
+
+
+getConsumeModeIsOnValueFromLocal : Maybe String -> Bool
+getConsumeModeIsOnValueFromLocal maybeString =
+    case maybeString of
+        Just "true" ->
+            True
+
+        _ ->
+            False
+
+
+init : { readingMode : Maybe String, consumeModeIsOn : Maybe String, contentReadClickedAtLeastOnce : Maybe String, credentials : Maybe String } -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
     let
+        credentials =
+            case flags.credentials of
+                Just cred ->
+                    cred
+
+                Nothing ->
+                    "invalidUsername|||invalidPassword"
+
+        username =
+            getUsernameFromCredentials credentials
+
+        password =
+            getPasswordFromCredentials credentials
+
+        readingMode =
+            case flags.readingMode of
+                Just "blog" ->
+                    BlogContents
+
+                Just "tümü" ->
+                    AllContents
+
+                _ ->
+                    BlogContents
+
+        contentReadClickedAtLeastOnce =
+            case flags.contentReadClickedAtLeastOnce of
+                Just "true" ->
+                    True
+
+                _ ->
+                    False
+
         page =
-            pageBy url
+            pageBy url readingMode
 
         model =
-            Model "log" key [] page False Time.utc
+            Model "log" key [] page False (LocalStorage readingMode contentReadClickedAtLeastOnce username password) False (getConsumeModeIsOnValueFromLocal flags.consumeModeIsOn) Time.utc
     in
     ( model
-    , Cmd.batch [ getCmdToSendByPage model, getTimeZone ]
+    , Cmd.batch [ login AttemptAtInitialization username password, getTimeZone ]
     )
 
 
@@ -79,6 +134,9 @@ needAllTagsData page =
         ContentSearchPage _ _ ->
             False
 
+        LoginOrRegisterPage _ _ _ ->
+            False
+
         NotFoundPage ->
             False
 
@@ -91,13 +149,13 @@ getCmdToSendByPage model =
     Cmd.batch
         [ sendTitle model
         , if tagsNotLoaded model && needAllTagsData model.activePage then
-            getAllTagsResponse
+            getAllTagsResponse model.consumeModeIsOn model.localStorage.username model.localStorage.password
 
           else
             case model.activePage of
                 HomePage blogTags _ maybeGraphData ->
                     if blogTags == [] then
-                        getBlogTagsResponse
+                        getBlogTagsResponse model.consumeModeIsOn model.localStorage.username model.localStorage.password
 
                     else if maybeGraphData == Nothing then
                         getAllRefData
@@ -110,7 +168,7 @@ getCmdToSendByPage model =
                         NonInitialized initializableTagPageModel ->
                             case tagById model.allTags initializableTagPageModel.tagId of
                                 Just tag ->
-                                    getTagContents tag initializableTagPageModel.maybePage initializableTagPageModel.readingMode
+                                    getTagContents tag initializableTagPageModel.maybePage initializableTagPageModel.readingMode model
 
                                 Nothing ->
                                     Cmd.none
@@ -121,7 +179,7 @@ getCmdToSendByPage model =
                 ContentPage status ->
                     case status of
                         NonInitialized contentId ->
-                            getContent contentId
+                            getContent contentId model
 
                         Initialized _ ->
                             Cmd.none
@@ -129,7 +187,7 @@ getCmdToSendByPage model =
                 UpdateContentPage status ->
                     case status of
                         NotInitializedYet contentID ->
-                            getContent contentID
+                            getContent contentID model
 
                         _ ->
                             Cmd.none
@@ -172,7 +230,7 @@ update msg model =
             let
                 activePage : Page
                 activePage =
-                    pageBy url
+                    pageBy url model.localStorage.readingMode
 
                 newModel : Model
                 newModel =
@@ -246,6 +304,76 @@ update msg model =
                 Err _ ->
                     createNewModelAndCmdMsg model NotFoundPage
 
+        ContentReadChecked contentID ->
+            if model.loggedIn then
+                ( model, setContentAsRead contentID model )
+
+            else
+                let
+                    oldLocalStorage =
+                        model.localStorage
+
+                    newLocalStorage =
+                        { oldLocalStorage | contentReadClickedAtLeastOnce = True }
+
+                    newModel =
+                        { model | activePage = LoginOrRegisterPage "" "" "", localStorage = newLocalStorage }
+                in
+                ( newModel, Cmd.batch [ storeContentReadClickedForTheFirstTime "true", sendTitle newModel ] )
+
+        GotContentReadResponse res ->
+            case res of
+                Ok message ->
+                    if String.startsWith "error" message then
+                        ( model, Cmd.none )
+
+                    else
+                        let
+                            contentId =
+                                message
+
+                            revertRead content =
+                                if content.contentId == Maybe.withDefault 0 (String.toInt contentId) then
+                                    { content | isContentRead = not content.isContentRead }
+
+                                else
+                                    content
+                        in
+                        case model.activePage of
+                            ContentPage status ->
+                                case status of
+                                    NonInitialized _ ->
+                                        ( model, Cmd.none )
+
+                                    Initialized content ->
+                                        ( { model | activePage = ContentPage (Initialized (revertRead content)) }, Cmd.none )
+
+                            TagPage status ->
+                                case status of
+                                    NonInitialized _ ->
+                                        ( model, Cmd.none )
+
+                                    Initialized pageModel ->
+                                        if model.consumeModeIsOn then
+                                            ( { model | activePage = TagPage (Initialized { pageModel | contents = pageModel.contents |> List.filter (\c -> String.fromInt c.contentId /= contentId) }) }
+                                            , getOnlyTotalPageCountForPagination pageModel.tag pageModel.readingMode model
+                                              --since we hid a content on the screen, we have to recalculate total page count and set pagination again
+                                            )
+
+                                        else
+                                            ( { model | activePage = TagPage (Initialized { pageModel | contents = List.map revertRead pageModel.contents }) }
+                                            , Cmd.none
+                                            )
+
+                            ContentSearchPage searchKeyword contents ->
+                                ( { model | activePage = ContentSearchPage searchKeyword (List.map revertRead contents) }, Cmd.none )
+
+                            _ ->
+                                ( model, Cmd.none )
+
+                Err _ ->
+                    ( model, Cmd.none )
+
         -- TAG PAGE --
         GotContentsOfTag tag result ->
             case result of
@@ -281,6 +409,28 @@ update msg model =
 
                 Err _ ->
                     createNewModelAndCmdMsg model MaintenancePage
+
+        GotTotalPageCountOfTag res ->
+            case res of
+                Ok message ->
+                    case model.activePage of
+                        TagPage status ->
+                            case status of
+                                NonInitialized _ ->
+                                    ( model, Cmd.none )
+
+                                Initialized pageModel ->
+                                    let
+                                        totalPageCount =
+                                            Maybe.withDefault 0 (String.toInt message)
+                                    in
+                                    ( { model | activePage = TagPage (Initialized { pageModel | pagination = { currentPage = pageModel.pagination.currentPage, totalPageCount = totalPageCount } }) }, Cmd.none )
+
+                        _ ->
+                            ( model, Cmd.none )
+
+                Err _ ->
+                    ( model, Cmd.none )
 
         -- CREATE/UPDATE CONTENT PAGES --
         ContentInputChanged inputType input ->
@@ -381,7 +531,7 @@ update msg model =
 
         GetContentToCopyForContentCreation contentId ->
             ( model
-            , getContent contentId
+            , getContent contentId model
             )
 
         GotContentToPreviewForCreatePage createContentPageModel result ->
@@ -636,6 +786,161 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
+        -- SEARCH PAGE --
+        GotSearchInput searchKeyword ->
+            let
+                newPage =
+                    case model.activePage of
+                        HomePage _ _ _ ->
+                            ContentSearchPage searchKeyword []
+
+                        ContentSearchPage _ contentList ->
+                            ContentSearchPage searchKeyword contentList
+
+                        _ ->
+                            model.activePage
+            in
+            ( { model | activePage = newPage }, Cmd.batch [ getSearchResult searchKeyword model, Dom.focus "contentSearchInput" |> Task.attempt FocusResult ] )
+
+        GotContentSearchResponse res ->
+            case res of
+                Ok gotContentSearchResponse ->
+                    let
+                        newPage =
+                            case model.activePage of
+                                ContentSearchPage searchKeyword _ ->
+                                    ContentSearchPage searchKeyword (List.map (gotContentToContent model) gotContentSearchResponse.contents)
+
+                                _ ->
+                                    model.activePage
+                    in
+                    ( { model | activePage = newPage }, Cmd.none )
+
+                Err _ ->
+                    createNewModelAndCmdMsg model MaintenancePage
+
+        -- LOGIN PAGE --
+        LoginRegisterPageInputChanged inputType input ->
+            case model.activePage of
+                LoginOrRegisterPage username password errorMessage ->
+                    let
+                        newActivePage =
+                            case inputType of
+                                Username ->
+                                    LoginOrRegisterPage input password errorMessage
+
+                                Pass ->
+                                    LoginOrRegisterPage username input errorMessage
+
+                        newModel =
+                            { model | activePage = newActivePage }
+                    in
+                    ( newModel, Cmd.none )
+
+                _ ->
+                    ( model, Cmd.none )
+
+        TryLogin username password ->
+            let
+                newModel =
+                    { model | localStorage = LocalStorage model.localStorage.readingMode model.localStorage.contentReadClickedAtLeastOnce username password }
+            in
+            ( newModel, Cmd.batch [ login LoginRequestByUser username password, storeCredentials (username ++ "|||" ++ password) ] )
+
+        TryRegister username password ->
+            let
+                newModel =
+                    { model | localStorage = LocalStorage model.localStorage.readingMode model.localStorage.contentReadClickedAtLeastOnce username password }
+            in
+            ( newModel, Cmd.batch [ register username password, storeCredentials (username ++ "|||" ++ password) ] )
+
+        GotLoginResponse loginRequestType res ->
+            case loginRequestType of
+                AttemptAtInitialization ->
+                    case res of
+                        Ok message ->
+                            let
+                                loggedInSuccessfully =
+                                    not (String.startsWith "error" message)
+
+                                newModel =
+                                    if loggedInSuccessfully then
+                                        { model | loggedIn = True }
+
+                                    else
+                                        model
+                            in
+                            ( newModel, getCmdToSendByPage newModel )
+
+                        Err _ ->
+                            createNewModelAndCmdMsg model NotFoundPage
+
+                LoginRequestByUser ->
+                    case res of
+                        Ok message ->
+                            if String.startsWith "error" message then
+                                let
+                                    newPage =
+                                        case model.activePage of
+                                            LoginOrRegisterPage username password _ ->
+                                                LoginOrRegisterPage username password (Maybe.withDefault "" (List.head (List.drop 1 (String.split ":" message))))
+
+                                            page ->
+                                                page
+                                in
+                                ( { model | activePage = newPage }, Cmd.none )
+
+                            else
+                                let
+                                    newActivePage =
+                                        case model.activePage of
+                                            LoginOrRegisterPage _ _ _ ->
+                                                HomePage [] BlogContents Nothing
+
+                                            page ->
+                                                page
+
+                                    newModel =
+                                        { model | activePage = newActivePage, loggedIn = True }
+                                in
+                                ( newModel, Nav.pushUrl model.key "/" )
+
+                        Err _ ->
+                            createNewModelAndCmdMsg model NotFoundPage
+
+        GotRegisterResponse res ->
+            case res of
+                Ok message ->
+                    if String.startsWith "error" message then
+                        let
+                            newPage =
+                                case model.activePage of
+                                    LoginOrRegisterPage username password _ ->
+                                        LoginOrRegisterPage username password (Maybe.withDefault "" (List.head (List.drop 1 (String.split ":" message))))
+
+                                    page ->
+                                        page
+                        in
+                        ( { model | activePage = newPage }, Cmd.none )
+
+                    else
+                        let
+                            newActivePage =
+                                case model.activePage of
+                                    LoginOrRegisterPage _ _ _ ->
+                                        HomePage [] BlogContents Nothing
+
+                                    page ->
+                                        page
+
+                            newModel =
+                                { model | activePage = newActivePage, loggedIn = True }
+                        in
+                        ( newModel, Nav.pushUrl model.key "/" )
+
+                Err _ ->
+                    createNewModelAndCmdMsg model NotFoundPage
+
         -- HOME PAGE & GRAPH --
         GotBlogTagsResponse res ->
             case res of
@@ -666,40 +971,47 @@ update msg model =
 
                         _ ->
                             model.activePage
-            in
-            ( { model | activePage = newPage }, Cmd.none )
 
-        GotSearchInput searchKeyword ->
+                oldLocalStorage =
+                    model.localStorage
+
+                newLocalStorage =
+                    { oldLocalStorage | readingMode = readingMode }
+            in
+            ( { model | activePage = newPage, localStorage = newLocalStorage }
+            , storeReadingMode
+                (case readingMode of
+                    BlogContents ->
+                        "blog"
+
+                    AllContents ->
+                        "tümü"
+                )
+            )
+
+        ConsumeModeChanged _ ->
+            ( { model | consumeModeIsOn = not model.consumeModeIsOn }
+            , Cmd.batch
+                [ storeConsumeMode
+                    (if not model.consumeModeIsOn then
+                        "true"
+
+                     else
+                        "false"
+                    )
+                , Nav.pushUrl model.key "/"
+                ]
+            )
+
+        Logout ->
             let
-                newPage =
-                    case model.activePage of
-                        HomePage _ _ _ ->
-                            ContentSearchPage searchKeyword []
+                newLocalStorage =
+                    LocalStorage model.localStorage.readingMode model.localStorage.contentReadClickedAtLeastOnce "invalidUsername" "invalidPassword"
 
-                        ContentSearchPage _ contentList ->
-                            ContentSearchPage searchKeyword contentList
-
-                        _ ->
-                            model.activePage
+                newModel =
+                    { model | loggedIn = False, localStorage = newLocalStorage }
             in
-            ( { model | activePage = newPage }, Cmd.batch [ getSearchResult searchKeyword, Dom.focus "contentSearchInput" |> Task.attempt FocusResult ] )
-
-        GotContentSearchResponse res ->
-            case res of
-                Ok gotContentSearchResponse ->
-                    let
-                        newPage =
-                            case model.activePage of
-                                ContentSearchPage searchKeyword _ ->
-                                    ContentSearchPage searchKeyword (List.map (gotContentToContent model) gotContentSearchResponse.contents)
-
-                                _ ->
-                                    model.activePage
-                    in
-                    ( { model | activePage = newPage }, Cmd.none )
-
-                Err _ ->
-                    createNewModelAndCmdMsg model MaintenancePage
+            ( newModel, Cmd.batch [ storeCredentials "invalidUsername|||invalidPassword", Nav.pushUrl model.key "/" ] )
 
         GotAllRefData res ->
             case res of

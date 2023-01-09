@@ -1,19 +1,19 @@
 module App.UrlParser exposing (pageBy)
 
-import App.Model exposing (CreateContentPageModel, CreateTagPageModel, Initializable(..), MaySendRequest(..), NoVal(..), NonInitializedYetTagPageModel, Page(..), ReadingMode(..), UpdateContentPageData, UpdateContentPageModel(..), UpdateTagPageModel)
+import App.Model exposing (CreateContentPageRequestModel, CreateTagPageModel, Initializable(..), LocalStorage, MaySendRequest(..), NonInitializedYetTagPageModel, Page(..), ReadingMode(..), UpdateContentPageData, UpdateContentPageModel(..), UpdateTagPageModel)
 import Url
 import Url.Parser exposing ((</>), (<?>), Parser, int, map, oneOf, parse, s, string, top)
 import Url.Parser.Query as Query
 
 
-routeParser : Parser (Page -> a) a
-routeParser =
+routeParser : ReadingMode -> Parser (Page -> a) a
+routeParser readingMode =
     oneOf
-        [ map (HomePage [] BlogContents Nothing) top
+        [ map (HomePage [] readingMode Nothing) top
         , map nonInitializedTagPageMapper (s "tags" </> string <?> Query.int "page" <?> Query.string "mode")
         , map nonInitializedBioPageMapper (s "me")
         , map nonInitializedContentPageMapper (s "contents" </> int)
-        , map (CreateContentPage (NoRequestSentYet (CreateContentPageModel Nothing "" "" "" "" "" False "" ""))) (s "create" </> s "content")
+        , map (CreateContentPage (NoRequestSentYet (CreateContentPageRequestModel Nothing "" "" "" "" "" False "" ""))) (s "create" </> s "content")
         , map nonInitializedUpdateContentPageMapper (s "update" </> s "content" </> int)
         , map (CreateTagPage (NoRequestSentYet (CreateTagPageModel "" "" "DateDESC" True True "" ""))) (s "create" </> s "tag")
         , map nonInitializedUpdateTagPageMapper (s "update" </> s "tag" </> string)
@@ -55,10 +55,12 @@ nonInitializedBioPageMapper : Page
 nonInitializedBioPageMapper =
     BioPage Nothing
 
+
 rPageMapper : Page
 rPageMapper =
     ContentPage (NonInitialized 5)
 
-pageBy : Url.Url -> Page
-pageBy url =
-    Maybe.withDefault NotFoundPage <| parse routeParser url
+
+pageBy : Url.Url -> ReadingMode -> Page
+pageBy url readingMode =
+    Maybe.withDefault NotFoundPage <| parse (routeParser readingMode) url

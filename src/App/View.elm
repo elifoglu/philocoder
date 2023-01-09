@@ -15,6 +15,7 @@ import ForceDirectedGraph exposing (viewGraph)
 import Home.View exposing (tagCountCurrentlyShownOnPage, viewHomePageDiv)
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import LoginRegister.View exposing (viewLoginOrRegisterDiv)
 import NotFound.View exposing (view404Div)
 import Pagination.View exposing (viewPagination)
 import UpdateContent.View exposing (viewUpdateContentDiv)
@@ -48,7 +49,7 @@ view model =
                                             marginTopForGraph =
                                                 initialMarginTop + round (toFloat tagsCount * heightOfASingleTagAsPx)
                                         in
-                                        [ viewHomePageDiv model.allTags blogTags readingMode
+                                        [ viewHomePageDiv model.allTags blogTags readingMode model.loggedIn model.consumeModeIsOn
                                         , div [ class "graph", style "margin-top" (String.fromInt marginTopForGraph ++ "px") ] [ viewGraph graphData.allRefData.contentIds graphData.graphModel tagsCount ]
                                         ]
 
@@ -67,7 +68,7 @@ view model =
                                 []
 
                             Initialized content ->
-                                [ viewContentDiv content ]
+                                [ viewContentDiv model.localStorage.contentReadClickedAtLeastOnce content ]
 
                     TagPage status ->
                         case status of
@@ -75,7 +76,7 @@ view model =
                                 []
 
                             Initialized initialized ->
-                                viewContentDivs initialized.contents
+                                viewContentDivs model.localStorage.contentReadClickedAtLeastOnce initialized.contents
                                     ++ [ viewPagination initialized.tag initialized.pagination initialized.readingMode
                                        ]
 
@@ -120,7 +121,10 @@ view model =
                                 [ text "..." ]
 
                     ContentSearchPage searchKeyword contents ->
-                        [ viewSearchContentDiv searchKeyword contents ]
+                        [ viewSearchContentDiv model.localStorage.contentReadClickedAtLeastOnce searchKeyword contents ]
+
+                    LoginOrRegisterPage username password errorMessage ->
+                        [ viewLoginOrRegisterDiv username password errorMessage ]
 
                     NotFoundPage ->
                         [ view404Div ]

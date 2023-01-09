@@ -7,11 +7,11 @@ import Html exposing (Html, div, hr)
 import Html.Attributes exposing (style)
 
 
-viewContentDivs : List Content -> List (Html Msg)
-viewContentDivs contents =
+viewContentDivs : Bool -> List Content -> List (Html Msg)
+viewContentDivs contentReadClickedAtLeastOnce contents =
     [ div [ style "margin-top" "20px" ]
         (contents
-            |> List.map viewContentDiv
+            |> List.map (viewContentDiv contentReadClickedAtLeastOnce)
             |> List.intersperse (hr [] [])
         )
     ]

@@ -1,4 +1,4 @@
-module App.Model exposing (BioPageModel, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GraphData, GraphModel, IconInfo, Initializable(..), InitializedTagPageModel, MaySendRequest(..), Model, NoVal(..), NonInitializedYetTagPageModel, Page(..), ReadingMode(..), UpdateContentPageData, UpdateContentPageModel(..), UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, setCreateContentPageModel, setUpdateContentPageModel, updateContentPageDataEncoder, updateTagPageModelEncoder)
+module App.Model exposing (BioPageModel, CreateContentPageRequestModel, CreateTagPageModel, Drag, Entity, GetContentRequestModel, GetTagContentsRequestModel, GraphData, GraphModel, IconInfo, Initializable(..), InitializedTagPageModel, LocalStorage, MaySendRequest(..), Model, NonInitializedYetTagPageModel, Page(..), ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateContentPageModel(..), UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, setCreateContentPageModel, setUpdateContentPageModel, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
 
 import BioGroup.Model exposing (BioGroup)
 import BioItem.Model exposing (BioItem)
@@ -13,18 +13,21 @@ import Tag.Model exposing (Tag)
 import Time
 
 
-type NoVal
-    = NoVal
-
-
 type alias Model =
     { log : String
     , key : Nav.Key
     , allTags : List Tag
     , activePage : Page
     , showAdditionalIcons : Bool
+    , localStorage : LocalStorage
+    , loggedIn : Bool
+    , consumeModeIsOn : Bool
     , timeZone : Time.Zone
     }
+
+
+type alias LocalStorage =
+    { readingMode : ReadingMode, contentReadClickedAtLeastOnce : Bool, username : String, password : String }
 
 
 type alias IconInfo =
@@ -92,12 +95,13 @@ type Page
     = HomePage (List Tag) ReadingMode (Maybe GraphData)
     | ContentPage (Initializable Int Content)
     | TagPage (Initializable NonInitializedYetTagPageModel InitializedTagPageModel)
-    | CreateContentPage (MaySendRequest CreateContentPageModel CreateContentPageModel)
+    | CreateContentPage (MaySendRequest CreateContentPageRequestModel CreateContentPageRequestModel)
     | UpdateContentPage UpdateContentPageModel
     | CreateTagPage (MaySendRequest CreateTagPageModel CreateTagPageModel)
     | UpdateTagPage (MaySendRequest ( UpdateTagPageModel, String ) UpdateTagPageModel)
     | BioPage (Maybe BioPageModel)
     | ContentSearchPage String (List Content)
+    | LoginOrRegisterPage String String String
     | NotFoundPage
     | MaintenancePage
 
@@ -111,7 +115,33 @@ type alias GraphData =
     }
 
 
-type alias CreateContentPageModel =
+type alias GetContentRequestModel =
+    { contentID : Int
+    , username : String
+    , password : String
+    }
+
+
+type alias GetTagContentsRequestModel =
+    { tagId : String
+    , page : Maybe Int
+    , blogMode : Bool
+    , consumeMode : Bool
+    , username : String
+    , password : String
+    }
+
+
+type alias TotalPageCountRequestModel =
+    { tagId : String
+    , blogMode : Bool
+    , consumeMode : Bool
+    , username : String
+    , password : String
+    }
+
+
+type alias CreateContentPageRequestModel =
     { maybeContentToPreview : Maybe Content
     , id : String
     , title : String
@@ -160,7 +190,7 @@ type alias BioPageModel =
     }
 
 
-setCreateContentPageModel : Content -> CreateContentPageModel
+setCreateContentPageModel : Content -> CreateContentPageRequestModel
 setCreateContentPageModel content =
     { maybeContentToPreview = Just content
     , id = ""
@@ -199,7 +229,46 @@ setUpdateContentPageModel content =
     }
 
 
-createContentPageModelEncoder : CreateContentPageModel -> Encode.Value
+getContentRequestModelEncoder : GetContentRequestModel -> Encode.Value
+getContentRequestModelEncoder model =
+    Encode.object
+        [ ( "contentID", Encode.string (String.fromInt model.contentID) )
+        , ( "username", Encode.string model.username )
+        , ( "password", Encode.string model.password )
+        ]
+
+
+getTagContentsRequestModelEncoder : GetTagContentsRequestModel -> Encode.Value
+getTagContentsRequestModelEncoder model =
+    Encode.object
+        [ ( "tagId", Encode.string model.tagId )
+        , ( "page"
+          , case model.page of
+                Just page ->
+                    Encode.int page
+
+                Nothing ->
+                    Encode.int 1
+          )
+        , ( "blogMode", Encode.bool model.blogMode )
+        , ( "consumeMode", Encode.bool model.consumeMode )
+        , ( "username", Encode.string model.username )
+        , ( "password", Encode.string model.password )
+        ]
+
+
+totalPageCountRequestModelEncoder : TotalPageCountRequestModel -> Encode.Value
+totalPageCountRequestModelEncoder model =
+    Encode.object
+        [ ( "tagId", Encode.string model.tagId )
+        , ( "blogMode", Encode.bool model.blogMode )
+        , ( "consumeMode", Encode.bool model.consumeMode )
+        , ( "username", Encode.string model.username )
+        , ( "password", Encode.string model.password )
+        ]
+
+
+createContentPageModelEncoder : CreateContentPageRequestModel -> Encode.Value
 createContentPageModelEncoder model =
     Encode.object
         [ ( "id", Encode.string model.id )

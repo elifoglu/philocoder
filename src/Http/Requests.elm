@@ -1,7 +1,7 @@
-module Requests exposing (createNewTag, getAllRefData, getAllTagsResponse, getBio, getBioPageIcons, getBlogTagsResponse, getContent, getIcons, getSearchResult, getTagContents, getTimeZone, postNewContent, previewContent, updateExistingContent, updateExistingTag)
+module Requests exposing (createNewTag, getAllRefData, getAllTagsResponse, getBio, getBioPageIcons, getBlogTagsResponse, getContent, getIcons, getOnlyTotalPageCountForPagination, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
 
-import App.Model exposing (CreateContentPageModel, CreateTagPageModel, IconInfo, ReadingMode(..), UpdateContentPageData, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
-import App.Msg exposing (Msg(..), PreviewContentModel(..))
+import App.Model exposing (CreateContentPageRequestModel, CreateTagPageModel, GetContentRequestModel, GetTagContentsRequestModel, IconInfo, Model, ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
+import App.Msg exposing (LoginRequestType, Msg(..), PreviewContentModel(..))
 import DataResponse exposing (ContentID, allTagsResponseDecoder, bioResponseDecoder, blogTagsResponseDecoder, contentDecoder, contentSearchResponseDecoder, contentsResponseDecoder, gotAllRefDataDecoder)
 import Http
 import Json.Encode as Encode
@@ -19,53 +19,68 @@ getTimeZone =
     Task.perform GotTimeZone Time.here
 
 
-getAllTagsResponse : Cmd Msg
-getAllTagsResponse =
-    Http.get
-        { url =
-            apiURL ++ "tags"
+getAllTagsResponse : Bool -> String -> String -> Cmd Msg
+getAllTagsResponse consumeMode username password =
+    Http.post
+        { url = apiURL ++ "allTags"
+        , body =
+            Http.jsonBody
+                (Encode.object
+                    [ ( "consumeMode", Encode.bool consumeMode )
+                    , ( "username", Encode.string username )
+                    , ( "password", Encode.string password )
+                    ]
+                )
         , expect = Http.expectJson GotAllTagsResponse allTagsResponseDecoder
         }
 
 
-getBlogTagsResponse : Cmd Msg
-getBlogTagsResponse =
-    Http.get
-        { url =
-            apiURL ++ "blogTags"
+getBlogTagsResponse : Bool -> String -> String -> Cmd Msg
+getBlogTagsResponse consumeMode username password =
+    Http.post
+        { url = apiURL ++ "blogTags"
+        , body =
+            Http.jsonBody
+                (Encode.object
+                    [ ( "consumeMode", Encode.bool consumeMode )
+                    , ( "username", Encode.string username )
+                    , ( "password", Encode.string password )
+                    ]
+                )
         , expect = Http.expectJson GotBlogTagsResponse blogTagsResponseDecoder
         }
 
 
-getTagContents : Tag -> Maybe Int -> ReadingMode -> Cmd Msg
-getTagContents tag maybePage readingMode =
-    Http.get
-        { url =
-            apiURL
-                ++ "contents?tagId="
-                ++ tag.tagId
-                ++ (case maybePage of
-                        Just page ->
-                            "&page=" ++ String.fromInt page
+getTagContents : Tag -> Maybe Int -> ReadingMode -> Model -> Cmd Msg
+getTagContents tag maybePage readingMode model =
+    let
+        getTagContentsRequestModel : GetTagContentsRequestModel
+        getTagContentsRequestModel =
+            GetTagContentsRequestModel tag.tagId
+                maybePage
+                (case readingMode of
+                    BlogContents ->
+                        True
 
-                        Nothing ->
-                            ""
-                   )
-                ++ (case readingMode of
-                        BlogContents ->
-                            "&blogMode=true"
-
-                        AllContents ->
-                            "&blogMode=false"
-                   )
+                    AllContents ->
+                        False
+                )
+                (model.loggedIn && model.consumeModeIsOn)
+                model.localStorage.username
+                model.localStorage.password
+    in
+    Http.post
+        { url = apiURL ++ "contents-of-tag"
+        , body = Http.jsonBody (getTagContentsRequestModelEncoder getTagContentsRequestModel)
         , expect = Http.expectJson (GotContentsOfTag tag) contentsResponseDecoder
         }
 
 
-getContent : Int -> Cmd Msg
-getContent contentId =
-    Http.get
-        { url = apiURL ++ "contents/" ++ String.fromInt contentId
+getContent : Int -> Model -> Cmd Msg
+getContent contentId model =
+    Http.post
+        { url = apiURL ++ "getContent"
+        , body = Http.jsonBody (getContentRequestModelEncoder (GetContentRequestModel contentId model.localStorage.username model.localStorage.password))
         , expect = Http.expectJson GotContent contentDecoder
         }
 
@@ -78,7 +93,7 @@ getAllRefData =
         }
 
 
-postNewContent : CreateContentPageModel -> Cmd Msg
+postNewContent : CreateContentPageRequestModel -> Cmd Msg
 postNewContent model =
     Http.post
         { url = apiURL ++ "contents"
@@ -188,15 +203,87 @@ getBio =
         }
 
 
-getSearchResult : String -> Cmd Msg
-getSearchResult searchKeyword =
+getSearchResult : String -> Model -> Cmd Msg
+getSearchResult searchKeyword model =
     Http.post
         { url = apiURL ++ "search"
         , body =
             Http.jsonBody
                 (Encode.object
                     [ ( "keyword", Encode.string searchKeyword )
+                    , ( "username", Encode.string model.localStorage.username )
+                    , ( "password", Encode.string model.localStorage.password )
                     ]
                 )
         , expect = Http.expectJson GotContentSearchResponse contentSearchResponseDecoder
+        }
+
+
+login : LoginRequestType -> String -> String -> Cmd Msg
+login loginType username password =
+    Http.post
+        { url = apiURL ++ "login"
+        , body =
+            Http.jsonBody
+                (Encode.object
+                    [ ( "username", Encode.string username )
+                    , ( "password", Encode.string password )
+                    ]
+                )
+        , expect = Http.expectString (GotLoginResponse loginType)
+        }
+
+
+register : String -> String -> Cmd Msg
+register username password =
+    Http.post
+        { url = apiURL ++ "register"
+        , body =
+            Http.jsonBody
+                (Encode.object
+                    [ ( "username", Encode.string username )
+                    , ( "password", Encode.string password )
+                    ]
+                )
+        , expect = Http.expectString GotRegisterResponse
+        }
+
+
+setContentAsRead : Int -> Model -> Cmd Msg
+setContentAsRead contentId model =
+    Http.post
+        { url = apiURL ++ "setContentAsRead"
+        , body =
+            Http.jsonBody
+                (Encode.object
+                    [ ( "contentId", Encode.int contentId )
+                    , ( "username", Encode.string model.localStorage.username )
+                    , ( "password", Encode.string model.localStorage.password )
+                    ]
+                )
+        , expect = Http.expectString GotContentReadResponse
+        }
+
+
+getOnlyTotalPageCountForPagination : Tag -> ReadingMode -> Model -> Cmd Msg
+getOnlyTotalPageCountForPagination tag readingMode model =
+    let
+        totalPageCountRequestModel : TotalPageCountRequestModel
+        totalPageCountRequestModel =
+            TotalPageCountRequestModel tag.tagId
+                (case readingMode of
+                    BlogContents ->
+                        True
+
+                    AllContents ->
+                        False
+                )
+                (model.loggedIn && model.consumeModeIsOn)
+                model.localStorage.username
+                model.localStorage.password
+    in
+    Http.post
+        { url = apiURL ++ "total-page-count-of-tag"
+        , body = Http.jsonBody (totalPageCountRequestModelEncoder totalPageCountRequestModel)
+        , expect = Http.expectString GotTotalPageCountOfTag
         }

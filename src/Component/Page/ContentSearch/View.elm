@@ -8,8 +8,8 @@ import Html.Attributes exposing (class, id, placeholder, style, type_, value)
 import Html.Events exposing (onInput)
 
 
-viewSearchContentDiv : String -> List Content -> Html Msg
-viewSearchContentDiv searchKeyword contents =
+viewSearchContentDiv : Bool -> String -> List Content -> Html Msg
+viewSearchContentDiv contentReadClickedAtLeastOnce searchKeyword contents =
     div []
         [ input [ type_ "text", id "contentSearchInput", class "contentSearchInput", placeholder "ara...", value searchKeyword, onInput GotSearchInput, style "width" "100px" ] []
         , span [ class "searchContentInfoText" ]
@@ -26,7 +26,7 @@ viewSearchContentDiv searchKeyword contents =
             ]
         , div [ style "margin-top" "20px" ]
             (contents
-                |> List.map viewContentDiv
+                |> List.map (viewContentDiv contentReadClickedAtLeastOnce)
                 |> List.intersperse (hr [] [])
             )
         ]

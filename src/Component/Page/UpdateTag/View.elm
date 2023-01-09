@@ -1,6 +1,6 @@
 module UpdateTag.View exposing (viewUpdateTagDiv)
 
-import App.Model exposing (CreateContentPageModel, CreateTagPageModel, Model, UpdateTagPageModel)
+import App.Model exposing (CreateContentPageRequestModel, CreateTagPageModel, Model, UpdateTagPageModel)
 import App.Msg exposing (ContentInputType(..), Msg(..), PreviewContentModel(..), TagInputType(..))
 import Html exposing (Html, br, button, div, input, text)
 import Html.Attributes exposing (placeholder, selected, style, type_, value)
