@@ -77,7 +77,7 @@ viewContentReadCheckSpan content contentReadClickedAtLeastOnce =
             text ""
 
           else
-            label [] [ text "\"okundu\" olarak işaretle" ]
+            label [] [ text "(okundu)" ]
         ]
 
 
