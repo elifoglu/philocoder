@@ -401,6 +401,26 @@ input:focus {
     color: #ffffff;
 }
 
+.loginRegisterButton {
+    padding: 0px 4px 0px 4px;
+    border: 1px solid #202020;
+    border-radius: 3px;
+    color: #ffffff;
+    cursor: pointer;
+    background-color: #202020;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    word-spacing: 0.2px;
+    line-height: 20px;
+    width: 50px;
+    margin: 2px;
+}
+
+.loginRegisterButton:hover {
+    background-color: #474747;
+    color: #ffffff;
+}
+
 input[type='checkbox'] {
     accent-color: #202020;
 }

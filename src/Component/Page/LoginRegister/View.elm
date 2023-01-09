@@ -20,8 +20,8 @@ aşağıdan basitçe kaydolur ve ana sayfada, **arama kutusunun hemen sağında*
         , br [] []
         , viewInput "text" "şifre" password (LoginRegisterPageInputChanged Pass)
         , br [] []
-        , button [ onClick (TryRegister username password), style "width" "54px" ] [ text "kayıt" ]
-        , button [ onClick (TryLogin username password), style "width" "54px" ] [ text "giriş" ]
+        , viewButton (TryRegister username password) "kayıt"
+        , viewButton (TryLogin username password)  "giriş"
         , br [] []
         , if not (String.isEmpty errorMessage) then
             Markdown.toHtml [ class "markdownDiv contentFont" ] errorMessage
@@ -30,7 +30,10 @@ aşağıdan basitçe kaydolur ve ana sayfada, **arama kutusunun hemen sağında*
             text ""
         ]
 
-
 viewInput : String -> String -> String -> (String -> msg) -> Html msg
 viewInput t p v toMsg =
-    input [ type_ t, placeholder p, value v, onInput toMsg, style "width" "100px" ] []
+    input [ class "loginRegisterInput", type_ t, placeholder p, value v, onInput toMsg, style "width" "100px" ] []
+
+viewButton : Msg -> String -> Html Msg
+viewButton msg buttonText =
+    button [ class "loginRegisterButton", onClick msg ] [ text buttonText ]
