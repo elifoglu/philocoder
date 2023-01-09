@@ -799,8 +799,10 @@ update msg model =
 
                         _ ->
                             model.activePage
+
+                newModel = { model | activePage = newPage }
             in
-            ( { model | activePage = newPage }, Cmd.batch [ getSearchResult searchKeyword model, Dom.focus "contentSearchInput" |> Task.attempt FocusResult ] )
+            ( newModel, Cmd.batch [ sendTitle newModel, getSearchResult searchKeyword newModel, Dom.focus "contentSearchInput" |> Task.attempt FocusResult ] )
 
         GotContentSearchResponse res ->
             case res of
