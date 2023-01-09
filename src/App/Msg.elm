@@ -1,6 +1,6 @@
 module App.Msg exposing (..)
 
-import App.Model exposing (CreateContentPageRequestModel, CreateTagPageModel, Page, ReadingMode, UpdateContentPageData, UpdateTagPageModel)
+import App.Model exposing (CreateContentPageModel, CreateTagPageModel, Page, ReadingMode, UpdateContentPageData, UpdateTagPageModel)
 import BioGroup.Model exposing (BioGroup)
 import BioItem.Model exposing (BioItem)
 import Browser
@@ -33,7 +33,7 @@ type Msg
     | ClickOnABioItemInfo BioItem
     | GotContentsOfTag Tag (Result Http.Error ContentsResponse)
     | GotContent (Result Http.Error GotContent)
-    | GotContentToPreviewForCreatePage CreateContentPageRequestModel (Result Http.Error GotContent)
+    | GotContentToPreviewForCreatePage CreateContentPageModel (Result Http.Error GotContent)
     | GotContentToPreviewForUpdatePage ContentID UpdateContentPageData (Result Http.Error GotContent)
     | ContentInputChanged ContentInputType String
     | TagInputChanged TagInputType
@@ -42,7 +42,7 @@ type Msg
     | TryRegister String String
     | GetContentToCopyForContentCreation Int
     | PreviewContent PreviewContentModel
-    | CreateContent CreateContentPageRequestModel
+    | CreateContent CreateContentPageModel
     | UpdateContent ContentID UpdateContentPageData
     | CreateTag CreateTagPageModel
     | UpdateTag String UpdateTagPageModel
@@ -60,7 +60,7 @@ type Msg
 
 
 type PreviewContentModel
-    = PreviewForContentCreate CreateContentPageRequestModel
+    = PreviewForContentCreate CreateContentPageModel
     | PreviewForContentUpdate ContentID UpdateContentPageData
 
 

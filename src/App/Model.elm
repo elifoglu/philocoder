@@ -1,4 +1,4 @@
-module App.Model exposing (BioPageModel, CreateContentPageRequestModel, CreateTagPageModel, Drag, Entity, GetContentRequestModel, GetTagContentsRequestModel, GraphData, GraphModel, IconInfo, Initializable(..), InitializedTagPageModel, LocalStorage, MaySendRequest(..), Model, NonInitializedYetTagPageModel, Page(..), ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateContentPageModel(..), UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, setCreateContentPageModel, setUpdateContentPageModel, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
+module App.Model exposing (BioPageModel, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GetContentRequestModel, GetTagContentsRequestModel, GraphData, GraphModel, IconInfo, Initializable(..), InitializedTagPageModel, LocalStorage, MaySendRequest(..), Model, NonInitializedYetTagPageModel, Page(..), ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateContentPageModel(..), UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, setCreateContentPageModel, setUpdateContentPageModel, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
 
 import BioGroup.Model exposing (BioGroup)
 import BioItem.Model exposing (BioItem)
@@ -95,7 +95,7 @@ type Page
     = HomePage (List Tag) ReadingMode (Maybe GraphData)
     | ContentPage (Initializable Int Content)
     | TagPage (Initializable NonInitializedYetTagPageModel InitializedTagPageModel)
-    | CreateContentPage (MaySendRequest CreateContentPageRequestModel CreateContentPageRequestModel)
+    | CreateContentPage (MaySendRequest CreateContentPageModel CreateContentPageModel)
     | UpdateContentPage UpdateContentPageModel
     | CreateTagPage (MaySendRequest CreateTagPageModel CreateTagPageModel)
     | UpdateTagPage (MaySendRequest ( UpdateTagPageModel, String ) UpdateTagPageModel)
@@ -141,7 +141,7 @@ type alias TotalPageCountRequestModel =
     }
 
 
-type alias CreateContentPageRequestModel =
+type alias CreateContentPageModel =
     { maybeContentToPreview : Maybe Content
     , id : String
     , title : String
@@ -190,7 +190,7 @@ type alias BioPageModel =
     }
 
 
-setCreateContentPageModel : Content -> CreateContentPageRequestModel
+setCreateContentPageModel : Content -> CreateContentPageModel
 setCreateContentPageModel content =
     { maybeContentToPreview = Just content
     , id = ""
@@ -268,7 +268,7 @@ totalPageCountRequestModelEncoder model =
         ]
 
 
-createContentPageModelEncoder : CreateContentPageRequestModel -> Encode.Value
+createContentPageModelEncoder : CreateContentPageModel -> Encode.Value
 createContentPageModelEncoder model =
     Encode.object
         [ ( "id", Encode.string model.id )
