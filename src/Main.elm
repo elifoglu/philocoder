@@ -298,7 +298,7 @@ update msg model =
                     ( model, Cmd.none )
 
                 else
-                    case model.dataToFadeContent of
+                    case model.maybeContentFadeOutData of
                         -- do not allow to check if a content is fading out
                         Just _ ->
                             ( model, Cmd.none )
@@ -307,8 +307,39 @@ update msg model =
                             let
                                 newModel =
                                     { model | waitingForContentCheckResponse = True }
+
+                                tagIdOfTagPage =
+                                    case model.activePage of
+                                        TagPage status ->
+                                            case status of
+                                                Initialized pageModel ->
+                                                    pageModel.tag.tagId
+
+                                                NonInitialized _ ->
+                                                    ""
+
+                                        _ ->
+                                            ""
+
+                                idOfLatestContentOnTagPage =
+                                    case model.activePage of
+                                        TagPage status ->
+                                            case status of
+                                                Initialized pageModel ->
+                                                    case List.Extra.last pageModel.contents of
+                                                        Just content ->
+                                                            content.contentId
+
+                                                        Nothing ->
+                                                            0
+
+                                                NonInitialized _ ->
+                                                    0
+
+                                        _ ->
+                                            0
                             in
-                            ( newModel, setContentAsRead contentID newModel )
+                            ( newModel, setContentAsRead contentID tagIdOfTagPage idOfLatestContentOnTagPage newModel )
 
             else
                 let
@@ -325,62 +356,67 @@ update msg model =
 
         GotContentReadResponse res ->
             let
-                updatedModel = { model | waitingForContentCheckResponse = False}
+                updatedModel =
+                    { model | waitingForContentCheckResponse = False }
             in
-                case res of
-                    Ok message ->
-                        if String.startsWith "error" message then
-                            ( updatedModel, Cmd.none )
-
-                        else
-                            let
-                                contentId =
-                                    message
-
-                                revertRead content =
-                                    if content.contentId == Maybe.withDefault 0 (String.toInt contentId) then
-                                        { content | isContentRead = not content.isContentRead }
-
-                                    else
-                                        content
-                            in
-                            case updatedModel.activePage of
-                                ContentPage status ->
-                                    case status of
-                                        NonInitialized _ ->
-                                            ( updatedModel, Cmd.none )
-
-                                        Initialized content ->
-                                            ( { updatedModel | activePage = ContentPage (Initialized (revertRead content)) }, Cmd.none )
-
-                                TagPage status ->
-                                    case status of
-                                        NonInitialized _ ->
-                                            ( updatedModel, Cmd.none )
-
-                                        Initialized pageModel ->
-                                            if updatedModel.consumeModeIsOn then
-                                                ( { updatedModel
-                                                    | activePage = TagPage (Initialized { pageModel | contents = List.map revertRead pageModel.contents })
-                                                    , dataToFadeContent = Just ( 1, Maybe.withDefault 0 (String.toInt contentId) )
-                                                  }
-                                                , getOnlyTotalPageCountForPagination pageModel.tag pageModel.readingMode updatedModel
-                                                  --since we hid a content on the screen, we have to recalculate total page count and set pagination again
-                                                )
-
-                                            else
-                                                ( { updatedModel | activePage = TagPage (Initialized { pageModel | contents = List.map revertRead pageModel.contents }) }
-                                                , Cmd.none
-                                                )
-
-                                ContentSearchPage searchKeyword contents ->
-                                    ( { updatedModel | activePage = ContentSearchPage searchKeyword (List.map revertRead contents) }, Cmd.none )
-
-                                _ ->
-                                    ( updatedModel, Cmd.none )
-
-                    Err _ ->
+            case res of
+                Ok data ->
+                    if String.startsWith "error" data.idOfReadContentOrErrorMessage then
                         ( updatedModel, Cmd.none )
+
+                    else
+                        let
+                            contentId =
+                                data.idOfReadContentOrErrorMessage
+
+                            revertRead content =
+                                if content.contentId == Maybe.withDefault 0 (String.toInt contentId) then
+                                    { content | isContentRead = not content.isContentRead }
+
+                                else
+                                    content
+                        in
+                        case updatedModel.activePage of
+                            ContentPage status ->
+                                case status of
+                                    NonInitialized _ ->
+                                        ( updatedModel, Cmd.none )
+
+                                    Initialized content ->
+                                        ( { updatedModel | activePage = ContentPage (Initialized (revertRead content)) }, Cmd.none )
+
+                            TagPage status ->
+                                case status of
+                                    NonInitialized _ ->
+                                        ( updatedModel, Cmd.none )
+
+                                    Initialized pageModel ->
+                                        if updatedModel.consumeModeIsOn then
+                                            let
+                                                newModel =
+                                                    { updatedModel
+                                                        | activePage = TagPage (Initialized { pageModel | contents = List.map revertRead pageModel.contents })
+                                                        , maybeContentFadeOutData = Just ( ContentFadeOutData 1 (Maybe.withDefault 0 (String.toInt contentId)) data.contentToShowAsReplacementOnBottom )
+                                                    }
+                                            in
+                                            ( newModel
+                                            , getOnlyTotalPageCountForPagination pageModel.tag pageModel.readingMode newModel
+                                              --since we hid a content on the screen, we have to recalculate total page count and set pagination again
+                                            )
+
+                                        else
+                                            ( { updatedModel | activePage = TagPage (Initialized { pageModel | contents = List.map revertRead pageModel.contents }) }
+                                            , Cmd.none
+                                            )
+
+                            ContentSearchPage searchKeyword contents ->
+                                ( { updatedModel | activePage = ContentSearchPage searchKeyword (List.map revertRead contents) }, Cmd.none )
+
+                            _ ->
+                                ( updatedModel, Cmd.none )
+
+                Err _ ->
+                    ( updatedModel, Cmd.none )
 
         -- TAG PAGE --
         GotContentsOfTag tag result ->
@@ -440,13 +476,28 @@ update msg model =
                 Err _ ->
                     ( model, Cmd.none )
 
-        HideContentFromActiveTagPage contentId ->
+        HideContentFromActiveTagPage contentIdToHide contentToAddToBottom ->
             case model.activePage of
                 TagPage status ->
                     case status of
                         Initialized pageModel ->
                             if model.consumeModeIsOn then
-                                ( { model | activePage = TagPage (Initialized { pageModel | contents = pageModel.contents |> List.filter (\c -> c.contentId /= contentId) }) }, Cmd.none )
+                                let
+                                    contentsWithDeletedContent =
+                                        pageModel.contents |> List.filter (\c -> c.contentId /= contentIdToHide)
+
+                                    contentsWithNewContentToBottom =
+                                        case contentToAddToBottom of
+                                            Just content ->
+                                                contentsWithDeletedContent ++ [ gotContentToContent model content ]
+
+                                            Nothing ->
+                                                contentsWithDeletedContent
+
+                                    modelWithDeletedContent =
+                                        { model | activePage = TagPage (Initialized { pageModel | contents = contentsWithNewContentToBottom }) }
+                                in
+                                ( modelWithDeletedContent, Cmd.none )
 
                             else
                                 ( model, Cmd.none )
@@ -1086,22 +1137,22 @@ update msg model =
                             ( model, Cmd.none )
 
                 TagPage _ ->
-                    case model.dataToFadeContent of
-                        Just ( opacityLevel, contentId ) ->
+                    case model.maybeContentFadeOutData of
+                        Just data ->
                             let
                                 t =
                                     0.05
 
                                 dataToFadeContent =
-                                    if opacityLevel <= t then
+                                    if data.opacityLevel <= t then
                                         Nothing
 
                                     else
-                                        Just ( opacityLevel - t, contentId )
+                                        Just (ContentFadeOutData (data.opacityLevel - t) data.contentIdToFade data.contentToAddToBottomAfterFadeOut)
                             in
-                            ( { model | dataToFadeContent = dataToFadeContent }
+                            ( { model | maybeContentFadeOutData = dataToFadeContent }
                             , if dataToFadeContent == Nothing then
-                                Task.perform (always (HideContentFromActiveTagPage contentId)) (Task.succeed ())
+                                Task.perform (always (HideContentFromActiveTagPage data.contentIdToFade data.contentToAddToBottomAfterFadeOut)) (Task.succeed ())
 
                               else
                                 Cmd.none
@@ -1130,7 +1181,7 @@ subscriptions model =
                     Sub.none
 
         TagPage _ ->
-            if model.dataToFadeContent /= Nothing then
+            if model.maybeContentFadeOutData /= Nothing then
                 Time.every 80 Tick
 
             else

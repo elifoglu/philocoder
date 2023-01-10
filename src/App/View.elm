@@ -75,7 +75,7 @@ view model =
                                 []
 
                             Initialized initialized ->
-                                viewContentDivs model.dataToFadeContent model.localStorage.contentReadClickedAtLeastOnce initialized.contents
+                                viewContentDivs model.maybeContentFadeOutData model.localStorage.contentReadClickedAtLeastOnce initialized.contents
                                     ++ [ viewPagination initialized.tag initialized.pagination initialized.readingMode
                                        ]
 

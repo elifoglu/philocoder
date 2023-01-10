@@ -1,6 +1,6 @@
 module Content.View exposing (viewContentDiv)
 
-import App.Model exposing (DataToFadeContent)
+import App.Model exposing (MaybeContentFadeOutData)
 import App.Msg exposing (Msg(..))
 import Content.Model exposing (Content)
 import Content.Util exposing (maybeDateText, maybeDisplayableTagsOfContent)
@@ -13,7 +13,7 @@ import Markdown
 import Tag.Model exposing (Tag)
 
 
-viewContentDiv : DataToFadeContent -> Bool -> Content -> Html Msg
+viewContentDiv : MaybeContentFadeOutData -> Bool -> Content -> Html Msg
 viewContentDiv dataToFadeContent contentReadClickedAtLeastOnce content =
     p [ style "opacity" (getOpacityLevel content.contentId dataToFadeContent) ]
         [ div [ ]
@@ -26,11 +26,11 @@ viewContentDiv dataToFadeContent contentReadClickedAtLeastOnce content =
         ]
 
 
-getOpacityLevel : ContentID -> DataToFadeContent -> String
-getOpacityLevel contentId dataToFadeContent =
-    case dataToFadeContent of
-        Just pair ->
-            if contentId == Tuple.second pair then (String.fromFloat (Tuple.first pair))
+getOpacityLevel : ContentID -> MaybeContentFadeOutData -> String
+getOpacityLevel contentId maybeContentFadeData =
+    case maybeContentFadeData of
+        Just data ->
+            if contentId == data.contentIdToFade then (String.fromFloat (data.opacityLevel))
             else "1"
 
 

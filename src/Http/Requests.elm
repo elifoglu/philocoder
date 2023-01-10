@@ -1,8 +1,8 @@
-module Requests exposing (createNewTag, getAllRefData, getAllTagsResponse, getBio, getBioPageIcons, getHomePageDataResponse, getContent, getIcons, getOnlyTotalPageCountForPagination, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
+module Requests exposing (createNewTag, getAllRefData, getAllTagsResponse, getBio, getBioPageIcons, getContent, getHomePageDataResponse, getIcons, getOnlyTotalPageCountForPagination, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
 
 import App.Model exposing (CreateContentPageModel, CreateTagPageModel, GetContentRequestModel, GetTagContentsRequestModel, IconInfo, Model, ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
 import App.Msg exposing (LoginRequestType, Msg(..), PreviewContentModel(..))
-import DataResponse exposing (ContentID, allTagsResponseDecoder, bioResponseDecoder, homePageDataResponseDecoder, contentDecoder, contentSearchResponseDecoder, contentsResponseDecoder, gotAllRefDataDecoder)
+import DataResponse exposing (ContentID, allTagsResponseDecoder, bioResponseDecoder, contentDecoder, contentReadResponseDecoder, contentSearchResponseDecoder, contentsResponseDecoder, gotAllRefDataDecoder, homePageDataResponseDecoder)
 import Http
 import Json.Encode as Encode
 import Tag.Model exposing (Tag)
@@ -244,19 +244,33 @@ register username password =
         }
 
 
-setContentAsRead : Int -> Model -> Cmd Msg
-setContentAsRead contentId model =
+setContentAsRead : Int -> String -> Int -> Model -> Cmd Msg
+setContentAsRead contentId tagIdOfTagPage idOfLatestContentOnTagPage model =
     Http.post
         { url = apiURL ++ "set-content-as-read"
         , body =
             Http.jsonBody
                 (Encode.object
                     [ ( "contentId", Encode.int contentId )
+                    , ( "tagIdOfTagPage", Encode.string tagIdOfTagPage )
+                    , ( "contentIdOfLatestContentOnTagPage", Encode.int idOfLatestContentOnTagPage )
+                    , ( "loggedIn", Encode.bool model.loggedIn )
+                    , ( "consumeMode", Encode.bool model.consumeModeIsOn )
+                    , ( "blogMode"
+                      , Encode.bool
+                            (case model.localStorage.readingMode of
+                                BlogContents ->
+                                    True
+
+                                AllContents ->
+                                    False
+                            )
+                      )
                     , ( "username", Encode.string model.localStorage.username )
                     , ( "password", Encode.string model.localStorage.password )
                     ]
                 )
-        , expect = Http.expectString GotContentReadResponse
+        , expect = Http.expectJson GotContentReadResponse contentReadResponseDecoder
         }
 
 

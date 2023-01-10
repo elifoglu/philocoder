@@ -1,10 +1,10 @@
-module App.Model exposing (BioPageModel, CreateContentPageModel, CreateTagPageModel, DataToFadeContent, Drag, Entity, GetContentRequestModel, GetTagContentsRequestModel, GraphData, GraphModel, IconInfo, Initializable(..), InitializedTagPageModel, LocalStorage, MaySendRequest(..), Model, NonInitializedYetTagPageModel, Page(..), ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateContentPageModel(..), UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, setCreateContentPageModel, setUpdateContentPageModel, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
+module App.Model exposing (BioPageModel, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GetContentRequestModel, GetTagContentsRequestModel, GraphData, GraphModel, IconInfo, Initializable(..), InitializedTagPageModel, LocalStorage, MaySendRequest(..), MaybeContentFadeOutData, Model, NonInitializedYetTagPageModel, Page(..), ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateContentPageModel(..), UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, setCreateContentPageModel, setUpdateContentPageModel, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder, ContentFadeOutData)
 
 import BioGroup.Model exposing (BioGroup)
 import BioItem.Model exposing (BioItem)
 import Browser.Navigation as Nav
 import Content.Model exposing (Content)
-import DataResponse exposing (ContentID, GotAllRefData, GotRefConnection)
+import DataResponse exposing (ContentID, GotAllRefData, GotContent, GotRefConnection)
 import Force
 import Graph exposing (Graph, NodeId)
 import Json.Encode as Encode
@@ -22,7 +22,7 @@ type alias Model =
     , localStorage : LocalStorage
     , loggedIn : Bool
     , consumeModeIsOn : Bool
-    , dataToFadeContent : DataToFadeContent
+    , maybeContentFadeOutData : MaybeContentFadeOutData
     , waitingForContentCheckResponse : Bool
     , timeZone : Time.Zone
     }
@@ -36,8 +36,19 @@ type alias OpacityLevel =
     Float
 
 
-type alias DataToFadeContent =
-    Maybe ( OpacityLevel, ContentID )
+type alias ContentToAddToBottomAfterFadeOut =
+    Maybe GotContent
+
+
+type alias ContentFadeOutData =
+    { opacityLevel : OpacityLevel
+    , contentIdToFade : ContentID
+    , contentToAddToBottomAfterFadeOut : ContentToAddToBottomAfterFadeOut
+    }
+
+
+type alias MaybeContentFadeOutData =
+    Maybe ContentFadeOutData
 
 
 type alias IconInfo =
