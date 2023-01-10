@@ -23,6 +23,7 @@ type alias Model =
     , loggedIn : Bool
     , consumeModeIsOn : Bool
     , dataToFadeContent : DataToFadeContent
+    , waitingForContentCheckResponse : Bool
     , timeZone : Time.Zone
     }
 

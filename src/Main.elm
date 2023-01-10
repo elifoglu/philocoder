@@ -85,7 +85,7 @@ init flags url key =
                     False
 
         model =
-            Model "log" key [] page False (LocalStorage readingMode contentReadClickedAtLeastOnce username password) False (getConsumeModeIsOnValueFromLocal flags.consumeModeIsOn) Nothing Time.utc
+            Model "log" key [] page False (LocalStorage readingMode contentReadClickedAtLeastOnce username password) False (getConsumeModeIsOnValueFromLocal flags.consumeModeIsOn) Nothing False Time.utc
     in
     ( model
     , Cmd.batch [ login AttemptAtInitialization username password, getTimeZone ]
@@ -294,17 +294,21 @@ update msg model =
 
         ContentReadChecked contentID ->
             if model.loggedIn then
-                case model.dataToFadeContent of
-                    -- do not allow to check if the content is fading out
-                    Just data ->
-                        if Tuple.second data == contentID then
+                if model.waitingForContentCheckResponse then
+                    ( model, Cmd.none )
+
+                else
+                    case model.dataToFadeContent of
+                        -- do not allow to check if a content is fading out
+                        Just _ ->
                             ( model, Cmd.none )
 
-                        else
-                            ( model, setContentAsRead contentID model )
-
-                    Nothing ->
-                        ( model, setContentAsRead contentID model )
+                        Nothing ->
+                            let
+                                newModel =
+                                    { model | waitingForContentCheckResponse = True }
+                            in
+                            ( newModel, setContentAsRead contentID newModel )
 
             else
                 let
@@ -320,60 +324,63 @@ update msg model =
                 ( newModel, Cmd.batch [ storeContentReadClickedForTheFirstTime "true", sendTitle newModel ] )
 
         GotContentReadResponse res ->
-            case res of
-                Ok message ->
-                    if String.startsWith "error" message then
-                        ( model, Cmd.none )
+            let
+                updatedModel = { model | waitingForContentCheckResponse = False}
+            in
+                case res of
+                    Ok message ->
+                        if String.startsWith "error" message then
+                            ( updatedModel, Cmd.none )
 
-                    else
-                        let
-                            contentId =
-                                message
+                        else
+                            let
+                                contentId =
+                                    message
 
-                            revertRead content =
-                                if content.contentId == Maybe.withDefault 0 (String.toInt contentId) then
-                                    { content | isContentRead = not content.isContentRead }
+                                revertRead content =
+                                    if content.contentId == Maybe.withDefault 0 (String.toInt contentId) then
+                                        { content | isContentRead = not content.isContentRead }
 
-                                else
-                                    content
-                        in
-                        case model.activePage of
-                            ContentPage status ->
-                                case status of
-                                    NonInitialized _ ->
-                                        ( model, Cmd.none )
+                                    else
+                                        content
+                            in
+                            case updatedModel.activePage of
+                                ContentPage status ->
+                                    case status of
+                                        NonInitialized _ ->
+                                            ( updatedModel, Cmd.none )
 
-                                    Initialized content ->
-                                        ( { model | activePage = ContentPage (Initialized (revertRead content)) }, Cmd.none )
+                                        Initialized content ->
+                                            ( { updatedModel | activePage = ContentPage (Initialized (revertRead content)) }, Cmd.none )
 
-                            TagPage status ->
-                                case status of
-                                    NonInitialized _ ->
-                                        ( model, Cmd.none )
+                                TagPage status ->
+                                    case status of
+                                        NonInitialized _ ->
+                                            ( updatedModel, Cmd.none )
 
-                                    Initialized pageModel ->
-                                        if model.consumeModeIsOn then
-                                            ( { model
-                                                | activePage = TagPage (Initialized { pageModel | contents = List.map revertRead pageModel.contents })
-                                                , dataToFadeContent = Just ( 1, Maybe.withDefault 0 (String.toInt contentId) )
-                                              }
-                                            , getOnlyTotalPageCountForPagination pageModel.tag pageModel.readingMode model
-                                              --since we hid a content on the screen, we have to recalculate total page count and set pagination again
-                                            )
+                                        Initialized pageModel ->
+                                            if updatedModel.consumeModeIsOn then
+                                                ( { updatedModel
+                                                    | activePage = TagPage (Initialized { pageModel | contents = List.map revertRead pageModel.contents })
+                                                    , dataToFadeContent = Just ( 1, Maybe.withDefault 0 (String.toInt contentId) )
+                                                  }
+                                                , getOnlyTotalPageCountForPagination pageModel.tag pageModel.readingMode updatedModel
+                                                  --since we hid a content on the screen, we have to recalculate total page count and set pagination again
+                                                )
 
-                                        else
-                                            ( { model | activePage = TagPage (Initialized { pageModel | contents = List.map revertRead pageModel.contents }) }
-                                            , Cmd.none
-                                            )
+                                            else
+                                                ( { updatedModel | activePage = TagPage (Initialized { pageModel | contents = List.map revertRead pageModel.contents }) }
+                                                , Cmd.none
+                                                )
 
-                            ContentSearchPage searchKeyword contents ->
-                                ( { model | activePage = ContentSearchPage searchKeyword (List.map revertRead contents) }, Cmd.none )
+                                ContentSearchPage searchKeyword contents ->
+                                    ( { updatedModel | activePage = ContentSearchPage searchKeyword (List.map revertRead contents) }, Cmd.none )
 
-                            _ ->
-                                ( model, Cmd.none )
+                                _ ->
+                                    ( updatedModel, Cmd.none )
 
-                Err _ ->
-                    ( model, Cmd.none )
+                    Err _ ->
+                        ( updatedModel, Cmd.none )
 
         -- TAG PAGE --
         GotContentsOfTag tag result ->
