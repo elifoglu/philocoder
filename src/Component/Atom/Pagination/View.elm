@@ -11,7 +11,8 @@ import Tag.Model exposing (Tag)
 viewPagination : Tag -> Pagination -> ReadingMode -> Html Msg
 viewPagination tag pagination readingMode =
     if pagination.totalPageCount == 1 then
-        text ""
+        div [ style "margin-top" "15px", style "margin-bottom" "15px", style "opacity" "0" ]
+            [ text "0" ]
 
     else
         div [ style "margin-top" "30px", style "margin-bottom" "30px" ]

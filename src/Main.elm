@@ -19,7 +19,7 @@ import Home.View exposing (tagCountCurrentlyShownOnPage)
 import List
 import List.Extra
 import Pagination.Model exposing (Pagination)
-import Requests exposing (createNewTag, getAllRefData, getAllTagsResponse, getBio, getContent, getHomePageDataResponse, getOnlyTotalPageCountForPagination, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
+import Requests exposing (createNewTag, getAllRefData, getAllTagsResponse, getBio, getContent, getHomePageDataResponse, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
 import Tag.Util exposing (tagById)
 import Task
 import Time
@@ -392,16 +392,11 @@ update msg model =
 
                                     Initialized pageModel ->
                                         if updatedModel.consumeModeIsOn then
-                                            let
-                                                newModel =
-                                                    { updatedModel
-                                                        | activePage = TagPage (Initialized { pageModel | contents = List.map revertRead pageModel.contents })
-                                                        , maybeContentFadeOutData = Just ( ContentFadeOutData 1 (Maybe.withDefault 0 (String.toInt contentId)) data.contentToShowAsReplacementOnBottom )
-                                                    }
-                                            in
-                                            ( newModel
-                                            , getOnlyTotalPageCountForPagination pageModel.tag pageModel.readingMode newModel
-                                              --since we hid a content on the screen, we have to recalculate total page count and set pagination again
+                                            ( { updatedModel
+                                                | activePage = TagPage (Initialized { pageModel | contents = List.map revertRead pageModel.contents })
+                                                , maybeContentFadeOutData = Just (ContentFadeOutData 1 (Maybe.withDefault 0 (String.toInt contentId)) data.newTotalPageCountToSet data.contentToShowAsReplacementOnBottom)
+                                              }
+                                            , Cmd.none
                                             )
 
                                         else
@@ -454,29 +449,7 @@ update msg model =
                 Err _ ->
                     createNewModelAndCmdMsg model MaintenancePage
 
-        GotTotalPageCountOfTag res ->
-            case res of
-                Ok message ->
-                    case model.activePage of
-                        TagPage status ->
-                            case status of
-                                NonInitialized _ ->
-                                    ( model, Cmd.none )
-
-                                Initialized pageModel ->
-                                    let
-                                        totalPageCount =
-                                            Maybe.withDefault 0 (String.toInt message)
-                                    in
-                                    ( { model | activePage = TagPage (Initialized { pageModel | pagination = { currentPage = pageModel.pagination.currentPage, totalPageCount = totalPageCount } }) }, Cmd.none )
-
-                        _ ->
-                            ( model, Cmd.none )
-
-                Err _ ->
-                    ( model, Cmd.none )
-
-        HideContentFromActiveTagPage contentIdToHide contentToAddToBottom ->
+        HideContentFromActiveTagPage contentIdToHide newTotalPageCountToSet contentToAddToBottom ->
             case model.activePage of
                 TagPage status ->
                     case status of
@@ -494,10 +467,19 @@ update msg model =
                                             Nothing ->
                                                 contentsWithDeletedContent
 
-                                    modelWithDeletedContent =
-                                        { model | activePage = TagPage (Initialized { pageModel | contents = contentsWithNewContentToBottom }) }
+                                    modelWithNewContentListAndTotalPageCount =
+                                        { model
+                                            | activePage =
+                                                TagPage
+                                                    (Initialized
+                                                        { pageModel
+                                                            | contents = contentsWithNewContentToBottom
+                                                            , pagination = { currentPage = pageModel.pagination.currentPage, totalPageCount = newTotalPageCountToSet }
+                                                        }
+                                                    )
+                                        }
                                 in
-                                ( modelWithDeletedContent, Cmd.none )
+                                ( modelWithNewContentListAndTotalPageCount, Cmd.none )
 
                             else
                                 ( model, Cmd.none )
@@ -1148,11 +1130,11 @@ update msg model =
                                         Nothing
 
                                     else
-                                        Just (ContentFadeOutData (data.opacityLevel - t) data.contentIdToFade data.contentToAddToBottomAfterFadeOut)
+                                        Just { data | opacityLevel = data.opacityLevel - t }
                             in
                             ( { model | maybeContentFadeOutData = dataToFadeContent }
                             , if dataToFadeContent == Nothing then
-                                Task.perform (always (HideContentFromActiveTagPage data.contentIdToFade data.contentToAddToBottomAfterFadeOut)) (Task.succeed ())
+                                Task.perform (always (HideContentFromActiveTagPage data.contentIdToFade data.newPageCountToSet data.contentToAddToBottom)) (Task.succeed ())
 
                               else
                                 Cmd.none

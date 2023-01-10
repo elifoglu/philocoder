@@ -1,4 +1,4 @@
-module App.Model exposing (BioPageModel, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GetContentRequestModel, GetTagContentsRequestModel, GraphData, GraphModel, IconInfo, Initializable(..), InitializedTagPageModel, LocalStorage, MaySendRequest(..), MaybeContentFadeOutData, Model, NonInitializedYetTagPageModel, Page(..), ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateContentPageModel(..), UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, setCreateContentPageModel, setUpdateContentPageModel, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder, ContentFadeOutData)
+module App.Model exposing (BioPageModel, ContentFadeOutData, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GetContentRequestModel, GetTagContentsRequestModel, GraphData, GraphModel, IconInfo, Initializable(..), InitializedTagPageModel, LocalStorage, MaySendRequest(..), MaybeContentFadeOutData, Model, NonInitializedYetTagPageModel, Page(..), ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateContentPageModel(..), UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, setCreateContentPageModel, setUpdateContentPageModel, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
 
 import BioGroup.Model exposing (BioGroup)
 import BioItem.Model exposing (BioItem)
@@ -36,14 +36,15 @@ type alias OpacityLevel =
     Float
 
 
-type alias ContentToAddToBottomAfterFadeOut =
+type alias ContentToAddToBottom =
     Maybe GotContent
 
 
 type alias ContentFadeOutData =
     { opacityLevel : OpacityLevel
     , contentIdToFade : ContentID
-    , contentToAddToBottomAfterFadeOut : ContentToAddToBottomAfterFadeOut
+    , newPageCountToSet : Int
+    , contentToAddToBottom : ContentToAddToBottom
     }
 
 

@@ -19,7 +19,10 @@ type alias ContentsResponse =
 
 
 type alias ContentReadResponse =
-    { idOfReadContentOrErrorMessage : String, contentToShowAsReplacementOnBottom : Maybe GotContent }
+    { idOfReadContentOrErrorMessage : String
+    , newTotalPageCountToSet : Int
+    , contentToShowAsReplacementOnBottom : Maybe GotContent
+    }
 
 
 type alias GotTag =
@@ -116,8 +119,9 @@ contentsResponseDecoder =
 
 contentReadResponseDecoder : Decoder ContentReadResponse
 contentReadResponseDecoder =
-    map2 ContentReadResponse
+    map3 ContentReadResponse
         (field "idOfReadContentOrErrorMessage" string)
+        (field "newTotalPageCountToSet" int)
         (field "contentToShowAsReplacementOnBottom" (maybe contentDecoder))
 
 

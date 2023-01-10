@@ -1,4 +1,4 @@
-module Requests exposing (createNewTag, getAllRefData, getAllTagsResponse, getBio, getBioPageIcons, getContent, getHomePageDataResponse, getIcons, getOnlyTotalPageCountForPagination, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
+module Requests exposing (createNewTag, getAllRefData, getAllTagsResponse, getBio, getBioPageIcons, getContent, getHomePageDataResponse, getIcons, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
 
 import App.Model exposing (CreateContentPageModel, CreateTagPageModel, GetContentRequestModel, GetTagContentsRequestModel, IconInfo, Model, ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
 import App.Msg exposing (LoginRequestType, Msg(..), PreviewContentModel(..))
@@ -271,29 +271,4 @@ setContentAsRead contentId tagIdOfTagPage idOfLatestContentOnTagPage model =
                     ]
                 )
         , expect = Http.expectJson GotContentReadResponse contentReadResponseDecoder
-        }
-
-
-getOnlyTotalPageCountForPagination : Tag -> ReadingMode -> Model -> Cmd Msg
-getOnlyTotalPageCountForPagination tag readingMode model =
-    let
-        totalPageCountRequestModel : TotalPageCountRequestModel
-        totalPageCountRequestModel =
-            TotalPageCountRequestModel tag.tagId
-                (case readingMode of
-                    BlogContents ->
-                        True
-
-                    AllContents ->
-                        False
-                )
-                model.loggedIn
-                model.consumeModeIsOn
-                model.localStorage.username
-                model.localStorage.password
-    in
-    Http.post
-        { url = apiURL ++ "total-page-count-of-tag"
-        , body = Http.jsonBody (totalPageCountRequestModelEncoder totalPageCountRequestModel)
-        , expect = Http.expectString GotTotalPageCountOfTag
         }
