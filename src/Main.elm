@@ -104,6 +104,9 @@ needAllTagsData page =
         UpdateContentPage _ ->
             True
 
+        ContentSearchPage _ _ ->
+            True
+
         HomePage _ _ _ _ ->
             False
 
@@ -117,9 +120,6 @@ needAllTagsData page =
             False
 
         BioPage _ ->
-            False
-
-        ContentSearchPage _ _ ->
             False
 
         LoginOrRegisterPage _ _ _ ->
@@ -860,8 +860,16 @@ update msg model =
 
                 newModel =
                     { model | activePage = newPage }
+
+                getAllTagsCmdMsg =
+                    case model.activePage of
+                        HomePage _ _ _ _ ->
+                            getCmdToSendByPage newModel
+
+                        _ ->
+                            Cmd.none
             in
-            ( newModel, Cmd.batch [ sendTitle newModel, getSearchResult searchKeyword newModel, Dom.focus "contentSearchInput" |> Task.attempt FocusResult ] )
+            ( newModel, Cmd.batch [ sendTitle newModel, getAllTagsCmdMsg, getSearchResult searchKeyword newModel, Dom.focus "contentSearchInput" |> Task.attempt FocusResult ] )
 
         GotContentSearchResponse res ->
             case res of
