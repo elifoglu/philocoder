@@ -2,7 +2,7 @@ module Main exposing (main, needAllTagsData)
 
 import App.Model exposing (..)
 import App.Msg exposing (ContentInputType(..), LoginRegisterPageInputType(..), LoginRequestType(..), Msg(..), TagInputType(..))
-import App.Ports exposing (sendTitle, storeConsumeMode, storeContentReadClickedForTheFirstTime, storeCredentials, storeReadingMode)
+import App.Ports exposing (sendTitle, storeConsumeMode, storeContentReadClickedForTheFirstTime, storeCredentials, storeReadMeIconClickedForTheFirstTime, storeReadingMode)
 import App.UrlParser exposing (pageBy)
 import App.View exposing (view)
 import BioGroup.Util exposing (changeActivenessIfIdMatches, changeDisplayInfoIfIdMatchesAndGroupIsActive, gotBioGroupToBioGroup)
@@ -37,7 +37,7 @@ main =
         }
 
 
-init : { readingMode : Maybe String, consumeModeIsOn : Maybe String, contentReadClickedAtLeastOnce : Maybe String, credentials : Maybe String } -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
+init : { readingMode : Maybe String, consumeModeIsOn : Maybe String, contentReadClickedAtLeastOnce : Maybe String, readMeIconClickedAtLeastOnce : Maybe String, credentials : Maybe String } -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
     let
         credentials =
@@ -73,6 +73,14 @@ init flags url key =
                 _ ->
                     False
 
+        readMeIconClickedAtLeastOnce =
+            case flags.readMeIconClickedAtLeastOnce of
+                Just "true" ->
+                    True
+
+                _ ->
+                    False
+
         page =
             pageBy url readingMode
 
@@ -85,7 +93,7 @@ init flags url key =
                     False
 
         model =
-            Model "log" key [] page False (LocalStorage readingMode contentReadClickedAtLeastOnce username password) False (getConsumeModeIsOnValueFromLocal flags.consumeModeIsOn) Nothing False Time.utc
+            Model "log" key [] page False (LocalStorage readingMode contentReadClickedAtLeastOnce readMeIconClickedAtLeastOnce username password) False (getConsumeModeIsOnValueFromLocal flags.consumeModeIsOn) Nothing False Time.utc
     in
     ( model
     , Cmd.batch [ login AttemptAtInitialization username password, getTimeZone ]
@@ -209,7 +217,21 @@ update msg model =
         UrlRequested urlRequest ->
             case urlRequest of
                 Browser.Internal url ->
-                    ( model, Nav.pushUrl model.key (Url.toString url) )
+                    if String.contains "tags/beni_oku" (Url.toString url) then
+                        let
+                            localStorage =
+                                model.localStorage
+
+                            newLocalStorage =
+                                { localStorage | readMeIconClickedAtLeastOnce = True }
+
+                            newModel =
+                                { model | localStorage = newLocalStorage }
+                        in
+                        ( newModel, Cmd.batch [ storeReadMeIconClickedForTheFirstTime "true", Nav.pushUrl newModel.key (Url.toString url) ] )
+
+                    else
+                        ( model, Nav.pushUrl model.key (Url.toString url) )
 
                 Browser.External href ->
                     ( model, Nav.load href )
@@ -912,14 +934,14 @@ update msg model =
         TryLogin username password ->
             let
                 newModel =
-                    { model | localStorage = LocalStorage model.localStorage.readingMode model.localStorage.contentReadClickedAtLeastOnce username password }
+                    { model | localStorage = LocalStorage model.localStorage.readingMode model.localStorage.contentReadClickedAtLeastOnce model.localStorage.contentReadClickedAtLeastOnce username password }
             in
             ( newModel, Cmd.batch [ login LoginRequestByUser username password, storeCredentials (username ++ "|||" ++ password) ] )
 
         TryRegister username password ->
             let
                 newModel =
-                    { model | localStorage = LocalStorage model.localStorage.readingMode model.localStorage.contentReadClickedAtLeastOnce username password }
+                    { model | localStorage = LocalStorage model.localStorage.readingMode model.localStorage.contentReadClickedAtLeastOnce model.localStorage.readMeIconClickedAtLeastOnce username password }
             in
             ( newModel, Cmd.batch [ register username password, storeCredentials (username ++ "|||" ++ password) ] )
 
@@ -1075,7 +1097,7 @@ update msg model =
         Logout ->
             let
                 newLocalStorage =
-                    LocalStorage model.localStorage.readingMode model.localStorage.contentReadClickedAtLeastOnce "invalidUsername" "invalidPassword"
+                    LocalStorage model.localStorage.readingMode model.localStorage.contentReadClickedAtLeastOnce model.localStorage.readMeIconClickedAtLeastOnce "invalidUsername" "invalidPassword"
 
                 newModel =
                     { model | loggedIn = False, localStorage = newLocalStorage }

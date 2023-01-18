@@ -156,21 +156,29 @@ homeIcon =
     { urlToNavigate = "/", iconImageUrl = "/home.svg", marginLeft = "4px" }
 
 
-readMeIcon : IconInfo
-readMeIcon =
-    { urlToNavigate = "/tags/beni_oku", iconImageUrl = "/question-mark.svg", marginLeft = "4px" }
+readMeIcon : Bool -> IconInfo
+readMeIcon readMeIconClickedAtLeastOnce =
+    { urlToNavigate = "/tags/beni_oku"
+    , iconImageUrl =
+        if readMeIconClickedAtLeastOnce then
+            "/question-mark.svg"
+
+        else
+            "/question-mark-red.svg"
+    , marginLeft = "4px"
+    }
 
 
-getBioPageIcons : Bool -> List IconInfo
-getBioPageIcons showAdditionalIcons =
+getBioPageIcons : Bool -> Bool -> List IconInfo
+getBioPageIcons showAdditionalIcons readMeIconClickedAtLeastOnce =
     aboutMeIcon
         :: getAdditionalIcons showAdditionalIcons
-        ++ [ homeIcon, readMeIcon ]
+        ++ [ homeIcon, readMeIcon readMeIconClickedAtLeastOnce ]
 
 
-getIcons : Bool -> List IconInfo
-getIcons showAdditionalIcons =
-    [ aboutMeIcon, bioPageIcon, readMeIcon ]
+getIcons : Bool -> Bool -> List IconInfo
+getIcons showAdditionalIcons readMeIconClickedAtLeastOnce =
+    [ aboutMeIcon, bioPageIcon, readMeIcon readMeIconClickedAtLeastOnce ]
         ++ getAdditionalIcons showAdditionalIcons
 
 

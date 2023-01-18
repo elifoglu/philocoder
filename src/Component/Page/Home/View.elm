@@ -125,13 +125,13 @@ viewIconsDiv model =
     case model.activePage of
         BioPage _ ->
             div [ class "bioPageIconsContainer" ]
-                (getBioPageIcons True
+                (getBioPageIcons True model.localStorage.readMeIconClickedAtLeastOnce
                     |> List.map viewIcon
                 )
 
         _ ->
             div [ class "iconsContainer" ]
-                ((getIcons model.showAdditionalIcons
+                ((getIcons model.showAdditionalIcons model.localStorage.readMeIconClickedAtLeastOnce
                     |> List.map viewIcon
                  )
                     ++ (if not model.showAdditionalIcons then

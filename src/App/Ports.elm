@@ -1,4 +1,4 @@
-port module App.Ports exposing (consoleLog, sendTitle, storeConsumeMode, storeContentReadClickedForTheFirstTime, storeCredentials, storeReadingMode, title)
+port module App.Ports exposing (consoleLog, sendTitle, storeConsumeMode, storeContentReadClickedForTheFirstTime, storeCredentials, storeReadingMode, title, storeReadMeIconClickedForTheFirstTime)
 
 import App.Model exposing (Initializable(..), MaySendRequest(..), Model, Page(..), UpdateContentPageModel(..))
 
@@ -116,6 +116,9 @@ port storeConsumeMode : String -> Cmd msg
 
 
 port storeContentReadClickedForTheFirstTime : String -> Cmd msg
+
+
+port storeReadMeIconClickedForTheFirstTime : String -> Cmd msg
 
 
 port consoleLog : String -> Cmd msg

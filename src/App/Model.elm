@@ -29,7 +29,7 @@ type alias Model =
 
 
 type alias LocalStorage =
-    { readingMode : ReadingMode, contentReadClickedAtLeastOnce : Bool, username : String, password : String }
+    { readingMode : ReadingMode, contentReadClickedAtLeastOnce : Bool, readMeIconClickedAtLeastOnce: Bool, username : String, password : String }
 
 
 type alias OpacityLevel =
