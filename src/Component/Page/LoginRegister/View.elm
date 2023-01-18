@@ -11,6 +11,8 @@ viewLoginOrRegisterDiv : String -> String -> String -> Html Msg
 viewLoginOrRegisterDiv username password errorMessage =
     div [] <|
         [ Markdown.toHtml [ class "markdownDiv contentFont" ] """
+*(site hakkında detaylı bilgi veren [bu metne](http://philocoder.com/tags/beni_oku) daha önce denk gelmediyseniz, öncelike o metni okumanız tavsiye edilir)*
+
 bir içerik birden fazla etiket ile etiketlenebildiğinden, farklı etiketler altındaki içeriklere göz atan okuyucuların aynı içeriklere tekrar tekrar denk gelebileceğini ve bunun da deneyimi kötüleştirebileceğini düşünerek siteye bir "içerik tüketme modu" ekledim. bu özelliğin özellikle sitedeki içeriğin tümünü tüketmek istediğini söyleyen, ama sitede kaybolduğunu da söyleyen kişiler için faydalı olacağını düşünüyorum.
 
 
