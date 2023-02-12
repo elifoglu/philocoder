@@ -463,6 +463,12 @@ input[type='checkbox'] {
     text-decoration: underline;
 }
 
+.eksiKonserveUrlDiv {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    font-size: 13px;
+}
+
 .deleteEksiKonserveTopicButton {
     margin-right: 8px;
     border: 1px solid #000;
@@ -470,4 +476,13 @@ input[type='checkbox'] {
     color: #202020;
     cursor: pointer;
     background-color: #ffffff;
+}
+
+.deleteAllEksiKonserveTopicsButton {
+    border: 1px solid #000;
+    border-radius: 2px;
+    color: #202020;
+    cursor: pointer;
+    background-color: #ffffff;
+    float: right;
 }

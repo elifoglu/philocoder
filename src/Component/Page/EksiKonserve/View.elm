@@ -9,16 +9,43 @@ import Html.Events exposing (onClick)
 
 viewEksiKonserveDiv : List EksiKonserveTopic -> Html Msg
 viewEksiKonserveDiv topics =
-    div [ class "eksiKonserveDiv" ]
-        (topics
-            |> List.map viewTopicDiv
-        )
+    if List.isEmpty topics then
+        text "✓"
+
+    else
+        div []
+            [ div [ class "eksiKonserveDiv" ]
+                (topics
+                    |> List.map viewTopicDiv
+                )
+            , div [ class "eksiKonserveDiv eksiKonserveUrlDiv" ]
+                (List.append
+                    (topics |> List.map viewUrlsOfTopicsDiv)
+                    [ viewDeleteAllTopicsButton topics ]
+                )
+            ]
 
 
 viewTopicDiv : EksiKonserveTopic -> Html Msg
 viewTopicDiv topic =
     div []
-        [ button [ class "deleteEksiKonserveTopicButton", onClick (DeleteEksiKonserveTopic topic.name) ] [ text "x" ]
+        [ button [ class "deleteEksiKonserveTopicButton", onClick (DeleteEksiKonserveTopics [ topic.name ]) ] [ text "x" ]
         , a [ href topic.url ] [ text topic.name ]
         , text (" (" ++ String.fromInt topic.count ++ ")")
         ]
+
+
+viewUrlsOfTopicsDiv : EksiKonserveTopic -> Html Msg
+viewUrlsOfTopicsDiv topic =
+    div []
+        [ text topic.url ]
+
+
+viewDeleteAllTopicsButton : List EksiKonserveTopic -> Html Msg
+viewDeleteAllTopicsButton topics =
+    let
+        topicNames =
+            topics
+                |> List.map (\topic -> topic.name)
+    in
+    button [ class "deleteAllEksiKonserveTopicsButton", onClick (DeleteEksiKonserveTopics topicNames) ] [ text "delete all" ]

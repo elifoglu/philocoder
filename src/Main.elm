@@ -19,7 +19,7 @@ import Home.View exposing (tagCountCurrentlyShownOnPage)
 import List
 import List.Extra
 import Pagination.Model exposing (Pagination)
-import Requests exposing (createNewTag, deleteEksiKonserveTopic, getAllRefData, getAllTagsResponse, getBio, getContent, getEksiKonserve, getHomePageDataResponse, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
+import Requests exposing (createNewTag, deleteEksiKonserveTopics, getAllRefData, getAllTagsResponse, getBio, getContent, getEksiKonserve, getHomePageDataResponse, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
 import Tag.Util exposing (tagById)
 import Task
 import Time
@@ -206,6 +206,7 @@ getCmdToSendByPage model =
 
                         Initialized _ ->
                             Cmd.none
+
                 _ ->
                     Cmd.none
         ]
@@ -1043,7 +1044,6 @@ update msg model =
                     createNewModelAndCmdMsg model NotFoundPage
 
         -- EKŞİ KONSERVE --
-
         GotEksiKonserveResponse res ->
             case res of
                 Ok response ->
@@ -1059,8 +1059,8 @@ update msg model =
                 Err _ ->
                     createNewModelAndCmdMsg model MaintenancePage
 
-        DeleteEksiKonserveTopic topicName ->
-            (model, deleteEksiKonserveTopic topicName model)
+        DeleteEksiKonserveTopics topicNames ->
+            ( model, deleteEksiKonserveTopics topicNames model )
 
         GotDeleteEksiKonserveTopicResponse res ->
             case res of

@@ -1,4 +1,4 @@
-module Requests exposing (createNewTag, deleteEksiKonserveTopic, getAllRefData, getAllTagsResponse, getBio, getBioPageIcons, getContent, getEksiKonserve, getHomePageDataResponse, getIcons, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
+module Requests exposing (createNewTag, deleteEksiKonserveTopics, getAllRefData, getAllTagsResponse, getBio, getBioPageIcons, getContent, getEksiKonserve, getHomePageDataResponse, getIcons, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
 
 import App.Model exposing (CreateContentPageModel, CreateTagPageModel, GetContentRequestModel, GetTagContentsRequestModel, IconInfo, Model, ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
 import App.Msg exposing (LoginRequestType, Msg(..), PreviewContentModel(..))
@@ -298,17 +298,17 @@ getEksiKonserve model =
         }
 
 
-deleteEksiKonserveTopic : String -> Model -> Cmd Msg
-deleteEksiKonserveTopic topicName model =
+deleteEksiKonserveTopics : List String -> Model -> Cmd Msg
+deleteEksiKonserveTopics topicNames model =
     Http.post
-        { url = apiURL ++ "delete-eksi-konserve-topic"
+        { url = apiURL ++ "delete-eksi-konserve-topics"
         , body =
             Http.jsonBody
                 (Encode.object
                     [ ( "loggedIn", Encode.bool model.loggedIn )
                     , ( "username", Encode.string model.localStorage.username )
                     , ( "password", Encode.string model.localStorage.password )
-                    , ( "topicName", Encode.string topicName )
+                    , ( "topicNames", Encode.list Encode.string topicNames )
                     ]
                 )
         , expect = Http.expectJson GotEksiKonserveResponse eksiKonserveResponseDecoder

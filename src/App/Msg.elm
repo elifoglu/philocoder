@@ -53,7 +53,7 @@ type Msg
     | GotContentReadResponse (Result Http.Error ContentReadResponse)
     | HideContentFromActiveTagPage ContentID Int (Maybe GotContent)
     | GotEksiKonserveResponse (Result Http.Error EksiKonserveResponse)
-    | DeleteEksiKonserveTopic String
+    | DeleteEksiKonserveTopics (List String)
     | GotDeleteEksiKonserveTopicResponse (Result Http.Error EksiKonserveResponse)
     | DragStart NodeId ( Float, Float )
     | DragAt ( Float, Float )
