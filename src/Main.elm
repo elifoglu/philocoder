@@ -1049,7 +1049,7 @@ update msg model =
                 Ok response ->
                     let
                         newPage =
-                            EksiKonservePage (Initialized response.topics)
+                            EksiKonservePage (Initialized ( response.topics, response.exceptions ))
 
                         newModel =
                             { model | activePage = newPage }
@@ -1061,21 +1061,6 @@ update msg model =
 
         DeleteEksiKonserveTopics topicNames ->
             ( model, deleteEksiKonserveTopics topicNames model )
-
-        GotDeleteEksiKonserveTopicResponse res ->
-            case res of
-                Ok response ->
-                    let
-                        newPage =
-                            EksiKonservePage (Initialized response.topics)
-
-                        newModel =
-                            { model | activePage = newPage }
-                    in
-                    ( newModel, Cmd.none )
-
-                Err _ ->
-                    createNewModelAndCmdMsg model MaintenancePage
 
         -- HOME PAGE & GRAPH --
         GotHomePageDataResponse res ->

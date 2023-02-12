@@ -1,29 +1,35 @@
 module EksiKonserve.View exposing (..)
 
+import App.Model exposing (Exception)
 import App.Msg exposing (Msg(..))
 import DataResponse exposing (EksiKonserveTopic)
-import Html exposing (Html, a, button, div, text)
+import Html exposing (Html, a, button, div, hr, text)
 import Html.Attributes exposing (class, href)
 import Html.Events exposing (onClick)
 
 
-viewEksiKonserveDiv : List EksiKonserveTopic -> Html Msg
-viewEksiKonserveDiv topics =
-    if List.isEmpty topics then
-        text "✓"
+viewEksiKonserveDiv : List EksiKonserveTopic -> List Exception -> Html Msg
+viewEksiKonserveDiv topics exceptions =
+    div []
+        [ div []
+            [ if List.isEmpty topics then
+                text "✓"
 
-    else
-        div []
-            [ div [ class "eksiKonserveDiv" ]
-                (topics
-                    |> List.map viewTopicDiv
-                )
-            , div [ class "eksiKonserveDiv eksiKonserveUrlDiv" ]
-                (List.append
-                    (topics |> List.map viewUrlsOfTopicsDiv)
-                    [ viewDeleteAllTopicsButton topics ]
-                )
+              else
+                div []
+                    [ div [ class "eksiKonserveDiv" ]
+                        (topics
+                            |> List.map viewTopicDiv
+                        )
+                    , div [ class "eksiKonserveDiv eksiKonserveUrlDiv" ]
+                        (List.append
+                            (topics |> List.map viewUrlsOfTopicsDiv)
+                            [ viewDeleteAllTopicsButton topics ]
+                        )
+                    ]
             ]
+        , viewExceptionsDiv exceptions
+        ]
 
 
 viewTopicDiv : EksiKonserveTopic -> Html Msg
@@ -49,3 +55,12 @@ viewDeleteAllTopicsButton topics =
                 |> List.map (\topic -> topic.name)
     in
     button [ class "deleteAllEksiKonserveTopicsButton", onClick (DeleteEksiKonserveTopics topicNames) ] [ text "delete all" ]
+
+
+viewExceptionsDiv : List Exception -> Html Msg
+viewExceptionsDiv exceptions =
+    div []
+        (exceptions
+            |> List.map (\e -> text e)
+            |> List.intersperse (hr [] [])
+        )

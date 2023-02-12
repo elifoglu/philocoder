@@ -138,7 +138,7 @@ view model =
                                 [ text "..." ]
 
                             Initialized data ->
-                                [ viewEksiKonserveDiv data
+                                [ viewEksiKonserveDiv (Tuple.first data) (Tuple.second data)
                                 ]
                 )
             ]

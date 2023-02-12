@@ -106,6 +106,7 @@ type alias EksiKonserveTopic =
 
 type alias EksiKonserveResponse =
     { topics : List EksiKonserveTopic
+    , exceptions : List String
     }
 
 
@@ -233,8 +234,9 @@ bioItemDecoder =
 
 eksiKonserveResponseDecoder : Decoder EksiKonserveResponse
 eksiKonserveResponseDecoder =
-    map EksiKonserveResponse
+    map2 EksiKonserveResponse
         (field "topics" (D.list eksiKonserveTopicDecoder))
+        (field "exceptions" (D.list string))
 
 
 eksiKonserveTopicDecoder : Decoder EksiKonserveTopic
