@@ -1,4 +1,4 @@
-port module App.Ports exposing (consoleLog, sendTitle, storeConsumeMode, storeContentReadClickedForTheFirstTime, storeCredentials, storeReadingMode, title, storeReadMeIconClickedForTheFirstTime)
+port module App.Ports exposing (consoleLog, sendTitle, storeConsumeMode, storeContentReadClickedForTheFirstTime, storeCredentials, storeReadMeIconClickedForTheFirstTime, storeReadingMode, title)
 
 import App.Model exposing (Initializable(..), MaySendRequest(..), Model, Page(..), UpdateContentPageModel(..))
 
@@ -104,6 +104,9 @@ sendTitle model =
 
         LoginOrRegisterPage _ _ _ ->
             title "giriş/kayıt - philocoder"
+
+        EksiKonservePage _ ->
+            title "ekşiposta"
 
 
 port storeCredentials : String -> Cmd msg

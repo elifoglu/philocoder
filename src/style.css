@@ -440,3 +440,34 @@ input[type='checkbox'] {
     display: block;
     align-items: center;
 }
+
+.eksiKonserveDiv {
+    font-family: 'Times New Roman', Times, serif;
+    padding: 8px;
+    background-color: #dcffce;
+    border-width: 1px;
+    border-style: solid;
+    border-color: green;
+    border-radius: 3px;
+    width: fit-content;
+}
+
+.eksiKonserveDiv a {
+    color: darkblue;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.eksiKonserveDiv a:hover {
+    color: gray;
+    text-decoration: underline;
+}
+
+.deleteEksiKonserveTopicButton {
+    margin-right: 8px;
+    border: 1px solid #000;
+    border-radius: 2px;
+    color: #202020;
+    cursor: pointer;
+    background-color: #ffffff;
+}

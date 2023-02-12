@@ -1,8 +1,8 @@
-module Requests exposing (createNewTag, getAllRefData, getAllTagsResponse, getBio, getBioPageIcons, getContent, getHomePageDataResponse, getIcons, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
+module Requests exposing (createNewTag, deleteEksiKonserveTopic, getAllRefData, getAllTagsResponse, getBio, getBioPageIcons, getContent, getEksiKonserve, getHomePageDataResponse, getIcons, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
 
 import App.Model exposing (CreateContentPageModel, CreateTagPageModel, GetContentRequestModel, GetTagContentsRequestModel, IconInfo, Model, ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
 import App.Msg exposing (LoginRequestType, Msg(..), PreviewContentModel(..))
-import DataResponse exposing (ContentID, allTagsResponseDecoder, bioResponseDecoder, contentDecoder, contentReadResponseDecoder, contentSearchResponseDecoder, contentsResponseDecoder, gotAllRefDataDecoder, homePageDataResponseDecoder)
+import DataResponse exposing (ContentID, allTagsResponseDecoder, bioResponseDecoder, contentDecoder, contentReadResponseDecoder, contentSearchResponseDecoder, contentsResponseDecoder, eksiKonserveResponseDecoder, gotAllRefDataDecoder, homePageDataResponseDecoder)
 import Http
 import Json.Encode as Encode
 import Tag.Model exposing (Tag)
@@ -279,4 +279,37 @@ setContentAsRead contentId tagIdOfTagPage idOfLatestContentOnTagPage model =
                     ]
                 )
         , expect = Http.expectJson GotContentReadResponse contentReadResponseDecoder
+        }
+
+
+getEksiKonserve : Model -> Cmd Msg
+getEksiKonserve model =
+    Http.post
+        { url = apiURL ++ "get-eksi-konserve"
+        , body =
+            Http.jsonBody
+                (Encode.object
+                    [ ( "loggedIn", Encode.bool model.loggedIn )
+                    , ( "username", Encode.string model.localStorage.username )
+                    , ( "password", Encode.string model.localStorage.password )
+                    ]
+                )
+        , expect = Http.expectJson GotEksiKonserveResponse eksiKonserveResponseDecoder
+        }
+
+
+deleteEksiKonserveTopic : String -> Model -> Cmd Msg
+deleteEksiKonserveTopic topicName model =
+    Http.post
+        { url = apiURL ++ "delete-eksi-konserve-topic"
+        , body =
+            Http.jsonBody
+                (Encode.object
+                    [ ( "loggedIn", Encode.bool model.loggedIn )
+                    , ( "username", Encode.string model.localStorage.username )
+                    , ( "password", Encode.string model.localStorage.password )
+                    , ( "topicName", Encode.string topicName )
+                    ]
+                )
+        , expect = Http.expectJson GotEksiKonserveResponse eksiKonserveResponseDecoder
         }

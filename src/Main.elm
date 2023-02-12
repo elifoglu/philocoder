@@ -19,7 +19,7 @@ import Home.View exposing (tagCountCurrentlyShownOnPage)
 import List
 import List.Extra
 import Pagination.Model exposing (Pagination)
-import Requests exposing (createNewTag, getAllRefData, getAllTagsResponse, getBio, getContent, getHomePageDataResponse, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
+import Requests exposing (createNewTag, deleteEksiKonserveTopic, getAllRefData, getAllTagsResponse, getBio, getContent, getEksiKonserve, getHomePageDataResponse, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
 import Tag.Util exposing (tagById)
 import Task
 import Time
@@ -139,6 +139,9 @@ needAllTagsData page =
         MaintenancePage ->
             False
 
+        EksiKonservePage _ ->
+            False
+
 
 getCmdToSendByPage : Model -> Cmd Msg
 getCmdToSendByPage model =
@@ -196,6 +199,13 @@ getCmdToSendByPage model =
                         Nothing ->
                             getBio
 
+                EksiKonservePage status ->
+                    case status of
+                        NonInitialized _ ->
+                            getEksiKonserve model
+
+                        Initialized _ ->
+                            Cmd.none
                 _ ->
                     Cmd.none
         ]
@@ -1031,6 +1041,41 @@ update msg model =
 
                 Err _ ->
                     createNewModelAndCmdMsg model NotFoundPage
+
+        -- EKŞİ KONSERVE --
+
+        GotEksiKonserveResponse res ->
+            case res of
+                Ok response ->
+                    let
+                        newPage =
+                            EksiKonservePage (Initialized response.topics)
+
+                        newModel =
+                            { model | activePage = newPage }
+                    in
+                    ( newModel, Cmd.none )
+
+                Err _ ->
+                    createNewModelAndCmdMsg model MaintenancePage
+
+        DeleteEksiKonserveTopic topicName ->
+            (model, deleteEksiKonserveTopic topicName model)
+
+        GotDeleteEksiKonserveTopicResponse res ->
+            case res of
+                Ok response ->
+                    let
+                        newPage =
+                            EksiKonservePage (Initialized response.topics)
+
+                        newModel =
+                            { model | activePage = newPage }
+                    in
+                    ( newModel, Cmd.none )
+
+                Err _ ->
+                    createNewModelAndCmdMsg model MaintenancePage
 
         -- HOME PAGE & GRAPH --
         GotHomePageDataResponse res ->

@@ -18,6 +18,7 @@ routeParser readingMode =
         , map (CreateTagPage (NoRequestSentYet (CreateTagPageModel "" "" "DateDESC" True True "" ""))) (s "create" </> s "tag")
         , map nonInitializedUpdateTagPageMapper (s "update" </> s "tag" </> string)
         , map rPageMapper (s "r")
+        , map eksiKonservePageMapper (s "eksiposta")
         ]
 
 
@@ -59,6 +60,11 @@ nonInitializedBioPageMapper =
 rPageMapper : Page
 rPageMapper =
     ContentPage (NonInitialized 5)
+
+
+eksiKonservePageMapper : Page
+eksiKonservePageMapper =
+    EksiKonservePage (NonInitialized ())
 
 
 pageBy : Url.Url -> ReadingMode -> Page

@@ -5,7 +5,7 @@ import BioGroup.Model exposing (BioGroup)
 import BioItem.Model exposing (BioItem)
 import Browser
 import Browser.Dom as Dom
-import DataResponse exposing (AllTagsResponse, BioGroupID, BioItemID, BioResponse, ContentID, ContentReadResponse, ContentSearchResponse, ContentsResponse, GotAllRefData, GotContent, HomePageDataResponse)
+import DataResponse exposing (AllTagsResponse, BioGroupID, BioItemID, BioResponse, ContentID, ContentReadResponse, ContentSearchResponse, ContentsResponse, EksiKonserveResponse, GotAllRefData, GotContent, HomePageDataResponse)
 import Graph exposing (NodeId)
 import Http
 import Tag.Model exposing (Tag)
@@ -52,6 +52,9 @@ type Msg
     | Logout
     | GotContentReadResponse (Result Http.Error ContentReadResponse)
     | HideContentFromActiveTagPage ContentID Int (Maybe GotContent)
+    | GotEksiKonserveResponse (Result Http.Error EksiKonserveResponse)
+    | DeleteEksiKonserveTopic String
+    | GotDeleteEksiKonserveTopicResponse (Result Http.Error EksiKonserveResponse)
     | DragStart NodeId ( Float, Float )
     | DragAt ( Float, Float )
     | DragEnd ( Float, Float )

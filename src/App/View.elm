@@ -10,6 +10,7 @@ import ContentSearch.View exposing (viewSearchContentDiv)
 import Contents.View exposing (viewContentDivs)
 import CreateContent.View exposing (viewCreateContentDiv)
 import CreateTag.View exposing (viewCreateTagDiv)
+import EksiKonserve.View exposing (viewEksiKonserveDiv)
 import ForceDirectedGraph exposing (viewGraph)
 import Home.View exposing (tagCountCurrentlyShownOnPage, viewHomePageDiv)
 import Html exposing (..)
@@ -130,6 +131,15 @@ view model =
 
                     MaintenancePage ->
                         [ text "*bakım çalışması*" ]
+
+                    EksiKonservePage status ->
+                        case status of
+                            NonInitialized _ ->
+                                [ text "..." ]
+
+                            Initialized data ->
+                                [ viewEksiKonserveDiv data
+                                ]
                 )
             ]
         ]

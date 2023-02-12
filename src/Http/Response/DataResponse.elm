@@ -1,4 +1,4 @@
-module DataResponse exposing (AllTagsResponse, BioGroupID, BioItemID, BioResponse, ContentID, ContentReadResponse, ContentSearchResponse, ContentsResponse, GotAllRefData, GotBioGroup, GotBioItem, GotContent, GotContentDate, GotRefConnection, GotTag, HomePageDataResponse, allTagsResponseDecoder, bioResponseDecoder, contentDecoder, contentReadResponseDecoder, contentSearchResponseDecoder, contentsResponseDecoder, gotAllRefDataDecoder, homePageDataResponseDecoder)
+module DataResponse exposing (AllTagsResponse, BioGroupID, BioItemID, BioResponse, ContentID, ContentReadResponse, ContentSearchResponse, ContentsResponse, EksiKonserveResponse, EksiKonserveTopic, GotAllRefData, GotBioGroup, GotBioItem, GotContent, GotContentDate, GotRefConnection, GotTag, HomePageDataResponse, allTagsResponseDecoder, bioResponseDecoder, contentDecoder, contentReadResponseDecoder, contentSearchResponseDecoder, contentsResponseDecoder, eksiKonserveResponseDecoder, gotAllRefDataDecoder, homePageDataResponseDecoder)
 
 import Content.Model exposing (Ref)
 import Json.Decode as D exposing (Decoder, bool, field, int, map, map2, map3, map5, map6, map7, map8, maybe, string)
@@ -94,6 +94,18 @@ type alias GotBioItem =
 
 type alias ContentSearchResponse =
     { contents : List GotContent
+    }
+
+
+type alias EksiKonserveTopic =
+    { name : String
+    , url : String
+    , count : Int
+    }
+
+
+type alias EksiKonserveResponse =
+    { topics : List EksiKonserveTopic
     }
 
 
@@ -217,3 +229,17 @@ bioItemDecoder =
         (field "groupNames" (D.list string))
         (field "colorHex" (maybe string))
         (field "info" (maybe string))
+
+
+eksiKonserveResponseDecoder : Decoder EksiKonserveResponse
+eksiKonserveResponseDecoder =
+    map EksiKonserveResponse
+        (field "topics" (D.list eksiKonserveTopicDecoder))
+
+
+eksiKonserveTopicDecoder : Decoder EksiKonserveTopic
+eksiKonserveTopicDecoder =
+    map3 EksiKonserveTopic
+        (field "name" string)
+        (field "url" string)
+        (field "count" int)

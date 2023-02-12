@@ -4,7 +4,7 @@ import BioGroup.Model exposing (BioGroup)
 import BioItem.Model exposing (BioItem)
 import Browser.Navigation as Nav
 import Content.Model exposing (Content)
-import DataResponse exposing (ContentID, GotAllRefData, GotContent, GotRefConnection)
+import DataResponse exposing (ContentID, EksiKonserveTopic, GotAllRefData, GotContent, GotRefConnection)
 import Force
 import Graph exposing (Graph, NodeId)
 import Json.Encode as Encode
@@ -29,7 +29,7 @@ type alias Model =
 
 
 type alias LocalStorage =
-    { readingMode : ReadingMode, contentReadClickedAtLeastOnce : Bool, readMeIconClickedAtLeastOnce: Bool, username : String, password : String }
+    { readingMode : ReadingMode, contentReadClickedAtLeastOnce : Bool, readMeIconClickedAtLeastOnce : Bool, username : String, password : String }
 
 
 type alias OpacityLevel =
@@ -134,6 +134,7 @@ type Page
     | LoginOrRegisterPage String String String
     | NotFoundPage
     | MaintenancePage
+    | EksiKonservePage (Initializable () (List EksiKonserveTopic))
 
 
 type alias GraphData =
