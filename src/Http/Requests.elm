@@ -321,7 +321,8 @@ deleteAllEksiKonserveExceptions model =
         , body =
             Http.jsonBody
                 (Encode.object
-                    [ ( "username", Encode.string model.localStorage.username )
+                    [ ( "loggedIn", Encode.bool model.loggedIn )
+                    , ( "username", Encode.string model.localStorage.username )
                     , ( "password", Encode.string model.localStorage.password )
                     ]
                 )
