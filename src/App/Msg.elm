@@ -54,6 +54,7 @@ type Msg
     | HideContentFromActiveTagPage ContentID Int (Maybe GotContent)
     | GotEksiKonserveResponse (Result Http.Error EksiKonserveResponse)
     | DeleteEksiKonserveTopics (List String)
+    | ToggleEksiKonserveException String
     | DragStart NodeId ( Float, Float )
     | DragAt ( Float, Float )
     | DragEnd ( Float, Float )

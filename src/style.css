@@ -486,3 +486,10 @@ input[type='checkbox'] {
     background-color: #ffffff;
     float: right;
 }
+
+.eksiKonserveExceptionToggleButton {
+    margin: 3px;
+    border: 1px solid #000;
+    cursor: pointer;
+    background-color: #ffffff;
+}

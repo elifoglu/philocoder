@@ -1,14 +1,13 @@
 module EksiKonserve.View exposing (..)
 
-import App.Model exposing (Exception)
 import App.Msg exposing (Msg(..))
-import DataResponse exposing (EksiKonserveTopic)
+import DataResponse exposing (EksiKonserveException, EksiKonserveTopic)
 import Html exposing (Html, a, button, div, hr, text)
 import Html.Attributes exposing (class, href)
 import Html.Events exposing (onClick)
 
 
-viewEksiKonserveDiv : List EksiKonserveTopic -> List Exception -> Html Msg
+viewEksiKonserveDiv : List EksiKonserveTopic -> List EksiKonserveException -> Html Msg
 viewEksiKonserveDiv topics exceptions =
     div []
         [ div []
@@ -57,10 +56,24 @@ viewDeleteAllTopicsButton topics =
     button [ class "deleteAllEksiKonserveTopicsButton", onClick (DeleteEksiKonserveTopics topicNames) ] [ text "delete all" ]
 
 
-viewExceptionsDiv : List Exception -> Html Msg
+viewExceptionsDiv : List EksiKonserveException -> Html Msg
 viewExceptionsDiv exceptions =
     div []
-        (exceptions
-            |> List.map (\e -> text e)
-            |> List.intersperse (hr [] [])
-        )
+        [ div []
+            (exceptions
+                |> List.map
+                    (\e ->
+                        button
+                            [ class "eksiKonserveExceptionToggleButton"
+                            , onClick (ToggleEksiKonserveException e.message)
+                            ]
+                            [ text (String.fromInt e.count) ]
+                    )
+            )
+        , div []
+            (exceptions
+                |> List.filter (\e -> e.show)
+                |> List.map (\e -> text e.message )
+                |> List.intersperse (hr [] [])
+            )
+        ]

@@ -14,6 +14,7 @@ import Browser.Navigation as Nav
 import Component.Page.Util exposing (tagsNotLoaded)
 import Content.Model exposing (Content)
 import Content.Util exposing (gotContentToContent)
+import DataResponse exposing (EksiKonserveException)
 import ForceDirectedGraph exposing (graphSubscriptions, initGraphModel, updateGraph)
 import Home.View exposing (tagCountCurrentlyShownOnPage)
 import List
@@ -1061,6 +1062,24 @@ update msg model =
 
         DeleteEksiKonserveTopics topicNames ->
             ( model, deleteEksiKonserveTopics topicNames model )
+
+        ToggleEksiKonserveException messageOfToggledException ->
+            case model.activePage of
+                EksiKonservePage (Initialized (topics, exceptions)) ->
+                    let
+                        toggleFn : EksiKonserveException -> EksiKonserveException
+                        toggleFn exception =
+                                { exception | show = not exception.show }
+
+                        newExceptions =
+                            exceptions
+                            |> List.map (\e -> if messageOfToggledException == e.message then (toggleFn e) else e)
+
+                        newModel = { model | activePage = EksiKonservePage (Initialized (topics, newExceptions)) }
+                    in
+                        (newModel, Cmd.none)
+                _ ->
+                    (model, Cmd.none)
 
         -- HOME PAGE & GRAPH --
         GotHomePageDataResponse res ->

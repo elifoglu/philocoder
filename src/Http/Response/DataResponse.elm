@@ -1,7 +1,7 @@
-module DataResponse exposing (AllTagsResponse, BioGroupID, BioItemID, BioResponse, ContentID, ContentReadResponse, ContentSearchResponse, ContentsResponse, EksiKonserveResponse, EksiKonserveTopic, GotAllRefData, GotBioGroup, GotBioItem, GotContent, GotContentDate, GotRefConnection, GotTag, HomePageDataResponse, allTagsResponseDecoder, bioResponseDecoder, contentDecoder, contentReadResponseDecoder, contentSearchResponseDecoder, contentsResponseDecoder, eksiKonserveResponseDecoder, gotAllRefDataDecoder, homePageDataResponseDecoder)
+module DataResponse exposing (AllTagsResponse, BioGroupID, BioItemID, BioResponse, ContentID, ContentReadResponse, ContentSearchResponse, ContentsResponse, EksiKonserveResponse, EksiKonserveTopic, GotAllRefData, GotBioGroup, GotBioItem, GotContent, GotContentDate, GotRefConnection, GotTag, HomePageDataResponse, allTagsResponseDecoder, bioResponseDecoder, contentDecoder, contentReadResponseDecoder, contentSearchResponseDecoder, contentsResponseDecoder, eksiKonserveResponseDecoder, gotAllRefDataDecoder, homePageDataResponseDecoder, EksiKonserveException)
 
 import Content.Model exposing (Ref)
-import Json.Decode as D exposing (Decoder, bool, field, int, map, map2, map3, map5, map6, map7, map8, maybe, string)
+import Json.Decode as D exposing (Decoder, bool, field, int, map, map2, map3, map4, map5, map6, map7, map8, maybe, string)
 
 
 type alias AllTagsResponse =
@@ -104,9 +104,17 @@ type alias EksiKonserveTopic =
     }
 
 
+type alias EksiKonserveException =
+    { message : String
+    , count : Int
+    , timestamps : List String
+    , show: Bool
+    }
+
+
 type alias EksiKonserveResponse =
     { topics : List EksiKonserveTopic
-    , exceptions : List String
+    , exceptions : List EksiKonserveException
     }
 
 
@@ -236,7 +244,7 @@ eksiKonserveResponseDecoder : Decoder EksiKonserveResponse
 eksiKonserveResponseDecoder =
     map2 EksiKonserveResponse
         (field "topics" (D.list eksiKonserveTopicDecoder))
-        (field "exceptions" (D.list string))
+        (field "exceptions" (D.list eksiKonserveExceptionDecoder))
 
 
 eksiKonserveTopicDecoder : Decoder EksiKonserveTopic
@@ -245,3 +253,11 @@ eksiKonserveTopicDecoder =
         (field "name" string)
         (field "url" string)
         (field "count" int)
+
+eksiKonserveExceptionDecoder : Decoder EksiKonserveException
+eksiKonserveExceptionDecoder =
+    map4 EksiKonserveException
+        (field "message" string)
+        (field "count" int)
+        (field "timestamps" (D.list string))
+        (D.succeed False)

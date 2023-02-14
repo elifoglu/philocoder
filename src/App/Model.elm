@@ -1,10 +1,10 @@
-module App.Model exposing (BioPageModel, ContentFadeOutData, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GetContentRequestModel, GetTagContentsRequestModel, GraphData, GraphModel, IconInfo, Initializable(..), InitializedTagPageModel, LocalStorage, MaySendRequest(..), MaybeContentFadeOutData, Model, NonInitializedYetTagPageModel, Page(..), ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateContentPageModel(..), UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, setCreateContentPageModel, setUpdateContentPageModel, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder, Exception)
+module App.Model exposing (BioPageModel, ContentFadeOutData, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GetContentRequestModel, GetTagContentsRequestModel, GraphData, GraphModel, IconInfo, Initializable(..), InitializedTagPageModel, LocalStorage, MaySendRequest(..), MaybeContentFadeOutData, Model, NonInitializedYetTagPageModel, Page(..), ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateContentPageModel(..), UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, setCreateContentPageModel, setUpdateContentPageModel, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
 
 import BioGroup.Model exposing (BioGroup)
 import BioItem.Model exposing (BioItem)
 import Browser.Navigation as Nav
 import Content.Model exposing (Content)
-import DataResponse exposing (ContentID, EksiKonserveTopic, GotAllRefData, GotContent, GotRefConnection)
+import DataResponse exposing (ContentID, EksiKonserveException, EksiKonserveTopic, GotAllRefData, GotContent, GotRefConnection)
 import Force
 import Graph exposing (Graph, NodeId)
 import Json.Encode as Encode
@@ -134,9 +134,7 @@ type Page
     | LoginOrRegisterPage String String String
     | NotFoundPage
     | MaintenancePage
-    | EksiKonservePage (Initializable () ((List EksiKonserveTopic), (List Exception)))
-
-type alias Exception = String
+    | EksiKonservePage (Initializable () ((List EksiKonserveTopic), (List EksiKonserveException)))
 
 type alias GraphData =
     { allRefData : GotAllRefData
