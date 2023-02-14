@@ -1,4 +1,4 @@
-module Requests exposing (createNewTag, deleteEksiKonserveTopics, getAllRefData, getAllTagsResponse, getBio, getBioPageIcons, getContent, getEksiKonserve, getHomePageDataResponse, getIcons, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
+module Requests exposing (createNewTag, deleteEksiKonserveTopics, getAllRefData, getAllTagsResponse, getBio, getBioPageIcons, getContent, getEksiKonserve, getHomePageDataResponse, getIcons, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag, deleteAllEksiKonserveExceptions)
 
 import App.Model exposing (CreateContentPageModel, CreateTagPageModel, GetContentRequestModel, GetTagContentsRequestModel, IconInfo, Model, ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
 import App.Msg exposing (LoginRequestType, Msg(..), PreviewContentModel(..))
@@ -309,6 +309,20 @@ deleteEksiKonserveTopics topicNames model =
                     , ( "username", Encode.string model.localStorage.username )
                     , ( "password", Encode.string model.localStorage.password )
                     , ( "topicNames", Encode.list Encode.string topicNames )
+                    ]
+                )
+        , expect = Http.expectJson GotEksiKonserveResponse eksiKonserveResponseDecoder
+        }
+
+deleteAllEksiKonserveExceptions : Model -> Cmd Msg
+deleteAllEksiKonserveExceptions model =
+    Http.post
+        { url = apiURL ++ "delete-all-eksi-konserve-exceptions"
+        , body =
+            Http.jsonBody
+                (Encode.object
+                    [ ( "username", Encode.string model.localStorage.username )
+                    , ( "password", Encode.string model.localStorage.password )
                     ]
                 )
         , expect = Http.expectJson GotEksiKonserveResponse eksiKonserveResponseDecoder

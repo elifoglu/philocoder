@@ -493,3 +493,10 @@ input[type='checkbox'] {
     cursor: pointer;
     background-color: #ffffff;
 }
+
+.deleteAllEkşiKonserveExceptionsButton {
+    margin: 3px;
+    border: 1px solid #000;
+    cursor: pointer;
+    background-color: #ffffff;
+}

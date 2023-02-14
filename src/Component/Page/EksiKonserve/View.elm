@@ -60,7 +60,7 @@ viewExceptionsDiv : List EksiKonserveException -> Html Msg
 viewExceptionsDiv exceptions =
     div []
         [ div []
-            (exceptions
+            (List.append (exceptions
                 |> List.map
                     (\e ->
                         button
@@ -68,12 +68,20 @@ viewExceptionsDiv exceptions =
                             , onClick (ToggleEksiKonserveException e.message)
                             ]
                             [ text (String.fromInt e.count) ]
-                    )
+                    )) [if List.isEmpty exceptions then
+                                    text ""
+
+                                  else
+                                    button
+                                        [ class "deleteAllEkşiKonserveExceptionsButton"
+                                        , onClick DeleteAllEksiKonserveExceptions
+                                        ]
+                                        [ text "x" ]]
             )
         , div []
             (exceptions
                 |> List.filter (\e -> e.show)
-                |> List.map (\e -> text e.message )
+                |> List.map (\e -> text e.message)
                 |> List.intersperse (hr [] [])
             )
         ]

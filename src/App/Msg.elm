@@ -55,6 +55,7 @@ type Msg
     | GotEksiKonserveResponse (Result Http.Error EksiKonserveResponse)
     | DeleteEksiKonserveTopics (List String)
     | ToggleEksiKonserveException String
+    | DeleteAllEksiKonserveExceptions
     | DragStart NodeId ( Float, Float )
     | DragAt ( Float, Float )
     | DragEnd ( Float, Float )

@@ -20,7 +20,7 @@ import Home.View exposing (tagCountCurrentlyShownOnPage)
 import List
 import List.Extra
 import Pagination.Model exposing (Pagination)
-import Requests exposing (createNewTag, deleteEksiKonserveTopics, getAllRefData, getAllTagsResponse, getBio, getContent, getEksiKonserve, getHomePageDataResponse, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
+import Requests exposing (createNewTag, deleteAllEksiKonserveExceptions, deleteEksiKonserveTopics, getAllRefData, getAllTagsResponse, getBio, getContent, getEksiKonserve, getHomePageDataResponse, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
 import Tag.Util exposing (tagById)
 import Task
 import Time
@@ -1080,6 +1080,9 @@ update msg model =
                         (newModel, Cmd.none)
                 _ ->
                     (model, Cmd.none)
+
+        DeleteAllEksiKonserveExceptions ->
+            ( model, deleteAllEksiKonserveExceptions model )
 
         -- HOME PAGE & GRAPH --
         GotHomePageDataResponse res ->
