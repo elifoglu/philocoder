@@ -2,6 +2,7 @@ module Contents.View exposing (viewContentDivs)
 
 import App.Model exposing (MaybeContentFadeOutData)
 import App.Msg exposing (Msg)
+import Component.Page.Util exposing (emptyRefData)
 import Content.Model exposing (Content)
 import Content.View exposing (viewContentDiv)
 import Html exposing (Html, div, hr)
@@ -12,8 +13,7 @@ viewContentDivs : MaybeContentFadeOutData -> Bool -> List Content -> List (Html 
 viewContentDivs dataToFadeContent contentReadClickedAtLeastOnce contents =
     [ div [ style "margin-top" "20px" ]
         (contents
-            |> List.map (viewContentDiv dataToFadeContent contentReadClickedAtLeastOnce)
+            |> List.map (viewContentDiv dataToFadeContent contentReadClickedAtLeastOnce emptyRefData)
             |> List.intersperse (hr [] [])
         )
     ]
-

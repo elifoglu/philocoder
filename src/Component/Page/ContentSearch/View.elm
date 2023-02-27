@@ -1,6 +1,7 @@
 module ContentSearch.View exposing (..)
 
 import App.Msg exposing (Msg(..))
+import Component.Page.Util exposing (emptyRefData)
 import Content.Model exposing (Content)
 import Content.View exposing (viewContentDiv)
 import Html exposing (Html, div, hr, input, span, text)
@@ -26,7 +27,7 @@ viewSearchContentDiv contentReadClickedAtLeastOnce searchKeyword contents =
             ]
         , div [ style "margin-top" "20px" ]
             (contents
-                |> List.map (viewContentDiv Nothing contentReadClickedAtLeastOnce)
+                |> List.map (viewContentDiv Nothing contentReadClickedAtLeastOnce emptyRefData)
                 |> List.intersperse (hr [] [])
             )
         ]

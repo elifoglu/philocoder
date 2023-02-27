@@ -21,13 +21,13 @@ sendTitle model =
                 NonInitialized _ ->
                     Cmd.none
 
-                Initialized content ->
-                    case content.title of
+                Initialized contentPageModel ->
+                    case contentPageModel.content.title of
                         Just t ->
                             title (t ++ " - philocoder")
 
                         Nothing ->
-                            title (content.beautifiedText ++ " - philocoder")
+                            title (contentPageModel.content.beautifiedText ++ " - philocoder")
 
         TagPage status ->
             case status of

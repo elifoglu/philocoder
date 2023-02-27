@@ -4,25 +4,25 @@ import App.Model exposing (MaybeContentFadeOutData)
 import App.Msg exposing (Msg(..))
 import Content.Model exposing (Content)
 import Content.Util exposing (maybeDateText, maybeDisplayableTagsOfContent)
-import DataResponse exposing (ContentID)
+import DataResponse exposing (ContentID, GotAllRefData)
 import Html exposing (Html, a, div, img, input, label, p, span, text)
 import Html.Attributes exposing (checked, class, href, src, style, title, type_)
-import Html.Events exposing (on)
+import Html.Events exposing (on, onClick)
 import Json.Decode as Decode
 import Markdown
 import Tag.Model exposing (Tag)
 
 
-viewContentDiv : MaybeContentFadeOutData -> Bool -> Content -> Html Msg
-viewContentDiv dataToFadeContent contentReadClickedAtLeastOnce content =
+viewContentDiv : MaybeContentFadeOutData -> Bool -> GotAllRefData -> Content -> Html Msg
+viewContentDiv dataToFadeContent contentReadClickedAtLeastOnce refDataOfContent content =
     p [ style "opacity" (getOpacityLevel content.contentId dataToFadeContent) ]
-        [ div [ ]
+        [ div []
             [ div [ class "title" ] [ viewContentTitle content.title content.beautifiedText ]
             , viewRefsTextOfContent content
             , addBrIfContentEitherHasTitleOrRefs content
             , viewMarkdownTextOfContent content
             ]
-        , viewContentInfoDiv content contentReadClickedAtLeastOnce
+        , viewContentInfoDiv content contentReadClickedAtLeastOnce refDataOfContent
         ]
 
 
@@ -30,13 +30,14 @@ getOpacityLevel : ContentID -> MaybeContentFadeOutData -> String
 getOpacityLevel contentId maybeContentFadeData =
     case maybeContentFadeData of
         Just data ->
-            if contentId == data.contentIdToFade then (String.fromFloat (data.opacityLevel))
-            else "1"
+            if contentId == data.contentIdToFade then
+                String.fromFloat data.opacityLevel
 
+            else
+                "1"
 
         Nothing ->
             "1"
-
 
 
 addBrIfContentEitherHasTitleOrRefs : Content -> Html Msg
@@ -63,8 +64,8 @@ viewContentTitle maybeTitle beautifiedText =
             text ""
 
 
-viewContentInfoDiv : Content -> Bool -> Html Msg
-viewContentInfoDiv content contentReadClickedAtLeastOnce =
+viewContentInfoDiv : Content -> Bool -> GotAllRefData -> Html Msg
+viewContentInfoDiv content contentReadClickedAtLeastOnce refDataOfContent =
     div [ class "contentInfoDiv" ]
         ((case ( maybeDisplayableTagsOfContent content, maybeDateText content ) of
             ( Just displayableTagsOfContent, Just dateText ) ->
@@ -74,7 +75,7 @@ viewContentInfoDiv content contentReadClickedAtLeastOnce =
             ( _, _ ) ->
                 []
          )
-            ++ [ text " ", viewContentLinkWithLinkIcon content, viewContentReadCheckSpan content contentReadClickedAtLeastOnce ]
+            ++ [ text " ", viewContentLinkWithLinkIcon content, viewGraphLink refDataOfContent, viewContentReadCheckSpan content contentReadClickedAtLeastOnce ]
         )
 
 
@@ -118,6 +119,15 @@ viewContentLink htmlToClick beautifiedText contentId =
 viewContentLinkWithLinkIcon : Content -> Html msg
 viewContentLinkWithLinkIcon content =
     viewContentLink (img [ class "navToContent", src "/link.svg" ] []) "" (String.fromInt content.contentId)
+
+
+viewGraphLink : GotAllRefData -> Html Msg
+viewGraphLink refDataOfContent =
+    if List.isEmpty refDataOfContent.connections then
+        text ""
+
+    else
+        img [ onClick ContentPageToggleChecked, class "contentPageToggleChecked", src "/graph.svg" ] []
 
 
 viewMarkdownTextOfContent : Content -> Html msg

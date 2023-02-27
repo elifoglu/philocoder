@@ -1,4 +1,4 @@
-module DataResponse exposing (AllTagsResponse, BioGroupID, BioItemID, BioResponse, ContentID, ContentReadResponse, ContentSearchResponse, ContentsResponse, EksiKonserveResponse, EksiKonserveTopic, GotAllRefData, GotBioGroup, GotBioItem, GotContent, GotContentDate, GotRefConnection, GotTag, HomePageDataResponse, allTagsResponseDecoder, bioResponseDecoder, contentDecoder, contentReadResponseDecoder, contentSearchResponseDecoder, contentsResponseDecoder, eksiKonserveResponseDecoder, gotAllRefDataDecoder, homePageDataResponseDecoder, EksiKonserveException)
+module DataResponse exposing (AllTagsResponse, BioGroupID, BioItemID, BioResponse, ContentID, ContentReadResponse, ContentSearchResponse, ContentsResponse, EksiKonserveException, EksiKonserveResponse, EksiKonserveTopic, GotAllRefData, GotBioGroup, GotBioItem, GotContent, GotContentDate, GotRefConnection, GotTag, HomePageDataResponse, allTagsResponseDecoder, bioResponseDecoder, contentDecoder, contentReadResponseDecoder, contentSearchResponseDecoder, contentsResponseDecoder, eksiKonserveResponseDecoder, gotAllRefDataDecoder, homePageDataResponseDecoder)
 
 import Content.Model exposing (Ref)
 import Json.Decode as D exposing (Decoder, bool, field, int, map, map2, map3, map4, map5, map6, map7, map8, maybe, string)
@@ -37,7 +37,7 @@ type alias GotTag =
 
 
 type alias GotContent =
-    { title : Maybe String, dateAsTimestamp : GotContentDate, contentId : Int, content : String, beautifiedContentText : String, tags : List String, refs : Maybe (List Ref), okForBlogMode : Bool, isContentRead : Bool }
+    { title : Maybe String, dateAsTimestamp : GotContentDate, contentId : Int, content : String, beautifiedContentText : String, tags : List String, refs : Maybe (List Ref), okForBlogMode : Bool, isContentRead : Bool, refData : GotAllRefData }
 
 
 type alias ContentID =
@@ -108,7 +108,7 @@ type alias EksiKonserveException =
     { message : String
     , count : Int
     , timestamps : List String
-    , show: Bool
+    , show : Bool
     }
 
 
@@ -193,10 +193,11 @@ contentDecoder =
                 (maybe (field "refs" (D.list refDecoder)))
                 (field "okForBlogMode" bool)
     in
-    map2
+    map3
         (<|)
         decodeFirst8FieldAtFirst
         (field "isContentRead" bool)
+        (field "refData" gotAllRefDataDecoder)
 
 
 contentDateDecoder : Decoder GotContentDate
@@ -253,6 +254,7 @@ eksiKonserveTopicDecoder =
         (field "name" string)
         (field "url" string)
         (field "count" int)
+
 
 eksiKonserveExceptionDecoder : Decoder EksiKonserveException
 eksiKonserveExceptionDecoder =

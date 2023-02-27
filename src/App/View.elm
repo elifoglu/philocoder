@@ -5,6 +5,7 @@ import App.Msg exposing (Msg(..))
 import Bio.View exposing (viewBioPageDiv)
 import Breadcrumb.View exposing (viewBreadcrumb)
 import Browser exposing (Document)
+import Component.Page.Util exposing (emptyRefData)
 import Content.View exposing (viewContentDiv)
 import ContentSearch.View exposing (viewSearchContentDiv)
 import Contents.View exposing (viewContentDivs)
@@ -12,6 +13,7 @@ import CreateContent.View exposing (viewCreateContentDiv)
 import CreateTag.View exposing (viewCreateTagDiv)
 import EksiKonserve.View exposing (viewEksiKonserveDiv)
 import ForceDirectedGraph exposing (viewGraph)
+import ForceDirectedGraphForContent exposing (viewGraphForContent)
 import Home.View exposing (tagCountCurrentlyShownOnPage, viewHomePageDiv)
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -67,8 +69,19 @@ view model =
                             NonInitialized _ ->
                                 []
 
-                            Initialized content ->
-                                [ viewContentDiv Nothing model.localStorage.contentReadClickedAtLeastOnce content ]
+                            Initialized contentPageModel ->
+                                case contentPageModel.graphDataIfGraphIsOn of
+                                    Nothing ->
+                                        [ viewContentDiv Nothing model.localStorage.contentReadClickedAtLeastOnce contentPageModel.refData contentPageModel.content ]
+
+                                    Just graphData ->
+                                        if graphData.veryFirstMomentOfGraphHasPassed then
+                                            [ div [ class "graphForContent" ] [ viewGraphForContent contentPageModel.content.contentId graphData.allRefData.contentIds graphData.graphModel ]
+                                            , viewContentDiv Nothing model.localStorage.contentReadClickedAtLeastOnce contentPageModel.refData contentPageModel.content
+                                            ]
+
+                                        else
+                                            []
 
                     TagPage status ->
                         case status of

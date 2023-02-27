@@ -16,6 +16,7 @@ import Content.Model exposing (Content)
 import Content.Util exposing (gotContentToContent)
 import DataResponse exposing (EksiKonserveException)
 import ForceDirectedGraph exposing (graphSubscriptions, initGraphModel, updateGraph)
+import ForceDirectedGraphForContent exposing (graphSubscriptionsForContent, initGraphModelForContent)
 import Home.View exposing (tagCountCurrentlyShownOnPage)
 import List
 import List.Extra
@@ -286,7 +287,7 @@ update msg model =
                             gotContentToContent model gotContent
 
                         contentPage =
-                            ContentPage <| Initialized content
+                            ContentPage <| Initialized (ContentPageModel content gotContent.refData Nothing)
 
                         newActivePage =
                             case model.activePage of
@@ -416,8 +417,8 @@ update msg model =
                                     NonInitialized _ ->
                                         ( updatedModel, Cmd.none )
 
-                                    Initialized content ->
-                                        ( { updatedModel | activePage = ContentPage (Initialized (revertRead content)) }, Cmd.none )
+                                    Initialized contentPageModel ->
+                                        ( { updatedModel | activePage = ContentPage (Initialized (ContentPageModel (revertRead contentPageModel.content) contentPageModel.refData contentPageModel.graphDataIfGraphIsOn)) }, Cmd.none )
 
                             TagPage status ->
                                 case status of
@@ -446,6 +447,33 @@ update msg model =
 
                 Err _ ->
                     ( updatedModel, Cmd.none )
+
+        -- CONTENT PAGE --
+        ContentPageToggleChecked ->
+            case model.activePage of
+                ContentPage (Initialized contentPageModel) ->
+                    let
+                        maybeGraphData =
+                            case contentPageModel.graphDataIfGraphIsOn of
+                                Just _ ->
+                                    Nothing
+
+                                Nothing ->
+                                    Just (GraphData contentPageModel.refData (initGraphModelForContent contentPageModel.refData) False)
+
+                        newContentPageModel =
+                            ContentPageModel contentPageModel.content contentPageModel.refData maybeGraphData
+
+                        newPage =
+                            ContentPage (Initialized newContentPageModel)
+
+                        newModel =
+                            { model | activePage = newPage }
+                    in
+                    ( newModel, Cmd.none )
+
+                _ ->
+                    ( model, Cmd.none )
 
         -- TAG PAGE --
         GotContentsOfTag tag result ->
@@ -1065,21 +1093,30 @@ update msg model =
 
         ToggleEksiKonserveException messageOfToggledException ->
             case model.activePage of
-                EksiKonservePage (Initialized (topics, exceptions)) ->
+                EksiKonservePage (Initialized ( topics, exceptions )) ->
                     let
                         toggleFn : EksiKonserveException -> EksiKonserveException
                         toggleFn exception =
-                                { exception | show = not exception.show }
+                            { exception | show = not exception.show }
 
                         newExceptions =
                             exceptions
-                            |> List.map (\e -> if messageOfToggledException == e.message then (toggleFn e) else e)
+                                |> List.map
+                                    (\e ->
+                                        if messageOfToggledException == e.message then
+                                            toggleFn e
 
-                        newModel = { model | activePage = EksiKonservePage (Initialized (topics, newExceptions)) }
+                                        else
+                                            e
+                                    )
+
+                        newModel =
+                            { model | activePage = EksiKonservePage (Initialized ( topics, newExceptions )) }
                     in
-                        (newModel, Cmd.none)
+                    ( newModel, Cmd.none )
+
                 _ ->
-                    (model, Cmd.none)
+                    ( model, Cmd.none )
 
         DeleteAllEksiKonserveExceptions ->
             ( model, deleteAllEksiKonserveExceptions model )
@@ -1200,6 +1237,26 @@ update msg model =
                         Nothing ->
                             ( model, Cmd.none )
 
+                ContentPage data ->
+                    case data of
+                        Initialized contentPageModel ->
+                            case contentPageModel.graphDataIfGraphIsOn of
+                                Just graphData ->
+                                    let
+                                        newGraphData =
+                                            Just (GraphData graphData.allRefData (updateGraph otherMsg graphData.graphModel) True)
+
+                                        newContentPage =
+                                            ContentPage (Initialized (ContentPageModel contentPageModel.content contentPageModel.refData newGraphData))
+                                    in
+                                    ( { model | activePage = newContentPage }, Cmd.none )
+
+                                Nothing ->
+                                    ( model, Cmd.none )
+
+                        NonInitialized _ ->
+                            ( model, Cmd.none )
+
                 TagPage _ ->
                     case model.maybeContentFadeOutData of
                         Just data ->
@@ -1242,6 +1299,19 @@ subscriptions model =
                     graphSubscriptions graphData.graphModel totalTagCountCurrentlyShownOnPage
 
                 Nothing ->
+                    Sub.none
+
+        ContentPage data ->
+            case data of
+                Initialized contentPageModel ->
+                    case contentPageModel.graphDataIfGraphIsOn of
+                        Just graphData ->
+                            graphSubscriptionsForContent graphData.graphModel
+
+                        Nothing ->
+                            Sub.none
+
+                NonInitialized _ ->
                     Sub.none
 
         TagPage _ ->

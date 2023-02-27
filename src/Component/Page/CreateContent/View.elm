@@ -2,7 +2,7 @@ module CreateContent.View exposing (viewCreateContentDiv)
 
 import App.Model exposing (CreateContentPageModel, Model, ReadingMode(..))
 import App.Msg exposing (ContentInputType(..), Msg(..), PreviewContentModel(..))
-import Component.Page.Util exposing (flipBoolAndToStr)
+import Component.Page.Util exposing (emptyRefData, flipBoolAndToStr)
 import Content.View exposing (viewContentDiv)
 import Html exposing (Html, br, button, div, hr, input, label, span, text, textarea)
 import Html.Attributes exposing (checked, name, placeholder, style, type_, value)
@@ -33,7 +33,7 @@ viewCreateContentDiv createContentPageModel =
                 , hr [] []
                 , case createContentPageModel.maybeContentToPreview of
                     Just content ->
-                        viewContentDiv Nothing False content
+                        viewContentDiv Nothing False emptyRefData content
 
                     Nothing ->
                         text "invalid content, or no content at all"

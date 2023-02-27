@@ -1,4 +1,4 @@
-module App.Model exposing (BioPageModel, ContentFadeOutData, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GetContentRequestModel, GetTagContentsRequestModel, GraphData, GraphModel, IconInfo, Initializable(..), InitializedTagPageModel, LocalStorage, MaySendRequest(..), MaybeContentFadeOutData, Model, NonInitializedYetTagPageModel, Page(..), ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateContentPageModel(..), UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, setCreateContentPageModel, setUpdateContentPageModel, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
+module App.Model exposing (BioPageModel, ContentFadeOutData, ContentPageModel, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GetContentRequestModel, GetTagContentsRequestModel, GraphData, GraphModel, IconInfo, Initializable(..), InitializedTagPageModel, LocalStorage, MaySendRequest(..), MaybeContentFadeOutData, Model, NonInitializedYetTagPageModel, Page(..), ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateContentPageModel(..), UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, setCreateContentPageModel, setUpdateContentPageModel, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
 
 import BioGroup.Model exposing (BioGroup)
 import BioItem.Model exposing (BioItem)
@@ -123,7 +123,7 @@ type alias AllTagsToShow =
 
 type Page
     = HomePage BlogTagsToShow AllTagsToShow ReadingMode (Maybe GraphData)
-    | ContentPage (Initializable Int Content)
+    | ContentPage (Initializable Int ContentPageModel)
     | TagPage (Initializable NonInitializedYetTagPageModel InitializedTagPageModel)
     | CreateContentPage (MaySendRequest CreateContentPageModel CreateContentPageModel)
     | UpdateContentPage UpdateContentPageModel
@@ -134,7 +134,8 @@ type Page
     | LoginOrRegisterPage String String String
     | NotFoundPage
     | MaintenancePage
-    | EksiKonservePage (Initializable () ((List EksiKonserveTopic), (List EksiKonserveException)))
+    | EksiKonservePage (Initializable () ( List EksiKonserveTopic, List EksiKonserveException ))
+
 
 type alias GraphData =
     { allRefData : GotAllRefData
@@ -171,6 +172,13 @@ type alias TotalPageCountRequestModel =
     , consumeMode : Bool
     , username : String
     , password : String
+    }
+
+
+type alias ContentPageModel =
+    { content : Content
+    , refData : GotAllRefData
+    , graphDataIfGraphIsOn : Maybe GraphData
     }
 
 

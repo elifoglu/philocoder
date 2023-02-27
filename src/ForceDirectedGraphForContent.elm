@@ -1,4 +1,4 @@
-module ForceDirectedGraph exposing (graphSubscriptions, initGraphModel, updateGraph, viewGraph)
+module ForceDirectedGraphForContent exposing (graphSubscriptionsForContent, initGraphModelForContent, updateGraph, viewGraphForContent)
 
 import App.Model exposing (Entity, GraphModel, Model)
 import App.Msg exposing (Msg(..))
@@ -10,7 +10,6 @@ import Graph exposing (Edge, Graph, Node, NodeContext, NodeId)
 import Html.Events.Extra.Mouse as Mouse exposing (Event)
 import Json.Decode as Decode
 import List.Extra exposing (getAt)
-import Random
 import Tuple exposing (first, second)
 import TypedSvg exposing (circle, defs, g, line, marker, polygon, svg, title)
 import TypedSvg.Attributes exposing (class, fill, id, markerEnd, orient, points, refX, refY, stroke, viewBox)
@@ -47,20 +46,20 @@ h =
 
 clientPosXCorrectionValue : Float
 clientPosXCorrectionValue =
-    33
+    32
 
 
-clientPosYCorrectionValue : Int -> Float
-clientPosYCorrectionValue totalTagCountCurrentlyShownOnPage =
-    toFloat (143 + (20 * (totalTagCountCurrentlyShownOnPage - 1)))
+clientPosYCorrectionValue : Float
+clientPosYCorrectionValue =
+    90
 
 
 
 --INIT--
 
 
-initGraphModel : GotAllRefData -> GraphModel
-initGraphModel allRefData =
+initGraphModelForContent : GotAllRefData -> GraphModel
+initGraphModelForContent allRefData =
     let
         graph : Graph Entity ()
         graph =
@@ -167,8 +166,8 @@ updateContextWithValue nodeCtx value =
 --VIEW--
 
 
-viewGraph : List Int -> GraphModel -> Int -> Svg Msg
-viewGraph contentIds graphModel totalTagCountCurrentlyShownOnTheScreen =
+viewGraphForContent : Int -> List Int -> GraphModel -> Svg Msg
+viewGraphForContent idOfContentOfContentPage contentIds graphModel =
     svg [ viewBox 0 0 w h ] <|
         [ defs []
             [ arrowHead ]
@@ -176,7 +175,7 @@ viewGraph contentIds graphModel totalTagCountCurrentlyShownOnTheScreen =
             |> List.map (linkElement graphModel.graph)
             |> g [ class [ "links" ] ]
         , Graph.nodes graphModel.graph
-            |> List.map (nodeElement contentIds totalTagCountCurrentlyShownOnTheScreen)
+            |> List.map (nodeElement idOfContentOfContentPage contentIds)
             |> g [ class [ "nodes" ] ]
         ]
 
@@ -189,6 +188,11 @@ linkColor =
 nodeColor : Color.Color
 nodeColor =
     Color.rgb255 20 20 20
+
+
+nodeColorOfCurrentContent : Color.Color
+nodeColorOfCurrentContent =
+    Color.rgb255 255 0 0
 
 
 arrowHead : Svg msg
@@ -226,25 +230,53 @@ linkElement graph edge =
         []
 
 
-nodeElement : List Int -> Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Svg Msg
-nodeElement contentIds totalTagCount node =
+nodeElement : Int -> List Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Svg Msg
+nodeElement idOfContentOfContentPage contentIds node =
     circle
-        [ r 2.5
-        , fill <| Paint nodeColor
+        [ r <| selectR idOfContentOfContentPage contentIds node
+        , fill <| selectColor idOfContentOfContentPage contentIds node
         , stroke <| Paint <| Color.rgba 0 0 0 0
         , strokeWidth 7
         , cx node.label.x
         , cy node.label.y
         , onMouseClick contentIds node
-        , onMouseDown node.id totalTagCount
+        , onMouseDown node.id
         ]
         [ title [] [ text node.label.value ]
         ]
 
 
-onMouseDown : NodeId -> Int -> Attribute Msg
-onMouseDown index totalTagCount =
-    Mouse.onDown (\event -> DragStart index ( setX event, setY event totalTagCount ))
+selectR : Int -> List Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Float
+selectR idOfContentOfContentPage contentIds node =
+    let
+        contentId =
+            Maybe.withDefault 0 (getAt node.id contentIds)
+    in
+    if contentId == idOfContentOfContentPage then
+        3.1
+
+    else
+        2.5
+
+
+selectColor : Int -> List Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Paint
+selectColor idOfContentOfContentPage contentIds node =
+    let
+        contentId =
+            Maybe.withDefault 0 (getAt node.id contentIds)
+    in
+    Paint
+        (if contentId == idOfContentOfContentPage then
+            nodeColorOfCurrentContent
+
+         else
+            nodeColor
+        )
+
+
+onMouseDown : NodeId -> Attribute Msg
+onMouseDown index =
+    Mouse.onDown (\event -> DragStart index ( setX event, setY event ))
 
 
 onMouseClick : List Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Attribute Msg
@@ -256,8 +288,8 @@ onMouseClick contentIds node =
 --SUBSCRIPTIONS--
 
 
-graphSubscriptions : GraphModel -> Int -> Sub Msg
-graphSubscriptions model totalTagCountCurrentlyShownOnPage =
+graphSubscriptionsForContent : GraphModel -> Sub Msg
+graphSubscriptionsForContent model =
     case model.drag of
         Nothing ->
             -- This allows us to save resources, as if the simulation is done, there is no point in subscribing
@@ -270,8 +302,8 @@ graphSubscriptions model totalTagCountCurrentlyShownOnPage =
 
         Just _ ->
             Sub.batch
-                [ Browser.Events.onMouseMove (Decode.map (\event -> DragAt ( setX event, setY event totalTagCountCurrentlyShownOnPage )) Mouse.eventDecoder)
-                , Browser.Events.onMouseUp (Decode.map (\event -> DragEnd ( setX event, setY event totalTagCountCurrentlyShownOnPage )) Mouse.eventDecoder)
+                [ Browser.Events.onMouseMove (Decode.map (\event -> DragAt ( setX event, setY event )) Mouse.eventDecoder)
+                , Browser.Events.onMouseUp (Decode.map (\event -> DragEnd ( setX event, setY event )) Mouse.eventDecoder)
                 , Browser.Events.onAnimationFrame Tick
                 ]
 
@@ -281,6 +313,6 @@ setX event =
     first event.clientPos - clientPosXCorrectionValue
 
 
-setY : Event -> Int -> Float
-setY event totalTagCountCurrentlyShownOnPage =
-    second event.clientPos - clientPosYCorrectionValue totalTagCountCurrentlyShownOnPage
+setY : Event -> Float
+setY event =
+    second event.clientPos - clientPosYCorrectionValue
