@@ -37,7 +37,7 @@ type alias GotTag =
 
 
 type alias GotContent =
-    { title : Maybe String, dateAsTimestamp : GotContentDate, contentId : Int, content : String, beautifiedContentText : String, tags : List String, refs : Maybe (List Ref), okForBlogMode : Bool, isContentRead : Bool, refData : GotAllRefData }
+    { title : Maybe String, dateAsTimestamp : GotContentDate, contentId : Int, content : String, beautifiedContentText : String, tags : List String, refs : Maybe (List Ref), okForBlogMode : Bool, isContentRead : Bool, refData : GotAllRefData, furtherReadingRefs: List Ref }
 
 
 type alias ContentID =
@@ -193,11 +193,12 @@ contentDecoder =
                 (maybe (field "refs" (D.list refDecoder)))
                 (field "okForBlogMode" bool)
     in
-    map3
+    map4
         (<|)
         decodeFirst8FieldAtFirst
         (field "isContentRead" bool)
         (field "refData" gotAllRefDataDecoder)
+        (field "furtherReadingRefs" (D.list refDecoder))
 
 
 contentDateDecoder : Decoder GotContentDate

@@ -21,6 +21,7 @@ viewContentDiv dataToFadeContent contentReadClickedAtLeastOnce refDataOfContent 
             , viewRefsTextOfContent content
             , addBrIfContentEitherHasTitleOrRefs content
             , viewMarkdownTextOfContent content
+            , viewFurtherReadingRefsTextOfContent content
             ]
         , viewContentInfoDiv content contentReadClickedAtLeastOnce refDataOfContent
         ]
@@ -154,3 +155,19 @@ viewRefsTextOfContent content =
 
         Nothing ->
             text ""
+
+
+viewFurtherReadingRefsTextOfContent : Content -> Html msg
+viewFurtherReadingRefsTextOfContent content =
+    if List.isEmpty content.furtherReadingRefs then
+        text ""
+
+    else
+        div [ class "refsDiv", style "margin-top" "20px", style "margin-bottom" "15px" ]
+            [ span [ style "font-style" "italic" ] [ text "ileri okuma: " ]
+            , span []
+                (content.furtherReadingRefs
+                    |> List.map (\r -> viewContentLink (text r.text) r.beautifiedText r.id)
+                    |> List.intersperse (text ", ")
+                )
+            ]
