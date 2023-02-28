@@ -238,13 +238,7 @@ setCreateContentPageModel content =
     , title = Maybe.withDefault "" content.title
     , text = content.text
     , tags = String.join "," (List.map (\tag -> tag.name) content.tags)
-    , refs =
-        case content.refs of
-            Just refs ->
-                String.join "," (List.map (\ref -> ref.id) refs)
-
-            Nothing ->
-                ""
+    , refs = String.join "," (List.map (\ref -> ref.id) content.refs)
     , okForBlogMode = content.okForBlogMode
     , password = ""
     , contentIdToCopy = ""
@@ -258,13 +252,7 @@ setUpdateContentPageModel content =
     , title = Maybe.withDefault "" content.title
     , text = content.text
     , tags = String.join "," (List.map (\tag -> tag.name) content.tags)
-    , refs =
-        case content.refs of
-            Just refs ->
-                String.join "," (List.map (\ref -> ref.id) refs)
-
-            Nothing ->
-                ""
+    , refs = String.join "," (List.map (\ref -> ref.id) content.refs)
     , okForBlogMode = content.okForBlogMode
     , password = ""
     }

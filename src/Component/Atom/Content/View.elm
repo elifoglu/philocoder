@@ -19,7 +19,6 @@ viewContentDiv dataToFadeContent contentReadClickedAtLeastOnce refDataOfContent 
         [ div []
             [ div [ class "title" ] [ viewContentTitle content.title content.beautifiedText ]
             , viewRefsTextOfContent content
-            , addBrIfContentEitherHasTitleOrRefs content
             , viewMarkdownTextOfContent content
             , viewFurtherReadingRefsTextOfContent content
             ]
@@ -39,16 +38,6 @@ getOpacityLevel contentId maybeContentFadeData =
 
         Nothing ->
             "1"
-
-
-addBrIfContentEitherHasTitleOrRefs : Content -> Html Msg
-addBrIfContentEitherHasTitleOrRefs content =
-    case ( content.title, content.refs ) of
-        ( Nothing, Nothing ) ->
-            text ""
-
-        ( _, _ ) ->
-            text ""
 
 
 viewContentTitle : Maybe String -> String -> Html Msg
@@ -138,23 +127,19 @@ viewMarkdownTextOfContent content =
 
 viewRefsTextOfContent : Content -> Html msg
 viewRefsTextOfContent content =
-    case content.refs of
-        Just refs ->
-            if List.isEmpty refs then
-                text ""
+    if List.isEmpty content.refs then
+        text ""
 
-            else
-                div [ class "refsDiv" ]
-                    [ span [ style "font-style" "italic" ] [ text "ilgili: " ]
-                    , span []
-                        (refs
-                            |> List.map (\r -> viewContentLink (text r.text) r.beautifiedText r.id)
-                            |> List.intersperse (text ", ")
-                        )
-                    ]
+    else
+        div [ class "refsDiv" ]
+            [ span [ style "font-style" "italic" ] [ text "ilgili: " ]
+            , span []
+                (content.refs
+                    |> List.map (\r -> viewContentLink (text r.text) r.beautifiedText r.id)
+                    |> List.intersperse (text ", ")
+                )
+            ]
 
-        Nothing ->
-            text ""
 
 
 viewFurtherReadingRefsTextOfContent : Content -> Html msg
@@ -163,7 +148,7 @@ viewFurtherReadingRefsTextOfContent content =
         text ""
 
     else
-        div [ class "refsDiv", style "margin-top" "20px", style "margin-bottom" "15px" ]
+        div [ class "refsDiv", style "margin-top" "25px", style "margin-bottom" "14px" ]
             [ span [ style "font-style" "italic" ] [ text "ileri okuma: " ]
             , span []
                 (content.furtherReadingRefs

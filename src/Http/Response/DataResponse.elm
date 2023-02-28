@@ -37,7 +37,7 @@ type alias GotTag =
 
 
 type alias GotContent =
-    { title : Maybe String, dateAsTimestamp : GotContentDate, contentId : Int, content : String, beautifiedContentText : String, tags : List String, refs : Maybe (List Ref), okForBlogMode : Bool, isContentRead : Bool, refData : GotAllRefData, furtherReadingRefs: List Ref }
+    { title : Maybe String, dateAsTimestamp : GotContentDate, contentId : Int, content : String, beautifiedContentText : String, tags : List String, refs : List Ref, okForBlogMode : Bool, isContentRead : Bool, refData : GotAllRefData, furtherReadingRefs: List Ref }
 
 
 type alias ContentID =
@@ -190,7 +190,7 @@ contentDecoder =
                 (field "content" string)
                 (field "beautifiedContentText" string)
                 (field "tags" (D.list string))
-                (maybe (field "refs" (D.list refDecoder)))
+                (field "refs" (D.list refDecoder))
                 (field "okForBlogMode" bool)
     in
     map4
