@@ -2,7 +2,7 @@ module UpdateContent.View exposing (viewUpdateContentDiv)
 
 import App.Model exposing (CreateContentPageModel, Model, UpdateContentPageData)
 import App.Msg exposing (ContentInputType(..), Msg(..), PreviewContentModel(..))
-import Component.Page.Util exposing (emptyRefData, flipBoolAndToStr)
+import Component.Page.Util exposing (flipBoolAndToStr)
 import Content.Model exposing (Content)
 import Content.View exposing (viewContentDiv)
 import DataResponse exposing (ContentID)

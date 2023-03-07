@@ -16,10 +16,3 @@ flipBoolAndToStr bool =
 tagsNotLoaded : Model -> Bool
 tagsNotLoaded model =
     model.allTags == []
-
-
-emptyRefData =
-    { titlesToShow = []
-    , contentIds = []
-    , connections = []
-    }
