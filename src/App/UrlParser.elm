@@ -12,7 +12,7 @@ routeParser readingMode =
         [ map (HomePage Nothing Nothing readingMode Nothing) top
         , map nonInitializedTagPageMapper (s "tags" </> string <?> Query.int "page" <?> Query.string "mode")
         , map nonInitializedBioPageMapper (s "me")
-        , map nonInitializedContentPageMapper (s "contents" </> int)
+        , map nonInitializedContentPageMapper (s "contents" </> int <?> Query.string "graph")
         , map (CreateContentPage (NoRequestSentYet (CreateContentPageModel Nothing "" "" "" "" "" False "" ""))) (s "create" </> s "content")
         , map nonInitializedUpdateContentPageMapper (s "update" </> s "content" </> int)
         , map (CreateTagPage (NoRequestSentYet (CreateTagPageModel "" "" "DateDESC" True True "" ""))) (s "create" </> s "tag")
@@ -37,9 +37,19 @@ getReadingMode maybeString =
             AllContents
 
 
-nonInitializedContentPageMapper : Int -> Page
-nonInitializedContentPageMapper contentId =
-    ContentPage (NonInitialized contentId)
+nonInitializedContentPageMapper : Int -> Maybe String -> Page
+nonInitializedContentPageMapper contentId maybeGraphIsOn =
+    ContentPage
+        (NonInitialized
+            ( contentId
+            , case maybeGraphIsOn of
+                Just "true" ->
+                    True
+
+                _ ->
+                    False
+            )
+        )
 
 
 nonInitializedUpdateContentPageMapper : Int -> Page
@@ -59,7 +69,7 @@ nonInitializedBioPageMapper =
 
 rPageMapper : Page
 rPageMapper =
-    ContentPage (NonInitialized 5)
+    ContentPage (NonInitialized ( 5, False ))
 
 
 eksiKonservePageMapper : Page

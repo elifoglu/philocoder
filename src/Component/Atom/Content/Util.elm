@@ -1,9 +1,10 @@
 module Content.Util exposing (gotContentToContent, maybeDateText, maybeDisplayableTagsOfContent)
 
 import App.Model exposing (Model)
-import Content.Model exposing (Content, ContentDate)
+import Content.Model exposing (Content, ContentDate, GraphData)
 import DataResponse exposing (GotContent, GotContentDate, GotTag)
 import Date exposing (format)
+import ForceDirectedGraphForContent exposing (initGraphModelForContent)
 import Maybe.Extra exposing (values)
 import Tag.Model exposing (Tag)
 import Tag.Util exposing (tagNameToTag)
@@ -26,7 +27,12 @@ gotContentToContent model gotContent =
     , isContentRead = gotContent.isContentRead
     , furtherReadingRefs = gotContent.furtherReadingRefs
     , refData = gotContent.refData
-    , graphDataIfGraphIsOn = Nothing
+    , graphDataIfGraphIsOn =
+        if gotContent.graphIsOn then
+            Just (GraphData gotContent.refData (initGraphModelForContent gotContent.refData) False)
+
+        else
+            Nothing
     }
 
 

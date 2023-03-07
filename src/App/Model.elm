@@ -116,7 +116,7 @@ type alias AllTagsToShow =
 
 type Page
     = HomePage BlogTagsToShow AllTagsToShow ReadingMode (Maybe GraphData)
-    | ContentPage (Initializable Int Content)
+    | ContentPage (Initializable ( Int, Bool ) Content)
     | TagPage (Initializable NonInitializedYetTagPageModel InitializedTagPageModel)
     | CreateContentPage (MaySendRequest CreateContentPageModel CreateContentPageModel)
     | UpdateContentPage UpdateContentPageModel
@@ -135,6 +135,7 @@ type alias GetContentRequestModel =
     , loggedIn : Bool
     , username : String
     , password : String
+    , graphIsOn : Bool
     }
 
 
@@ -241,6 +242,7 @@ getContentRequestModelEncoder model =
         [ ( "contentID", Encode.string (String.fromInt model.contentID) )
         , ( "username", Encode.string model.username )
         , ( "password", Encode.string model.password )
+        , ( "graphIsOn", Encode.bool model.graphIsOn )
         ]
 
 

@@ -15,9 +15,9 @@ import Component.Page.Util exposing (tagsNotLoaded)
 import Content.Model exposing (Content, GraphData)
 import Content.Util exposing (gotContentToContent)
 import DataResponse exposing (ContentID, EksiKonserveException)
+import ForceDirectedGraphForContent exposing (graphSubscriptionsForContent, initGraphModelForContent)
 import ForceDirectedGraphForHome exposing (graphSubscriptions, initGraphModel)
 import ForceDirectedGraphUtil exposing (updateGraph)
-import ForceDirectedGraphForContent exposing (graphSubscriptionsForContent, initGraphModelForContent)
 import Home.View exposing (tagCountCurrentlyShownOnPage)
 import List
 import List.Extra
@@ -180,8 +180,8 @@ getCmdToSendByPage model =
 
                 ContentPage status ->
                     case status of
-                        NonInitialized contentId ->
-                            getContent contentId model
+                        NonInitialized ( contentId, graphIsOn ) ->
+                            getContent contentId model graphIsOn
 
                         Initialized _ ->
                             Cmd.none
@@ -189,7 +189,7 @@ getCmdToSendByPage model =
                 UpdateContentPage status ->
                     case status of
                         NotInitializedYet contentID ->
-                            getContent contentID model
+                            getContent contentID model False
 
                         _ ->
                             Cmd.none
@@ -318,7 +318,8 @@ update msg model =
                                             contentPage
 
                                 _ ->
-                                    MaintenancePage
+                                    --that means graph icon of content is clicked on another page, such as tag page or content search page
+                                    contentPage
 
                         newModel =
                             { model | activePage = newActivePage }
@@ -476,36 +477,15 @@ update msg model =
                             ( model, Cmd.none )
 
                         Just foundContent ->
-                            let
-                                maybeGraphData =
-                                    case foundContent.graphDataIfGraphIsOn of
-                                        Just _ ->
-                                            Nothing
+                            ( model, Nav.pushUrl model.key ("/contents/" ++ String.fromInt foundContent.contentId ++ "?graph=true") )
 
-                                        Nothing ->
-                                            Just (GraphData foundContent.refData (initGraphModelForContent foundContent.refData) False)
+                ContentSearchPage _ contents ->
+                    case List.head (List.filter (\c -> c.contentId == contentId) contents) of
+                        Nothing ->
+                            ( model, Cmd.none )
 
-                                newContentsOfTagPage =
-                                    List.map
-                                        (\c ->
-                                            if foundContent.contentId == c.contentId then
-                                                { c | graphDataIfGraphIsOn = maybeGraphData }
-
-                                            else
-                                                c
-                                        )
-                                        tagPageModel.contents
-
-                                newTagPageModel =
-                                    { tagPageModel | contents = newContentsOfTagPage }
-
-                                newPage =
-                                    TagPage (Initialized newTagPageModel)
-
-                                newModel =
-                                    { model | activePage = newPage }
-                            in
-                            ( newModel, Cmd.none )
+                        Just foundContent ->
+                            ( model, Nav.pushUrl model.key ("/contents/" ++ String.fromInt foundContent.contentId ++ "?graph=true") )
 
                 _ ->
                     ( model, Cmd.none )
@@ -686,7 +666,7 @@ update msg model =
 
         GetContentToCopyForContentCreation contentId ->
             ( model
-            , getContent contentId model
+            , getContent contentId model False
             )
 
         GotContentToPreviewForCreatePage createContentPageModel result ->
@@ -1292,61 +1272,36 @@ update msg model =
                         NonInitialized _ ->
                             ( model, Cmd.none )
 
-                TagPage tagPageModel ->
+                TagPage _ ->
                     let
-                        modelAndCmdPairForFadeOut : (Model, Cmd Msg)
-                        modelAndCmdPairForFadeOut = case model.maybeContentFadeOutData of
-                            Just data ->
-                                let
-                                    t =
-                                        0.05
+                        modelAndCmdPairForFadeOut : ( Model, Cmd Msg )
+                        modelAndCmdPairForFadeOut =
+                            case model.maybeContentFadeOutData of
+                                Just data ->
+                                    let
+                                        t =
+                                            0.05
 
-                                    dataToFadeContent =
-                                        if data.opacityLevel <= t then
-                                            Nothing
+                                        dataToFadeContent =
+                                            if data.opacityLevel <= t then
+                                                Nothing
 
-                                        else
-                                            Just { data | opacityLevel = data.opacityLevel - t }
-                                in
-                                ( { model | maybeContentFadeOutData = dataToFadeContent }
-                                , if dataToFadeContent == Nothing then
-                                    Task.perform (always (HideContentFromActiveTagPage data.contentIdToFade data.newPageCountToSet data.contentToAddToBottom)) (Task.succeed ())
+                                            else
+                                                Just { data | opacityLevel = data.opacityLevel - t }
+                                    in
+                                    ( { model | maybeContentFadeOutData = dataToFadeContent }
+                                    , if dataToFadeContent == Nothing then
+                                        Task.perform (always (HideContentFromActiveTagPage data.contentIdToFade data.newPageCountToSet data.contentToAddToBottom)) (Task.succeed ())
 
-                                  else
-                                    Cmd.none
-                                )
+                                      else
+                                        Cmd.none
+                                    )
 
-                            Nothing ->
-                                ( model, Cmd.none )
-
-                        updatedModel : Model
-                        updatedModel = (Tuple.first modelAndCmdPairForFadeOut)
-
-                        modelAfterUpdateWithForContentGraphs : Model
-                        modelAfterUpdateWithForContentGraphs =
-                                case tagPageModel of
-                                    NonInitialized _ ->
-                                        updatedModel
-
-                                    Initialized initializedPageModel ->
-                                        let
-                                            newContentsOfTagPageModel = initializedPageModel.contents
-                                                |> List.map
-                                                    (\content ->
-                                                        case content.graphDataIfGraphIsOn of
-                                                                Just graphData ->
-                                                                    { content | graphDataIfGraphIsOn = Just (GraphData graphData.allRefData (updateGraph otherMsg graphData.graphModel) True) }
-
-                                                                Nothing ->
-                                                                    content
-                                                    )
-
-                                            updatedTagPageModel = { initializedPageModel | contents = newContentsOfTagPageModel }
-                                        in
-                                            { updatedModel | activePage = TagPage (Initialized updatedTagPageModel) }
-
+                                Nothing ->
+                                    ( model, Cmd.none )
                     in
-                        ( modelAfterUpdateWithForContentGraphs, Tuple.second modelAndCmdPairForFadeOut)
+                    modelAndCmdPairForFadeOut
+
                 _ ->
                     ( model, Cmd.none )
 
@@ -1379,7 +1334,7 @@ subscriptions model =
                 NonInitialized _ ->
                     Sub.none
 
-        TagPage tagPageModel ->
+        TagPage _ ->
             let
                 subForContentFadeOut =
                     if model.maybeContentFadeOutData /= Nothing then
@@ -1387,25 +1342,8 @@ subscriptions model =
 
                     else
                         Sub.none
-
-                subsForGraphsOfContents =
-                    case tagPageModel of
-                        NonInitialized _ ->
-                            [ Sub.none ]
-
-                        Initialized initializedPageModel ->
-                            initializedPageModel.contents
-                                |> List.map
-                                    (\content ->
-                                        case content.graphDataIfGraphIsOn of
-                                            Just graphData ->
-                                                graphSubscriptionsForContent graphData.graphModel
-
-                                            Nothing ->
-                                                Sub.none
-                                    )
             in
-            Sub.batch (subForContentFadeOut :: subsForGraphsOfContents)
+            subForContentFadeOut
 
         _ ->
             Sub.none
