@@ -3,8 +3,8 @@ module App.Model exposing (BioPageModel, ContentFadeOutData, ContentPageModel, C
 import BioGroup.Model exposing (BioGroup)
 import BioItem.Model exposing (BioItem)
 import Browser.Navigation as Nav
-import Content.Model exposing (Content)
-import DataResponse exposing (ContentID, EksiKonserveException, EksiKonserveTopic, GotAllRefData, GotContent, GotRefConnection)
+import Content.Model exposing (AllRefData, Content)
+import DataResponse exposing (ContentID, EksiKonserveException, EksiKonserveTopic, GotContent)
 import Force
 import Graph exposing (Graph, NodeId)
 import Json.Encode as Encode
@@ -138,7 +138,7 @@ type Page
 
 
 type alias GraphData =
-    { allRefData : GotAllRefData
+    { allRefData : AllRefData
     , graphModel : GraphModel
     , veryFirstMomentOfGraphHasPassed : Bool
 
@@ -177,7 +177,6 @@ type alias TotalPageCountRequestModel =
 
 type alias ContentPageModel =
     { content : Content
-    , refData : GotAllRefData
     , graphDataIfGraphIsOn : Maybe GraphData
     }
 

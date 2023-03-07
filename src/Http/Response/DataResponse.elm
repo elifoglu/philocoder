@@ -1,6 +1,6 @@
-module DataResponse exposing (AllTagsResponse, BioGroupID, BioItemID, BioResponse, ContentID, ContentReadResponse, ContentSearchResponse, ContentsResponse, EksiKonserveException, EksiKonserveResponse, EksiKonserveTopic, GotAllRefData, GotBioGroup, GotBioItem, GotContent, GotContentDate, GotRefConnection, GotTag, HomePageDataResponse, allTagsResponseDecoder, bioResponseDecoder, contentDecoder, contentReadResponseDecoder, contentSearchResponseDecoder, contentsResponseDecoder, eksiKonserveResponseDecoder, gotAllRefDataDecoder, homePageDataResponseDecoder)
+module DataResponse exposing (AllTagsResponse, BioGroupID, BioItemID, BioResponse, ContentID, ContentReadResponse, ContentSearchResponse, ContentsResponse, EksiKonserveException, EksiKonserveResponse, EksiKonserveTopic, GotBioGroup, GotBioItem, GotContent, GotContentDate, GotTag, HomePageDataResponse, allTagsResponseDecoder, bioResponseDecoder, contentDecoder, contentReadResponseDecoder, contentSearchResponseDecoder, contentsResponseDecoder, eksiKonserveResponseDecoder, gotAllRefDataDecoder, homePageDataResponseDecoder)
 
-import Content.Model exposing (Ref)
+import Content.Model exposing (AllRefData, Ref, RefConnection)
 import Json.Decode as D exposing (Decoder, bool, field, int, map, map2, map3, map4, map5, map6, map7, map8, maybe, string)
 
 
@@ -37,7 +37,7 @@ type alias GotTag =
 
 
 type alias GotContent =
-    { title : Maybe String, dateAsTimestamp : GotContentDate, contentId : Int, content : String, beautifiedContentText : String, tags : List String, refs : List Ref, okForBlogMode : Bool, isContentRead : Bool, refData : GotAllRefData, furtherReadingRefs: List Ref }
+    { title : Maybe String, dateAsTimestamp : GotContentDate, contentId : Int, content : String, beautifiedContentText : String, tags : List String, refs : List Ref, okForBlogMode : Bool, isContentRead : Bool, refData : AllRefData, furtherReadingRefs: List Ref }
 
 
 type alias ContentID =
@@ -46,17 +46,6 @@ type alias ContentID =
 
 type alias GotContentDate =
     String
-
-
-type alias GotAllRefData =
-    { titlesToShow : List String
-    , contentIds : List Int
-    , connections : List GotRefConnection
-    }
-
-
-type alias GotRefConnection =
-    { a : Int, b : Int }
 
 
 type alias BioResponse =
@@ -152,17 +141,17 @@ contentSearchResponseDecoder =
         (field "contents" (D.list contentDecoder))
 
 
-gotAllRefDataDecoder : Decoder GotAllRefData
+gotAllRefDataDecoder : Decoder AllRefData
 gotAllRefDataDecoder =
-    map3 GotAllRefData
+    map3 AllRefData
         (field "titlesToShow" (D.list string))
         (field "contentIds" (D.list int))
         (field "connections" (D.list refConnectionDecoder))
 
 
-refConnectionDecoder : Decoder GotRefConnection
+refConnectionDecoder : Decoder RefConnection
 refConnectionDecoder =
-    map2 GotRefConnection
+    map2 RefConnection
         (field "a" int)
         (field "b" int)
 

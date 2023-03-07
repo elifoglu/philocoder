@@ -287,7 +287,7 @@ update msg model =
                             gotContentToContent model gotContent
 
                         contentPage =
-                            ContentPage <| Initialized (ContentPageModel content gotContent.refData Nothing)
+                            ContentPage <| Initialized (ContentPageModel content Nothing)
 
                         newActivePage =
                             case model.activePage of
@@ -418,7 +418,7 @@ update msg model =
                                         ( updatedModel, Cmd.none )
 
                                     Initialized contentPageModel ->
-                                        ( { updatedModel | activePage = ContentPage (Initialized (ContentPageModel (revertRead contentPageModel.content) contentPageModel.refData contentPageModel.graphDataIfGraphIsOn)) }, Cmd.none )
+                                        ( { updatedModel | activePage = ContentPage (Initialized (ContentPageModel (revertRead contentPageModel.content) contentPageModel.graphDataIfGraphIsOn)) }, Cmd.none )
 
                             TagPage status ->
                                 case status of
@@ -459,10 +459,10 @@ update msg model =
                                     Nothing
 
                                 Nothing ->
-                                    Just (GraphData contentPageModel.refData (initGraphModelForContent contentPageModel.refData) False)
+                                    Just (GraphData contentPageModel.content.refData (initGraphModelForContent contentPageModel.content.refData) False)
 
                         newContentPageModel =
-                            ContentPageModel contentPageModel.content contentPageModel.refData maybeGraphData
+                            ContentPageModel contentPageModel.content maybeGraphData
 
                         newPage =
                             ContentPage (Initialized newContentPageModel)
@@ -1247,7 +1247,7 @@ update msg model =
                                             Just (GraphData graphData.allRefData (updateGraph otherMsg graphData.graphModel) True)
 
                                         newContentPage =
-                                            ContentPage (Initialized (ContentPageModel contentPageModel.content contentPageModel.refData newGraphData))
+                                            ContentPage (Initialized (ContentPageModel contentPageModel.content newGraphData))
                                     in
                                     ( { model | activePage = newContentPage }, Cmd.none )
 

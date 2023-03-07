@@ -2,9 +2,9 @@ module Content.View exposing (viewContentDiv)
 
 import App.Model exposing (MaybeContentFadeOutData)
 import App.Msg exposing (Msg(..))
-import Content.Model exposing (Content)
+import Content.Model exposing (AllRefData, Content)
 import Content.Util exposing (maybeDateText, maybeDisplayableTagsOfContent)
-import DataResponse exposing (ContentID, GotAllRefData)
+import DataResponse exposing (ContentID)
 import Html exposing (Html, a, div, img, input, label, p, span, text)
 import Html.Attributes exposing (checked, class, href, src, style, title, type_)
 import Html.Events exposing (on, onClick)
@@ -13,8 +13,8 @@ import Markdown
 import Tag.Model exposing (Tag)
 
 
-viewContentDiv : MaybeContentFadeOutData -> Bool -> GotAllRefData -> Content -> Html Msg
-viewContentDiv dataToFadeContent contentReadClickedAtLeastOnce refDataOfContent content =
+viewContentDiv : MaybeContentFadeOutData -> Bool -> Content -> Html Msg
+viewContentDiv dataToFadeContent contentReadClickedAtLeastOnce content =
     p [ style "opacity" (getOpacityLevel content.contentId dataToFadeContent) ]
         [ div []
             [ div [ class "title" ] [ viewContentTitle content.title content.beautifiedText ]
@@ -22,7 +22,7 @@ viewContentDiv dataToFadeContent contentReadClickedAtLeastOnce refDataOfContent 
             , viewMarkdownTextOfContent content
             , viewFurtherReadingRefsTextOfContent content
             ]
-        , viewContentInfoDiv content contentReadClickedAtLeastOnce refDataOfContent
+        , viewContentInfoDiv content contentReadClickedAtLeastOnce
         ]
 
 
@@ -54,8 +54,8 @@ viewContentTitle maybeTitle beautifiedText =
             text ""
 
 
-viewContentInfoDiv : Content -> Bool -> GotAllRefData -> Html Msg
-viewContentInfoDiv content contentReadClickedAtLeastOnce refDataOfContent =
+viewContentInfoDiv : Content -> Bool -> Html Msg
+viewContentInfoDiv content contentReadClickedAtLeastOnce =
     div [ class "contentInfoDiv" ]
         ((case ( maybeDisplayableTagsOfContent content, maybeDateText content ) of
             ( Just displayableTagsOfContent, Just dateText ) ->
@@ -65,7 +65,7 @@ viewContentInfoDiv content contentReadClickedAtLeastOnce refDataOfContent =
             ( _, _ ) ->
                 []
          )
-            ++ [ text " ", viewContentLinkWithLinkIcon content, viewGraphLink refDataOfContent, viewContentReadCheckSpan content contentReadClickedAtLeastOnce ]
+            ++ [ text " ", viewContentLinkWithLinkIcon content, viewGraphLink content.refData, viewContentReadCheckSpan content contentReadClickedAtLeastOnce ]
         )
 
 
@@ -111,7 +111,7 @@ viewContentLinkWithLinkIcon content =
     viewContentLink (img [ class "navToContent", src "/link.svg" ] []) "" (String.fromInt content.contentId)
 
 
-viewGraphLink : GotAllRefData -> Html Msg
+viewGraphLink : AllRefData -> Html Msg
 viewGraphLink refDataOfContent =
     if List.isEmpty refDataOfContent.connections then
         text ""

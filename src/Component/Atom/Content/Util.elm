@@ -25,6 +25,7 @@ gotContentToContent model gotContent =
     , okForBlogMode = gotContent.okForBlogMode
     , isContentRead = gotContent.isContentRead
     , furtherReadingRefs = gotContent.furtherReadingRefs
+    , refData = gotContent.refData
     }
 
 

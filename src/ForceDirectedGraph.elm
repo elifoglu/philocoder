@@ -4,13 +4,12 @@ import App.Model exposing (Entity, GraphModel, Model)
 import App.Msg exposing (Msg(..))
 import Browser.Events
 import Color
-import DataResponse exposing (GotAllRefData, GotRefConnection)
+import Content.Model exposing (AllRefData, RefConnection)
 import Force exposing (State)
 import Graph exposing (Edge, Graph, Node, NodeContext, NodeId)
 import Html.Events.Extra.Mouse as Mouse exposing (Event)
 import Json.Decode as Decode
 import List.Extra exposing (getAt)
-import Random
 import Tuple exposing (first, second)
 import TypedSvg exposing (circle, defs, g, line, marker, polygon, svg, title)
 import TypedSvg.Attributes exposing (class, fill, id, markerEnd, orient, points, refX, refY, stroke, viewBox)
@@ -19,7 +18,7 @@ import TypedSvg.Core exposing (Attribute, Svg, text)
 import TypedSvg.Types exposing (Paint(..))
 
 
-contentsGraph : GotAllRefData -> Graph String ()
+contentsGraph : AllRefData -> Graph String ()
 contentsGraph gotAllRefData =
     Graph.fromNodeLabelsAndEdgePairs
         gotAllRefData.titlesToShow
@@ -28,7 +27,7 @@ contentsGraph gotAllRefData =
         )
 
 
-gotRefToPair : GotRefConnection -> ( Int, Int )
+gotRefToPair : RefConnection -> ( Int, Int )
 gotRefToPair gotRef =
     ( gotRef.a
     , gotRef.b
@@ -59,7 +58,7 @@ clientPosYCorrectionValue totalTagCountCurrentlyShownOnPage =
 --INIT--
 
 
-initGraphModel : GotAllRefData -> GraphModel
+initGraphModel : AllRefData -> GraphModel
 initGraphModel allRefData =
     let
         graph : Graph Entity ()
