@@ -1,4 +1,4 @@
-module Content.Model exposing (Content, ContentDate, Ref, AllRefData, RefConnection, GraphData)
+module Content.Model exposing (Content, ContentDate, Ref, GotGraphData, RefConnection, GraphData)
 
 import App.GraphModel exposing (GraphModel)
 import Date exposing (Date)
@@ -6,11 +6,11 @@ import Tag.Model exposing (Tag)
 
 
 type alias Content =
-    { title : Maybe String, date : ContentDate, contentId : ContentID, text : String, beautifiedText : String, tags : List Tag, refs : List Ref, okForBlogMode : Bool, isContentRead : Bool, furtherReadingRefs: List Ref, refData : AllRefData, graphDataIfGraphIsOn : Maybe GraphData }
+    { title : Maybe String, date : ContentDate, contentId : ContentID, text : String, beautifiedText : String, tags : List Tag, refs : List Ref, okForBlogMode : Bool, isContentRead : Bool, furtherReadingRefs: List Ref, gotGraphData : GotGraphData, graphDataIfGraphIsOn : Maybe GraphData }
 
 
 type alias GraphData =
-    { allRefData : AllRefData
+    { graphData : GotGraphData
     , graphModel : GraphModel
     , veryFirstMomentOfGraphHasPassed : Bool
 
@@ -21,7 +21,7 @@ type alias Ref =
     { text : String, beautifiedText : String, id : String }
 
 
-type alias AllRefData =
+type alias GotGraphData =
     { titlesToShow : List String
     , contentIds : List Int
     , connections : List RefConnection

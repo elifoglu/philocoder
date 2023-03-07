@@ -2,7 +2,7 @@ module Content.View exposing (viewContentDiv)
 
 import App.Model exposing (MaybeContentFadeOutData)
 import App.Msg exposing (Msg(..))
-import Content.Model exposing (AllRefData, Content)
+import Content.Model exposing (GotGraphData, Content)
 import Content.Util exposing (maybeDateText, maybeDisplayableTagsOfContent)
 import DataResponse exposing (ContentID)
 import ForceDirectedGraphForContent exposing (viewGraphForContent)
@@ -23,7 +23,7 @@ viewContentDiv dataToFadeContent contentReadClickedAtLeastOnce content =
         Just graphData ->
             if graphData.veryFirstMomentOfGraphHasPassed then
                 div []
-                    [ div [ class "graphForContent" ] [ viewGraphForContent content.contentId graphData.allRefData.contentIds graphData.graphModel ]
+                    [ div [ class "graphForContent" ] [ viewGraphForContent content.contentId graphData.graphData.contentIds graphData.graphModel ]
                     , viewContentDivWithoutGraph dataToFadeContent contentReadClickedAtLeastOnce content
                     ]
 
@@ -130,7 +130,7 @@ viewContentLinkWithLinkIcon content =
 
 viewGraphLink : Content -> Html Msg
 viewGraphLink content =
-    if List.isEmpty content.refData.connections then
+    if List.isEmpty content.gotGraphData.connections then
         text ""
 
     else

@@ -22,7 +22,7 @@ import Home.View exposing (tagCountCurrentlyShownOnPage)
 import List
 import List.Extra
 import Pagination.Model exposing (Pagination)
-import Requests exposing (createNewTag, deleteAllEksiKonserveExceptions, deleteEksiKonserveTopics, getAllRefData, getAllTagsResponse, getBio, getContent, getEksiKonserve, getHomePageDataResponse, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
+import Requests exposing (createNewTag, deleteAllEksiKonserveExceptions, deleteEksiKonserveTopics, getWholeGraphData, getAllTagsResponse, getBio, getContent, getEksiKonserve, getHomePageDataResponse, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
 import Tag.Util exposing (tagById)
 import Task
 import Time
@@ -160,7 +160,7 @@ getCmdToSendByPage model =
                         getHomePageDataResponse model.loggedIn model.consumeModeIsOn model.localStorage.username model.localStorage.password
 
                     else if maybeGraphData == Nothing then
-                        getAllRefData
+                        getWholeGraphData
 
                     else
                         Cmd.none
@@ -295,7 +295,7 @@ update msg model =
                                 ContentPage (NonInitialized (_, graphIsOn)) ->
                                     let
                                         newContent = if not graphIsOn then content else
-                                            { content | graphDataIfGraphIsOn = Just (GraphData content.refData (initGraphModelForContent content.refData) False) }
+                                            { content | graphDataIfGraphIsOn = Just (GraphData content.gotGraphData (initGraphModelForContent content.gotGraphData) False) }
 
                                         newContentPage =
                                             ContentPage <| Initialized newContent
@@ -467,7 +467,7 @@ update msg model =
                                     Nothing
 
                                 Nothing ->
-                                    Just (GraphData content.refData (initGraphModelForContent content.refData) False)
+                                    Just (GraphData content.gotGraphData (initGraphModelForContent content.gotGraphData) False)
 
                         newPage =
                             ContentPage (Initialized { content | graphDataIfGraphIsOn = maybeGraphData })
@@ -1214,9 +1214,9 @@ update msg model =
             in
             ( newModel, Cmd.batch [ storeCredentials "invalidUsername|||invalidPassword", Nav.pushUrl model.key "/" ] )
 
-        GotAllRefData res ->
+        GotGraphData res ->
             case res of
-                Ok allRefData ->
+                Ok gotGraphData ->
                     let
                         newModel =
                             case model.activePage of
@@ -1226,7 +1226,7 @@ update msg model =
                                             model
 
                                         Nothing ->
-                                            { model | activePage = HomePage blogTags allTags readingMode (Just (GraphData allRefData (initGraphModel allRefData) False)) }
+                                            { model | activePage = HomePage blogTags allTags readingMode (Just (GraphData gotGraphData (initGraphModel gotGraphData) False)) }
 
                                 _ ->
                                     model
@@ -1248,7 +1248,7 @@ update msg model =
                         Just graphData ->
                             let
                                 newGraphData =
-                                    Just (GraphData graphData.allRefData (updateGraph otherMsg graphData.graphModel) True)
+                                    Just (GraphData graphData.graphData (updateGraph otherMsg graphData.graphModel) True)
 
                                 newHomePage =
                                     HomePage blogTags allTags readingMode newGraphData
@@ -1265,7 +1265,7 @@ update msg model =
                                 Just graphData ->
                                     let
                                         newGraphData =
-                                            Just (GraphData graphData.allRefData (updateGraph otherMsg graphData.graphModel) True)
+                                            Just (GraphData graphData.graphData (updateGraph otherMsg graphData.graphModel) True)
 
                                         newContentPage =
                                             ContentPage (Initialized { content | graphDataIfGraphIsOn = newGraphData })

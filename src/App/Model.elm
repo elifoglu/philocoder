@@ -3,7 +3,7 @@ module App.Model exposing (BioPageModel, ContentFadeOutData, CreateContentPageMo
 import BioGroup.Model exposing (BioGroup)
 import BioItem.Model exposing (BioItem)
 import Browser.Navigation as Nav
-import Content.Model exposing (AllRefData, Content, GraphData)
+import Content.Model exposing (GotGraphData, Content, GraphData)
 import DataResponse exposing (ContentID, EksiKonserveException, EksiKonserveTopic, GotContent)
 import Force
 import Graph exposing (Graph, NodeId)

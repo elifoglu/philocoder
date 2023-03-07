@@ -1,6 +1,6 @@
-module DataResponse exposing (AllTagsResponse, BioGroupID, BioItemID, BioResponse, ContentID, ContentReadResponse, ContentSearchResponse, ContentsResponse, EksiKonserveException, EksiKonserveResponse, EksiKonserveTopic, GotBioGroup, GotBioItem, GotContent, GotContentDate, GotTag, HomePageDataResponse, allTagsResponseDecoder, bioResponseDecoder, contentDecoder, contentReadResponseDecoder, contentSearchResponseDecoder, contentsResponseDecoder, eksiKonserveResponseDecoder, gotAllRefDataDecoder, homePageDataResponseDecoder)
+module DataResponse exposing (AllTagsResponse, BioGroupID, BioItemID, BioResponse, ContentID, ContentReadResponse, ContentSearchResponse, ContentsResponse, EksiKonserveException, EksiKonserveResponse, EksiKonserveTopic, GotBioGroup, GotBioItem, GotContent, GotContentDate, GotTag, HomePageDataResponse, allTagsResponseDecoder, bioResponseDecoder, contentDecoder, contentReadResponseDecoder, contentSearchResponseDecoder, contentsResponseDecoder, eksiKonserveResponseDecoder, gotGraphDataDecoder, homePageDataResponseDecoder)
 
-import Content.Model exposing (AllRefData, Ref, RefConnection)
+import Content.Model exposing (GotGraphData, Ref, RefConnection)
 import Json.Decode as D exposing (Decoder, bool, field, int, map, map2, map3, map4, map5, map6, map7, map8, maybe, string)
 
 
@@ -37,7 +37,7 @@ type alias GotTag =
 
 
 type alias GotContent =
-    { title : Maybe String, dateAsTimestamp : GotContentDate, contentId : Int, content : String, beautifiedContentText : String, tags : List String, refs : List Ref, okForBlogMode : Bool, isContentRead : Bool, refData : AllRefData, furtherReadingRefs : List Ref }
+    { title : Maybe String, dateAsTimestamp : GotContentDate, contentId : Int, content : String, beautifiedContentText : String, tags : List String, refs : List Ref, okForBlogMode : Bool, isContentRead : Bool, graphData : GotGraphData, furtherReadingRefs : List Ref }
 
 
 type alias ContentID =
@@ -141,9 +141,9 @@ contentSearchResponseDecoder =
         (field "contents" (D.list contentDecoder))
 
 
-gotAllRefDataDecoder : Decoder AllRefData
-gotAllRefDataDecoder =
-    map3 AllRefData
+gotGraphDataDecoder : Decoder GotGraphData
+gotGraphDataDecoder =
+    map3 GotGraphData
         (field "titlesToShow" (D.list string))
         (field "contentIds" (D.list int))
         (field "connections" (D.list refConnectionDecoder))
@@ -186,7 +186,7 @@ contentDecoder =
         (<|)
         decodeFirst8FieldAtFirst
         (field "isContentRead" bool)
-        (field "refData" gotAllRefDataDecoder)
+        (field "graphData" gotGraphDataDecoder)
         (field "furtherReadingRefs" (D.list refDecoder))
 
 

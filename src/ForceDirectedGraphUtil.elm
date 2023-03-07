@@ -5,7 +5,7 @@ import App.Model exposing (Entity, Model)
 import App.Msg exposing (Msg(..))
 import Browser.Events
 import Color
-import Content.Model exposing (AllRefData, RefConnection)
+import Content.Model exposing (GotGraphData, RefConnection)
 import Force exposing (State)
 import Graph exposing (Edge, Graph, Node, NodeContext, NodeId)
 import Html.Events.Extra.Mouse as Mouse exposing (Event)

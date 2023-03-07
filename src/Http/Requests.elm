@@ -1,8 +1,8 @@
-module Requests exposing (createNewTag, deleteEksiKonserveTopics, getAllRefData, getAllTagsResponse, getBio, getBioPageIcons, getContent, getEksiKonserve, getHomePageDataResponse, getIcons, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag, deleteAllEksiKonserveExceptions)
+module Requests exposing (createNewTag, deleteEksiKonserveTopics, getWholeGraphData, getAllTagsResponse, getBio, getBioPageIcons, getContent, getEksiKonserve, getHomePageDataResponse, getIcons, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag, deleteAllEksiKonserveExceptions)
 
 import App.Model exposing (CreateContentPageModel, CreateTagPageModel, GetContentRequestModel, GetTagContentsRequestModel, IconInfo, Model, ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
 import App.Msg exposing (LoginRequestType, Msg(..), PreviewContentModel(..))
-import DataResponse exposing (ContentID, allTagsResponseDecoder, bioResponseDecoder, contentDecoder, contentReadResponseDecoder, contentSearchResponseDecoder, contentsResponseDecoder, eksiKonserveResponseDecoder, gotAllRefDataDecoder, homePageDataResponseDecoder)
+import DataResponse exposing (ContentID, allTagsResponseDecoder, bioResponseDecoder, contentDecoder, contentReadResponseDecoder, contentSearchResponseDecoder, contentsResponseDecoder, eksiKonserveResponseDecoder, gotGraphDataDecoder, homePageDataResponseDecoder)
 import Http
 import Json.Encode as Encode
 import Tag.Model exposing (Tag)
@@ -70,7 +70,7 @@ getTagContents tag maybePage readingMode model =
         }
 
 
-getContent : Int -> Model -> Cmd Msg
+getContent : Int -> Model ->  Cmd Msg
 getContent contentId model =
     Http.post
         { url = apiURL ++ "get-content"
@@ -79,11 +79,11 @@ getContent contentId model =
         }
 
 
-getAllRefData : Cmd Msg
-getAllRefData =
+getWholeGraphData : Cmd Msg
+getWholeGraphData =
     Http.get
-        { url = apiURL ++ "ref-data"
-        , expect = Http.expectJson GotAllRefData gotAllRefDataDecoder
+        { url = apiURL ++ "graph-data"
+        , expect = Http.expectJson GotGraphData gotGraphDataDecoder
         }
 
 

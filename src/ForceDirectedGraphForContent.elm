@@ -5,7 +5,7 @@ import App.Model exposing (Entity, Model)
 import App.Msg exposing (Msg(..))
 import Browser.Events
 import Color
-import Content.Model exposing (AllRefData, RefConnection)
+import Content.Model exposing (GotGraphData, RefConnection)
 import Force exposing (State)
 import Graph exposing (Edge, Graph, Node, NodeContext, NodeId)
 import Html.Events.Extra.Mouse as Mouse exposing (Event)
@@ -19,11 +19,11 @@ import TypedSvg.Core exposing (Attribute, Svg, text)
 import TypedSvg.Types exposing (Paint(..))
 
 
-graphOfContent : AllRefData -> Graph String ()
-graphOfContent gotAllRefData =
+graphOfContent : GotGraphData -> Graph String ()
+graphOfContent gotGraphData =
     Graph.fromNodeLabelsAndEdgePairs
-        gotAllRefData.titlesToShow
-        (gotAllRefData.connections
+        gotGraphData.titlesToShow
+        (gotGraphData.connections
             |> List.map gotRefToPair
         )
 
@@ -59,12 +59,12 @@ clientPosYCorrectionValue =
 --INIT--
 
 
-initGraphModelForContent : AllRefData -> GraphModel
-initGraphModelForContent allRefData =
+initGraphModelForContent : GotGraphData -> GraphModel
+initGraphModelForContent gotGraphData =
     let
         graph : Graph Entity ()
         graph =
-            graphOfContent allRefData
+            graphOfContent gotGraphData
                 |> Graph.mapContexts initializeNode
 
         link : { a | from : b, to : c } -> ( b, c )
