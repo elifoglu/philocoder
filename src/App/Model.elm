@@ -135,7 +135,6 @@ type alias GetContentRequestModel =
     , loggedIn : Bool
     , username : String
     , password : String
-    , graphIsOn : Bool
     }
 
 
@@ -242,7 +241,6 @@ getContentRequestModelEncoder model =
         [ ( "contentID", Encode.string (String.fromInt model.contentID) )
         , ( "username", Encode.string model.username )
         , ( "password", Encode.string model.password )
-        , ( "graphIsOn", Encode.bool model.graphIsOn )
         ]
 
 

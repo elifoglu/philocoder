@@ -180,8 +180,8 @@ getCmdToSendByPage model =
 
                 ContentPage status ->
                     case status of
-                        NonInitialized ( contentId, graphIsOn ) ->
-                            getContent contentId model graphIsOn
+                        NonInitialized ( contentId, _ ) ->
+                            getContent contentId model
 
                         Initialized _ ->
                             Cmd.none
@@ -189,7 +189,7 @@ getCmdToSendByPage model =
                 UpdateContentPage status ->
                     case status of
                         NotInitializedYet contentID ->
-                            getContent contentID model False
+                            getContent contentID model
 
                         _ ->
                             Cmd.none
@@ -292,8 +292,15 @@ update msg model =
 
                         newActivePage =
                             case model.activePage of
-                                ContentPage _ ->
-                                    contentPage
+                                ContentPage (NonInitialized (_, graphIsOn)) ->
+                                    let
+                                        newContent = if not graphIsOn then content else
+                                            { content | graphDataIfGraphIsOn = Just (GraphData content.refData (initGraphModelForContent content.refData) False) }
+
+                                        newContentPage =
+                                            ContentPage <| Initialized newContent
+                                    in
+                                        newContentPage
 
                                 CreateContentPage status ->
                                     case status of
@@ -318,8 +325,7 @@ update msg model =
                                             contentPage
 
                                 _ ->
-                                    --that means graph icon of content is clicked on another page, such as tag page or content search page
-                                    contentPage
+                                    MaintenancePage
 
                         newModel =
                             { model | activePage = newActivePage }
@@ -666,7 +672,7 @@ update msg model =
 
         GetContentToCopyForContentCreation contentId ->
             ( model
-            , getContent contentId model False
+            , getContent contentId model
             )
 
         GotContentToPreviewForCreatePage createContentPageModel result ->
