@@ -68,15 +68,15 @@ view model =
                             NonInitialized _ ->
                                 []
 
-                            Initialized contentPageModel ->
-                                case contentPageModel.graphDataIfGraphIsOn of
+                            Initialized content ->
+                                case content.graphDataIfGraphIsOn of
                                     Nothing ->
-                                        [ viewContentDiv Nothing model.localStorage.contentReadClickedAtLeastOnce contentPageModel.content ]
+                                        [ viewContentDiv Nothing model.localStorage.contentReadClickedAtLeastOnce content ]
 
                                     Just graphData ->
                                         if graphData.veryFirstMomentOfGraphHasPassed then
-                                            [ div [ class "graphForContent" ] [ viewGraphForContent contentPageModel.content.contentId graphData.allRefData.contentIds graphData.graphModel ]
-                                            , viewContentDiv Nothing model.localStorage.contentReadClickedAtLeastOnce contentPageModel.content
+                                            [ div [ class "graphForContent" ] [ viewGraphForContent content.contentId graphData.allRefData.contentIds graphData.graphModel ]
+                                            , viewContentDiv Nothing model.localStorage.contentReadClickedAtLeastOnce content
                                             ]
 
                                         else

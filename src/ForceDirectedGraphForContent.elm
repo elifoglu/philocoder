@@ -1,6 +1,7 @@
 module ForceDirectedGraphForContent exposing (graphSubscriptionsForContent, initGraphModelForContent, updateGraph, viewGraphForContent)
 
-import App.Model exposing (Entity, GraphModel, Model)
+import App.GraphModel exposing (GraphModel)
+import App.Model exposing (Entity, Model)
 import App.Msg exposing (Msg(..))
 import Browser.Events
 import Color

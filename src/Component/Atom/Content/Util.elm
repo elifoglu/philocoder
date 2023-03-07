@@ -26,6 +26,7 @@ gotContentToContent model gotContent =
     , isContentRead = gotContent.isContentRead
     , furtherReadingRefs = gotContent.furtherReadingRefs
     , refData = gotContent.refData
+    , graphDataIfGraphIsOn = Nothing
     }
 
 

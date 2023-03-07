@@ -12,7 +12,7 @@ import Browser exposing (UrlRequest)
 import Browser.Dom as Dom
 import Browser.Navigation as Nav
 import Component.Page.Util exposing (tagsNotLoaded)
-import Content.Model exposing (Content)
+import Content.Model exposing (Content, GraphData)
 import Content.Util exposing (gotContentToContent)
 import DataResponse exposing (EksiKonserveException)
 import ForceDirectedGraph exposing (graphSubscriptions, initGraphModel, updateGraph)
@@ -287,7 +287,7 @@ update msg model =
                             gotContentToContent model gotContent
 
                         contentPage =
-                            ContentPage <| Initialized (ContentPageModel content Nothing)
+                            ContentPage <| Initialized content
 
                         newActivePage =
                             case model.activePage of
@@ -417,8 +417,8 @@ update msg model =
                                     NonInitialized _ ->
                                         ( updatedModel, Cmd.none )
 
-                                    Initialized contentPageModel ->
-                                        ( { updatedModel | activePage = ContentPage (Initialized (ContentPageModel (revertRead contentPageModel.content) contentPageModel.graphDataIfGraphIsOn)) }, Cmd.none )
+                                    Initialized content ->
+                                        ( { updatedModel | activePage = ContentPage (Initialized (revertRead content)) }, Cmd.none )
 
                             TagPage status ->
                                 case status of
@@ -449,23 +449,20 @@ update msg model =
                     ( updatedModel, Cmd.none )
 
         -- CONTENT PAGE --
-        ContentPageToggleChecked ->
+        ContentGraphToggleChecked ->
             case model.activePage of
-                ContentPage (Initialized contentPageModel) ->
+                ContentPage (Initialized content) ->
                     let
                         maybeGraphData =
-                            case contentPageModel.graphDataIfGraphIsOn of
+                            case content.graphDataIfGraphIsOn of
                                 Just _ ->
                                     Nothing
 
                                 Nothing ->
-                                    Just (GraphData contentPageModel.content.refData (initGraphModelForContent contentPageModel.content.refData) False)
-
-                        newContentPageModel =
-                            ContentPageModel contentPageModel.content maybeGraphData
+                                    Just (GraphData content.refData (initGraphModelForContent content.refData) False)
 
                         newPage =
-                            ContentPage (Initialized newContentPageModel)
+                            ContentPage (Initialized { content | graphDataIfGraphIsOn = maybeGraphData })
 
                         newModel =
                             { model | activePage = newPage }
@@ -1239,15 +1236,15 @@ update msg model =
 
                 ContentPage data ->
                     case data of
-                        Initialized contentPageModel ->
-                            case contentPageModel.graphDataIfGraphIsOn of
+                        Initialized content ->
+                            case content.graphDataIfGraphIsOn of
                                 Just graphData ->
                                     let
                                         newGraphData =
                                             Just (GraphData graphData.allRefData (updateGraph otherMsg graphData.graphModel) True)
 
                                         newContentPage =
-                                            ContentPage (Initialized (ContentPageModel contentPageModel.content newGraphData))
+                                            ContentPage (Initialized { content | graphDataIfGraphIsOn = newGraphData })
                                     in
                                     ( { model | activePage = newContentPage }, Cmd.none )
 
@@ -1303,8 +1300,8 @@ subscriptions model =
 
         ContentPage data ->
             case data of
-                Initialized contentPageModel ->
-                    case contentPageModel.graphDataIfGraphIsOn of
+                Initialized content ->
+                    case content.graphDataIfGraphIsOn of
                         Just graphData ->
                             graphSubscriptionsForContent graphData.graphModel
 

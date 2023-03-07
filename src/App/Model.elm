@@ -1,9 +1,9 @@
-module App.Model exposing (BioPageModel, ContentFadeOutData, ContentPageModel, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GetContentRequestModel, GetTagContentsRequestModel, GraphData, GraphModel, IconInfo, Initializable(..), InitializedTagPageModel, LocalStorage, MaySendRequest(..), MaybeContentFadeOutData, Model, NonInitializedYetTagPageModel, Page(..), ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateContentPageModel(..), UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, setCreateContentPageModel, setUpdateContentPageModel, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
+module App.Model exposing (BioPageModel, ContentFadeOutData, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GetContentRequestModel, GetTagContentsRequestModel, IconInfo, Initializable(..), InitializedTagPageModel, LocalStorage, MaySendRequest(..), MaybeContentFadeOutData, Model, NonInitializedYetTagPageModel, Page(..), ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateContentPageModel(..), UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, setCreateContentPageModel, setUpdateContentPageModel, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
 
 import BioGroup.Model exposing (BioGroup)
 import BioItem.Model exposing (BioItem)
 import Browser.Navigation as Nav
-import Content.Model exposing (AllRefData, Content)
+import Content.Model exposing (AllRefData, Content, GraphData)
 import DataResponse exposing (ContentID, EksiKonserveException, EksiKonserveTopic, GotContent)
 import Force
 import Graph exposing (Graph, NodeId)
@@ -56,13 +56,6 @@ type alias IconInfo =
     { urlToNavigate : String
     , iconImageUrl : String
     , marginLeft : String
-    }
-
-
-type alias GraphModel =
-    { drag : Maybe Drag
-    , graph : Graph Entity ()
-    , simulation : Force.State NodeId
     }
 
 
@@ -123,7 +116,7 @@ type alias AllTagsToShow =
 
 type Page
     = HomePage BlogTagsToShow AllTagsToShow ReadingMode (Maybe GraphData)
-    | ContentPage (Initializable Int ContentPageModel)
+    | ContentPage (Initializable Int Content)
     | TagPage (Initializable NonInitializedYetTagPageModel InitializedTagPageModel)
     | CreateContentPage (MaySendRequest CreateContentPageModel CreateContentPageModel)
     | UpdateContentPage UpdateContentPageModel
@@ -135,15 +128,6 @@ type Page
     | NotFoundPage
     | MaintenancePage
     | EksiKonservePage (Initializable () ( List EksiKonserveTopic, List EksiKonserveException ))
-
-
-type alias GraphData =
-    { allRefData : AllRefData
-    , graphModel : GraphModel
-    , veryFirstMomentOfGraphHasPassed : Bool
-
-    -- When graph animation starts, it is buggy somehow: Nodes are not shown in the center of the box, instead, they are shown at the top left of the box at the "very first moment" of initialization. So, we are setting "veryFirstMomentOfGraphHasPassed" as True just after the very first Tick msg of the graph, and we don't show the graph until that value becomes True
-    }
 
 
 type alias GetContentRequestModel =
@@ -172,12 +156,6 @@ type alias TotalPageCountRequestModel =
     , consumeMode : Bool
     , username : String
     , password : String
-    }
-
-
-type alias ContentPageModel =
-    { content : Content
-    , graphDataIfGraphIsOn : Maybe GraphData
     }
 
 

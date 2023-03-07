@@ -117,7 +117,7 @@ viewGraphLink refDataOfContent =
         text ""
 
     else
-        img [ onClick ContentPageToggleChecked, class "contentPageToggleChecked", src "/graph.svg" ] []
+        img [ onClick ContentGraphToggleChecked, class "contentPageToggleChecked", src "/graph.svg" ] []
 
 
 viewMarkdownTextOfContent : Content -> Html msg
