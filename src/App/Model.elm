@@ -1,4 +1,4 @@
-module App.Model exposing (BioPageModel, ContentFadeOutData, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GetContentRequestModel, GetTagContentsRequestModel, IconInfo, Initializable(..), InitializedTagPageModel, LocalStorage, MaySendRequest(..), MaybeContentFadeOutData, Model, NonInitializedYetTagPageModel, Page(..), ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateContentPageModel(..), UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, setCreateContentPageModel, setUpdateContentPageModel, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
+module App.Model exposing (BioPageModel, ContentFadeOutData, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GetContentRequestModel, GetTagContentsRequestModel, IconInfo, Initializable(..), InitializedTagPageModel, LocalStorage, MaySendRequest(..), MaybeContentFadeOutData, Model, NonInitializedYetTagPageModel, Page(..), ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateContentPageModel(..), UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, setCreateContentPageModel, setUpdateContentPageModel, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder, GetBulkContentsRequestModel, getBulkContentsRequestModelEncoder)
 
 import BioGroup.Model exposing (BioGroup)
 import BioItem.Model exposing (BioItem)
@@ -124,6 +124,7 @@ type Page
     | UpdateTagPage (MaySendRequest ( UpdateTagPageModel, String ) UpdateTagPageModel)
     | BioPage (Maybe BioPageModel)
     | ContentSearchPage String (List Content)
+    | BulkContentsPage (Initializable String (List Content))
     | LoginOrRegisterPage String String String
     | NotFoundPage
     | MaintenancePage
@@ -132,6 +133,14 @@ type Page
 
 type alias GetContentRequestModel =
     { contentID : Int
+    , loggedIn : Bool
+    , username : String
+    , password : String
+    }
+
+
+type alias GetBulkContentsRequestModel =
+    { contentIDs : String
     , loggedIn : Bool
     , username : String
     , password : String
@@ -239,6 +248,16 @@ getContentRequestModelEncoder : GetContentRequestModel -> Encode.Value
 getContentRequestModelEncoder model =
     Encode.object
         [ ( "contentID", Encode.string (String.fromInt model.contentID) )
+        , ( "loggedIn", Encode.bool model.loggedIn )
+        , ( "username", Encode.string model.username )
+        , ( "password", Encode.string model.password )
+        ]
+
+getBulkContentsRequestModelEncoder : GetBulkContentsRequestModel -> Encode.Value
+getBulkContentsRequestModelEncoder model =
+    Encode.object
+        [ ( "contentIDs", Encode.string model.contentIDs )
+        , ( "loggedIn", Encode.bool model.loggedIn )
         , ( "username", Encode.string model.username )
         , ( "password", Encode.string model.password )
         ]

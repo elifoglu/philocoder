@@ -22,7 +22,7 @@ import Home.View exposing (tagCountCurrentlyShownOnPage)
 import List
 import List.Extra
 import Pagination.Model exposing (Pagination)
-import Requests exposing (createNewTag, deleteAllEksiKonserveExceptions, deleteEksiKonserveTopics, getWholeGraphData, getAllTagsResponse, getBio, getContent, getEksiKonserve, getHomePageDataResponse, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
+import Requests exposing (createNewTag, deleteAllEksiKonserveExceptions, deleteEksiKonserveTopics, getAllTagsResponse, getBio, getBulkContents, getContent, getEksiKonserve, getHomePageDataResponse, getSearchResult, getTagContents, getTimeZone, getWholeGraphData, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
 import Tag.Util exposing (tagById)
 import Task
 import Time
@@ -118,6 +118,9 @@ needAllTagsData page =
         ContentSearchPage _ _ ->
             True
 
+        BulkContentsPage _ ->
+            True
+
         HomePage _ _ _ _ ->
             False
 
@@ -182,6 +185,14 @@ getCmdToSendByPage model =
                     case status of
                         NonInitialized ( contentId, _ ) ->
                             getContent contentId model
+
+                        Initialized _ ->
+                            Cmd.none
+
+                BulkContentsPage status ->
+                    case status of
+                        NonInitialized contentIds ->
+                            getBulkContents contentIds model
 
                         Initialized _ ->
                             Cmd.none
@@ -450,51 +461,35 @@ update msg model =
                             ContentSearchPage searchKeyword contents ->
                                 ( { updatedModel | activePage = ContentSearchPage searchKeyword (List.map revertRead contents) }, Cmd.none )
 
+                            BulkContentsPage (Initialized contents) ->
+                                ( { updatedModel | activePage = BulkContentsPage (Initialized (List.map revertRead contents)) }, Cmd.none )
+
                             _ ->
                                 ( updatedModel, Cmd.none )
 
                 Err _ ->
                     ( updatedModel, Cmd.none )
 
-        -- CONTENT PAGE --
-        ContentGraphToggleChecked contentId ->
-            case model.activePage of
-                ContentPage (Initialized content) ->
+        -- BULK CONTENTS PAGE --
+
+        GotBulkContents result ->
+            case result of
+                Ok gotContents ->
                     let
-                        maybeGraphData =
-                            case content.graphDataIfGraphIsOn of
-                                Just _ ->
-                                    Nothing
+                        contents =
+                            gotContents
+                                |> List.map (gotContentToContent model)
 
-                                Nothing ->
-                                    Just (GraphData content.gotGraphData (initGraphModelForContent content.gotGraphData) False)
-
-                        newPage =
-                            ContentPage (Initialized { content | graphDataIfGraphIsOn = maybeGraphData })
+                        bulkContentsPage =
+                            BulkContentsPage <| Initialized contents
 
                         newModel =
-                            { model | activePage = newPage }
+                            { model | activePage = bulkContentsPage }
                     in
-                    ( newModel, Cmd.none )
+                    ( newModel, getCmdToSendByPage newModel )
 
-                TagPage (Initialized tagPageModel) ->
-                    case List.head (List.filter (\c -> c.contentId == contentId) tagPageModel.contents) of
-                        Nothing ->
-                            ( model, Cmd.none )
-
-                        Just foundContent ->
-                            ( model, Nav.pushUrl model.key ("/contents/" ++ String.fromInt foundContent.contentId ++ "?graph=true") )
-
-                ContentSearchPage _ contents ->
-                    case List.head (List.filter (\c -> c.contentId == contentId) contents) of
-                        Nothing ->
-                            ( model, Cmd.none )
-
-                        Just foundContent ->
-                            ( model, Nav.pushUrl model.key ("/contents/" ++ String.fromInt foundContent.contentId ++ "?graph=true") )
-
-                _ ->
-                    ( model, Cmd.none )
+                Err _ ->
+                    createNewModelAndCmdMsg model NotFoundPage
 
         -- TAG PAGE --
         GotContentsOfTag tag result ->

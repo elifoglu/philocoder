@@ -1,9 +1,10 @@
-module Requests exposing (createNewTag, deleteEksiKonserveTopics, getWholeGraphData, getAllTagsResponse, getBio, getBioPageIcons, getContent, getEksiKonserve, getHomePageDataResponse, getIcons, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag, deleteAllEksiKonserveExceptions)
+module Requests exposing (createNewTag, deleteEksiKonserveTopics, getWholeGraphData, getAllTagsResponse, getBio, getBioPageIcons, getContent, getEksiKonserve, getHomePageDataResponse, getIcons, getSearchResult, getTagContents, getTimeZone, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag, deleteAllEksiKonserveExceptions, getBulkContents)
 
-import App.Model exposing (CreateContentPageModel, CreateTagPageModel, GetContentRequestModel, GetTagContentsRequestModel, IconInfo, Model, ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
+import App.Model exposing (CreateContentPageModel, CreateTagPageModel, GetBulkContentsRequestModel, GetContentRequestModel, GetTagContentsRequestModel, IconInfo, Model, ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getBulkContentsRequestModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
 import App.Msg exposing (LoginRequestType, Msg(..), PreviewContentModel(..))
 import DataResponse exposing (ContentID, allTagsResponseDecoder, bioResponseDecoder, contentDecoder, contentReadResponseDecoder, contentSearchResponseDecoder, contentsResponseDecoder, eksiKonserveResponseDecoder, gotGraphDataDecoder, homePageDataResponseDecoder)
 import Http
+import Json.Decode as D
 import Json.Encode as Encode
 import Tag.Model exposing (Tag)
 import Task
@@ -76,6 +77,15 @@ getContent contentId model =
         { url = apiURL ++ "get-content"
         , body = Http.jsonBody (getContentRequestModelEncoder (GetContentRequestModel contentId model.loggedIn model.localStorage.username model.localStorage.password))
         , expect = Http.expectJson GotContent contentDecoder
+        }
+
+
+getBulkContents : String -> Model ->  Cmd Msg
+getBulkContents contentIds model =
+    Http.post
+        { url = apiURL ++ "get-bulk"
+        , body = Http.jsonBody (getBulkContentsRequestModelEncoder (GetBulkContentsRequestModel contentIds model.loggedIn model.localStorage.username model.localStorage.password))
+        , expect = Http.expectJson GotBulkContents (D.list contentDecoder)
         }
 
 

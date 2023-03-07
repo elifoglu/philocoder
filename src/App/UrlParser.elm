@@ -13,6 +13,7 @@ routeParser readingMode =
         , map nonInitializedTagPageMapper (s "tags" </> string <?> Query.int "page" <?> Query.string "mode")
         , map nonInitializedBioPageMapper (s "me")
         , map nonInitializedContentPageMapper (s "contents" </> int <?> Query.string "graph")
+        , map nonInitializedBulkContentsPageMapper (s "many" </> string)
         , map (CreateContentPage (NoRequestSentYet (CreateContentPageModel Nothing "" "" "" "" "" False "" ""))) (s "create" </> s "content")
         , map nonInitializedUpdateContentPageMapper (s "update" </> s "content" </> int)
         , map (CreateTagPage (NoRequestSentYet (CreateTagPageModel "" "" "DateDESC" True True "" ""))) (s "create" </> s "tag")
@@ -60,6 +61,11 @@ nonInitializedUpdateContentPageMapper contentId =
 nonInitializedUpdateTagPageMapper : String -> Page
 nonInitializedUpdateTagPageMapper tagId =
     UpdateTagPage (NoRequestSentYet ( UpdateTagPageModel "" "", tagId ))
+
+
+nonInitializedBulkContentsPageMapper : String -> Page
+nonInitializedBulkContentsPageMapper contentIds =
+    BulkContentsPage (NonInitialized contentIds)
 
 
 nonInitializedBioPageMapper : Page

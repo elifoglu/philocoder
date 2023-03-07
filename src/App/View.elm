@@ -5,6 +5,7 @@ import App.Msg exposing (Msg(..))
 import Bio.View exposing (viewBioPageDiv)
 import Breadcrumb.View exposing (viewBreadcrumb)
 import Browser exposing (Document)
+import BulkContents.View exposing (viewBulkContentsDiv)
 import Content.View exposing (viewContentDiv)
 import ContentSearch.View exposing (viewSearchContentDiv)
 import Contents.View exposing (viewContentDivs)
@@ -70,7 +71,6 @@ view model =
                             Initialized content ->
                                 [ viewContentDiv Nothing model.localStorage.contentReadClickedAtLeastOnce content ]
 
-
                     TagPage status ->
                         case status of
                             NonInitialized _ ->
@@ -123,6 +123,18 @@ view model =
 
                     ContentSearchPage searchKeyword contents ->
                         [ viewSearchContentDiv model.localStorage.contentReadClickedAtLeastOnce searchKeyword contents ]
+
+                    BulkContentsPage status ->
+                        case status of
+                            NonInitialized _ ->
+                                [ text "..." ]
+
+                            Initialized contents ->
+                                if List.isEmpty contents then
+                                    [ text "içerik adedi 2'den az, 20'den de fazla olamaz" ]
+
+                                else
+                                    [ viewBulkContentsDiv model.localStorage.contentReadClickedAtLeastOnce contents ]
 
                     LoginOrRegisterPage username password errorMessage ->
                         [ viewLoginOrRegisterDiv username password errorMessage ]

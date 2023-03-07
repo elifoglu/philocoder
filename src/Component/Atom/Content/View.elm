@@ -2,7 +2,7 @@ module Content.View exposing (viewContentDiv)
 
 import App.Model exposing (MaybeContentFadeOutData)
 import App.Msg exposing (Msg(..))
-import Content.Model exposing (GotGraphData, Content)
+import Content.Model exposing (Content, GotGraphData)
 import Content.Util exposing (maybeDateText, maybeDisplayableTagsOfContent)
 import DataResponse exposing (ContentID)
 import ForceDirectedGraphForContent exposing (viewGraphForContent)
@@ -29,6 +29,7 @@ viewContentDiv dataToFadeContent contentReadClickedAtLeastOnce content =
 
             else
                 text ""
+
 
 viewContentDivWithoutGraph : MaybeContentFadeOutData -> Bool -> Content -> Html Msg
 viewContentDivWithoutGraph dataToFadeContent contentReadClickedAtLeastOnce content =
@@ -134,7 +135,14 @@ viewGraphLink content =
         text ""
 
     else
-        img [ onClick (ContentGraphToggleChecked content.contentId), class "contentPageToggleChecked", src "/graph.svg" ] []
+        case content.graphDataIfGraphIsOn of
+            Just _ ->
+                a [ href ("/contents/" ++ String.fromInt content.contentId) ]
+                    [ img [ class "contentPageToggleChecked", src "/graph.svg" ] [] ]
+
+            Nothing ->
+                a [ href ("/contents/" ++ String.fromInt content.contentId ++ "?graph=true") ]
+                    [ img [ class "contentPageToggleChecked", src "/graph.svg" ] [] ]
 
 
 viewMarkdownTextOfContent : Content -> Html msg

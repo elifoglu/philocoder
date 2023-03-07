@@ -23,7 +23,6 @@ type Msg
     | ReadingModeChanged ReadingMode
     | ConsumeModeChanged Bool
     | ContentReadChecked ContentID
-    | ContentGraphToggleChecked ContentID
     | GotSearchInput String
     | GotContentSearchResponse (Result Http.Error ContentSearchResponse)
     | FocusResult (Result Dom.Error ())
@@ -35,6 +34,7 @@ type Msg
     | ClickOnABioItemInfo BioItem
     | GotContentsOfTag Tag (Result Http.Error ContentsResponse)
     | GotContent (Result Http.Error GotContent)
+    | GotBulkContents (Result Http.Error (List GotContent))
     | GotContentToPreviewForCreatePage CreateContentPageModel (Result Http.Error GotContent)
     | GotContentToPreviewForUpdatePage ContentID UpdateContentPageData (Result Http.Error GotContent)
     | ContentInputChanged ContentInputType String

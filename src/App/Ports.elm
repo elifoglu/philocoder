@@ -102,6 +102,9 @@ sendTitle model =
         ContentSearchPage _ _ ->
             title "içerik ara - philocoder"
 
+        BulkContentsPage _ ->
+            title "çok sayıda içerik - philocoder"
+
         LoginOrRegisterPage _ _ _ ->
             title "giriş/kayıt - philocoder"
 
