@@ -14,7 +14,7 @@ import Browser.Navigation as Nav
 import Component.Page.Util exposing (tagsNotLoaded)
 import Content.Model exposing (Content, GraphData)
 import Content.Util exposing (gotContentToContent)
-import DataResponse exposing (EksiKonserveException)
+import DataResponse exposing (ContentID, EksiKonserveException)
 import ForceDirectedGraph exposing (graphSubscriptions, initGraphModel, updateGraph)
 import ForceDirectedGraphForContent exposing (graphSubscriptionsForContent, initGraphModelForContent)
 import Home.View exposing (tagCountCurrentlyShownOnPage)
@@ -449,7 +449,7 @@ update msg model =
                     ( updatedModel, Cmd.none )
 
         -- CONTENT PAGE --
-        ContentGraphToggleChecked ->
+        ContentGraphToggleChecked contentId ->
             case model.activePage of
                 ContentPage (Initialized content) ->
                     let
@@ -468,6 +468,43 @@ update msg model =
                             { model | activePage = newPage }
                     in
                     ( newModel, Cmd.none )
+
+                TagPage (Initialized tagPageModel) ->
+                    case List.head (List.filter (\c -> c.contentId == contentId) tagPageModel.contents) of
+                        Nothing ->
+                            ( model, Cmd.none )
+
+                        Just foundContent ->
+                            let
+                                maybeGraphData =
+                                    case foundContent.graphDataIfGraphIsOn of
+                                        Just _ ->
+                                            Nothing
+
+                                        Nothing ->
+                                            Just (GraphData foundContent.refData (initGraphModelForContent foundContent.refData) False)
+
+                                newContentsOfTagPage =
+                                    List.map
+                                        (\c ->
+                                            if foundContent.contentId == c.contentId then
+                                                { c | graphDataIfGraphIsOn = maybeGraphData }
+
+                                            else
+                                                c
+                                        )
+                                        tagPageModel.contents
+
+                                newTagPageModel =
+                                    { tagPageModel | contents = newContentsOfTagPage }
+
+                                newPage =
+                                    TagPage (Initialized newTagPageModel)
+
+                                newModel =
+                                    { model | activePage = newPage }
+                            in
+                            ( newModel, Cmd.none )
 
                 _ ->
                     ( model, Cmd.none )
@@ -1254,31 +1291,61 @@ update msg model =
                         NonInitialized _ ->
                             ( model, Cmd.none )
 
-                TagPage _ ->
-                    case model.maybeContentFadeOutData of
-                        Just data ->
-                            let
-                                t =
-                                    0.05
+                TagPage tagPageModel ->
+                    let
+                        modelAndCmdPairForFadeOut : (Model, Cmd Msg)
+                        modelAndCmdPairForFadeOut = case model.maybeContentFadeOutData of
+                            Just data ->
+                                let
+                                    t =
+                                        0.05
 
-                                dataToFadeContent =
-                                    if data.opacityLevel <= t then
-                                        Nothing
+                                    dataToFadeContent =
+                                        if data.opacityLevel <= t then
+                                            Nothing
 
-                                    else
-                                        Just { data | opacityLevel = data.opacityLevel - t }
-                            in
-                            ( { model | maybeContentFadeOutData = dataToFadeContent }
-                            , if dataToFadeContent == Nothing then
-                                Task.perform (always (HideContentFromActiveTagPage data.contentIdToFade data.newPageCountToSet data.contentToAddToBottom)) (Task.succeed ())
+                                        else
+                                            Just { data | opacityLevel = data.opacityLevel - t }
+                                in
+                                ( { model | maybeContentFadeOutData = dataToFadeContent }
+                                , if dataToFadeContent == Nothing then
+                                    Task.perform (always (HideContentFromActiveTagPage data.contentIdToFade data.newPageCountToSet data.contentToAddToBottom)) (Task.succeed ())
 
-                              else
-                                Cmd.none
-                            )
+                                  else
+                                    Cmd.none
+                                )
 
-                        Nothing ->
-                            ( model, Cmd.none )
+                            Nothing ->
+                                ( model, Cmd.none )
 
+                        updatedModel : Model
+                        updatedModel = (Tuple.first modelAndCmdPairForFadeOut)
+
+                        modelAfterUpdateWithForContentGraphs : Model
+                        modelAfterUpdateWithForContentGraphs =
+                                case tagPageModel of
+                                    NonInitialized _ ->
+                                        updatedModel
+
+                                    Initialized initializedPageModel ->
+                                        let
+                                            newContentsOfTagPageModel = initializedPageModel.contents
+                                                |> List.map
+                                                    (\content ->
+                                                        case content.graphDataIfGraphIsOn of
+                                                                Just graphData ->
+                                                                    { content | graphDataIfGraphIsOn = Just (GraphData graphData.allRefData (updateGraph otherMsg graphData.graphModel) True) }
+
+                                                                Nothing ->
+                                                                    content
+                                                    )
+
+                                            updatedTagPageModel = { initializedPageModel | contents = newContentsOfTagPageModel }
+                                        in
+                                            { updatedModel | activePage = TagPage (Initialized updatedTagPageModel) }
+
+                    in
+                        ( modelAfterUpdateWithForContentGraphs, Tuple.second modelAndCmdPairForFadeOut)
                 _ ->
                     ( model, Cmd.none )
 
@@ -1311,12 +1378,33 @@ subscriptions model =
                 NonInitialized _ ->
                     Sub.none
 
-        TagPage _ ->
-            if model.maybeContentFadeOutData /= Nothing then
-                Time.every 80 Tick
+        TagPage tagPageModel ->
+            let
+                subForContentFadeOut =
+                    if model.maybeContentFadeOutData /= Nothing then
+                        Time.every 80 Tick
 
-            else
-                Sub.none
+                    else
+                        Sub.none
+
+                subsForGraphsOfContents =
+                    case tagPageModel of
+                        NonInitialized _ ->
+                            [ Sub.none ]
+
+                        Initialized initializedPageModel ->
+                            initializedPageModel.contents
+                                |> List.map
+                                    (\content ->
+                                        case content.graphDataIfGraphIsOn of
+                                            Just graphData ->
+                                                graphSubscriptionsForContent graphData.graphModel
+
+                                            Nothing ->
+                                                Sub.none
+                                    )
+            in
+            Sub.batch (subForContentFadeOut :: subsForGraphsOfContents)
 
         _ ->
             Sub.none

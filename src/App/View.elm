@@ -69,18 +69,8 @@ view model =
                                 []
 
                             Initialized content ->
-                                case content.graphDataIfGraphIsOn of
-                                    Nothing ->
-                                        [ viewContentDiv Nothing model.localStorage.contentReadClickedAtLeastOnce content ]
+                                [ viewContentDiv Nothing model.localStorage.contentReadClickedAtLeastOnce content ]
 
-                                    Just graphData ->
-                                        if graphData.veryFirstMomentOfGraphHasPassed then
-                                            [ div [ class "graphForContent" ] [ viewGraphForContent content.contentId graphData.allRefData.contentIds graphData.graphModel ]
-                                            , viewContentDiv Nothing model.localStorage.contentReadClickedAtLeastOnce content
-                                            ]
-
-                                        else
-                                            []
 
                     TagPage status ->
                         case status of

@@ -5,6 +5,7 @@ import App.Msg exposing (Msg(..))
 import Content.Model exposing (AllRefData, Content)
 import Content.Util exposing (maybeDateText, maybeDisplayableTagsOfContent)
 import DataResponse exposing (ContentID)
+import ForceDirectedGraphForContent exposing (viewGraphForContent)
 import Html exposing (Html, a, div, img, input, label, p, span, text)
 import Html.Attributes exposing (checked, class, href, src, style, title, type_)
 import Html.Events exposing (on, onClick)
@@ -15,6 +16,22 @@ import Tag.Model exposing (Tag)
 
 viewContentDiv : MaybeContentFadeOutData -> Bool -> Content -> Html Msg
 viewContentDiv dataToFadeContent contentReadClickedAtLeastOnce content =
+    case content.graphDataIfGraphIsOn of
+        Nothing ->
+            viewContentDivWithoutGraph dataToFadeContent contentReadClickedAtLeastOnce content
+
+        Just graphData ->
+            if graphData.veryFirstMomentOfGraphHasPassed then
+                div []
+                    [ div [ class "graphForContent" ] [ viewGraphForContent content.contentId graphData.allRefData.contentIds graphData.graphModel ]
+                    , viewContentDivWithoutGraph dataToFadeContent contentReadClickedAtLeastOnce content
+                    ]
+
+            else
+                text ""
+
+viewContentDivWithoutGraph : MaybeContentFadeOutData -> Bool -> Content -> Html Msg
+viewContentDivWithoutGraph dataToFadeContent contentReadClickedAtLeastOnce content =
     p [ style "opacity" (getOpacityLevel content.contentId dataToFadeContent) ]
         [ div []
             [ div [ class "title" ] [ viewContentTitle content.title content.beautifiedText ]
@@ -65,7 +82,7 @@ viewContentInfoDiv content contentReadClickedAtLeastOnce =
             ( _, _ ) ->
                 []
          )
-            ++ [ text " ", viewContentLinkWithLinkIcon content, viewGraphLink content.refData, viewContentReadCheckSpan content contentReadClickedAtLeastOnce ]
+            ++ [ text " ", viewContentLinkWithLinkIcon content, viewGraphLink content, viewContentReadCheckSpan content contentReadClickedAtLeastOnce ]
         )
 
 
@@ -111,13 +128,13 @@ viewContentLinkWithLinkIcon content =
     viewContentLink (img [ class "navToContent", src "/link.svg" ] []) "" (String.fromInt content.contentId)
 
 
-viewGraphLink : AllRefData -> Html Msg
-viewGraphLink refDataOfContent =
-    if List.isEmpty refDataOfContent.connections then
+viewGraphLink : Content -> Html Msg
+viewGraphLink content =
+    if List.isEmpty content.refData.connections then
         text ""
 
     else
-        img [ onClick ContentGraphToggleChecked, class "contentPageToggleChecked", src "/graph.svg" ] []
+        img [ onClick (ContentGraphToggleChecked content.contentId), class "contentPageToggleChecked", src "/graph.svg" ] []
 
 
 viewMarkdownTextOfContent : Content -> Html msg
@@ -139,7 +156,6 @@ viewRefsTextOfContent content =
                     |> List.intersperse (text ", ")
                 )
             ]
-
 
 
 viewFurtherReadingRefsTextOfContent : Content -> Html msg
