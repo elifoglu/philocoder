@@ -230,6 +230,10 @@ input:focus {
     margin-block-start: 25px;
 }
 
+.textToHighlight {
+    background-color: yellow;
+}
+
 .navToTagDesc {
     width: 13px;
     vertical-align: middle;

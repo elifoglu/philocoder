@@ -12,7 +12,7 @@ viewBulkContentsDiv contentReadClickedAtLeastOnce contents =
     div []
         [ div [ style "margin-top" "20px" ]
             (contents
-                |> List.map (viewContentDiv Nothing contentReadClickedAtLeastOnce)
+                |> List.map (viewContentDiv Nothing Nothing contentReadClickedAtLeastOnce)
                 |> List.intersperse (hr [] [])
             )
         ]

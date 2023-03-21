@@ -1,6 +1,6 @@
 module Content.View exposing (viewContentDiv)
 
-import App.Model exposing (MaybeContentFadeOutData)
+import App.Model exposing (MaybeContentFadeOutData, MaybeTextToHighlight)
 import App.Msg exposing (Msg(..))
 import Content.Model exposing (Content, GotGraphData)
 import Content.Util exposing (maybeDateText, maybeDisplayableTagsOfContent)
@@ -8,36 +8,36 @@ import DataResponse exposing (ContentID)
 import ForceDirectedGraphForContent exposing (viewGraphForContent)
 import Html exposing (Html, a, div, img, input, label, p, span, text)
 import Html.Attributes exposing (checked, class, href, src, style, title, type_)
-import Html.Events exposing (on, onClick)
+import Html.Events exposing (on)
 import Json.Decode as Decode
-import Markdown
+import Markdown exposing (defaultOptions)
 import Tag.Model exposing (Tag)
 
 
-viewContentDiv : MaybeContentFadeOutData -> Bool -> Content -> Html Msg
-viewContentDiv dataToFadeContent contentReadClickedAtLeastOnce content =
+viewContentDiv : MaybeContentFadeOutData -> MaybeTextToHighlight -> Bool -> Content -> Html Msg
+viewContentDiv dataToFadeContent textToHighlight contentReadClickedAtLeastOnce content =
     case content.graphDataIfGraphIsOn of
         Nothing ->
-            viewContentDivWithoutGraph dataToFadeContent contentReadClickedAtLeastOnce content
+            viewContentDivWithoutGraph dataToFadeContent textToHighlight contentReadClickedAtLeastOnce content
 
         Just graphData ->
             if graphData.veryFirstMomentOfGraphHasPassed then
                 div []
                     [ div [ class "graphForContent" ] [ viewGraphForContent content.contentId graphData.graphData.contentIds graphData.graphModel ]
-                    , viewContentDivWithoutGraph dataToFadeContent contentReadClickedAtLeastOnce content
+                    , viewContentDivWithoutGraph dataToFadeContent textToHighlight contentReadClickedAtLeastOnce content
                     ]
 
             else
                 text ""
 
 
-viewContentDivWithoutGraph : MaybeContentFadeOutData -> Bool -> Content -> Html Msg
-viewContentDivWithoutGraph dataToFadeContent contentReadClickedAtLeastOnce content =
+viewContentDivWithoutGraph : MaybeContentFadeOutData -> MaybeTextToHighlight -> Bool -> Content -> Html Msg
+viewContentDivWithoutGraph dataToFadeContent textToHighlight contentReadClickedAtLeastOnce content =
     p [ style "opacity" (getOpacityLevel content.contentId dataToFadeContent) ]
         [ div []
             [ div [ class "title" ] [ viewContentTitle content.title content.beautifiedText ]
             , viewRefsTextOfContent content
-            , viewMarkdownTextOfContent content
+            , viewMarkdownTextOfContent content textToHighlight
             , viewFurtherReadingRefsTextOfContent content
             ]
         , viewContentInfoDiv content contentReadClickedAtLeastOnce
@@ -145,9 +145,18 @@ viewGraphLink content =
                     [ img [ class "contentPageToggleChecked", src "/graph.svg" ] [] ]
 
 
-viewMarkdownTextOfContent : Content -> Html msg
-viewMarkdownTextOfContent content =
-    Markdown.toHtml [ class "markdownDiv contentFont" ] content.text
+viewMarkdownTextOfContent : Content -> MaybeTextToHighlight -> Html msg
+viewMarkdownTextOfContent content maybeTextToHighlight =
+    Markdown.toHtmlWith { defaultOptions | sanitize = False }
+        [ class "markdownDiv contentFont" ]
+        (case maybeTextToHighlight of
+            Just textToHighlight ->
+                -- Note: This highlighting feature is unfortunately case sensitive for now
+                String.replace textToHighlight ("<span class=textToHighlight>" ++ textToHighlight ++ "</span>") content.text
+
+            Nothing ->
+                content.text
+        )
 
 
 viewRefsTextOfContent : Content -> Html msg

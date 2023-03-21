@@ -12,7 +12,7 @@ viewContentDivs : MaybeContentFadeOutData -> Bool -> List Content -> List (Html 
 viewContentDivs dataToFadeContent contentReadClickedAtLeastOnce contents =
     [ div [ style "margin-top" "20px" ]
         (contents
-            |> List.map (viewContentDiv dataToFadeContent contentReadClickedAtLeastOnce)
+            |> List.map (viewContentDiv dataToFadeContent Nothing contentReadClickedAtLeastOnce)
             |> List.intersperse (hr [] [])
         )
     ]

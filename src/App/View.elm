@@ -69,7 +69,7 @@ view model =
                                 []
 
                             Initialized content ->
-                                [ viewContentDiv Nothing model.localStorage.contentReadClickedAtLeastOnce content ]
+                                [ viewContentDiv Nothing Nothing model.localStorage.contentReadClickedAtLeastOnce content ]
 
                     TagPage status ->
                         case status of
