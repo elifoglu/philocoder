@@ -109,13 +109,13 @@ viewGraph contentIds graphModel totalTagCountCurrentlyShownOnTheScreen contentTo
         ]
 
 
-linkColor : Color.Color
-linkColor =
+defaultLinkColor : Color.Color
+defaultLinkColor =
     Color.rgb255 225 225 225
 
 
-nodeColor : Color.Color
-nodeColor =
+defaultNodeColor : Color.Color
+defaultNodeColor =
     Color.rgb255 20 20 20
 
 
@@ -133,7 +133,7 @@ selectNodeColor currentContentId maybeCurrentlyDraggedContentId maybeContentIdTo
                 nodeColorOfColorizedContent
 
             else
-                nodeColor
+                defaultNodeColor
 
         Nothing ->
             case maybeContentIdToColorize of
@@ -142,10 +142,39 @@ selectNodeColor currentContentId maybeCurrentlyDraggedContentId maybeContentIdTo
                         nodeColorOfColorizedContent
 
                     else
-                        nodeColor
+                        defaultNodeColor
 
                 Nothing ->
-                    nodeColor
+                    defaultNodeColor
+
+
+defaultNodeRValue : Float
+defaultNodeRValue =
+    2.5
+
+
+selectNodeRValue : ContentID -> Maybe ContentID -> Maybe ContentID -> Float
+selectNodeRValue currentContentId maybeCurrentlyDraggedContentId maybeContentIdToColorize =
+    --same logic with "selectNodeColor" fn
+    case maybeCurrentlyDraggedContentId of
+        Just currentlyDraggedContentId ->
+            if currentContentId == currentlyDraggedContentId then
+                3.2
+
+            else
+                defaultNodeRValue
+
+        Nothing ->
+            case maybeContentIdToColorize of
+                Just contentIdToColorize ->
+                    if contentIdToColorize == currentContentId then
+                        3.2
+
+                    else
+                        defaultNodeRValue
+
+                Nothing ->
+                    defaultNodeRValue
 
 
 arrowHead : Svg msg
@@ -157,7 +186,7 @@ arrowHead =
         , refX "7"
         , refY "2"
         , orient "auto"
-        , fill <| Paint linkColor
+        , fill <| Paint defaultLinkColor
         ]
         [ polygon [ points [ ( 0, 0 ), ( 6, 2 ), ( 0, 4 ) ] ] [] ]
 
@@ -173,7 +202,7 @@ linkElement graph edge =
     in
     line
         [ strokeWidth 0.9
-        , stroke <| Paint linkColor
+        , stroke <| Paint defaultLinkColor
         , x1 source.x
         , y1 source.y
         , x2 target.x
@@ -186,7 +215,7 @@ linkElement graph edge =
 nodeElement : List Int -> Int -> Maybe Int -> Maybe ContentID -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Svg Msg
 nodeElement contentIds totalTagCount currentlyDraggedNodeId contentToColorize node =
     circle
-        [ r 2.5
+        [ r (selectNodeRValue (Maybe.withDefault 0 (getAt node.id contentIds)) (maybeGetAt currentlyDraggedNodeId contentIds) contentToColorize)
         , fill <| Paint (selectNodeColor (Maybe.withDefault 0 (getAt node.id contentIds)) (maybeGetAt currentlyDraggedNodeId contentIds) contentToColorize)
         , stroke <| Paint <| Color.rgba 0 0 0 0
         , strokeWidth 7

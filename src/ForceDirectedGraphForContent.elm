@@ -109,13 +109,13 @@ viewGraphForContent idOfContentOfContentPage contentIds graphModel contentToColo
         ]
 
 
-linkColor : Color.Color
-linkColor =
+defaultLinkColor : Color.Color
+defaultLinkColor =
     Color.rgb255 225 225 225
 
 
-nodeColor : Color.Color
-nodeColor =
+defaultNodeColor : Color.Color
+defaultNodeColor =
     Color.rgb255 20 20 20
 
 
@@ -141,7 +141,7 @@ selectNodeColor idOfContentOfContentPage currentContentId maybeCurrentlyDraggedC
                     nodeColorOfColorizedContent
 
                 else
-                    nodeColor
+                    defaultNodeColor
 
             Nothing ->
                 case maybeContentIdToColorize of
@@ -150,10 +150,43 @@ selectNodeColor idOfContentOfContentPage currentContentId maybeCurrentlyDraggedC
                             nodeColorOfColorizedContent
 
                         else
-                            nodeColor
+                            defaultNodeColor
 
                     Nothing ->
-                        nodeColor
+                        defaultNodeColor
+
+
+defaultNodeRValue : Float
+defaultNodeRValue =
+    2.5
+
+
+selectNodeRValue : ContentID -> ContentID -> Maybe ContentID -> Maybe ContentID -> Float
+selectNodeRValue idOfContentOfContentPage currentContentId maybeCurrentlyDraggedContentId maybeContentIdToColorize =
+    --same logic with "selectNodeColor" fn
+    if currentContentId == idOfContentOfContentPage then
+        3.2
+
+    else
+        case maybeCurrentlyDraggedContentId of
+            Just currentlyDraggedContentId ->
+                if currentContentId == currentlyDraggedContentId then
+                    3.0
+
+                else
+                    defaultNodeRValue
+
+            Nothing ->
+                case maybeContentIdToColorize of
+                    Just contentIdToColorize ->
+                        if contentIdToColorize == currentContentId then
+                            3.0
+
+                        else
+                            defaultNodeRValue
+
+                    Nothing ->
+                        defaultNodeRValue
 
 
 arrowHead : Svg msg
@@ -165,7 +198,7 @@ arrowHead =
         , refX "7"
         , refY "2"
         , orient "auto"
-        , fill <| Paint linkColor
+        , fill <| Paint defaultLinkColor
         ]
         [ polygon [ points [ ( 0, 0 ), ( 6, 2 ), ( 0, 4 ) ] ] [] ]
 
@@ -181,7 +214,7 @@ linkElement graph edge =
     in
     line
         [ strokeWidth 0.9
-        , stroke <| Paint linkColor
+        , stroke <| Paint defaultLinkColor
         , x1 source.x
         , y1 source.y
         , x2 target.x
@@ -194,7 +227,7 @@ linkElement graph edge =
 nodeElement : Int -> List Int -> Maybe Int -> Maybe ContentID -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Svg Msg
 nodeElement idOfContentOfContentPage contentIds currentlyDraggedNodeId contentToColorize node =
     circle
-        [ r <| selectR idOfContentOfContentPage (Maybe.withDefault 0 (getAt node.id contentIds))
+        [ r <| selectNodeRValue idOfContentOfContentPage (Maybe.withDefault 0 (getAt node.id contentIds)) (maybeGetAt currentlyDraggedNodeId contentIds) contentToColorize
         , fill <| Paint <| selectNodeColor idOfContentOfContentPage (Maybe.withDefault 0 (getAt node.id contentIds)) (maybeGetAt currentlyDraggedNodeId contentIds) contentToColorize
         , stroke <| Paint <| Color.rgba 0 0 0 0
         , strokeWidth 7
@@ -207,15 +240,6 @@ nodeElement idOfContentOfContentPage contentIds currentlyDraggedNodeId contentTo
         ]
         [ title [] [ text node.label.value ]
         ]
-
-
-selectR : ContentID -> ContentID -> Float
-selectR idOfContentOfContentPage currentContentId =
-    if currentContentId == idOfContentOfContentPage then
-        3.1
-
-    else
-        2.5
 
 
 onMouseDown : List Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Attribute Msg
