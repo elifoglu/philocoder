@@ -463,6 +463,12 @@ input[type='checkbox'] {
     align-items: center;
 }
 
+.graphPageInformationText {
+    position: fixed;
+    margin-top: 805px;
+    color: #202020;
+    font-size: 11px;
+}
 .graphForContent {
     box-shadow: 0px 0px 5px 1px #202020;
     width: 275px;

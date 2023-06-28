@@ -18,6 +18,7 @@ import Home.View exposing (tagCountCurrentlyShownOnPage, viewHomePageDiv)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import LoginRegister.View exposing (viewLoginOrRegisterDiv)
+import Markdown
 import NotFound.View exposing (view404Div)
 import Pagination.View exposing (viewPagination)
 import UpdateContent.View exposing (viewUpdateContentDiv)
@@ -144,7 +145,8 @@ view model =
                         case maybeGraphData of
                             Just graphData ->
                                 if graphData.veryFirstMomentOfGraphHasPassed then
-                                    [ div [ class "graphForGraphPage", style "margin-top" "0px" ] [ viewGraphForGraphPage graphData.graphData.contentIds graphData.graphModel graphData.contentToColorize ]
+                                    [ div [ class "graphForGraphPage", style "margin-top" "5px" ] [ viewGraphForGraphPage graphData.graphData.contentIds graphData.graphModel graphData.contentToColorize ]
+                                    , Markdown.toHtml [ class "graphPageInformationText" ] ("*(imleç nodun üzerinde bekletilerek ilgili içerik hakkında bilgi sahibi olunabilir," ++ "  \n" ++ "sol tık ile ilgili içeriğe gidilebilir (ctrl + sol tık yeni sekmede açar)," ++ "  \n" ++ "sağ tık ile nod sürüklenerek eğlenilebilir)*")
                                     ]
 
                                 else
