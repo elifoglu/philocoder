@@ -108,7 +108,7 @@ sendTitle model =
         LoginOrRegisterPage _ _ _ ->
             title "giriş/kayıt - philocoder"
 
-        GrafPage _ ->
+        GraphPage _ ->
             title "graf - philocoder"
 
         EksiKonservePage _ ->

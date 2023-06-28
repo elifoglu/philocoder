@@ -86,7 +86,7 @@ eksiKonservePageMapper =
 
 grafPageMapper : Page
 grafPageMapper =
-    GrafPage Nothing
+    GraphPage Nothing
 
 
 pageBy : Url.Url -> ReadingMode -> Page

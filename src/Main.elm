@@ -140,7 +140,7 @@ needAllTagsData page =
         LoginOrRegisterPage _ _ _ ->
             False
 
-        GrafPage _ ->
+        GraphPage _ ->
             False
 
         NotFoundPage ->
@@ -225,7 +225,7 @@ getCmdToSendByPage model =
                         Initialized _ ->
                             Cmd.none
 
-                GrafPage maybeGraphData ->
+                GraphPage maybeGraphData ->
                     case maybeGraphData of
                         Just _ ->
                             Cmd.none
@@ -322,7 +322,7 @@ update msg model =
                                                 content
 
                                             else
-                                                { content | graphDataIfGraphIsOn = Just (GraphData content.gotGraphData (initGraphModelForContent content.gotGraphData) False) }
+                                                { content | graphDataIfGraphIsOn = Just (GraphData content.gotGraphData (initGraphModelForContent content.gotGraphData) False Nothing) }
 
                                         newContentPage =
                                             ContentPage <| Initialized newContent
@@ -1236,15 +1236,15 @@ update msg model =
                                             model
 
                                         Nothing ->
-                                            { model | activePage = HomePage blogTags allTags readingMode (Just (GraphData gotGraphData (initGraphModel gotGraphData) False)) }
+                                            { model | activePage = HomePage blogTags allTags readingMode (Just (GraphData gotGraphData (initGraphModel gotGraphData) False Nothing)) }
 
-                                GrafPage maybeGraphData ->
+                                GraphPage maybeGraphData ->
                                     case maybeGraphData of
                                         Just _ ->
                                             model
 
                                         Nothing ->
-                                            { model | activePage = GrafPage (Just (GraphData gotGraphData (initGraphModelForGraphPage gotGraphData) False)) }
+                                            { model | activePage = GraphPage (Just (GraphData gotGraphData (initGraphModelForGraphPage gotGraphData) False Nothing)) }
 
                                 _ ->
                                     model
@@ -1263,14 +1263,114 @@ update msg model =
                 Nav.pushUrl model.key ("/contents/" ++ String.fromInt contentID ++ "?graph=true")
             )
 
+        ColorizeContentOnGraph contentID ->
+            ( case model.activePage of
+                HomePage a b c maybeGraphData ->
+                    case maybeGraphData of
+                        Just gd ->
+                            let
+                                newGraphData =
+                                    Just { gd | contentToColorize = Just contentID }
+
+                                newHomePage =
+                                    HomePage a b c newGraphData
+                            in
+                            { model | activePage = newHomePage }
+
+                        Nothing ->
+                            model
+
+                GraphPage maybeGraphData ->
+                    case maybeGraphData of
+                        Just gd ->
+                            { model | activePage = GraphPage (Just { gd | contentToColorize = Just contentID }) }
+
+                        Nothing ->
+                            model
+
+                ContentPage data ->
+                    case data of
+                        NonInitialized _ ->
+                            model
+
+                        Initialized content ->
+                            let
+                                newGraphData =
+                                    case content.graphDataIfGraphIsOn of
+                                        Just gd ->
+                                            Just { gd | contentToColorize = Just contentID }
+
+                                        Nothing ->
+                                            Nothing
+
+                                newContent =
+                                    { content | graphDataIfGraphIsOn = newGraphData }
+                            in
+                            { model | activePage = ContentPage (Initialized newContent) }
+
+                _ ->
+                    model
+            , Cmd.none
+            )
+
+        UncolorizeContentOnGraph ->
+            ( case model.activePage of
+                HomePage a b c maybeGraphData ->
+                    case maybeGraphData of
+                        Just gd ->
+                            let
+                                newGraphData =
+                                    Just { gd | contentToColorize = Nothing }
+
+                                newHomePage =
+                                    HomePage a b c newGraphData
+                            in
+                            { model | activePage = newHomePage }
+
+                        Nothing ->
+                            model
+
+                GraphPage maybeGraphData ->
+                    case maybeGraphData of
+                        Just gd ->
+                            { model | activePage = GraphPage (Just { gd | contentToColorize = Nothing }) }
+
+                        Nothing ->
+                            model
+
+                ContentPage data ->
+                    case data of
+                        NonInitialized _ ->
+                            model
+
+                        Initialized content ->
+                            let
+                                newGraphData =
+                                    case content.graphDataIfGraphIsOn of
+                                        Just gd ->
+                                            Just { gd | contentToColorize = Nothing }
+
+                                        Nothing ->
+                                            Nothing
+
+                                newContent =
+                                    { content | graphDataIfGraphIsOn = newGraphData }
+                            in
+                            { model | activePage = ContentPage (Initialized newContent) }
+
+                _ ->
+                    model
+            , Cmd.none
+            )
+
         otherMsg ->
             case model.activePage of
                 HomePage blogTags allTags readingMode maybeGraphData ->
                     case maybeGraphData of
-                        Just graphData ->
+                        Just gd ->
                             let
                                 newGraphData =
-                                    Just (GraphData graphData.graphData (updateGraph otherMsg graphData.graphModel) True)
+                                    Just (GraphData gd.graphData (updateGraph otherMsg gd.graphModel) True gd.contentToColorize)
 
                                 newHomePage =
                                     HomePage blogTags allTags readingMode newGraphData
@@ -1280,17 +1380,17 @@ update msg model =
                         Nothing ->
                             ( model, Cmd.none )
 
-                GrafPage maybeGraphData ->
+                GraphPage maybeGraphData ->
                     case maybeGraphData of
-                        Just graphData ->
+                        Just gd ->
                             let
                                 newGraphData =
-                                    Just (GraphData graphData.graphData (updateGraph otherMsg graphData.graphModel) True)
+                                    GraphData gd.graphData (updateGraph otherMsg gd.graphModel) True gd.contentToColorize
 
-                                newHomePage =
-                                    GrafPage newGraphData
+                                newGraphPage =
+                                    GraphPage (Just newGraphData)
                             in
-                            ( { model | activePage = newHomePage }, Cmd.none )
+                            ( { model | activePage = newGraphPage }, Cmd.none )
 
                         Nothing ->
                             ( model, Cmd.none )
@@ -1299,10 +1399,10 @@ update msg model =
                     case data of
                         Initialized content ->
                             case content.graphDataIfGraphIsOn of
-                                Just graphData ->
+                                Just gd ->
                                     let
                                         newGraphData =
-                                            Just (GraphData graphData.graphData (updateGraph otherMsg graphData.graphModel) True)
+                                            Just (GraphData gd.graphData (updateGraph otherMsg gd.graphModel) True gd.contentToColorize)
 
                                         newContentPage =
                                             ContentPage (Initialized { content | graphDataIfGraphIsOn = newGraphData })
@@ -1354,20 +1454,20 @@ subscriptions model =
     case model.activePage of
         HomePage blogTags allTags readingMode maybeGraphData ->
             case maybeGraphData of
-                Just graphData ->
+                Just gd ->
                     let
                         totalTagCountCurrentlyShownOnPage =
                             tagCountCurrentlyShownOnPage readingMode allTags blogTags
                     in
-                    graphSubscriptions graphData.graphModel totalTagCountCurrentlyShownOnPage
+                    graphSubscriptions gd.graphModel totalTagCountCurrentlyShownOnPage
 
                 Nothing ->
                     Sub.none
 
-        GrafPage maybeGraphData ->
+        GraphPage maybeGraphData ->
             case maybeGraphData of
-                Just graphData ->
-                    graphSubscriptionsForGraph graphData.graphModel
+                Just gd ->
+                    graphSubscriptionsForGraph gd.graphModel
 
                 Nothing ->
                     Sub.none
@@ -1376,8 +1476,8 @@ subscriptions model =
             case data of
                 Initialized content ->
                     case content.graphDataIfGraphIsOn of
-                        Just graphData ->
-                            graphSubscriptionsForContent graphData.graphModel
+                        Just gd ->
+                            graphSubscriptionsForContent gd.graphModel
 
                         Nothing ->
                             Sub.none

@@ -52,7 +52,7 @@ view model =
                                                 initialMarginTop + round (toFloat tagsCount * heightOfASingleTagAsPx)
                                         in
                                         [ viewHomePageDiv allTagsToShow blogTagsToShow readingMode model.loggedIn model.consumeModeIsOn
-                                        , div [ class "graph", style "margin-top" (String.fromInt marginTopForGraph ++ "px") ] [ viewGraph graphData.graphData.contentIds graphData.graphModel tagsCount ]
+                                        , div [ class "graph", style "margin-top" (String.fromInt marginTopForGraph ++ "px") ] [ viewGraph graphData.graphData.contentIds graphData.graphModel tagsCount graphData.contentToColorize ]
                                         ]
 
                                     else
@@ -140,7 +140,7 @@ view model =
                     LoginOrRegisterPage username password errorMessage ->
                         [ viewLoginOrRegisterDiv username password errorMessage ]
 
-                    GrafPage maybeGraphData ->
+                    GraphPage maybeGraphData ->
                         case maybeGraphData of
                             Just graphData ->
                                 if graphData.veryFirstMomentOfGraphHasPassed then

@@ -28,6 +28,8 @@ type Msg
     | FocusResult (Result Dom.Error ())
     | ShowAdditionalIcons
     | GoToContentViaContentGraph ContentID Bool
+    | ColorizeContentOnGraph ContentID
+    | UncolorizeContentOnGraph
     | GotBioResponse (Result Http.Error BioResponse)
     | ClickOnABioGroup BioGroupID
     | BioGroupDisplayInfoChanged BioGroup

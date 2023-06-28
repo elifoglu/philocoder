@@ -1,9 +1,9 @@
-module App.Model exposing (BioPageModel, ContentFadeOutData, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GetContentRequestModel, GetTagContentsRequestModel, IconInfo, Initializable(..), InitializedTagPageModel, LocalStorage, MaySendRequest(..), MaybeContentFadeOutData, Model, NonInitializedYetTagPageModel, Page(..), ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateContentPageModel(..), UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, setCreateContentPageModel, setUpdateContentPageModel, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder, GetBulkContentsRequestModel, getBulkContentsRequestModelEncoder, MaybeTextToHighlight)
+module App.Model exposing (BioPageModel, ContentFadeOutData, ContentIDToColorize, CreateContentPageModel, CreateTagPageModel, Drag, Entity, GetBulkContentsRequestModel, GetContentRequestModel, GetTagContentsRequestModel, IconInfo, Initializable(..), InitializedTagPageModel, LocalStorage, MaySendRequest(..), MaybeContentFadeOutData, MaybeTextToHighlight, Model, NonInitializedYetTagPageModel, Page(..), ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateContentPageModel(..), UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getBulkContentsRequestModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, setCreateContentPageModel, setUpdateContentPageModel, totalPageCountRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
 
 import BioGroup.Model exposing (BioGroup)
 import BioItem.Model exposing (BioItem)
 import Browser.Navigation as Nav
-import Content.Model exposing (GotGraphData, Content, GraphData)
+import Content.Model exposing (Content, GotGraphData, GraphData)
 import DataResponse exposing (ContentID, EksiKonserveException, EksiKonserveTopic, GotContent)
 import Force
 import Graph exposing (Graph, NodeId)
@@ -118,6 +118,10 @@ type alias AllTagsToShow =
     Maybe (List Tag)
 
 
+type alias ContentIDToColorize =
+    Maybe ContentID
+
+
 type Page
     = HomePage BlogTagsToShow AllTagsToShow ReadingMode (Maybe GraphData)
     | ContentPage (Initializable ( Int, Bool ) Content)
@@ -130,7 +134,7 @@ type Page
     | ContentSearchPage String (List Content)
     | BulkContentsPage (Initializable String (List Content))
     | LoginOrRegisterPage String String String
-    | GrafPage (Maybe GraphData)
+    | GraphPage (Maybe GraphData)
     | NotFoundPage
     | MaintenancePage
     | EksiKonservePage (Initializable () ( List EksiKonserveTopic, List EksiKonserveException ))
@@ -257,6 +261,7 @@ getContentRequestModelEncoder model =
         , ( "username", Encode.string model.username )
         , ( "password", Encode.string model.password )
         ]
+
 
 getBulkContentsRequestModelEncoder : GetBulkContentsRequestModel -> Encode.Value
 getBulkContentsRequestModelEncoder model =

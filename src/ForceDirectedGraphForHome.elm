@@ -6,6 +6,7 @@ import App.Msg exposing (Msg(..))
 import Browser.Events
 import Color
 import Content.Model exposing (GotGraphData, RefConnection)
+import DataResponse exposing (ContentID)
 import Force exposing (State)
 import Graph exposing (Edge, Graph, Node, NodeContext, NodeId)
 import Html.Events.Extra.Mouse as Mouse exposing (Button(..), Event)
@@ -93,8 +94,8 @@ initializeNode ctx =
 --VIEW--
 
 
-viewGraph : List Int -> GraphModel -> Int -> Svg Msg
-viewGraph contentIds graphModel totalTagCountCurrentlyShownOnTheScreen =
+viewGraph : List Int -> GraphModel -> Int -> Maybe ContentID -> Svg Msg
+viewGraph contentIds graphModel totalTagCountCurrentlyShownOnTheScreen contentToColorize =
     svg [ viewBox 0 0 w h ] <|
         [ defs []
             [ arrowHead ]
@@ -102,7 +103,7 @@ viewGraph contentIds graphModel totalTagCountCurrentlyShownOnTheScreen =
             |> List.map (linkElement graphModel.graph)
             |> g [ class [ "links" ] ]
         , Graph.nodes graphModel.graph
-            |> List.map (nodeElement contentIds totalTagCountCurrentlyShownOnTheScreen)
+            |> List.map (nodeElement contentIds totalTagCountCurrentlyShownOnTheScreen contentToColorize)
             |> g [ class [ "nodes" ] ]
         ]
 
@@ -115,6 +116,25 @@ linkColor =
 nodeColor : Color.Color
 nodeColor =
     Color.rgb255 20 20 20
+
+
+selectNodeColor : Maybe ContentID -> Maybe ContentID -> Color.Color
+selectNodeColor maybeCurrentContentId maybeContentIdToColorize =
+    case maybeCurrentContentId of
+        Nothing ->
+            nodeColor
+
+        Just currentContentId ->
+            case maybeContentIdToColorize of
+                Just contentIdToColorize ->
+                    if contentIdToColorize == currentContentId then
+                        Color.rgb255 255 0 0
+
+                    else
+                        nodeColor
+
+                Nothing ->
+                    nodeColor
 
 
 arrowHead : Svg msg
@@ -152,17 +172,19 @@ linkElement graph edge =
         []
 
 
-nodeElement : List Int -> Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Svg Msg
-nodeElement contentIds totalTagCount node =
+nodeElement : List Int -> Int -> Maybe ContentID -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Svg Msg
+nodeElement contentIds totalTagCount contentToColorize node =
     circle
         [ r 2.5
-        , fill <| Paint nodeColor
+        , fill <| Paint (selectNodeColor (getAt node.id contentIds) contentToColorize)
         , stroke <| Paint <| Color.rgba 0 0 0 0
         , strokeWidth 7
         , cx node.label.x
         , cy node.label.y
         , onMouseClick
         , onMouseDown contentIds node totalTagCount
+        , onMouseOver contentIds node
+        , onMouseLeave
         ]
         [ title [] [ text node.label.value ]
         ]
@@ -190,6 +212,16 @@ onMouseDown contentIds node totalTagCount =
 onMouseClick : Attribute Msg
 onMouseClick =
     Mouse.onContextMenu (\_ -> DoNothing)
+
+
+onMouseOver : List Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Attribute Msg
+onMouseOver contentIds node =
+    Mouse.onOver (\_ -> ColorizeContentOnGraph (Maybe.withDefault 0 (getAt node.id contentIds)))
+
+
+onMouseLeave : Attribute Msg
+onMouseLeave =
+    Mouse.onLeave (\_ -> UncolorizeContentOnGraph)
 
 
 
