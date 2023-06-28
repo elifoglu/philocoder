@@ -8,6 +8,7 @@ import Color
 import Content.Model exposing (GotGraphData, RefConnection)
 import DataResponse exposing (ContentID)
 import Force exposing (State)
+import ForceDirectedGraphUtil exposing (maybeGetAt)
 import Graph exposing (Edge, Graph, Node, NodeContext, NodeId)
 import Html.Events.Extra.Mouse as Mouse exposing (Button(..), Event)
 import Json.Decode as Decode
@@ -103,7 +104,7 @@ viewGraphForContent idOfContentOfContentPage contentIds graphModel contentToColo
             |> List.map (linkElement graphModel.graph)
             |> g [ class [ "links" ] ]
         , Graph.nodes graphModel.graph
-            |> List.map (nodeElement idOfContentOfContentPage contentIds contentToColorize)
+            |> List.map (nodeElement idOfContentOfContentPage contentIds graphModel.currentlyDraggedNodeId contentToColorize)
             |> g [ class [ "nodes" ] ]
         ]
 
@@ -125,27 +126,34 @@ nodeColorOfCurrentContent =
 
 nodeColorOfColorizedContent : Color.Color
 nodeColorOfColorizedContent =
-    Color.rgb255 248 136 136
+    Color.rgb255 252 110 110
 
 
-selectNodeColor : ContentID -> ContentID -> Maybe ContentID -> Paint
-selectNodeColor idOfContentOfContentPage currentContentId maybeContentIdToColorize =
-    Paint
-        (if currentContentId == idOfContentOfContentPage then
-            nodeColorOfCurrentContent
+selectNodeColor : ContentID -> ContentID -> Maybe ContentID -> Maybe ContentID -> Color.Color
+selectNodeColor idOfContentOfContentPage currentContentId maybeCurrentlyDraggedContentId maybeContentIdToColorize =
+    if currentContentId == idOfContentOfContentPage then
+        nodeColorOfCurrentContent
 
-         else
-            case maybeContentIdToColorize of
-                Just contentIdToColorize ->
-                    if contentIdToColorize == currentContentId then
-                        nodeColorOfColorizedContent
+    else
+        case maybeCurrentlyDraggedContentId of
+            Just currentlyDraggedContentId ->
+                if currentContentId == currentlyDraggedContentId then
+                    nodeColorOfColorizedContent
 
-                    else
-                        nodeColor
-
-                Nothing ->
+                else
                     nodeColor
-        )
+
+            Nothing ->
+                case maybeContentIdToColorize of
+                    Just contentIdToColorize ->
+                        if contentIdToColorize == currentContentId then
+                            nodeColorOfColorizedContent
+
+                        else
+                            nodeColor
+
+                    Nothing ->
+                        nodeColor
 
 
 arrowHead : Svg msg
@@ -183,11 +191,11 @@ linkElement graph edge =
         []
 
 
-nodeElement : Int -> List Int -> Maybe ContentID -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Svg Msg
-nodeElement idOfContentOfContentPage contentIds contentToColorize node =
+nodeElement : Int -> List Int -> Maybe Int -> Maybe ContentID -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Svg Msg
+nodeElement idOfContentOfContentPage contentIds currentlyDraggedNodeId contentToColorize node =
     circle
         [ r <| selectR idOfContentOfContentPage (Maybe.withDefault 0 (getAt node.id contentIds))
-        , fill <| selectNodeColor idOfContentOfContentPage (Maybe.withDefault 0 (getAt node.id contentIds)) contentToColorize
+        , fill <| Paint <| selectNodeColor idOfContentOfContentPage (Maybe.withDefault 0 (getAt node.id contentIds)) (maybeGetAt currentlyDraggedNodeId contentIds) contentToColorize
         , stroke <| Paint <| Color.rgba 0 0 0 0
         , strokeWidth 7
         , cx node.label.x
