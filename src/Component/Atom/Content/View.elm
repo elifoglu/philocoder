@@ -23,7 +23,7 @@ viewContentDiv dataToFadeContent textToHighlight contentReadClickedAtLeastOnce c
         Just graphData ->
             if graphData.veryFirstMomentOfGraphHasPassed then
                 div []
-                    [ div [ class "graphForContent" ] [ viewGraphForContent content.contentId graphData.graphData.contentIds graphData.graphModel ]
+                    [ div [ class "graphForContent" ] [ viewGraphForContent content.contentId graphData.graphData.contentIds graphData.graphModel graphData.contentToColorize ]
                     , viewContentDivWithoutGraph dataToFadeContent textToHighlight contentReadClickedAtLeastOnce content
                     ]
 

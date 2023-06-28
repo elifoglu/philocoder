@@ -6,6 +6,7 @@ import App.Msg exposing (Msg(..))
 import Browser.Events
 import Color
 import Content.Model exposing (GotGraphData, RefConnection)
+import DataResponse exposing (ContentID)
 import Force exposing (State)
 import Graph exposing (Edge, Graph, Node, NodeContext, NodeId)
 import Html.Events.Extra.Mouse as Mouse exposing (Button(..), Event)
@@ -93,8 +94,8 @@ initializeNode ctx =
 --VIEW--
 
 
-viewGraphForContent : Int -> List Int -> GraphModel -> Svg Msg
-viewGraphForContent idOfContentOfContentPage contentIds graphModel =
+viewGraphForContent : Int -> List Int -> GraphModel -> Maybe ContentID -> Svg Msg
+viewGraphForContent idOfContentOfContentPage contentIds graphModel contentToColorize =
     svg [ viewBox 0 0 w h ] <|
         [ defs []
             [ arrowHead ]
@@ -102,7 +103,7 @@ viewGraphForContent idOfContentOfContentPage contentIds graphModel =
             |> List.map (linkElement graphModel.graph)
             |> g [ class [ "links" ] ]
         , Graph.nodes graphModel.graph
-            |> List.map (nodeElement idOfContentOfContentPage contentIds)
+            |> List.map (nodeElement idOfContentOfContentPage contentIds contentToColorize)
             |> g [ class [ "nodes" ] ]
         ]
 
@@ -119,7 +120,32 @@ nodeColor =
 
 nodeColorOfCurrentContent : Color.Color
 nodeColorOfCurrentContent =
-    Color.rgb255 255 0 0
+    Color.rgb255 255 32 32
+
+
+nodeColorOfColorizedContent : Color.Color
+nodeColorOfColorizedContent =
+    Color.rgb255 248 136 136
+
+
+selectNodeColor : ContentID -> ContentID -> Maybe ContentID -> Paint
+selectNodeColor idOfContentOfContentPage currentContentId maybeContentIdToColorize =
+    Paint
+        (if currentContentId == idOfContentOfContentPage then
+            nodeColorOfCurrentContent
+
+         else
+            case maybeContentIdToColorize of
+                Just contentIdToColorize ->
+                    if contentIdToColorize == currentContentId then
+                        nodeColorOfColorizedContent
+
+                    else
+                        nodeColor
+
+                Nothing ->
+                    nodeColor
+        )
 
 
 arrowHead : Svg msg
@@ -157,48 +183,31 @@ linkElement graph edge =
         []
 
 
-nodeElement : Int -> List Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Svg Msg
-nodeElement idOfContentOfContentPage contentIds node =
+nodeElement : Int -> List Int -> Maybe ContentID -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Svg Msg
+nodeElement idOfContentOfContentPage contentIds contentToColorize node =
     circle
-        [ r <| selectR idOfContentOfContentPage contentIds node
-        , fill <| selectColor idOfContentOfContentPage contentIds node
+        [ r <| selectR idOfContentOfContentPage (Maybe.withDefault 0 (getAt node.id contentIds))
+        , fill <| selectNodeColor idOfContentOfContentPage (Maybe.withDefault 0 (getAt node.id contentIds)) contentToColorize
         , stroke <| Paint <| Color.rgba 0 0 0 0
         , strokeWidth 7
         , cx node.label.x
         , cy node.label.y
         , onMouseClick
         , onMouseDown contentIds node
+        , onMouseOver contentIds node
+        , onMouseLeave
         ]
         [ title [] [ text node.label.value ]
         ]
 
 
-selectR : Int -> List Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Float
-selectR idOfContentOfContentPage contentIds node =
-    let
-        contentId =
-            Maybe.withDefault 0 (getAt node.id contentIds)
-    in
-    if contentId == idOfContentOfContentPage then
+selectR : ContentID -> ContentID -> Float
+selectR idOfContentOfContentPage currentContentId =
+    if currentContentId == idOfContentOfContentPage then
         3.1
 
     else
         2.5
-
-
-selectColor : Int -> List Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Paint
-selectColor idOfContentOfContentPage contentIds node =
-    let
-        contentId =
-            Maybe.withDefault 0 (getAt node.id contentIds)
-    in
-    Paint
-        (if contentId == idOfContentOfContentPage then
-            nodeColorOfCurrentContent
-
-         else
-            nodeColor
-        )
 
 
 onMouseDown : List Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Attribute Msg
@@ -223,6 +232,16 @@ onMouseDown contentIds node =
 onMouseClick : Attribute Msg
 onMouseClick =
     Mouse.onContextMenu (\_ -> DoNothing)
+
+
+onMouseOver : List Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Attribute Msg
+onMouseOver contentIds node =
+    Mouse.onOver (\_ -> ColorizeContentOnGraph (Maybe.withDefault 0 (getAt node.id contentIds)))
+
+
+onMouseLeave : Attribute Msg
+onMouseLeave =
+    Mouse.onLeave (\_ -> UncolorizeContentOnGraph)
 
 
 

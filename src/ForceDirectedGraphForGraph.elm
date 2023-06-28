@@ -118,23 +118,23 @@ nodeColor =
     Color.rgb255 20 20 20
 
 
-selectNodeColor : Maybe ContentID -> Maybe ContentID -> Color.Color
-selectNodeColor maybeCurrentContentId maybeContentIdToColorize =
-    case maybeCurrentContentId of
+nodeColorOfColorizedContent : Color.Color
+nodeColorOfColorizedContent =
+    Color.rgb255 255 32 32
+
+
+selectNodeColor : ContentID -> Maybe ContentID -> Color.Color
+selectNodeColor currentContentId maybeContentIdToColorize =
+    case maybeContentIdToColorize of
+        Just contentIdToColorize ->
+            if contentIdToColorize == currentContentId then
+                nodeColorOfColorizedContent
+
+            else
+                nodeColor
+
         Nothing ->
             nodeColor
-
-        Just currentContentId ->
-            case maybeContentIdToColorize of
-                Just contentIdToColorize ->
-                    if contentIdToColorize == currentContentId then
-                        Color.rgb255 255 0 0
-
-                    else
-                        nodeColor
-
-                Nothing ->
-                    nodeColor
 
 
 arrowHead : Svg msg
@@ -176,7 +176,7 @@ nodeElement : List Int -> Maybe ContentID -> { a | id : NodeId, label : { b | x 
 nodeElement contentIds contentToColorize node =
     circle
         [ r 2.3
-        , fill <| Paint (selectNodeColor (getAt node.id contentIds) contentToColorize)
+        , fill <| Paint (selectNodeColor (Maybe.withDefault 0 (getAt node.id contentIds)) contentToColorize)
         , stroke <| Paint <| Color.rgba 0 0 0 0
         , strokeWidth 7
         , cx node.label.x
