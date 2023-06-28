@@ -144,7 +144,7 @@ view model =
                         case maybeGraphData of
                             Just graphData ->
                                 if graphData.veryFirstMomentOfGraphHasPassed then
-                                    [ div [ class "graphForGraphPage", style "margin-top" "0px" ] [ viewGraphForGraphPage graphData.graphData.contentIds graphData.graphModel ]
+                                    [ div [ class "graphForGraphPage", style "margin-top" "0px" ] [ viewGraphForGraphPage graphData.graphData.contentIds graphData.graphModel graphData.contentToColorize ]
                                     ]
 
                                 else
