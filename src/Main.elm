@@ -2,7 +2,7 @@ module Main exposing (main, needAllTagsData)
 
 import App.Model exposing (..)
 import App.Msg exposing (ContentInputType(..), LoginRegisterPageInputType(..), LoginRequestType(..), Msg(..), TagInputType(..))
-import App.Ports exposing (sendTitle, storeConsumeMode, storeContentReadClickedForTheFirstTime, storeCredentials, storeReadMeIconClickedForTheFirstTime, storeReadingMode)
+import App.Ports exposing (openNewTab, sendTitle, storeConsumeMode, storeContentReadClickedForTheFirstTime, storeCredentials, storeReadMeIconClickedForTheFirstTime, storeReadingMode)
 import App.UrlParser exposing (pageBy)
 import App.View exposing (view)
 import BioGroup.Util exposing (changeActivenessIfIdMatches, changeDisplayInfoIfIdMatchesAndGroupIsActive, gotBioGroupToBioGroup)
@@ -16,6 +16,7 @@ import Content.Model exposing (Content, GraphData)
 import Content.Util exposing (gotContentToContent)
 import DataResponse exposing (ContentID, EksiKonserveException)
 import ForceDirectedGraphForContent exposing (graphSubscriptionsForContent, initGraphModelForContent)
+import ForceDirectedGraphForGraph exposing (graphSubscriptionsForGraph, initGraphModelForGraphPage)
 import ForceDirectedGraphForHome exposing (graphSubscriptions, initGraphModel)
 import ForceDirectedGraphUtil exposing (updateGraph)
 import Home.View exposing (tagCountCurrentlyShownOnPage)
@@ -139,6 +140,9 @@ needAllTagsData page =
         LoginOrRegisterPage _ _ _ ->
             False
 
+        GrafPage _ ->
+            False
+
         NotFoundPage ->
             False
 
@@ -220,6 +224,14 @@ getCmdToSendByPage model =
 
                         Initialized _ ->
                             Cmd.none
+
+                GrafPage maybeGraphData ->
+                    case maybeGraphData of
+                        Just _ ->
+                            Cmd.none
+
+                        Nothing ->
+                            getWholeGraphData
 
                 _ ->
                     Cmd.none
@@ -303,15 +315,19 @@ update msg model =
 
                         newActivePage =
                             case model.activePage of
-                                ContentPage (NonInitialized (_, graphIsOn)) ->
+                                ContentPage (NonInitialized ( _, graphIsOn )) ->
                                     let
-                                        newContent = if not graphIsOn then content else
-                                            { content | graphDataIfGraphIsOn = Just (GraphData content.gotGraphData (initGraphModelForContent content.gotGraphData) False) }
+                                        newContent =
+                                            if not graphIsOn then
+                                                content
+
+                                            else
+                                                { content | graphDataIfGraphIsOn = Just (GraphData content.gotGraphData (initGraphModelForContent content.gotGraphData) False) }
 
                                         newContentPage =
                                             ContentPage <| Initialized newContent
                                     in
-                                        newContentPage
+                                    newContentPage
 
                                 CreateContentPage status ->
                                     case status of
@@ -471,7 +487,6 @@ update msg model =
                     ( updatedModel, Cmd.none )
 
         -- BULK CONTENTS PAGE --
-
         GotBulkContents result ->
             case result of
                 Ok gotContents ->
@@ -1223,6 +1238,14 @@ update msg model =
                                         Nothing ->
                                             { model | activePage = HomePage blogTags allTags readingMode (Just (GraphData gotGraphData (initGraphModel gotGraphData) False)) }
 
+                                GrafPage maybeGraphData ->
+                                    case maybeGraphData of
+                                        Just _ ->
+                                            model
+
+                                        Nothing ->
+                                            { model | activePage = GrafPage (Just (GraphData gotGraphData (initGraphModelForGraphPage gotGraphData) False)) }
+
                                 _ ->
                                     model
                     in
@@ -1233,7 +1256,7 @@ update msg model =
 
         GoToContentViaContentGraph contentID ->
             ( model
-            , Nav.pushUrl model.key ("/contents/" ++ String.fromInt contentID)
+            , openNewTab ("/contents/" ++ String.fromInt contentID ++ "?graph=true")
             )
 
         otherMsg ->
@@ -1247,6 +1270,21 @@ update msg model =
 
                                 newHomePage =
                                     HomePage blogTags allTags readingMode newGraphData
+                            in
+                            ( { model | activePage = newHomePage }, Cmd.none )
+
+                        Nothing ->
+                            ( model, Cmd.none )
+
+                GrafPage maybeGraphData ->
+                    case maybeGraphData of
+                        Just graphData ->
+                            let
+                                newGraphData =
+                                    Just (GraphData graphData.graphData (updateGraph otherMsg graphData.graphModel) True)
+
+                                newHomePage =
+                                    GrafPage newGraphData
                             in
                             ( { model | activePage = newHomePage }, Cmd.none )
 
@@ -1318,6 +1356,14 @@ subscriptions model =
                             tagCountCurrentlyShownOnPage readingMode allTags blogTags
                     in
                     graphSubscriptions graphData.graphModel totalTagCountCurrentlyShownOnPage
+
+                Nothing ->
+                    Sub.none
+
+        GrafPage maybeGraphData ->
+            case maybeGraphData of
+                Just graphData ->
+                    graphSubscriptionsForGraph graphData.graphModel
 
                 Nothing ->
                     Sub.none

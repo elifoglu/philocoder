@@ -1,4 +1,4 @@
-module ForceDirectedGraphForContent exposing (graphSubscriptionsForContent, initGraphModelForContent, viewGraphForContent)
+module ForceDirectedGraphForGraph exposing (graphSubscriptionsForGraph, initGraphModelForGraphPage, viewGraphForGraphPage)
 
 import App.GraphModel exposing (GraphModel)
 import App.Model exposing (Entity, Model)
@@ -19,8 +19,8 @@ import TypedSvg.Core exposing (Attribute, Svg, text)
 import TypedSvg.Types exposing (Paint(..))
 
 
-graphOfContent : GotGraphData -> Graph String ()
-graphOfContent gotGraphData =
+contentsGraph : GotGraphData -> Graph String ()
+contentsGraph gotGraphData =
     Graph.fromNodeLabelsAndEdgePairs
         gotGraphData.titlesToShow
         (gotGraphData.connections
@@ -37,34 +37,34 @@ gotRefToPair gotRef =
 
 w : Float
 w =
-    250
+    650
 
 
 h : Float
 h =
-    250
+    650
 
 
 clientPosXCorrectionValue : Float
 clientPosXCorrectionValue =
-    32
+    95
 
 
 clientPosYCorrectionValue : Float
 clientPosYCorrectionValue =
-    90
+    135
 
 
 
 --INIT--
 
 
-initGraphModelForContent : GotGraphData -> GraphModel
-initGraphModelForContent gotGraphData =
+initGraphModelForGraphPage : GotGraphData -> GraphModel
+initGraphModelForGraphPage gotGraphData =
     let
         graph : Graph Entity ()
         graph =
-            graphOfContent gotGraphData
+            contentsGraph gotGraphData
                 |> Graph.mapContexts initializeNode
 
         link : { a | from : b, to : c } -> ( b, c )
@@ -93,8 +93,8 @@ initializeNode ctx =
 --VIEW--
 
 
-viewGraphForContent : Int -> List Int -> GraphModel -> Svg Msg
-viewGraphForContent idOfContentOfContentPage contentIds graphModel =
+viewGraphForGraphPage : List Int -> GraphModel -> Svg Msg
+viewGraphForGraphPage contentIds graphModel =
     svg [ viewBox 0 0 w h ] <|
         [ defs []
             [ arrowHead ]
@@ -102,7 +102,7 @@ viewGraphForContent idOfContentOfContentPage contentIds graphModel =
             |> List.map (linkElement graphModel.graph)
             |> g [ class [ "links" ] ]
         , Graph.nodes graphModel.graph
-            |> List.map (nodeElement idOfContentOfContentPage contentIds)
+            |> List.map (nodeElement contentIds)
             |> g [ class [ "nodes" ] ]
         ]
 
@@ -115,11 +115,6 @@ linkColor =
 nodeColor : Color.Color
 nodeColor =
     Color.rgb255 20 20 20
-
-
-nodeColorOfCurrentContent : Color.Color
-nodeColorOfCurrentContent =
-    Color.rgb255 255 0 0
 
 
 arrowHead : Svg msg
@@ -157,11 +152,11 @@ linkElement graph edge =
         []
 
 
-nodeElement : Int -> List Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Svg Msg
-nodeElement idOfContentOfContentPage contentIds node =
+nodeElement : List Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Svg Msg
+nodeElement contentIds node =
     circle
-        [ r <| selectR idOfContentOfContentPage contentIds node
-        , fill <| selectColor idOfContentOfContentPage contentIds node
+        [ r 2.3
+        , fill <| Paint nodeColor
         , stroke <| Paint <| Color.rgba 0 0 0 0
         , strokeWidth 7
         , cx node.label.x
@@ -171,34 +166,6 @@ nodeElement idOfContentOfContentPage contentIds node =
         ]
         [ title [] [ text node.label.value ]
         ]
-
-
-selectR : Int -> List Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Float
-selectR idOfContentOfContentPage contentIds node =
-    let
-        contentId =
-            Maybe.withDefault 0 (getAt node.id contentIds)
-    in
-    if contentId == idOfContentOfContentPage then
-        3.1
-
-    else
-        2.5
-
-
-selectColor : Int -> List Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Paint
-selectColor idOfContentOfContentPage contentIds node =
-    let
-        contentId =
-            Maybe.withDefault 0 (getAt node.id contentIds)
-    in
-    Paint
-        (if contentId == idOfContentOfContentPage then
-            nodeColorOfCurrentContent
-
-         else
-            nodeColor
-        )
 
 
 onMouseDown : List Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Attribute Msg
@@ -230,8 +197,8 @@ onMouseClick =
 --SUBSCRIPTIONS--
 
 
-graphSubscriptionsForContent : GraphModel -> Sub Msg
-graphSubscriptionsForContent model =
+graphSubscriptionsForGraph : GraphModel -> Sub Msg
+graphSubscriptionsForGraph model =
     case model.drag of
         Nothing ->
             -- This allows us to save resources, as if the simulation is done, there is no point in subscribing

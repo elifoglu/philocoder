@@ -12,6 +12,7 @@ import Contents.View exposing (viewContentDivs)
 import CreateContent.View exposing (viewCreateContentDiv)
 import CreateTag.View exposing (viewCreateTagDiv)
 import EksiKonserve.View exposing (viewEksiKonserveDiv)
+import ForceDirectedGraphForGraph exposing (viewGraphForGraphPage)
 import ForceDirectedGraphForHome exposing (viewGraph)
 import Home.View exposing (tagCountCurrentlyShownOnPage, viewHomePageDiv)
 import Html exposing (..)
@@ -138,6 +139,19 @@ view model =
 
                     LoginOrRegisterPage username password errorMessage ->
                         [ viewLoginOrRegisterDiv username password errorMessage ]
+
+                    GrafPage maybeGraphData ->
+                        case maybeGraphData of
+                            Just graphData ->
+                                if graphData.veryFirstMomentOfGraphHasPassed then
+                                    [ div [ class "graphForGraphPage", style "margin-top" "0px" ] [ viewGraphForGraphPage graphData.graphData.contentIds graphData.graphModel ]
+                                    ]
+
+                                else
+                                    []
+
+                            Nothing ->
+                                []
 
                     NotFoundPage ->
                         [ view404Div ]

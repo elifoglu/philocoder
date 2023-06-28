@@ -20,6 +20,7 @@ routeParser readingMode =
         , map nonInitializedUpdateTagPageMapper (s "update" </> s "tag" </> string)
         , map rPageMapper (s "r")
         , map eksiKonservePageMapper (s "eksiposta")
+        , map grafPageMapper (s "g")
         ]
 
 
@@ -81,6 +82,11 @@ rPageMapper =
 eksiKonservePageMapper : Page
 eksiKonservePageMapper =
     EksiKonservePage (NonInitialized ())
+
+
+grafPageMapper : Page
+grafPageMapper =
+    GrafPage Nothing
 
 
 pageBy : Url.Url -> ReadingMode -> Page

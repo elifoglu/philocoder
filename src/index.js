@@ -47,6 +47,10 @@ elm.ports.storeCredentials.subscribe(credentialsValue => {
     localStorage.setItem('philocoder-credentials', credentialsValue);
 });
 
+elm.ports.openNewTab.subscribe( url => {
+    window.open(url, '_blank');
+});
+
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA

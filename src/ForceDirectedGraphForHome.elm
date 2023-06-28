@@ -8,7 +8,7 @@ import Color
 import Content.Model exposing (GotGraphData, RefConnection)
 import Force exposing (State)
 import Graph exposing (Edge, Graph, Node, NodeContext, NodeId)
-import Html.Events.Extra.Mouse as Mouse exposing (Event)
+import Html.Events.Extra.Mouse as Mouse exposing (Button(..), Event)
 import Json.Decode as Decode
 import List.Extra exposing (getAt)
 import Tuple exposing (first, second)
@@ -89,6 +89,7 @@ initializeNode ctx =
     }
 
 
+
 --VIEW--
 
 
@@ -160,24 +161,39 @@ nodeElement contentIds totalTagCount node =
         , strokeWidth 7
         , cx node.label.x
         , cy node.label.y
-        , onMouseClick contentIds node
-        , onMouseDown node.id totalTagCount
+        , onMouseClick
+        , onMouseDown contentIds node totalTagCount
         ]
         [ title [] [ text node.label.value ]
         ]
 
 
-onMouseDown : NodeId -> Int -> Attribute Msg
-onMouseDown index totalTagCount =
-    Mouse.onDown (\event -> DragStart index ( setX event, setY event totalTagCount ))
+onMouseDown : List Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Int -> Attribute Msg
+onMouseDown contentIds node totalTagCount =
+    Mouse.onDown
+        (\event ->
+            case event.button of
+                MainButton ->
+                    GoToContentViaContentGraph (Maybe.withDefault 0 (getAt node.id contentIds))
+
+                MiddleButton ->
+                    DragStart node.id ( setX event, setY event totalTagCount )
+
+                SecondButton ->
+                    DragStart node.id ( setX event, setY event totalTagCount )
+
+                _ ->
+                    DoNothing
+        )
 
 
-onMouseClick : List Int -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Attribute Msg
-onMouseClick contentIds node =
-    Mouse.onContextMenu (\_ -> GoToContentViaContentGraph (Maybe.withDefault 0 (getAt node.id contentIds)))
+onMouseClick : Attribute Msg
+onMouseClick =
+    Mouse.onContextMenu (\_ -> DoNothing)
 
 
 
+--this is to prevent the context menu from popping up on right click
 --SUBSCRIPTIONS--
 
 

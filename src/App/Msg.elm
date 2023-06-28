@@ -63,6 +63,7 @@ type Msg
     | DragEnd ( Float, Float )
     | Tick Time.Posix
     | GotTimeZone Time.Zone
+    | DoNothing
 
 
 type PreviewContentModel

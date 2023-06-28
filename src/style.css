@@ -453,6 +453,16 @@ input[type='checkbox'] {
     align-items: center;
 }
 
+.graphForGraphPage {
+    position: fixed;
+    box-shadow: 0px 0px 5px 1px #202020;
+    z-index: -1;
+    width: 800px;
+    height: 800px;
+    display: block;
+    align-items: center;
+}
+
 .graphForContent {
     box-shadow: 0px 0px 5px 1px #202020;
     width: 275px;
