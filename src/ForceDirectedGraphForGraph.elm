@@ -174,7 +174,7 @@ onMouseDown contentIds node =
         (\event ->
             case event.button of
                 MainButton ->
-                    GoToContentViaContentGraph (Maybe.withDefault 0 (getAt node.id contentIds))
+                    GoToContentViaContentGraph (Maybe.withDefault 0 (getAt node.id contentIds)) event.keys.ctrl
 
                 MiddleButton ->
                     DragStart node.id ( setX event, setY event )

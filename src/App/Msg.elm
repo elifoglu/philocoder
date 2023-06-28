@@ -27,7 +27,7 @@ type Msg
     | GotContentSearchResponse (Result Http.Error ContentSearchResponse)
     | FocusResult (Result Dom.Error ())
     | ShowAdditionalIcons
-    | GoToContentViaContentGraph ContentID
+    | GoToContentViaContentGraph ContentID Bool
     | GotBioResponse (Result Http.Error BioResponse)
     | ClickOnABioGroup BioGroupID
     | BioGroupDisplayInfoChanged BioGroup

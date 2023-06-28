@@ -1254,9 +1254,13 @@ update msg model =
                 Err _ ->
                     ( model, Cmd.none )
 
-        GoToContentViaContentGraph contentID ->
+        GoToContentViaContentGraph contentID ctrlIsPressed ->
             ( model
-            , openNewTab ("/contents/" ++ String.fromInt contentID ++ "?graph=true")
+            , if ctrlIsPressed then
+                openNewTab ("/contents/" ++ String.fromInt contentID ++ "?graph=true")
+
+              else
+                Nav.pushUrl model.key ("/contents/" ++ String.fromInt contentID ++ "?graph=true")
             )
 
         otherMsg ->
