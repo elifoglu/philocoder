@@ -1,26 +1,15 @@
-module ForceDirectedGraphUtil exposing (updateGraph)
+module ForceDirectedGraphUtil exposing (maybeGetAt, updateGraph)
 
 import App.GraphModel exposing (GraphModel)
 import App.Model exposing (Entity, Model)
 import App.Msg exposing (Msg(..))
-import Browser.Events
-import Color
-import Content.Model exposing (GotGraphData, RefConnection)
 import Force exposing (State)
 import Graph exposing (Edge, Graph, Node, NodeContext, NodeId)
-import Html.Events.Extra.Mouse as Mouse exposing (Event)
-import Json.Decode as Decode
 import List.Extra exposing (getAt)
-import Tuple exposing (first, second)
-import TypedSvg exposing (circle, defs, g, line, marker, polygon, svg, title)
-import TypedSvg.Attributes exposing (class, fill, id, markerEnd, orient, points, refX, refY, stroke, viewBox)
-import TypedSvg.Attributes.InPx exposing (cx, cy, markerHeight, markerWidth, r, strokeWidth, x1, x2, y1, y2)
-import TypedSvg.Core exposing (Attribute, Svg, text)
-import TypedSvg.Types exposing (Paint(..))
 
 
 updateGraph : Msg -> GraphModel -> GraphModel
-updateGraph msg ({ drag, graph, simulation } as model) =
+updateGraph msg ({ drag, graph, simulation, currentlyDraggedNodeId } as model) =
     case msg of
         Tick t ->
             let
@@ -29,7 +18,7 @@ updateGraph msg ({ drag, graph, simulation } as model) =
             in
             case drag of
                 Nothing ->
-                    GraphModel drag (updateGraphWithList graph list) newState
+                    GraphModel drag (updateGraphWithList graph list) newState currentlyDraggedNodeId
 
                 Just { current, index } ->
                     GraphModel drag
@@ -38,9 +27,10 @@ updateGraph msg ({ drag, graph, simulation } as model) =
                             (updateGraphWithList graph list)
                         )
                         newState
+                        currentlyDraggedNodeId
 
         DragStart index xy ->
-            GraphModel (Just (App.Model.Drag xy xy index)) graph simulation
+            GraphModel (Just (App.Model.Drag xy xy index)) graph simulation (Just index)
 
         DragAt xy ->
             case drag of
@@ -48,9 +38,10 @@ updateGraph msg ({ drag, graph, simulation } as model) =
                     GraphModel (Just (App.Model.Drag start xy index))
                         (Graph.update index (Maybe.map (updateNode xy)) graph)
                         (Force.reheat simulation)
+                        currentlyDraggedNodeId
 
                 Nothing ->
-                    GraphModel Nothing graph simulation
+                    GraphModel Nothing graph simulation currentlyDraggedNodeId
 
         DragEnd xy ->
             case drag of
@@ -58,9 +49,10 @@ updateGraph msg ({ drag, graph, simulation } as model) =
                     GraphModel Nothing
                         (Graph.update index (Maybe.map (updateNode xy)) graph)
                         simulation
+                        Nothing
 
                 Nothing ->
-                    GraphModel Nothing graph simulation
+                    GraphModel Nothing graph simulation Nothing
 
         _ ->
             model
@@ -91,3 +83,13 @@ updateContextWithValue nodeCtx value =
             nodeCtx.node
     in
     { nodeCtx | node = { node | label = value } }
+
+
+maybeGetAt : Maybe Int -> List Int -> Maybe Int
+maybeGetAt maybeInt ints =
+    case maybeInt of
+        Just int ->
+            getAt int ints
+
+        Nothing ->
+            Nothing

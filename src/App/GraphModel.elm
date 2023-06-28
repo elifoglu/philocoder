@@ -3,10 +3,12 @@ module App.GraphModel exposing (..)
 import Force
 import Graph exposing (Graph, NodeId)
 
+
 type alias GraphModel =
     { drag : Maybe Drag
     , graph : Graph Entity ()
     , simulation : Force.State NodeId
+    , currentlyDraggedNodeId : Maybe Int
     }
 
 

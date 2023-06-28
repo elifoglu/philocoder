@@ -79,7 +79,7 @@ initGraphModelForGraphPage gotGraphData =
             , Force.center (w / 2) (h / 2)
             ]
     in
-    GraphModel Nothing graph (Force.simulation forces)
+    GraphModel Nothing graph (Force.simulation forces) Nothing
 
 
 initializeNode : NodeContext String () -> NodeContext Entity ()
