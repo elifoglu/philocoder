@@ -204,6 +204,7 @@ getAdditionalIcons showAdditionalIcons =
         , { urlToNavigate = "https://eksisozluk.com/biri/ajora", iconImageUrl = "/eksi.svg", marginLeft = "4px" }
         , { urlToNavigate = "https://twitter.com/philocoder", iconImageUrl = "/twitter.svg", marginLeft = "4px" }
         , { urlToNavigate = "https://youtube.com/ajora", iconImageUrl = "/youtube.svg", marginLeft = "4px" }
+        , { urlToNavigate = "https://www.criticker.com/ratings/philocoder", iconImageUrl = "/criticker.svg", marginLeft = "4px" }
         ]
 
 
