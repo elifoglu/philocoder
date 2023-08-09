@@ -1,18 +1,17 @@
-module BioGroup.Util exposing (changeActivenessIfIdMatches, changeActivenessIfUrlMatches, changeDisplayInfoIfIdMatchesAndGroupIsActive, getActivenessOnInit, gotBioGroupToBioGroup)
+module BioGroup.Util exposing (setActiveness, changeDisplayInfoValueIfUrlMatchesAndGroupIsActive, getActivenessOnInit, gotBioGroupToBioGroup)
 
 import BioGroup.Model exposing (BioGroup)
-import DataResponse exposing (BioGroupID, BioGroupUrl, GotBioGroup, GotContent, GotContentDate, GotTag)
+import DataResponse exposing (BioGroupUrl, GotBioGroup, GotContent, GotContentDate, GotTag)
 
 
 gotBioGroupToBioGroup : GotBioGroup -> BioGroup
 gotBioGroupToBioGroup got =
-    BioGroup got.bioGroupID
-        got.url
+    BioGroup got.url
         got.title
         got.displayIndex
         (gotBioGroupInfoToBioGroupInfo got.info)
         got.bioItemOrder
-        (getActivenessOnInit got.bioGroupID)
+        (getActivenessOnInit got.url)
         True
 
 
@@ -29,33 +28,25 @@ gotBioGroupInfoToBioGroupInfo gotBioGroupInfo =
             Nothing
 
 
-changeActivenessIfIdMatches : BioGroupID -> BioGroup -> BioGroup
-changeActivenessIfIdMatches id bioGroup =
-    if bioGroup.bioGroupID == id then
-        { bioGroup | isActive = not bioGroup.isActive }
-
-    else
-        bioGroup
-
-
-changeActivenessIfUrlMatches : BioGroupUrl -> BioGroup -> BioGroup
-changeActivenessIfUrlMatches url bioGroup =
+setActiveness : BioGroupUrl -> BioGroup -> BioGroup
+setActiveness url bioGroup =
     if bioGroup.url == url then
-        { bioGroup | isActive = not bioGroup.isActive }
+        { bioGroup | isActive = True }
 
     else
-        bioGroup
+        { bioGroup | isActive = False}
 
 
-changeDisplayInfoIfIdMatchesAndGroupIsActive : BioGroupID -> BioGroup -> BioGroup
-changeDisplayInfoIfIdMatchesAndGroupIsActive id bioGroup =
-    if bioGroup.bioGroupID == id && bioGroup.isActive then
+
+changeDisplayInfoValueIfUrlMatchesAndGroupIsActive : String -> BioGroup -> BioGroup
+changeDisplayInfoValueIfUrlMatchesAndGroupIsActive url bioGroup =
+    if bioGroup.url == url && bioGroup.isActive then
         { bioGroup | displayInfo = not bioGroup.displayInfo }
 
     else
         bioGroup
 
 
-getActivenessOnInit : BioGroupID -> Bool
-getActivenessOnInit bioGroupID =
-    bioGroupID == 4
+getActivenessOnInit : String -> Bool
+getActivenessOnInit bioGroupUrl =
+    bioGroupUrl == "home"

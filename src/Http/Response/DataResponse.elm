@@ -1,7 +1,7 @@
-module DataResponse exposing (AllTagsResponse, BioGroupID, BioGroupUrl, BioItemID, BioResponse, ContentID, ContentReadResponse, ContentSearchResponse, ContentsResponse, EksiKonserveException, EksiKonserveResponse, EksiKonserveTopic, GotBioGroup, GotBioItem, GotContent, GotContentDate, GotTag, HomePageDataResponse, allTagsResponseDecoder, bioResponseDecoder, contentDecoder, contentReadResponseDecoder, contentSearchResponseDecoder, contentsResponseDecoder, eksiKonserveResponseDecoder, gotGraphDataDecoder, homePageDataResponseDecoder)
+module DataResponse exposing (AllTagsResponse, BioGroupUrl, BioItemID, BioResponse, ContentID, ContentReadResponse, ContentSearchResponse, ContentsResponse, EksiKonserveException, EksiKonserveResponse, EksiKonserveTopic, GotBioGroup, GotBioItem, GotContent, GotContentDate, GotTag, HomePageDataResponse, allTagsResponseDecoder, bioResponseDecoder, contentDecoder, contentReadResponseDecoder, contentSearchResponseDecoder, contentsResponseDecoder, eksiKonserveResponseDecoder, gotGraphDataDecoder, homePageDataResponseDecoder)
 
 import Content.Model exposing (GotGraphData, Ref, RefConnection)
-import Json.Decode as D exposing (Decoder, bool, field, int, map, map2, map3, map4, map6, map7, map8, maybe, string)
+import Json.Decode as D exposing (Decoder, bool, field, int, map, map2, map3, map4, map5, map6, map7, map8, maybe, string)
 
 
 type alias AllTagsResponse =
@@ -55,17 +55,12 @@ type alias BioResponse =
 
 
 type alias GotBioGroup =
-    { bioGroupID : BioGroupID
-    , url : String
+    { url : String
     , title : String
     , displayIndex : Int
     , info : Maybe String
     , bioItemOrder : List Int
     }
-
-
-type alias BioGroupID =
-    Int
 
 
 type alias BioGroupUrl =
@@ -217,8 +212,7 @@ bioResponseDecoder =
 
 bioGroupDecoder : Decoder GotBioGroup
 bioGroupDecoder =
-    map6 GotBioGroup
-        (field "bioGroupID" int)
+    map5 GotBioGroup
         (field "url" string)
         (field "title" string)
         (field "displayIndex" int)

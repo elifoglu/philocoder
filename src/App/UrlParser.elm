@@ -72,7 +72,7 @@ nonInitializedBulkContentsPageMapper contentIds =
 
 nonInitializedBioPageMapper : Page
 nonInitializedBioPageMapper =
-    BioPage (NonInitialized "active-bio-group-is-not-selected")
+    BioPage (NonInitialized "home")
 
 
 nonInitializedBioPageWithActiveBioGroupMapper : String -> Page

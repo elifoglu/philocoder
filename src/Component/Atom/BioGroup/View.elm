@@ -13,14 +13,10 @@ viewBioGroup : BioGroup -> Html Msg
 viewBioGroup bioGroup =
     span []
         [ if String.startsWith "/" bioGroup.title then
-            if getActivenessOnInit bioGroup.bioGroupID then
-                text ""
-
-            else
-                img [ class (decideBioGroupClass bioGroup), src bioGroup.title, onClick (ClickOnABioGroup bioGroup.bioGroupID) ] []
+            img [ class (decideBioGroupClass bioGroup), src bioGroup.title, onClick (ClickOnABioGroup bioGroup.url) ] []
 
           else
-            button [ class (decideBioGroupClass bioGroup), onClick (ClickOnABioGroup bioGroup.bioGroupID) ]
+            button [ class (decideBioGroupClass bioGroup), onClick (ClickOnABioGroup bioGroup.url) ]
                 [ text bioGroup.title ]
         , case bioGroup.info of
             Just _ ->

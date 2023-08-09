@@ -5,7 +5,7 @@ import App.Msg exposing (ContentInputType(..), LoginRegisterPageInputType(..), L
 import App.Ports exposing (openNewTab, sendTitle, storeConsumeMode, storeContentReadClickedForTheFirstTime, storeCredentials, storeReadMeIconClickedForTheFirstTime, storeReadingMode)
 import App.UrlParser exposing (pageBy)
 import App.View exposing (view)
-import BioGroup.Util exposing (changeActivenessIfIdMatches, changeActivenessIfUrlMatches, changeDisplayInfoIfIdMatchesAndGroupIsActive, gotBioGroupToBioGroup)
+import BioGroup.Util exposing (setActiveness, changeDisplayInfoValueIfUrlMatchesAndGroupIsActive, gotBioGroupToBioGroup)
 import BioGroups.View exposing (makeAllBioGroupsNonActive)
 import BioItem.Util exposing (gotBioItemToBioItem)
 import Browser exposing (UrlRequest)
@@ -849,7 +849,7 @@ update msg model =
                                     "non-existing-branch"
 
                         bioGroupsWithPossiblyActiveBioGroup =
-                            List.map (changeActivenessIfUrlMatches urlOfBioGroupToOpen) bioGroups
+                            List.map (setActiveness urlOfBioGroupToOpen) bioGroups
 
                         bioItems =
                             List.map gotBioItemToBioItem bio.items
@@ -875,7 +875,7 @@ update msg model =
                                     makeAllBioGroupsNonActive bioPageModel.bioGroups
 
                                 newBioGroups =
-                                    List.map (changeActivenessIfIdMatches bioGroupId) newBioGroupsAllNonActive
+                                    List.map (setActiveness bioGroupId) newBioGroupsAllNonActive
 
                                 newBioPageModel =
                                     { bioPageModel | bioGroups = newBioGroups }
@@ -901,7 +901,7 @@ update msg model =
                         Initialized bioPageModel ->
                             let
                                 newBioGroups =
-                                    List.map (changeDisplayInfoIfIdMatchesAndGroupIsActive bioGroup.bioGroupID) bioPageModel.bioGroups
+                                    List.map (changeDisplayInfoValueIfUrlMatchesAndGroupIsActive bioGroup.url) bioPageModel.bioGroups
 
                                 newBioPageModel =
                                     { bioPageModel | bioGroups = newBioGroups }

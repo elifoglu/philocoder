@@ -1,11 +1,9 @@
 module BioGroup.Model exposing (..)
 
-import DataResponse exposing (BioGroupID)
 
 
 type alias BioGroup =
-    { bioGroupID : BioGroupID
-    , url : String
+    { url : String
     , title : String
     , displayIndex : Int
     , info : Maybe String

@@ -6,7 +6,7 @@ import BioItem.Model exposing (BioItem)
 import Browser
 import Browser.Dom as Dom
 import Content.Model exposing (GotGraphData)
-import DataResponse exposing (AllTagsResponse, BioGroupID, BioItemID, BioResponse, ContentID, ContentReadResponse, ContentSearchResponse, ContentsResponse, EksiKonserveResponse, GotContent, HomePageDataResponse)
+import DataResponse exposing (AllTagsResponse, BioGroupUrl, BioItemID, BioResponse, ContentID, ContentReadResponse, ContentSearchResponse, ContentsResponse, EksiKonserveResponse, GotContent, HomePageDataResponse)
 import Graph exposing (NodeId)
 import Http
 import Tag.Model exposing (Tag)
@@ -31,7 +31,7 @@ type Msg
     | ColorizeContentOnGraph ContentID
     | UncolorizeContentOnGraph
     | GotBioResponse (Result Http.Error BioResponse)
-    | ClickOnABioGroup BioGroupID
+    | ClickOnABioGroup BioGroupUrl
     | BioGroupDisplayInfoChanged BioGroup
     | ClickOnABioItemInfo BioItem
     | GotContentsOfTag Tag (Result Http.Error ContentsResponse)
