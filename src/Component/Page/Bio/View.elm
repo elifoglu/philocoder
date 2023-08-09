@@ -17,7 +17,7 @@ viewBioPageDiv bioPageModel =
             bioPageModel.bioGroups
                 |> List.filter (\bioGroup -> bioGroup.isActive)
                 |> List.head
-                |> Maybe.withDefault (BioGroup 0 "" 0 Nothing [] True False)
+                |> Maybe.withDefault (BioGroup 0 "" "" 0 Nothing [] True False)
     in
     div [ style "float" "left", style "margin-left" "-4px" ]
         (viewBioGroupsDiv bioPageModel.bioGroups

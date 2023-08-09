@@ -1,12 +1,13 @@
-module BioGroup.Util exposing (changeActivenessIfIdMatches, changeDisplayInfoIfIdMatchesAndGroupIsActive, gotBioGroupToBioGroup, getActivenessOnInit)
+module BioGroup.Util exposing (changeActivenessIfIdMatches, changeActivenessIfUrlMatches, changeDisplayInfoIfIdMatchesAndGroupIsActive, getActivenessOnInit, gotBioGroupToBioGroup)
 
 import BioGroup.Model exposing (BioGroup)
-import DataResponse exposing (BioGroupID, GotBioGroup, GotContent, GotContentDate, GotTag)
+import DataResponse exposing (BioGroupID, BioGroupUrl, GotBioGroup, GotContent, GotContentDate, GotTag)
 
 
 gotBioGroupToBioGroup : GotBioGroup -> BioGroup
 gotBioGroupToBioGroup got =
     BioGroup got.bioGroupID
+        got.url
         got.title
         got.displayIndex
         (gotBioGroupInfoToBioGroupInfo got.info)
@@ -31,6 +32,15 @@ gotBioGroupInfoToBioGroupInfo gotBioGroupInfo =
 changeActivenessIfIdMatches : BioGroupID -> BioGroup -> BioGroup
 changeActivenessIfIdMatches id bioGroup =
     if bioGroup.bioGroupID == id then
+        { bioGroup | isActive = not bioGroup.isActive }
+
+    else
+        bioGroup
+
+
+changeActivenessIfUrlMatches : BioGroupUrl -> BioGroup -> BioGroup
+changeActivenessIfUrlMatches url bioGroup =
+    if bioGroup.url == url then
         { bioGroup | isActive = not bioGroup.isActive }
 
     else

@@ -11,9 +11,9 @@ import Markdown
 
 viewBioGroup : BioGroup -> Html Msg
 viewBioGroup bioGroup =
-    span [ ]
+    span []
         [ if String.startsWith "/" bioGroup.title then
-            if (getActivenessOnInit bioGroup.bioGroupID) then
+            if getActivenessOnInit bioGroup.bioGroupID then
                 text ""
 
             else
@@ -40,10 +40,10 @@ viewBioGroup bioGroup =
 getProperInfoIcon : BioGroup -> String
 getProperInfoIcon bioGroup =
     if bioGroup.isActive && bioGroup.displayInfo then
-        "info.svg"
+        "/info.svg"
 
     else
-        "info-gray.svg"
+        "/info-gray.svg"
 
 
 decideBioGroupClass : BioGroup -> String

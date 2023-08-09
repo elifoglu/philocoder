@@ -1,7 +1,7 @@
-module DataResponse exposing (AllTagsResponse, BioGroupID, BioItemID, BioResponse, ContentID, ContentReadResponse, ContentSearchResponse, ContentsResponse, EksiKonserveException, EksiKonserveResponse, EksiKonserveTopic, GotBioGroup, GotBioItem, GotContent, GotContentDate, GotTag, HomePageDataResponse, allTagsResponseDecoder, bioResponseDecoder, contentDecoder, contentReadResponseDecoder, contentSearchResponseDecoder, contentsResponseDecoder, eksiKonserveResponseDecoder, gotGraphDataDecoder, homePageDataResponseDecoder)
+module DataResponse exposing (AllTagsResponse, BioGroupID, BioGroupUrl, BioItemID, BioResponse, ContentID, ContentReadResponse, ContentSearchResponse, ContentsResponse, EksiKonserveException, EksiKonserveResponse, EksiKonserveTopic, GotBioGroup, GotBioItem, GotContent, GotContentDate, GotTag, HomePageDataResponse, allTagsResponseDecoder, bioResponseDecoder, contentDecoder, contentReadResponseDecoder, contentSearchResponseDecoder, contentsResponseDecoder, eksiKonserveResponseDecoder, gotGraphDataDecoder, homePageDataResponseDecoder)
 
 import Content.Model exposing (GotGraphData, Ref, RefConnection)
-import Json.Decode as D exposing (Decoder, bool, field, int, map, map2, map3, map4, map5, map6, map7, map8, maybe, string)
+import Json.Decode as D exposing (Decoder, bool, field, int, map, map2, map3, map4, map6, map7, map8, maybe, string)
 
 
 type alias AllTagsResponse =
@@ -56,6 +56,7 @@ type alias BioResponse =
 
 type alias GotBioGroup =
     { bioGroupID : BioGroupID
+    , url : String
     , title : String
     , displayIndex : Int
     , info : Maybe String
@@ -65,6 +66,10 @@ type alias GotBioGroup =
 
 type alias BioGroupID =
     Int
+
+
+type alias BioGroupUrl =
+    String
 
 
 type alias BioItemID =
@@ -212,8 +217,9 @@ bioResponseDecoder =
 
 bioGroupDecoder : Decoder GotBioGroup
 bioGroupDecoder =
-    map5 GotBioGroup
+    map6 GotBioGroup
         (field "bioGroupID" int)
+        (field "url" string)
         (field "title" string)
         (field "displayIndex" int)
         (field "info" (maybe string))

@@ -72,7 +72,7 @@ sendTitle model =
 
         BioPage maybeBioPageModel ->
             case maybeBioPageModel of
-                Just bioPageModel ->
+                Initialized bioPageModel ->
                     let
                         maybeActiveBioGroup =
                             bioPageModel.bioGroups

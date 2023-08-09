@@ -12,6 +12,7 @@ routeParser readingMode =
         [ map (HomePage Nothing Nothing readingMode Nothing) top
         , map nonInitializedTagPageMapper (s "tags" </> string <?> Query.int "page" <?> Query.string "mode")
         , map nonInitializedBioPageMapper (s "me")
+        , map nonInitializedBioPageWithActiveBioGroupMapper (s "me" </> string)
         , map nonInitializedContentPageMapper (s "contents" </> int <?> Query.string "graph")
         , map nonInitializedBulkContentsPageMapper (s "many" </> string)
         , map (CreateContentPage (NoRequestSentYet (CreateContentPageModel Nothing "" "" "" "" "" False "" ""))) (s "create" </> s "content")
@@ -71,7 +72,12 @@ nonInitializedBulkContentsPageMapper contentIds =
 
 nonInitializedBioPageMapper : Page
 nonInitializedBioPageMapper =
-    BioPage Nothing
+    BioPage (NonInitialized "active-bio-group-is-not-selected")
+
+
+nonInitializedBioPageWithActiveBioGroupMapper : String -> Page
+nonInitializedBioPageWithActiveBioGroupMapper activeBioGroup =
+    BioPage (NonInitialized activeBioGroup)
 
 
 rPageMapper : Page

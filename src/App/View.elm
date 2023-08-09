@@ -117,10 +117,10 @@ view model =
 
                     BioPage data ->
                         case data of
-                            Just bioPageModel ->
+                            Initialized bioPageModel ->
                                 [ viewBioPageDiv bioPageModel ]
 
-                            Nothing ->
+                            _ ->
                                 [ text "..." ]
 
                     ContentSearchPage searchKeyword contents ->

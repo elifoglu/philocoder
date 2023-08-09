@@ -130,7 +130,7 @@ type Page
     | UpdateContentPage UpdateContentPageModel
     | CreateTagPage (MaySendRequest CreateTagPageModel CreateTagPageModel)
     | UpdateTagPage (MaySendRequest ( UpdateTagPageModel, String ) UpdateTagPageModel)
-    | BioPage (Maybe BioPageModel)
+    | BioPage (Initializable String BioPageModel)
     | ContentSearchPage String (List Content)
     | BulkContentsPage (Initializable String (List Content))
     | LoginOrRegisterPage String String String

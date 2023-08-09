@@ -5,7 +5,7 @@ import App.Msg exposing (ContentInputType(..), LoginRegisterPageInputType(..), L
 import App.Ports exposing (openNewTab, sendTitle, storeConsumeMode, storeContentReadClickedForTheFirstTime, storeCredentials, storeReadMeIconClickedForTheFirstTime, storeReadingMode)
 import App.UrlParser exposing (pageBy)
 import App.View exposing (view)
-import BioGroup.Util exposing (changeActivenessIfIdMatches, changeDisplayInfoIfIdMatchesAndGroupIsActive, gotBioGroupToBioGroup)
+import BioGroup.Util exposing (changeActivenessIfIdMatches, changeActivenessIfUrlMatches, changeDisplayInfoIfIdMatchesAndGroupIsActive, gotBioGroupToBioGroup)
 import BioGroups.View exposing (makeAllBioGroupsNonActive)
 import BioItem.Util exposing (gotBioItemToBioItem)
 import Browser exposing (UrlRequest)
@@ -209,12 +209,12 @@ getCmdToSendByPage model =
                         _ ->
                             Cmd.none
 
-                BioPage maybeData ->
-                    case maybeData of
-                        Just _ ->
+                BioPage pageData ->
+                    case pageData of
+                        Initialized _ ->
                             Cmd.none
 
-                        Nothing ->
+                        NonInitialized _ ->
                             getBio
 
                 EksiKonservePage status ->
@@ -839,11 +839,23 @@ update msg model =
                         bioGroups =
                             List.map gotBioGroupToBioGroup bio.groups
 
+                        urlOfBioGroupToOpen : String
+                        urlOfBioGroupToOpen =
+                            case model.activePage of
+                                BioPage (NonInitialized activeBioGroupUrl) ->
+                                    activeBioGroupUrl
+
+                                _ ->
+                                    "non-existing-branch"
+
+                        bioGroupsWithPossiblyActiveBioGroup =
+                            List.map (changeActivenessIfUrlMatches urlOfBioGroupToOpen) bioGroups
+
                         bioItems =
                             List.map gotBioItemToBioItem bio.items
 
                         bioPage =
-                            BioPage (Just (BioPageModel bioGroups bioItems Nothing))
+                            BioPage (Initialized (BioPageModel bioGroupsWithPossiblyActiveBioGroup bioItems Nothing))
 
                         newModel =
                             { model | activePage = bioPage }
@@ -857,7 +869,7 @@ update msg model =
             case model.activePage of
                 BioPage maybeData ->
                     case maybeData of
-                        Just bioPageModel ->
+                        Initialized bioPageModel ->
                             let
                                 newBioGroupsAllNonActive =
                                     makeAllBioGroupsNonActive bioPageModel.bioGroups
@@ -869,14 +881,14 @@ update msg model =
                                     { bioPageModel | bioGroups = newBioGroups }
 
                                 newBioPage =
-                                    BioPage (Just newBioPageModel)
+                                    BioPage (Initialized newBioPageModel)
 
                                 newModel =
                                     { model | activePage = newBioPage }
                             in
                             ( newModel, getCmdToSendByPage newModel )
 
-                        Nothing ->
+                        NonInitialized _ ->
                             ( model, Cmd.none )
 
                 _ ->
@@ -886,7 +898,7 @@ update msg model =
             case model.activePage of
                 BioPage maybeData ->
                     case maybeData of
-                        Just bioPageModel ->
+                        Initialized bioPageModel ->
                             let
                                 newBioGroups =
                                     List.map (changeDisplayInfoIfIdMatchesAndGroupIsActive bioGroup.bioGroupID) bioPageModel.bioGroups
@@ -895,11 +907,11 @@ update msg model =
                                     { bioPageModel | bioGroups = newBioGroups }
 
                                 newBioPage =
-                                    BioPage (Just newBioPageModel)
+                                    BioPage (Initialized newBioPageModel)
                             in
                             ( { model | activePage = newBioPage }, Cmd.none )
 
-                        Nothing ->
+                        NonInitialized _ ->
                             ( model, Cmd.none )
 
                 _ ->
@@ -909,7 +921,7 @@ update msg model =
             case model.activePage of
                 BioPage maybeData ->
                     case maybeData of
-                        Just bioPageModel ->
+                        Initialized bioPageModel ->
                             let
                                 newBioItemToShowInfo =
                                     case bioPageModel.bioItemToShowInfo of
@@ -927,11 +939,11 @@ update msg model =
                                     { bioPageModel | bioItemToShowInfo = newBioItemToShowInfo }
 
                                 newBioPage =
-                                    BioPage (Just newBioPageModel)
+                                    BioPage (Initialized newBioPageModel)
                             in
                             ( { model | activePage = newBioPage }, Cmd.none )
 
-                        Nothing ->
+                        NonInitialized _ ->
                             ( model, Cmd.none )
 
                 _ ->
