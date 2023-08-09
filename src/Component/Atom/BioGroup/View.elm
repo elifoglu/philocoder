@@ -2,7 +2,6 @@ module BioGroup.View exposing (viewBioGroup, viewBioGroupInfoDiv)
 
 import App.Msg exposing (Msg(..))
 import BioGroup.Model exposing (BioGroup)
-import BioGroup.Util exposing (getActivenessOnInit)
 import Html exposing (Html, button, div, img, p, span, text)
 import Html.Attributes exposing (class, src, style)
 import Html.Events exposing (onClick)
@@ -13,7 +12,11 @@ viewBioGroup : BioGroup -> Html Msg
 viewBioGroup bioGroup =
     span []
         [ if String.startsWith "/" bioGroup.title then
-            img [ class (decideBioGroupClass bioGroup), src bioGroup.title, onClick (ClickOnABioGroup bioGroup.url) ] []
+            if bioGroup.url == "home" && bioGroup.isActive then
+                text ""
+
+            else
+                img [ class (decideBioGroupClass bioGroup), src bioGroup.title, onClick (ClickOnABioGroup bioGroup.url) ] []
 
           else
             button [ class (decideBioGroupClass bioGroup), onClick (ClickOnABioGroup bioGroup.url) ]

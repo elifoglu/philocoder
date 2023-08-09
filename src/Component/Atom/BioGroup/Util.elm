@@ -1,4 +1,4 @@
-module BioGroup.Util exposing (setActiveness, changeDisplayInfoValueIfUrlMatchesAndGroupIsActive, getActivenessOnInit, gotBioGroupToBioGroup)
+module BioGroup.Util exposing (setActiveness, changeDisplayInfoValueIfUrlMatchesAndGroupIsActive, gotBioGroupToBioGroup)
 
 import BioGroup.Model exposing (BioGroup)
 import DataResponse exposing (BioGroupUrl, GotBioGroup, GotContent, GotContentDate, GotTag)
@@ -11,7 +11,7 @@ gotBioGroupToBioGroup got =
         got.displayIndex
         (gotBioGroupInfoToBioGroupInfo got.info)
         got.bioItemOrder
-        (getActivenessOnInit got.url)
+        False
         True
 
 
@@ -45,8 +45,3 @@ changeDisplayInfoValueIfUrlMatchesAndGroupIsActive url bioGroup =
 
     else
         bioGroup
-
-
-getActivenessOnInit : String -> Bool
-getActivenessOnInit bioGroupUrl =
-    bioGroupUrl == "home"
