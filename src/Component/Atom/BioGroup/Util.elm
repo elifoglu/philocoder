@@ -10,6 +10,7 @@ gotBioGroupToBioGroup got =
         got.title
         got.displayIndex
         (gotBioGroupInfoToBioGroupInfo got.info)
+        got.bioGroupId
         got.bioItemOrder
         False
         True

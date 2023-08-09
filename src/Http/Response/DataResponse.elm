@@ -59,6 +59,7 @@ type alias GotBioGroup =
     , title : String
     , displayIndex : Int
     , info : Maybe String
+    , bioGroupId: Int
     , bioItemOrder : List Int
     }
 
@@ -212,11 +213,12 @@ bioResponseDecoder =
 
 bioGroupDecoder : Decoder GotBioGroup
 bioGroupDecoder =
-    map5 GotBioGroup
+    map6 GotBioGroup
         (field "url" string)
         (field "title" string)
         (field "displayIndex" int)
         (field "info" (maybe string))
+        (field "bioGroupId" int)
         (field "bioItemOrder" (D.list int))
 
 

@@ -7,6 +7,7 @@ type alias BioGroup =
     , title : String
     , displayIndex : Int
     , info : Maybe String
+    , bioGroupId: Int
     , bioItemOrder : List Int
     , isActive : Bool
     , displayInfo : Bool
