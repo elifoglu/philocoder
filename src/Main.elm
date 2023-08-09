@@ -2,7 +2,7 @@ module Main exposing (main, needAllTagsData)
 
 import App.Model exposing (..)
 import App.Msg exposing (ContentInputType(..), LoginRegisterPageInputType(..), LoginRequestType(..), Msg(..), TagInputType(..))
-import App.Ports exposing (openNewTab, sendTitle, storeConsumeMode, storeContentReadClickedForTheFirstTime, storeCredentials, storeReadMeIconClickedForTheFirstTime, storeReadingMode)
+import App.Ports exposing (modifyUrl, openNewTab, sendTitle, storeConsumeMode, storeContentReadClickedForTheFirstTime, storeCredentials, storeReadMeIconClickedForTheFirstTime, storeReadingMode)
 import App.UrlParser exposing (pageBy)
 import App.View exposing (view)
 import BioGroup.Util exposing (setActiveness, changeDisplayInfoValueIfUrlMatchesAndGroupIsActive, gotBioGroupToBioGroup)
@@ -865,7 +865,7 @@ update msg model =
                 Err _ ->
                     createNewModelAndCmdMsg model MaintenancePage
 
-        ClickOnABioGroup bioGroupId ->
+        ClickOnABioGroup bioGroupUrl ->
             case model.activePage of
                 BioPage maybeData ->
                     case maybeData of
@@ -875,7 +875,7 @@ update msg model =
                                     makeAllBioGroupsNonActive bioPageModel.bioGroups
 
                                 newBioGroups =
-                                    List.map (setActiveness bioGroupId) newBioGroupsAllNonActive
+                                    List.map (setActiveness bioGroupUrl) newBioGroupsAllNonActive
 
                                 newBioPageModel =
                                     { bioPageModel | bioGroups = newBioGroups }
@@ -885,8 +885,10 @@ update msg model =
 
                                 newModel =
                                     { model | activePage = newBioPage }
+
+                                urlToSet = if bioGroupUrl == "home" then "/me" else "/me/" ++ bioGroupUrl
                             in
-                            ( newModel, getCmdToSendByPage newModel )
+                            ( newModel, Cmd.batch [ getCmdToSendByPage newModel, modifyUrl urlToSet ] )
 
                         NonInitialized _ ->
                             ( model, Cmd.none )

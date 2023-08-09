@@ -1,4 +1,4 @@
-port module App.Ports exposing (consoleLog, openNewTab, sendTitle, storeConsumeMode, storeContentReadClickedForTheFirstTime, storeCredentials, storeReadMeIconClickedForTheFirstTime, storeReadingMode, title)
+port module App.Ports exposing (consoleLog, openNewTab, sendTitle, storeConsumeMode, storeContentReadClickedForTheFirstTime, storeCredentials, storeReadMeIconClickedForTheFirstTime, storeReadingMode, title, modifyUrl)
 
 import App.Model exposing (Initializable(..), MaySendRequest(..), Model, Page(..), UpdateContentPageModel(..))
 
@@ -134,3 +134,6 @@ port consoleLog : String -> Cmd msg
 
 
 port openNewTab : String -> Cmd msg
+
+
+port modifyUrl : String -> Cmd msg
