@@ -21,7 +21,9 @@ viewContentDiv dataToFadeContent textToHighlight contentReadClickedAtLeastOnce c
             viewContentDivWithoutGraph dataToFadeContent textToHighlight contentReadClickedAtLeastOnce content
 
         Just graphData ->
-            if graphData.veryFirstMomentOfGraphHasPassed then
+            if List.isEmpty graphData.graphData.contentIds then
+                viewContentDivWithoutGraph dataToFadeContent textToHighlight contentReadClickedAtLeastOnce content
+            else if graphData.veryFirstMomentOfGraphHasPassed then
                 div []
                     [ div [ class "graphForContent" ] [ viewGraphForContent content.contentId graphData.graphData.contentIds graphData.graphModel graphData.contentToColorize ]
                     , viewContentDivWithoutGraph dataToFadeContent textToHighlight contentReadClickedAtLeastOnce content
