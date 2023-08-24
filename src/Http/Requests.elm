@@ -1,4 +1,4 @@
-module Requests exposing (createNewTag, deleteAllEksiKonserveExceptions, deleteEksiKonserveTopics, getAllTagsResponse, getBio, getBioPageIcons, getBulkContents, getContent, getEksiKonserve, getHomePageDataResponse, getIcons, getSearchResult, getTagContents, getTimeZone, getWholeGraphData, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
+module Requests exposing (createNewTag, deleteAllEksiKonserveExceptions, deleteEksiKonserveTopics, getAllTagsResponse, getBio, getBioPageIcons, getBulkContents, getContent, getEksiKonserve, getHomePageDataResponse, getIcons, getSearchResult, getTagContents, getTimeZone, getWholeGraphData, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag, getUrlToRedirect)
 
 import App.Model exposing (CreateContentPageModel, CreateTagPageModel, GetBulkContentsRequestModel, GetContentRequestModel, GetTagContentsRequestModel, IconInfo, Model, ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getBulkContentsRequestModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
 import App.Msg exposing (LoginRequestType, Msg(..), PreviewContentModel(..))
@@ -260,6 +260,19 @@ register username password =
                     ]
                 )
         , expect = Http.expectString GotRegisterResponse
+        }
+
+getUrlToRedirect : String -> Cmd Msg
+getUrlToRedirect path =
+    Http.post
+        { url = apiURL ++ "get-url-to-redirect"
+        , body =
+            Http.jsonBody
+                (Encode.object
+                    [ ( "path", Encode.string path )
+                    ]
+                )
+        , expect = Http.expectString GotUrlToRedirectResponse
         }
 
 

@@ -135,6 +135,7 @@ type Page
     | BulkContentsPage (Initializable String (List Content))
     | LoginOrRegisterPage String String String
     | GraphPage (Maybe GraphData)
+    | RedirectPage String
     | NotFoundPage
     | MaintenancePage
     | EksiKonservePage (Initializable () ( List EksiKonserveTopic, List EksiKonserveException ))

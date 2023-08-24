@@ -5,7 +5,7 @@ import App.Msg exposing (ContentInputType(..), LoginRegisterPageInputType(..), L
 import App.Ports exposing (modifyUrl, openNewTab, sendTitle, storeConsumeMode, storeContentReadClickedForTheFirstTime, storeCredentials, storeReadMeIconClickedForTheFirstTime, storeReadingMode)
 import App.UrlParser exposing (pageBy)
 import App.View exposing (view)
-import BioGroup.Util exposing (setActiveness, changeDisplayInfoValueIfUrlMatchesAndGroupIsActive, gotBioGroupToBioGroup)
+import BioGroup.Util exposing (changeDisplayInfoValueIfUrlMatchesAndGroupIsActive, gotBioGroupToBioGroup, setActiveness)
 import BioGroups.View exposing (makeAllBioGroupsNonActive)
 import BioItem.Util exposing (gotBioItemToBioItem)
 import Browser exposing (UrlRequest)
@@ -23,7 +23,7 @@ import Home.View exposing (tagCountCurrentlyShownOnPage)
 import List
 import List.Extra
 import Pagination.Model exposing (Pagination)
-import Requests exposing (createNewTag, deleteAllEksiKonserveExceptions, deleteEksiKonserveTopics, getAllTagsResponse, getBio, getBulkContents, getContent, getEksiKonserve, getHomePageDataResponse, getSearchResult, getTagContents, getTimeZone, getWholeGraphData, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
+import Requests exposing (createNewTag, deleteAllEksiKonserveExceptions, deleteEksiKonserveTopics, getAllTagsResponse, getBio, getBulkContents, getContent, getEksiKonserve, getHomePageDataResponse, getSearchResult, getTagContents, getTimeZone, getUrlToRedirect, getWholeGraphData, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag)
 import Tag.Util exposing (tagById)
 import Task
 import Time
@@ -143,6 +143,9 @@ needAllTagsData page =
         GraphPage _ ->
             False
 
+        RedirectPage _ ->
+            False
+
         NotFoundPage ->
             False
 
@@ -232,6 +235,9 @@ getCmdToSendByPage model =
 
                         Nothing ->
                             getWholeGraphData
+
+                RedirectPage path ->
+                    getUrlToRedirect path
 
                 _ ->
                     Cmd.none
@@ -886,7 +892,12 @@ update msg model =
                                 newModel =
                                     { model | activePage = newBioPage }
 
-                                urlToSet = if bioGroupUrl == "home" then "/me" else "/me/" ++ bioGroupUrl
+                                urlToSet =
+                                    if bioGroupUrl == "home" then
+                                        "/me"
+
+                                    else
+                                        "/me/" ++ bioGroupUrl
                             in
                             ( newModel, Cmd.batch [ getCmdToSendByPage newModel, modifyUrl urlToSet ] )
 
@@ -1113,6 +1124,15 @@ update msg model =
                                 { model | activePage = newActivePage, loggedIn = True }
                         in
                         ( newModel, Nav.pushUrl model.key "/" )
+
+                Err _ ->
+                    createNewModelAndCmdMsg model NotFoundPage
+
+        -- REDIRECT ---
+        GotUrlToRedirectResponse res ->
+            case res of
+                Ok urlToRedirect ->
+                    ( model, Nav.pushUrl model.key urlToRedirect )
 
                 Err _ ->
                     createNewModelAndCmdMsg model NotFoundPage

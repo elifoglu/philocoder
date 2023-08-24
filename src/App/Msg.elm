@@ -53,6 +53,7 @@ type Msg
     | GotTagUpdateOrCreationDoneResponse (Result Http.Error String)
     | GotLoginResponse LoginRequestType (Result Http.Error String)
     | GotRegisterResponse (Result Http.Error String)
+    | GotUrlToRedirectResponse (Result Http.Error String)
     | Logout
     | GotContentReadResponse (Result Http.Error ContentReadResponse)
     | HideContentFromActiveTagPage ContentID Int (Maybe GotContent)

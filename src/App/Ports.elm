@@ -114,6 +114,9 @@ sendTitle model =
         EksiKonservePage _ ->
             title "ekşiposta"
 
+        RedirectPage _ ->
+            title "philocoder"
+
 
 port storeCredentials : String -> Cmd msg
 

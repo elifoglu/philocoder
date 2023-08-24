@@ -155,6 +155,9 @@ view model =
                             Nothing ->
                                 []
 
+                    RedirectPage _ ->
+                        [ text "..." ]
+
                     NotFoundPage ->
                         [ view404Div ]
 
