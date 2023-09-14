@@ -538,3 +538,11 @@ input[type='checkbox'] {
     cursor: pointer;
     background-color: #ffffff;
 }
+
+.updateContentLink {
+    text-underline: none;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    word-spacing: 0.2px;
+    margin: 2px;
+}

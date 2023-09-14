@@ -71,7 +71,13 @@ view model =
                                 []
 
                             Initialized content ->
-                                [ viewContentDiv Nothing Nothing model.localStorage.contentReadClickedAtLeastOnce content ]
+                                [ viewContentDiv Nothing Nothing model.localStorage.contentReadClickedAtLeastOnce content
+                                , if model.localStorage.username == "mert" then
+                                    a [ href ("/update/content/" ++ String.fromInt content.contentId), class "updateContentLink" ] [ text "(update this content)" ]
+
+                                  else
+                                    text ""
+                                ]
 
                     TagPage status ->
                         case status of
