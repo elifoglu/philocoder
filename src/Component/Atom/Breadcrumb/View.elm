@@ -29,8 +29,16 @@ viewBreadcrumb model =
         BioPage _ ->
             [ viewIconsDiv model ]
 
-        ContentPage (Initialized content) ->
-            if textOnlyContent content then
+        ContentPage data ->
+            let
+                contentId = case data of
+                    NonInitialized (id, _) ->
+                        id
+
+                    Initialized content ->
+                        content.contentId
+            in
+            if textOnlyContent contentId then
                 []
             else
                 [ viewHomeNavigator False, viewIconsDiv model ]

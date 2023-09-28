@@ -2,7 +2,7 @@ module Content.Util exposing (gotContentToContent, maybeDateText, maybeDisplayab
 
 import App.Model exposing (Model)
 import Content.Model exposing (Content, ContentDate, GraphData)
-import DataResponse exposing (GotContent, GotContentDate, GotTag)
+import DataResponse exposing (ContentID, GotContent, GotContentDate, GotTag)
 import Date exposing (format)
 import Maybe.Extra exposing (values)
 import Tag.Model exposing (Tag)
@@ -76,10 +76,10 @@ maybeDateText content =
     Just dateText
 
 
-textOnlyContent : Content -> Bool
-textOnlyContent content =
+textOnlyContent : ContentID -> Bool
+textOnlyContent contentId =
     let
         textOnlyContentIds =
             [ 10000, 10001 ]
     in
-    List.member content.contentId textOnlyContentIds
+    List.member contentId textOnlyContentIds

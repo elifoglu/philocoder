@@ -76,7 +76,7 @@ viewContentTitle maybeTitle beautifiedText =
 
 viewContentInfoDiv : Content -> Bool -> Html Msg
 viewContentInfoDiv content contentReadClickedAtLeastOnce =
-    if textOnlyContent content then div [ style "margin-bottom" "40px"] []
+    if textOnlyContent content.contentId then div [ style "margin-bottom" "40px"] []
     else div [ class "contentInfoDiv" ]
         ((case ( maybeDisplayableTagsOfContent content, maybeDateText content ) of
             ( Just displayableTagsOfContent, Just dateText ) ->
