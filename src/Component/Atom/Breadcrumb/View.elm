@@ -31,17 +31,25 @@ viewBreadcrumb model =
 
         ContentPage data ->
             let
-                contentId = case data of
-                    NonInitialized (id, _) ->
-                        id
+                contentId =
+                    case data of
+                        NonInitialized ( id, _ ) ->
+                            id
 
-                    Initialized content ->
-                        content.contentId
+                        Initialized content ->
+                            content.contentId
             in
             if textOnlyContent contentId then
                 []
+
             else
                 [ viewHomeNavigator False, viewIconsDiv model ]
+
+        RedirectPage "info-tr" ->
+            []
+
+        RedirectPage "info-en" ->
+            []
 
         _ ->
             [ viewHomeNavigator False, viewIconsDiv model ]
