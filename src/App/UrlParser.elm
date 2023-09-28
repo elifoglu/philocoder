@@ -23,6 +23,8 @@ routeParser readingMode =
         , map eksiKonservePageMapper (s "eksiposta")
         , map grafPageMapper (s "g")
         , map ustveriPageMapper (oneOf [(s "ustveri"), (s "%C3%BCstveri")])
+        , map infoForJobsTrPageMapper (s "info-tr")
+        , map infoForJobsEnPageMapper (s "info-en")
         ]
 
 
@@ -100,6 +102,13 @@ ustveriPageMapper : Page
 ustveriPageMapper =
     RedirectPage "üstveri"
 
+infoForJobsTrPageMapper : Page
+infoForJobsTrPageMapper =
+    RedirectPage "info-tr"
+
+infoForJobsEnPageMapper : Page
+infoForJobsEnPageMapper =
+    RedirectPage "info-en"
 
 pageBy : Url.Url -> ReadingMode -> Page
 pageBy url readingMode =

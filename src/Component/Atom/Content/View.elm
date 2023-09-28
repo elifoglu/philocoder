@@ -3,7 +3,7 @@ module Content.View exposing (viewContentDiv)
 import App.Model exposing (MaybeContentFadeOutData, MaybeTextToHighlight)
 import App.Msg exposing (Msg(..))
 import Content.Model exposing (Content, GotGraphData)
-import Content.Util exposing (maybeDateText, maybeDisplayableTagsOfContent)
+import Content.Util exposing (maybeDateText, maybeDisplayableTagsOfContent, textOnlyContent)
 import DataResponse exposing (ContentID)
 import ForceDirectedGraphForContent exposing (viewGraphForContent)
 import Html exposing (Html, a, div, img, input, label, p, span, text)
@@ -76,7 +76,8 @@ viewContentTitle maybeTitle beautifiedText =
 
 viewContentInfoDiv : Content -> Bool -> Html Msg
 viewContentInfoDiv content contentReadClickedAtLeastOnce =
-    div [ class "contentInfoDiv" ]
+    if textOnlyContent content then div [ style "margin-bottom" "40px"] []
+    else div [ class "contentInfoDiv" ]
         ((case ( maybeDisplayableTagsOfContent content, maybeDateText content ) of
             ( Just displayableTagsOfContent, Just dateText ) ->
                 viewTagLinks displayableTagsOfContent

@@ -1,4 +1,4 @@
-module Content.Util exposing (gotContentToContent, maybeDateText, maybeDisplayableTagsOfContent)
+module Content.Util exposing (gotContentToContent, maybeDateText, maybeDisplayableTagsOfContent, textOnlyContent)
 
 import App.Model exposing (Model)
 import Content.Model exposing (Content, ContentDate, GraphData)
@@ -74,3 +74,12 @@ maybeDateText content =
             format "dd.MM.yy" content.date
     in
     Just dateText
+
+
+textOnlyContent : Content -> Bool
+textOnlyContent content =
+    let
+        textOnlyContentIds =
+            [ 10000, 10001 ]
+    in
+    List.member content.contentId textOnlyContentIds

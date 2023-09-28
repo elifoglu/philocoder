@@ -2,6 +2,7 @@ module Breadcrumb.View exposing (..)
 
 import App.Model exposing (Initializable(..), Model, Page(..))
 import App.Msg exposing (Msg)
+import Content.Util exposing (textOnlyContent)
 import Home.View exposing (viewIconsDiv)
 import HomeNavigator.View exposing (viewHomeNavigator)
 import Html exposing (Html, b, text)
@@ -27,6 +28,12 @@ viewBreadcrumb model =
 
         BioPage _ ->
             [ viewIconsDiv model ]
+
+        ContentPage (Initialized content) ->
+            if textOnlyContent content then
+                []
+            else
+                [ viewHomeNavigator False, viewIconsDiv model ]
 
         _ ->
             [ viewHomeNavigator False, viewIconsDiv model ]
