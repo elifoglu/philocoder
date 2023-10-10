@@ -1,14 +1,14 @@
 module ForceDirectedGraphForContent exposing (graphSubscriptionsForContent, initGraphModelForContent, viewGraphForContent)
 
 import App.GraphModel exposing (GraphModel)
-import App.Model exposing (Entity, Model)
+import App.Model exposing (Entity, Model, Theme)
 import App.Msg exposing (Msg(..))
 import Browser.Events
 import Color
 import Content.Model exposing (GotGraphData, RefConnection)
 import DataResponse exposing (ContentID)
 import Force exposing (State)
-import ForceDirectedGraphUtil exposing (maybeGetAt)
+import ForceDirectedGraphUtil exposing (GraphColors, GraphLocation(..), graphColorsOf, maybeGetAt)
 import Graph exposing (Edge, Graph, Node, NodeContext, NodeId)
 import Html.Events.Extra.Mouse as Mouse exposing (Button(..), Event)
 import Json.Decode as Decode
@@ -95,65 +95,49 @@ initializeNode ctx =
 --VIEW--
 
 
-viewGraphForContent : Int -> List Int -> GraphModel -> Maybe ContentID -> Svg Msg
-viewGraphForContent idOfContentOfContentPage contentIds graphModel contentToColorize =
+viewGraphForContent : Theme -> Int -> List Int -> GraphModel -> Maybe ContentID -> Svg Msg
+viewGraphForContent activeTheme idOfContentOfContentPage contentIds graphModel contentToColorize =
+    let
+        graphColors = graphColorsOf ContentPage activeTheme
+    in
     svg [ viewBox 0 0 w h ] <|
         [ defs []
-            [ arrowHead ]
+            [ arrowHead graphColors ]
         , Graph.edges graphModel.graph
-            |> List.map (linkElement graphModel.graph)
+            |> List.map (linkElement graphColors graphModel.graph)
             |> g [ class [ "links" ] ]
         , Graph.nodes graphModel.graph
-            |> List.map (nodeElement idOfContentOfContentPage contentIds graphModel.currentlyDraggedNodeId contentToColorize)
+            |> List.map (nodeElement graphColors idOfContentOfContentPage contentIds graphModel.currentlyDraggedNodeId contentToColorize)
             |> g [ class [ "nodes" ] ]
         ]
 
+dummyColor = Color.rgb255 0 0 0
 
-defaultLinkColor : Color.Color
-defaultLinkColor =
-    Color.rgb255 225 225 225
-
-
-defaultNodeColor : Color.Color
-defaultNodeColor =
-    Color.rgb255 20 20 20
-
-
-nodeColorOfCurrentContent : Color.Color
-nodeColorOfCurrentContent =
-    Color.rgb255 255 32 32
-
-
-nodeColorOfColorizedContent : Color.Color
-nodeColorOfColorizedContent =
-    Color.rgb255 252 110 110
-
-
-selectNodeColor : ContentID -> ContentID -> Maybe ContentID -> Maybe ContentID -> Color.Color
-selectNodeColor idOfContentOfContentPage currentContentId maybeCurrentlyDraggedContentId maybeContentIdToColorize =
+selectNodeColor : GraphColors -> ContentID -> ContentID -> Maybe ContentID -> Maybe ContentID -> Color.Color
+selectNodeColor graphColors idOfContentOfContentPage currentContentId maybeCurrentlyDraggedContentId maybeContentIdToColorize =
     if currentContentId == idOfContentOfContentPage then
-        nodeColorOfCurrentContent
+        Maybe.withDefault (dummyColor) graphColors.nodeColorOfCurrentContent
 
     else
         case maybeCurrentlyDraggedContentId of
             Just currentlyDraggedContentId ->
                 if currentContentId == currentlyDraggedContentId then
-                    nodeColorOfColorizedContent
+                    graphColors.nodeColorOfColorizedContent
 
                 else
-                    defaultNodeColor
+                    graphColors.defaultNodeColor
 
             Nothing ->
                 case maybeContentIdToColorize of
                     Just contentIdToColorize ->
                         if contentIdToColorize == currentContentId then
-                            nodeColorOfColorizedContent
+                            graphColors.nodeColorOfColorizedContent
 
                         else
-                            defaultNodeColor
+                            graphColors.defaultNodeColor
 
                     Nothing ->
-                        defaultNodeColor
+                        graphColors.defaultNodeColor
 
 
 defaultNodeRValue : Float
@@ -189,8 +173,8 @@ selectNodeRValue idOfContentOfContentPage currentContentId maybeCurrentlyDragged
                         defaultNodeRValue
 
 
-arrowHead : Svg msg
-arrowHead =
+arrowHead : GraphColors -> Svg msg
+arrowHead graphColors =
     marker
         [ id "arrowhead"
         , markerWidth 6
@@ -198,13 +182,13 @@ arrowHead =
         , refX "7"
         , refY "2"
         , orient "auto"
-        , fill <| Paint defaultLinkColor
+        , fill <| Paint graphColors.defaultLinkColor
         ]
         [ polygon [ points [ ( 0, 0 ), ( 6, 2 ), ( 0, 4 ) ] ] [] ]
 
 
-linkElement : Graph Entity () -> Edge () -> Svg msg
-linkElement graph edge =
+linkElement : GraphColors -> Graph Entity () -> Edge () -> Svg msg
+linkElement graphColors graph edge =
     let
         source =
             Maybe.withDefault (Force.entity 0 "") <| Maybe.map (.node >> .label) <| Graph.get edge.from graph
@@ -214,7 +198,7 @@ linkElement graph edge =
     in
     line
         [ strokeWidth 0.9
-        , stroke <| Paint defaultLinkColor
+        , stroke <| Paint graphColors.defaultLinkColor
         , x1 source.x
         , y1 source.y
         , x2 target.x
@@ -224,11 +208,11 @@ linkElement graph edge =
         []
 
 
-nodeElement : Int -> List Int -> Maybe Int -> Maybe ContentID -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Svg Msg
-nodeElement idOfContentOfContentPage contentIds currentlyDraggedNodeId contentToColorize node =
+nodeElement : GraphColors -> Int -> List Int -> Maybe Int -> Maybe ContentID -> { a | id : NodeId, label : { b | x : Float, y : Float, value : String } } -> Svg Msg
+nodeElement graphColors idOfContentOfContentPage contentIds currentlyDraggedNodeId contentToColorize node =
     circle
         [ r <| selectNodeRValue idOfContentOfContentPage (Maybe.withDefault 0 (getAt node.id contentIds)) (maybeGetAt currentlyDraggedNodeId contentIds) contentToColorize
-        , fill <| Paint <| selectNodeColor idOfContentOfContentPage (Maybe.withDefault 0 (getAt node.id contentIds)) (maybeGetAt currentlyDraggedNodeId contentIds) contentToColorize
+        , fill <| Paint <| selectNodeColor graphColors idOfContentOfContentPage (Maybe.withDefault 0 (getAt node.id contentIds)) (maybeGetAt currentlyDraggedNodeId contentIds) contentToColorize
         , stroke <| Paint <| Color.rgba 0 0 0 0
         , strokeWidth 7
         , cx node.label.x

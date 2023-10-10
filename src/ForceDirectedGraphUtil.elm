@@ -1,8 +1,9 @@
-module ForceDirectedGraphUtil exposing (maybeGetAt, updateGraph)
+module ForceDirectedGraphUtil exposing (maybeGetAt, updateGraph, GraphLocation(..), graphColorsOf, GraphColors)
 
 import App.GraphModel exposing (GraphModel)
-import App.Model exposing (Entity, Model)
+import App.Model exposing (Entity, Model, Theme(..))
 import App.Msg exposing (Msg(..))
+import Color
 import Force exposing (State)
 import Graph exposing (Edge, Graph, Node, NodeContext, NodeId)
 import List.Extra exposing (getAt)
@@ -93,3 +94,59 @@ maybeGetAt maybeInt ints =
 
         Nothing ->
             Nothing
+
+
+type alias GraphColors =
+    { defaultLinkColor : Color.Color
+    , defaultNodeColor : Color.Color
+    , nodeColorOfColorizedContent : Color.Color
+    , nodeColorOfCurrentContent : Maybe Color.Color
+    }
+
+
+type GraphLocation
+    = HomePage
+    | GraphPage
+    | ContentPage
+
+
+graphColorsOf : GraphLocation -> Theme ->  GraphColors
+graphColorsOf graphLocation activeTheme =
+    case activeTheme of
+        Light ->
+            { defaultLinkColor = Color.rgb255 225 225 225
+            , defaultNodeColor = Color.rgb255 20 20 20
+            , nodeColorOfColorizedContent =
+                case graphLocation of
+                    ContentPage ->
+                        Color.rgb255 252 110 110
+
+                    _ ->
+                        Color.rgb255 255 32 32
+            , nodeColorOfCurrentContent =
+                case graphLocation of
+                    ContentPage ->
+                        Just (Color.rgb255 255 32 32)
+
+                    _ ->
+                        Nothing
+            }
+
+        Dark ->
+            { defaultLinkColor = Color.rgb255 65 65 65
+            , defaultNodeColor = Color.rgb255 225 225 225
+            , nodeColorOfColorizedContent =
+                case graphLocation of
+                    ContentPage ->
+                        Color.rgb255 121 227 218
+
+                    _ ->
+                        Color.rgb255 72 239 224
+            , nodeColorOfCurrentContent =
+                case graphLocation of
+                    ContentPage ->
+                        Just (Color.rgb255 72 239 224)
+
+                    _ ->
+                        Nothing
+            }

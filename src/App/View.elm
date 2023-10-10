@@ -53,7 +53,7 @@ view model =
                                                 initialMarginTop + round (toFloat tagsCount * heightOfASingleTagAsPx)
                                         in
                                         [ viewHomePageDiv allTagsToShow blogTagsToShow readingMode model.loggedIn model.consumeModeIsOn model.activeTheme
-                                        , div [ class "graph", style "margin-top" (String.fromInt marginTopForGraph ++ "px") ] [ viewGraph graphData.graphData.contentIds graphData.graphModel tagsCount graphData.contentToColorize ]
+                                        , div [ class "graph", style "margin-top" (String.fromInt marginTopForGraph ++ "px") ] [ viewGraph model.activeTheme graphData.graphData.contentIds graphData.graphModel tagsCount graphData.contentToColorize ]
                                         ]
 
                                     else
@@ -151,7 +151,7 @@ view model =
                         case maybeGraphData of
                             Just graphData ->
                                 if graphData.veryFirstMomentOfGraphHasPassed then
-                                    [ div [ class "graphForGraphPage", style "margin-top" "5px" ] [ viewGraphForGraphPage graphData.graphData.contentIds graphData.graphModel graphData.contentToColorize ]
+                                    [ div [ class "graphForGraphPage", style "margin-top" "5px" ] [ viewGraphForGraphPage model.activeTheme graphData.graphData.contentIds graphData.graphModel graphData.contentToColorize ]
                                     , Markdown.toHtml [ class "graphPageInformationText" ] ("*(imleç nodun üzerinde bekletilerek ilgili içerik hakkında bilgi sahibi olunabilir," ++ "  \n" ++ "sol tık ile ilgili içeriğe gidilebilir (ctrl + sol tık yeni sekmede açar)," ++ "  \n" ++ "sağ tık ile nod sürüklenerek eğlenilebilir)*")
                                     ]
 
