@@ -5,7 +5,6 @@
     --background-color: rgba(255, 255, 255, 0.25);
     --font-color: var(--light-theme-base-color-1);
     --hr-color: rgba(0, 0, 0, 0.15);
-    --font-color-hover: #cbcbcb;
     --home-navigator-background-hover: #c9c9c9;
     --a-color: var(--light-theme-base-color-1);
     --tag-link-color: var(--light-theme-base-color-1);
@@ -18,9 +17,12 @@
     --radio-button-accent-color: var(--light-theme-base-color-1);
     --checkbox-button-accent-color: var(--light-theme-base-color-1);
     --content-search-input-border-color: var(--light-theme-base-color-1);
+    --content-search-input-background: inherit;
+    --content-search-input-font-color: inherit;
     --text-to-highlight-color: yellow;
 
     --bio-group-border-color: var(--light-theme-base-color-1);
+    --bio-group-font-color: inherit;
     --bio-group-background: white;
     --bio-group-background-hover: #f3f2f2;
     --active-bio-group-font-color: white;
@@ -28,6 +30,7 @@
     --active-bio-group-background-hover: #343434;
     --bio-group-iconish-background: #f3f2f2;
     --bio-item-border-color: var(--light-theme-base-color-1);
+    --bio-item-font-color: inherit;
     --bio-item-background: none;
     --bio-item-background-hover: #f3f2f2;
     --bio-item-info-container-border-color: #bcbcbc;

@@ -215,6 +215,8 @@ input[type='radio'] {
 
 .contentSearchInput {
     border: 1px solid var(--content-search-input-border-color);
+    background: var(--content-search-input-background);
+    color: var(--content-search-input-font-color);
     border-radius: 2px;
     padding-top: 2px;
     width: 55px;
@@ -256,6 +258,7 @@ input:focus {
     border-radius: 2px;
     border: 1px solid var(--bio-group-border-color);
     background: var(--bio-group-background);
+    color: var(--bio-group-font-color);
 }
 
 .bioGroup:hover {
@@ -304,6 +307,7 @@ input:focus {
     border: 1px solid var(--bio-item-border-color);
     cursor: default;
     background: var(--bio-item-background);
+    color: var(--bio-item-font-color);
 }
 
 .bioItem:hover {

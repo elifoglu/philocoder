@@ -1,60 +1,62 @@
 :root[data-theme='dark'] {
-    --dark-theme-base-color-1: #e7e7e7;
+    --dark-theme-base-color-1: #f1f0f0;
     --dark-theme-base-color-2: #ffffff;
 
     --background-color: #202020;
     --font-color: var(--dark-theme-base-color-1);
-    --hr-color: rgba(0, 0, 0, 0.15);
-    --font-color-hover: #cbcbcb;
-    --home-navigator-background-hover: #c9c9c9;
+    --hr-color: rgba(232, 232, 232, 0.6);
+    --home-navigator-background-hover: #313131;
     --a-color: var(--dark-theme-base-color-1);
     --tag-link-color: var(--dark-theme-base-color-1);
-    --tag-link-color-hover: #505050;
-    --pagination-button-font-color: var(--dark-theme-base-color-2);
-    --pagination-button-font-color-hover: #c2c2c2;
-    --current-pagination-button-font-color: var(--dark-theme-base-color-1);
-    --current-pagination-button-font-color-hover: var(--dark-theme-base-color-1);
-    --pagination-button-background: var(--dark-theme-base-color-1);
-    --radio-button-accent-color: var(--dark-theme-base-color-1);
-    --checkbox-button-accent-color: var(--dark-theme-base-color-1);
-    --content-search-input-border-color: var(--dark-theme-base-color-1);
-    --text-to-highlight-color: yellow;
+    --tag-link-color-hover: #c2c2c2;
+    --pagination-button-font-color: #525252;
+    --pagination-button-font-color-hover: #2a2a2a;
+    --current-pagination-button-font-color: #e0e0e0;
+    --current-pagination-button-font-color-hover: #e0e0e0;
+    --pagination-button-background: #e0e0e0;
+    --radio-button-accent-color: #202020;
+    --checkbox-button-accent-color: #202020;
+    --content-search-input-border-color: #8f8f8f;
+    --content-search-input-background: #202020;
+    --content-search-input-font-color: #ffffff;
+    --text-to-highlight-color: #2f918f;
 
-    --bio-group-border-color: var(--dark-theme-base-color-1);
-    --bio-group-background: white;
-    --bio-group-background-hover: #f3f2f2;
-    --active-bio-group-font-color: white;
-    --active-bio-group-background: var(--dark-theme-base-color-1);
-    --active-bio-group-background-hover: #343434;
-    --bio-group-iconish-background: #f3f2f2;
-    --bio-item-border-color: var(--dark-theme-base-color-1);
-    --bio-item-background: none;
-    --bio-item-background-hover: #f3f2f2;
-    --bio-item-info-container-border-color: #bcbcbc;
-    --info-gray-icon-url: url("/public/inverted/info-gray.png");
+    --bio-group-border-color: #414141;
+    --bio-group-font-color: white;
+    --bio-group-background: #232323;
+    --bio-group-background-hover: #3b3b3b;
+    --active-bio-group-font-color: #d2d2d2;
+    --active-bio-group-background: #505050;
+    --active-bio-group-background-hover: #6e6e6e;
+    --bio-group-iconish-background: #b6afaf;
+    --bio-item-border-color: #9a9999;
+    --bio-item-font-color: #f1f0f0;
+    --bio-item-background: rgba(225, 225, 225, 0);
+    --bio-item-background-hover: rgb(58, 58, 58);
+    --bio-item-info-container-border-color: #9a9999;
+    --info-gray-icon-url: url("/public/info-gray.svg");
 
-    --logout-button-border-color: var(--dark-theme-base-color-1);
-    --logout-button-font-color: var(--dark-theme-base-color-1);
-    --logout-button-font-color-hover: var(--dark-theme-base-color-2);
-    --logout-button-background: var(--dark-theme-base-color-2);
-    --logout-button-background-hover: var(--dark-theme-base-color-1);
+    --logout-button-border-color: #4b4b4b;
+    --logout-button-font-color: white;
+    --logout-button-font-color-hover: #d3d3d3;
+    --logout-button-background: #202020;
+    --logout-button-background-hover: #4f4f4f;
 
-    --login-register-buttons-border-color: var(--dark-theme-base-color-1);
-    --login-register-buttons-font-color: var(--dark-theme-base-color-2);
-    --login-register-buttons-font-color-hover: var(--dark-theme-base-color-2);
-    --login-register-buttons-background: var(--dark-theme-base-color-1);
-    --login-register-buttons-background-hover: #474747;
+    --login-register-buttons-border-color: #4b4b4b;
+    --login-register-buttons-font-color: white;
+    --login-register-buttons-font-color-hover: #d3d3d3;
+    --login-register-buttons-background: #202020;
+    --login-register-buttons-background-hover: #4f4f4f;
 
-    --graph-box-shadow-color: var(--dark-theme-base-color-1);
+    --graph-box-shadow-color: #565656;
     --graph-box-shadow-size: 1px;
     --graph-page-info-text-font-color: var(--dark-theme-base-color-1);
 
-    --eksi-konserve-background-color: #dcffce;
-    --eksi-konserve-border-color: green;
-    --eksi-konserve-div-a-color: darkblue;
-    --eksi-konserve-div-a-color-hover: rgb(128, 128, 128);
-    --eksi-konserve-button-border-color: #000;
-    --eksi-konserve-button-font-color: var(--dark-theme-base-color-1);
-    --eksi-konserve-button-background: var(--dark-theme-base-color-2);
-
+    --eksi-konserve-background-color: none;
+    --eksi-konserve-border-color: #ffffff;
+    --eksi-konserve-div-a-color: white;
+    --eksi-konserve-div-a-color-hover: rgb(231, 231, 231);
+    --eksi-konserve-button-border-color: #b75c5c;
+    --eksi-konserve-button-font-color: white;
+    --eksi-konserve-button-background: #202020;
 }

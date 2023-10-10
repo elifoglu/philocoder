@@ -18,7 +18,11 @@ viewBioGroup activeTheme bioGroup =
                 text ""
 
             else
-                img [ class (decideBioGroupClass bioGroup), src bioGroup.title, onClick (ClickOnABioGroup bioGroup.url) ] []
+                let
+                    iconName =
+                        String.dropLeft 1 bioGroup.title
+                in
+                img [ class (decideBioGroupClass bioGroup), src (getIconPath activeTheme iconName), onClick (ClickOnABioGroup bioGroup.url) ] []
 
           else
             button [ class (decideBioGroupClass bioGroup), onClick (ClickOnABioGroup bioGroup.url) ]
