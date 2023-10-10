@@ -19,6 +19,9 @@
     --content-search-input-border-color: var(--light-theme-base-color-1);
     --content-search-input-background: inherit;
     --content-search-input-font-color: inherit;
+    --login-register-input-border-color: var(--light-theme-base-color-1);
+    --login-register-input-background: inherit;
+    --login-register-input-font-color: inherit;
     --text-to-highlight-color: yellow;
 
     --bio-group-border-color: var(--light-theme-base-color-1);

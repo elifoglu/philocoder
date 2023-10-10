@@ -418,6 +418,14 @@ input:focus {
     color: var(--logout-button-font-color-hover);
 }
 
+.loginRegisterInput {
+    border: 1px solid var(--login-register-input-border-color);
+    background: var(--login-register-input-background);
+    color: var(--login-register-input-font-color);
+    border-radius: 3px;
+    font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
 .loginRegisterButton {
     padding: 0px 4px 0px 4px;
     border: 1px solid var(--login-register-buttons-border-color);
