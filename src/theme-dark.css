@@ -54,9 +54,10 @@
 
     --eksi-konserve-background-color: none;
     --eksi-konserve-border-color: #ffffff;
-    --eksi-konserve-div-a-color: white;
-    --eksi-konserve-div-a-color-hover: rgb(231, 231, 231);
-    --eksi-konserve-button-border-color: #b75c5c;
+    --eksi-konserve-div-font-color: #cecece;
+    --eksi-konserve-div-a-color: #cecece;
+    --eksi-konserve-div-a-color-hover: rgb(171, 171, 171);
+    --eksi-konserve-button-border-color: rgba(147, 255, 147, 0.4);
     --eksi-konserve-button-font-color: white;
     --eksi-konserve-button-background: #202020;
 }

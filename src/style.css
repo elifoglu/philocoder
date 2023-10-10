@@ -493,6 +493,7 @@ input[type='checkbox'] {
     border-color: var(--eksi-konserve-border-color);
     border-radius: 3px;
     width: fit-content;
+    color: var(--eksi-konserve-div-font-color);
 }
 
 .eksiKonserveDiv a {
@@ -535,6 +536,7 @@ input[type='checkbox'] {
     border: 1px solid var(--eksi-konserve-button-border-color);
     cursor: pointer;
     background-color: var(--eksi-konserve-button-background);
+    color: var(--eksi-konserve-button-font-color);
 }
 
 .deleteAllEkşiKonserveExceptionsButton {
@@ -542,6 +544,7 @@ input[type='checkbox'] {
     border: 1px solid var(--eksi-konserve-button-border-color);
     cursor: pointer;
     background-color: var(--eksi-konserve-button-background);
+    color: var(--eksi-konserve-button-font-color);
 }
 
 .updateContentLink {
