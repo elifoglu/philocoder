@@ -1,6 +1,11 @@
 import './style.css';
-//import './style_dark.css'; -- add this line to enable dark mode
+import './theme-light.css';
+import './theme-dark.css';
+
 import {Elm} from './Main.elm';
+
+var activeTheme = localStorage.getItem('philocoder-active-theme');
+document.documentElement.setAttribute("data-theme", (activeTheme != null) ? activeTheme : "light");
 
 var readingMode = localStorage.getItem('philocoder-reading-mode');
 
@@ -13,6 +18,7 @@ var readMeIconClickedAtLeastOnce = localStorage.getItem('philocoder-readme-icon-
 var credentials = localStorage.getItem('philocoder-credentials');
 
 let obj = {
+    activeTheme: activeTheme,
     readingMode: readingMode, consumeModeIsOn: consumeModeIsOn,
     contentReadClickedAtLeastOnce: contentReadClickedAtLeastOnce,
     readMeIconClickedAtLeastOnce: readMeIconClickedAtLeastOnce, credentials: credentials
@@ -25,6 +31,11 @@ let elm = Elm.Main.init({
 
 elm.ports.title.subscribe(title => {
     document.title = title;
+});
+
+elm.ports.storeTheme.subscribe(activeTheme => {
+    localStorage.setItem('philocoder-active-theme', activeTheme);
+    document.documentElement.setAttribute("data-theme", activeTheme)
 });
 
 elm.ports.storeReadingMode.subscribe(readingModeValue => {

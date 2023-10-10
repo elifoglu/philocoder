@@ -1,6 +1,6 @@
 module CreateContent.View exposing (viewCreateContentDiv)
 
-import App.Model exposing (CreateContentPageModel, Model, ReadingMode(..))
+import App.Model exposing (CreateContentPageModel, Model, ReadingMode(..), Theme)
 import App.Msg exposing (ContentInputType(..), Msg(..), PreviewContentModel(..))
 import Component.Page.Util exposing (flipBoolAndToStr)
 import Content.View exposing (viewContentDiv)
@@ -10,8 +10,8 @@ import Html.Events exposing (on, onClick, onInput)
 import Json.Decode as Decode
 
 
-viewCreateContentDiv : CreateContentPageModel -> Html Msg
-viewCreateContentDiv createContentPageModel =
+viewCreateContentDiv : Theme -> CreateContentPageModel -> Html Msg
+viewCreateContentDiv activeTheme createContentPageModel =
     div [] <|
         [ text "Create a new content using this content's data:"
         , viewInput "text" "id of content to copy" createContentPageModel.contentIdToCopy (ContentInputChanged ContentToCopy)
@@ -33,7 +33,7 @@ viewCreateContentDiv createContentPageModel =
                 , hr [] []
                 , case createContentPageModel.maybeContentToPreview of
                     Just content ->
-                        viewContentDiv Nothing Nothing False content
+                        viewContentDiv activeTheme Nothing Nothing False content
 
                     Nothing ->
                         text "invalid content, or no content at all"

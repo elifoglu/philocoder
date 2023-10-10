@@ -1,5 +1,7 @@
 module BioItem.View exposing (viewBioItemDiv)
 
+import App.IconUtil exposing (getIconPath)
+import App.Model exposing (Theme)
 import App.Msg exposing (Msg(..))
 import BioItem.Model exposing (BioItem)
 import BioItem.Util exposing (separatorBioItem)
@@ -9,8 +11,8 @@ import Html.Events exposing (onClick)
 import Markdown
 
 
-viewBioItemDiv : Maybe BioItem -> BioItem -> Html Msg
-viewBioItemDiv maybeBioItemInfoToShow bioItem =
+viewBioItemDiv : Theme -> Maybe BioItem -> BioItem -> Html Msg
+viewBioItemDiv activeTheme maybeBioItemInfoToShow bioItem =
     if bioItem == separatorBioItem then
         span [ class "bioItemSeparator" ] [ text "|" ]
 
@@ -23,7 +25,7 @@ viewBioItemDiv maybeBioItemInfoToShow bioItem =
                             [ button [ class "bioItem bioItemHasAnInfo", title (getBioItemTitleText bioItem) ]
                                 [ text bioItem.name
                                 ]
-                            , img [ class "goToBioItemExternalLink", src "/external-link.svg" ] []
+                            , img [ class "goToBioItemExternalLink", src (getIconPath activeTheme "external-link") ] []
                             ]
                         ]
 
@@ -32,7 +34,7 @@ viewBioItemDiv maybeBioItemInfoToShow bioItem =
                             [ text bioItem.name
                             ]
                         , span [ style "white-space" "normal" ]
-                            [ img [ onClick (ClickOnABioItemInfo bioItem), class "openBioItemInfo", src (getProperInfoIcon maybeBioItemInfoToShow bioItem) ] []
+                            [ img [ onClick (ClickOnABioItemInfo bioItem), class "openBioItemInfo", src (getProperInfoIcon activeTheme maybeBioItemInfoToShow bioItem) ] []
                             , viewBioItemInfoModal bioItem info maybeBioItemInfoToShow
                             ]
                         ]
@@ -51,18 +53,18 @@ getBioItemTitleText bioItem =
         |> String.join ", "
 
 
-getProperInfoIcon : Maybe BioItem -> BioItem -> String
-getProperInfoIcon maybeBioItemToShowInfo bioItem =
+getProperInfoIcon : Theme -> Maybe BioItem -> BioItem -> String
+getProperInfoIcon activeTheme maybeBioItemToShowInfo bioItem =
     case maybeBioItemToShowInfo of
         Just bioItemToShowInfo ->
             if bioItemToShowInfo.bioItemID == bioItem.bioItemID then
-                "/info.svg"
+                (getIconPath activeTheme "info")
 
             else
-                "/info-gray.svg"
+                (getIconPath activeTheme "info-gray")
 
         Nothing ->
-            "/info-gray.svg"
+            (getIconPath activeTheme "info-gray")
 
 
 viewBioItemInfoModal : BioItem -> String -> Maybe BioItem -> Html Msg

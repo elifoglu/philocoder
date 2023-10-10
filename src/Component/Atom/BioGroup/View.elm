@@ -1,5 +1,7 @@
 module BioGroup.View exposing (viewBioGroup, viewBioGroupInfoDiv)
 
+import App.IconUtil exposing (getIconPath)
+import App.Model exposing (Theme)
 import App.Msg exposing (Msg(..))
 import BioGroup.Model exposing (BioGroup)
 import Html exposing (Html, button, div, img, p, span, text)
@@ -8,8 +10,8 @@ import Html.Events exposing (onClick)
 import Markdown
 
 
-viewBioGroup : BioGroup -> Html Msg
-viewBioGroup bioGroup =
+viewBioGroup : Theme -> BioGroup -> Html Msg
+viewBioGroup activeTheme bioGroup =
     span []
         [ if String.startsWith "/" bioGroup.title then
             if bioGroup.url == "home" && bioGroup.isActive then
@@ -28,7 +30,7 @@ viewBioGroup bioGroup =
 
                 else
                     span [ style "font-size" "12px" ]
-                        [ img [ onClick (BioGroupDisplayInfoChanged bioGroup), class "openBioGroupInfo", src (getProperInfoIcon bioGroup) ] []
+                        [ img [ onClick (BioGroupDisplayInfoChanged bioGroup), class "openBioGroupInfo", src (getProperInfoIcon activeTheme bioGroup) ] []
                         ]
 
             Nothing ->
@@ -36,13 +38,13 @@ viewBioGroup bioGroup =
         ]
 
 
-getProperInfoIcon : BioGroup -> String
-getProperInfoIcon bioGroup =
+getProperInfoIcon : Theme -> BioGroup -> String
+getProperInfoIcon activeTheme bioGroup =
     if bioGroup.isActive && bioGroup.displayInfo then
-        "/info.svg"
+        (getIconPath activeTheme "info")
 
     else
-        "/info-gray.svg"
+        (getIconPath activeTheme "info-gray")
 
 
 decideBioGroupClass : BioGroup -> String

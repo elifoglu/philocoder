@@ -1,5 +1,6 @@
 module BioItems.View exposing (viewBioItemsDiv)
 
+import App.Model exposing (Theme)
 import App.Msg exposing (Msg)
 import BioGroup.Model exposing (BioGroup)
 import BioItem.Model exposing (BioItem)
@@ -9,8 +10,8 @@ import Html exposing (Html, div, span)
 import Html.Attributes exposing (style)
 
 
-viewBioItemsDiv : Maybe BioItem -> List BioItem -> BioGroup -> Html Msg
-viewBioItemsDiv bioItemInfoToShow bioItems activeBioGroup =
+viewBioItemsDiv : Theme -> Maybe BioItem -> List BioItem -> BioGroup -> Html Msg
+viewBioItemsDiv activeTheme bioItemInfoToShow bioItems activeBioGroup =
     let
         orderedBioItems =
             activeBioGroup.bioItemOrder
@@ -19,7 +20,7 @@ viewBioItemsDiv bioItemInfoToShow bioItems activeBioGroup =
     div [ style "margin-top" "20px", style "margin-bottom" "40px" ]
         (orderedBioItems
             |> List.filter (bioItemIsMemberOfActiveGroup activeBioGroup)
-            |> List.map (viewBioItemDiv bioItemInfoToShow)
+            |> List.map (viewBioItemDiv activeTheme bioItemInfoToShow)
             |> List.intersperse (span [] [])
         )
 

@@ -23,6 +23,7 @@ type Msg
     | ReadingModeChanged ReadingMode
     | ConsumeModeChanged Bool
     | ContentReadChecked ContentID
+    | ThemeChanged
     | GotSearchInput String
     | GotContentSearchResponse (Result Http.Error ContentSearchResponse)
     | FocusResult (Result Dom.Error ())

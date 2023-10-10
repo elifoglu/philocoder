@@ -1,6 +1,7 @@
 module Content.View exposing (viewContentDiv)
 
-import App.Model exposing (MaybeContentFadeOutData, MaybeTextToHighlight)
+import App.IconUtil exposing (getIconPath)
+import App.Model exposing (MaybeContentFadeOutData, MaybeTextToHighlight, Theme)
 import App.Msg exposing (Msg(..))
 import Content.Model exposing (Content, GotGraphData)
 import Content.Util exposing (maybeDateText, maybeDisplayableTagsOfContent, textOnlyContent)
@@ -14,27 +15,27 @@ import Markdown exposing (defaultOptions)
 import Tag.Model exposing (Tag)
 
 
-viewContentDiv : MaybeContentFadeOutData -> MaybeTextToHighlight -> Bool -> Content -> Html Msg
-viewContentDiv dataToFadeContent textToHighlight contentReadClickedAtLeastOnce content =
+viewContentDiv : Theme -> MaybeContentFadeOutData -> MaybeTextToHighlight -> Bool -> Content -> Html Msg
+viewContentDiv activeTheme dataToFadeContent textToHighlight contentReadClickedAtLeastOnce content =
     case content.graphDataIfGraphIsOn of
         Nothing ->
-            viewContentDivWithoutGraph dataToFadeContent textToHighlight contentReadClickedAtLeastOnce content
+            viewContentDivWithoutGraph activeTheme dataToFadeContent textToHighlight contentReadClickedAtLeastOnce content
 
         Just graphData ->
             if List.isEmpty graphData.graphData.contentIds then
-                viewContentDivWithoutGraph dataToFadeContent textToHighlight contentReadClickedAtLeastOnce content
+                viewContentDivWithoutGraph activeTheme dataToFadeContent textToHighlight contentReadClickedAtLeastOnce content
             else if graphData.veryFirstMomentOfGraphHasPassed then
                 div []
                     [ div [ class "graphForContent" ] [ viewGraphForContent content.contentId graphData.graphData.contentIds graphData.graphModel graphData.contentToColorize ]
-                    , viewContentDivWithoutGraph dataToFadeContent textToHighlight contentReadClickedAtLeastOnce content
+                    , viewContentDivWithoutGraph activeTheme dataToFadeContent textToHighlight contentReadClickedAtLeastOnce content
                     ]
 
             else
                 text ""
 
 
-viewContentDivWithoutGraph : MaybeContentFadeOutData -> MaybeTextToHighlight -> Bool -> Content -> Html Msg
-viewContentDivWithoutGraph dataToFadeContent textToHighlight contentReadClickedAtLeastOnce content =
+viewContentDivWithoutGraph : Theme -> MaybeContentFadeOutData -> MaybeTextToHighlight -> Bool -> Content -> Html Msg
+viewContentDivWithoutGraph activeTheme dataToFadeContent textToHighlight contentReadClickedAtLeastOnce content =
     p [ style "opacity" (getOpacityLevel content.contentId dataToFadeContent) ]
         [ div []
             [ div [ class "title" ] [ viewContentTitle content.title content.beautifiedText ]
@@ -42,7 +43,7 @@ viewContentDivWithoutGraph dataToFadeContent textToHighlight contentReadClickedA
             , viewMarkdownTextOfContent content textToHighlight
             , viewFurtherReadingRefsTextOfContent content
             ]
-        , viewContentInfoDiv content contentReadClickedAtLeastOnce
+        , viewContentInfoDiv activeTheme content contentReadClickedAtLeastOnce
         ]
 
 
@@ -74,8 +75,8 @@ viewContentTitle maybeTitle beautifiedText =
             text ""
 
 
-viewContentInfoDiv : Content -> Bool -> Html Msg
-viewContentInfoDiv content contentReadClickedAtLeastOnce =
+viewContentInfoDiv : Theme -> Content -> Bool -> Html Msg
+viewContentInfoDiv activeTheme content contentReadClickedAtLeastOnce =
     if textOnlyContent content.contentId then div [ style "margin-bottom" "40px"] []
     else div [ class "contentInfoDiv" ]
         ((case ( maybeDisplayableTagsOfContent content, maybeDateText content ) of
@@ -86,7 +87,7 @@ viewContentInfoDiv content contentReadClickedAtLeastOnce =
             ( _, _ ) ->
                 []
          )
-            ++ [ text " ", viewContentLinkWithLinkIcon content, viewGraphLink content, viewContentReadCheckSpan content contentReadClickedAtLeastOnce ]
+            ++ [ text " ", viewContentLinkWithLinkIcon activeTheme content, viewGraphLink activeTheme content, viewContentReadCheckSpan content contentReadClickedAtLeastOnce ]
         )
 
 
@@ -127,13 +128,13 @@ viewContentLink htmlToClick beautifiedText contentId =
         ]
 
 
-viewContentLinkWithLinkIcon : Content -> Html msg
-viewContentLinkWithLinkIcon content =
-    viewContentLink (img [ class "navToContent", src "/link.svg" ] []) "" (String.fromInt content.contentId)
+viewContentLinkWithLinkIcon : Theme -> Content -> Html msg
+viewContentLinkWithLinkIcon activeTheme content =
+    viewContentLink (img [ class "navToContent", src (getIconPath activeTheme "link") ] []) "" (String.fromInt content.contentId)
 
 
-viewGraphLink : Content -> Html Msg
-viewGraphLink content =
+viewGraphLink : Theme -> Content -> Html Msg
+viewGraphLink activeTheme content =
     if List.isEmpty content.gotGraphData.connections then
         text ""
 
@@ -141,11 +142,11 @@ viewGraphLink content =
         case content.graphDataIfGraphIsOn of
             Just _ ->
                 a [ href ("/contents/" ++ String.fromInt content.contentId) ]
-                    [ img [ class "contentPageToggleChecked", src "/graph.svg" ] [] ]
+                    [ img [ class "contentPageToggleChecked", src (getIconPath activeTheme "graph") ] [] ]
 
             Nothing ->
                 a [ href ("/contents/" ++ String.fromInt content.contentId ++ "?graph=true") ]
-                    [ img [ class "contentPageToggleChecked", src "/graph.svg" ] [] ]
+                    [ img [ class "contentPageToggleChecked", src (getIconPath activeTheme "graph") ] [] ]
 
 
 viewMarkdownTextOfContent : Content -> MaybeTextToHighlight -> Html msg

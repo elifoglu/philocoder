@@ -1,5 +1,6 @@
 module ContentSearch.View exposing (..)
 
+import App.Model exposing (Theme)
 import App.Msg exposing (Msg(..))
 import Content.Model exposing (Content)
 import Content.View exposing (viewContentDiv)
@@ -8,8 +9,8 @@ import Html.Attributes exposing (class, id, placeholder, style, type_, value)
 import Html.Events exposing (onInput)
 
 
-viewSearchContentDiv : Bool -> String -> List Content -> Html Msg
-viewSearchContentDiv contentReadClickedAtLeastOnce searchKeyword contents =
+viewSearchContentDiv : Theme -> Bool -> String -> List Content -> Html Msg
+viewSearchContentDiv activeTheme contentReadClickedAtLeastOnce searchKeyword contents =
     div []
         [ input [ type_ "text", id "contentSearchInput", class "contentSearchInput", placeholder "ara...", value searchKeyword, onInput GotSearchInput, style "width" "100px" ] []
         , span [ class "searchContentInfoText" ]
@@ -26,7 +27,7 @@ viewSearchContentDiv contentReadClickedAtLeastOnce searchKeyword contents =
             ]
         , div [ style "margin-top" "20px" ]
             (contents
-                |> List.map (viewContentDiv Nothing (Just searchKeyword) contentReadClickedAtLeastOnce)
+                |> List.map (viewContentDiv activeTheme Nothing (Just searchKeyword) contentReadClickedAtLeastOnce)
                 |> List.intersperse (hr [] [])
             )
         ]

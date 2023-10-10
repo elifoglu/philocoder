@@ -1,6 +1,6 @@
 module Bio.View exposing (..)
 
-import App.Model exposing (BioPageModel, Model)
+import App.Model exposing (BioPageModel, Model, Theme)
 import App.Msg exposing (Msg(..))
 import BioGroup.Model exposing (BioGroup)
 import BioGroup.View exposing (viewBioGroupInfoDiv)
@@ -10,8 +10,8 @@ import Html exposing (Html, div)
 import Html.Attributes exposing (style)
 
 
-viewBioPageDiv : BioPageModel -> Html Msg
-viewBioPageDiv bioPageModel =
+viewBioPageDiv : Theme -> BioPageModel -> Html Msg
+viewBioPageDiv activeTheme bioPageModel =
     let
         activeBioGroup =
             bioPageModel.bioGroups
@@ -20,7 +20,7 @@ viewBioPageDiv bioPageModel =
                 |> Maybe.withDefault (BioGroup "" "" 0 Nothing 9999 [] True False)
     in
     div [ style "float" "left", style "margin-left" "-4px" ]
-        (viewBioGroupsDiv bioPageModel.bioGroups
+        (viewBioGroupsDiv activeTheme bioPageModel.bioGroups
             :: [ viewBioGroupInfoDiv activeBioGroup ]
-            ++ [ viewBioItemsDiv bioPageModel.bioItemToShowInfo bioPageModel.bioItems activeBioGroup ]
+            ++ [ viewBioItemsDiv activeTheme bioPageModel.bioItemToShowInfo bioPageModel.bioItems activeBioGroup ]
         )

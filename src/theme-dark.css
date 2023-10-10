@@ -1,0 +1,59 @@
+:root[data-theme='dark'] {
+    --dark-theme-base-color-1: #e7e7e7;
+    --dark-theme-base-color-2: #ffffff;
+
+    --background-color: #202020;
+    --font-color: var(--dark-theme-base-color-1);
+    --hr-color: rgba(0, 0, 0, 0.15);
+    --font-color-hover: #cbcbcb;
+    --home-navigator-background-hover: #c9c9c9;
+    --a-color: var(--dark-theme-base-color-1);
+    --tag-link-color: var(--dark-theme-base-color-1);
+    --tag-link-color-hover: #505050;
+    --pagination-button-font-color: var(--dark-theme-base-color-2);
+    --pagination-button-font-color-hover: #c2c2c2;
+    --current-pagination-button-font-color: var(--dark-theme-base-color-1);
+    --current-pagination-button-font-color-hover: var(--dark-theme-base-color-1);
+    --pagination-button-background: var(--dark-theme-base-color-1);
+    --radio-button-accent-color: var(--dark-theme-base-color-1);
+    --checkbox-button-accent-color: var(--dark-theme-base-color-1);
+    --content-search-input-border-color: var(--dark-theme-base-color-1);
+    --text-to-highlight-color: yellow;
+
+    --bio-group-border-color: var(--dark-theme-base-color-1);
+    --bio-group-background: white;
+    --bio-group-background-hover: #f3f2f2;
+    --active-bio-group-font-color: white;
+    --active-bio-group-background: var(--dark-theme-base-color-1);
+    --active-bio-group-background-hover: #343434;
+    --bio-group-iconish-background: #f3f2f2;
+    --bio-item-border-color: var(--dark-theme-base-color-1);
+    --bio-item-background: none;
+    --bio-item-background-hover: #f3f2f2;
+    --bio-item-info-container-border-color: #bcbcbc;
+    --info-gray-icon-url: url("/public/inverted/info-gray.png");
+
+    --logout-button-border-color: var(--dark-theme-base-color-1);
+    --logout-button-font-color: var(--dark-theme-base-color-1);
+    --logout-button-font-color-hover: var(--dark-theme-base-color-2);
+    --logout-button-background: var(--dark-theme-base-color-2);
+    --logout-button-background-hover: var(--dark-theme-base-color-1);
+
+    --login-register-buttons-border-color: var(--dark-theme-base-color-1);
+    --login-register-buttons-font-color: var(--dark-theme-base-color-2);
+    --login-register-buttons-font-color-hover: var(--dark-theme-base-color-2);
+    --login-register-buttons-background: var(--dark-theme-base-color-1);
+    --login-register-buttons-background-hover: #474747;
+
+    --graph-box-shadow-color: var(--dark-theme-base-color-1);
+    --graph-page-info-text-font-color: var(--dark-theme-base-color-1);
+
+    --eksi-konserve-background-color: #dcffce;
+    --eksi-konserve-border-color: green;
+    --eksi-konserve-div-a-color: darkblue;
+    --eksi-konserve-div-a-color-hover: rgb(128, 128, 128);
+    --eksi-konserve-button-border-color: #000;
+    --eksi-konserve-button-font-color: var(--dark-theme-base-color-1);
+    --eksi-konserve-button-background: var(--dark-theme-base-color-2);
+
+}

@@ -1,5 +1,6 @@
 module BioGroups.View exposing (makeAllBioGroupsNonActive, viewBioGroupsDiv)
 
+import App.Model exposing (Theme)
 import App.Msg exposing (Msg(..))
 import BioGroup.Model exposing (BioGroup)
 import BioGroup.View exposing (viewBioGroup)
@@ -7,16 +8,16 @@ import Html exposing (Html, div)
 import Html.Attributes exposing (style)
 
 
-viewBioGroupsDiv : List BioGroup -> Html Msg
-viewBioGroupsDiv bioGroups =
+viewBioGroupsDiv : Theme -> List BioGroup -> Html Msg
+viewBioGroupsDiv activeTheme bioGroups =
     div [ style "margin-top" "10px" ]
-        (viewBioGroups bioGroups)
+        (viewBioGroups activeTheme bioGroups)
 
 
-viewBioGroups : List BioGroup -> List (Html Msg)
-viewBioGroups bioGroups =
+viewBioGroups : Theme -> List BioGroup -> List (Html Msg)
+viewBioGroups activeTheme bioGroups =
     bioGroups
-        |> List.map viewBioGroup
+        |> List.map (viewBioGroup activeTheme)
 
 
 makeAllBioGroupsNonActive : List BioGroup -> List BioGroup

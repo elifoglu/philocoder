@@ -1,6 +1,6 @@
 module UpdateContent.View exposing (viewUpdateContentDiv)
 
-import App.Model exposing (CreateContentPageModel, Model, UpdateContentPageData)
+import App.Model exposing (CreateContentPageModel, Model, Theme, UpdateContentPageData)
 import App.Msg exposing (ContentInputType(..), Msg(..), PreviewContentModel(..))
 import Component.Page.Util exposing (flipBoolAndToStr)
 import Content.Model exposing (Content)
@@ -12,8 +12,8 @@ import Html.Events exposing (on, onClick, onInput)
 import Json.Decode as Decode
 
 
-viewUpdateContentDiv : UpdateContentPageData -> Maybe Content -> ContentID -> Html Msg
-viewUpdateContentDiv updateContentPageData maybeContentToPreview contentId =
+viewUpdateContentDiv : Theme -> UpdateContentPageData -> Maybe Content -> ContentID -> Html Msg
+viewUpdateContentDiv activeTheme updateContentPageData maybeContentToPreview contentId =
     div [] <|
         List.intersperse (br [] [])
             [ viewDisabledInput "text" (String.fromInt contentId)
@@ -30,7 +30,7 @@ viewUpdateContentDiv updateContentPageData maybeContentToPreview contentId =
             , hr [] []
             , case maybeContentToPreview of
                 Just content ->
-                    viewContentDiv Nothing Nothing False content
+                    viewContentDiv activeTheme Nothing Nothing False content
 
                 Nothing ->
                     text "invalid content, or no content at all"

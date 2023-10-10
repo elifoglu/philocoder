@@ -2,7 +2,7 @@ module Main exposing (main, needAllTagsData)
 
 import App.Model exposing (..)
 import App.Msg exposing (ContentInputType(..), LoginRegisterPageInputType(..), LoginRequestType(..), Msg(..), TagInputType(..))
-import App.Ports exposing (modifyUrl, openNewTab, sendTitle, storeConsumeMode, storeContentReadClickedForTheFirstTime, storeCredentials, storeReadMeIconClickedForTheFirstTime, storeReadingMode)
+import App.Ports exposing (modifyUrl, openNewTab, sendTitle, storeConsumeMode, storeContentReadClickedForTheFirstTime, storeCredentials, storeReadMeIconClickedForTheFirstTime, storeReadingMode, storeTheme)
 import App.UrlParser exposing (pageBy)
 import App.View exposing (view)
 import BioGroup.Util exposing (changeDisplayInfoValueIfUrlMatchesAndGroupIsActive, gotBioGroupToBioGroup, setActiveness)
@@ -41,9 +41,20 @@ main =
         }
 
 
-init : { readingMode : Maybe String, consumeModeIsOn : Maybe String, contentReadClickedAtLeastOnce : Maybe String, readMeIconClickedAtLeastOnce : Maybe String, credentials : Maybe String } -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
+init : { activeTheme: Maybe String, readingMode : Maybe String, consumeModeIsOn : Maybe String, contentReadClickedAtLeastOnce : Maybe String, readMeIconClickedAtLeastOnce : Maybe String, credentials : Maybe String } -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
     let
+        activeTheme =
+            case flags.activeTheme of
+                Just "light" ->
+                    Light
+
+                Just "dark" ->
+                    Dark
+
+                _ ->
+                    Light
+
         credentials =
             case flags.credentials of
                 Just cred ->
@@ -97,7 +108,7 @@ init flags url key =
                     False
 
         model =
-            Model "log" key [] page False (LocalStorage readingMode contentReadClickedAtLeastOnce readMeIconClickedAtLeastOnce username password) False (getConsumeModeIsOnValueFromLocal flags.consumeModeIsOn) Nothing False Time.utc
+            Model "log" key [] page False (LocalStorage readingMode contentReadClickedAtLeastOnce readMeIconClickedAtLeastOnce username password) False (getConsumeModeIsOnValueFromLocal flags.consumeModeIsOn) Nothing False Time.utc activeTheme
     in
     ( model
     , Cmd.batch [ login AttemptAtInitialization username password, getTimeZone ]
@@ -1243,6 +1254,23 @@ update msg model =
 
                      else
                         "false"
+                    )
+                , Nav.pushUrl model.key "/"
+                ]
+            )
+
+        ThemeChanged ->
+            let
+                newActiveTheme =  if model.activeTheme == Light then Dark else Light
+            in
+            ( { model | activeTheme = newActiveTheme }
+            , Cmd.batch
+                [ storeTheme
+                    (if newActiveTheme == Dark then
+                        "dark"
+
+                     else
+                        "light"
                     )
                 , Nav.pushUrl model.key "/"
                 ]

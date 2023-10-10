@@ -52,7 +52,7 @@ view model =
                                             marginTopForGraph =
                                                 initialMarginTop + round (toFloat tagsCount * heightOfASingleTagAsPx)
                                         in
-                                        [ viewHomePageDiv allTagsToShow blogTagsToShow readingMode model.loggedIn model.consumeModeIsOn
+                                        [ viewHomePageDiv allTagsToShow blogTagsToShow readingMode model.loggedIn model.consumeModeIsOn model.activeTheme
                                         , div [ class "graph", style "margin-top" (String.fromInt marginTopForGraph ++ "px") ] [ viewGraph graphData.graphData.contentIds graphData.graphModel tagsCount graphData.contentToColorize ]
                                         ]
 
@@ -71,7 +71,7 @@ view model =
                                 []
 
                             Initialized content ->
-                                [ viewContentDiv Nothing Nothing model.localStorage.contentReadClickedAtLeastOnce content
+                                [ viewContentDiv model.activeTheme Nothing Nothing model.localStorage.contentReadClickedAtLeastOnce content
                                 , if model.localStorage.username == "mert" then
                                     a [ href ("/update/content/" ++ String.fromInt content.contentId), class "updateContentLink" ] [ text "(update this content)" ]
 
@@ -85,14 +85,14 @@ view model =
                                 []
 
                             Initialized initialized ->
-                                viewContentDivs model.maybeContentFadeOutData model.localStorage.contentReadClickedAtLeastOnce initialized.contents
+                                viewContentDivs model.activeTheme model.maybeContentFadeOutData model.localStorage.contentReadClickedAtLeastOnce initialized.contents
                                     ++ [ viewPagination initialized.tag initialized.pagination initialized.readingMode
                                        ]
 
                     CreateContentPage status ->
                         case status of
                             NoRequestSentYet createContentPageModel ->
-                                [ viewCreateContentDiv createContentPageModel ]
+                                [ viewCreateContentDiv model.activeTheme createContentPageModel ]
 
                             RequestSent _ ->
                                 [ text "..." ]
@@ -100,7 +100,7 @@ view model =
                     UpdateContentPage updateContentPageModel ->
                         case updateContentPageModel of
                             GotContentToUpdate updateContentPageData ->
-                                [ viewUpdateContentDiv updateContentPageData updateContentPageData.maybeContentToPreview updateContentPageData.contentId ]
+                                [ viewUpdateContentDiv model.activeTheme updateContentPageData updateContentPageData.maybeContentToPreview updateContentPageData.contentId ]
 
                             _ ->
                                 [ text "..." ]
@@ -124,13 +124,13 @@ view model =
                     BioPage data ->
                         case data of
                             Initialized bioPageModel ->
-                                [ viewBioPageDiv bioPageModel ]
+                                [ viewBioPageDiv model.activeTheme bioPageModel ]
 
                             _ ->
                                 [ text "..." ]
 
                     ContentSearchPage searchKeyword contents ->
-                        [ viewSearchContentDiv model.localStorage.contentReadClickedAtLeastOnce searchKeyword contents ]
+                        [ viewSearchContentDiv model.activeTheme model.localStorage.contentReadClickedAtLeastOnce searchKeyword contents ]
 
                     BulkContentsPage status ->
                         case status of
@@ -142,7 +142,7 @@ view model =
                                     [ text "içerik adedi 2'den az, 20'den de fazla olamaz" ]
 
                                 else
-                                    [ viewBulkContentsDiv model.localStorage.contentReadClickedAtLeastOnce contents ]
+                                    [ viewBulkContentsDiv model.activeTheme model.localStorage.contentReadClickedAtLeastOnce contents ]
 
                     LoginOrRegisterPage username password errorMessage ->
                         [ viewLoginOrRegisterDiv username password errorMessage ]

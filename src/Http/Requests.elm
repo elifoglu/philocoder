@@ -1,6 +1,7 @@
 module Requests exposing (createNewTag, deleteAllEksiKonserveExceptions, deleteEksiKonserveTopics, getAllTagsResponse, getBio, getBioPageIcons, getBulkContents, getContent, getEksiKonserve, getHomePageDataResponse, getIcons, getSearchResult, getTagContents, getTimeZone, getWholeGraphData, login, postNewContent, previewContent, register, setContentAsRead, updateExistingContent, updateExistingTag, getUrlToRedirect)
 
-import App.Model exposing (CreateContentPageModel, CreateTagPageModel, GetBulkContentsRequestModel, GetContentRequestModel, GetTagContentsRequestModel, IconInfo, Model, ReadingMode(..), TotalPageCountRequestModel, UpdateContentPageData, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getBulkContentsRequestModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
+import App.IconUtil exposing (getIconPath)
+import App.Model exposing (CreateContentPageModel, CreateTagPageModel, GetBulkContentsRequestModel, GetContentRequestModel, GetTagContentsRequestModel, IconInfo, Model, ReadingMode(..), Theme, TotalPageCountRequestModel, UpdateContentPageData, UpdateTagPageModel, createContentPageModelEncoder, createTagPageModelEncoder, getBulkContentsRequestModelEncoder, getContentRequestModelEncoder, getTagContentsRequestModelEncoder, updateContentPageDataEncoder, updateTagPageModelEncoder)
 import App.Msg exposing (LoginRequestType, Msg(..), PreviewContentModel(..))
 import DataResponse exposing (ContentID, allTagsResponseDecoder, bioResponseDecoder, contentDecoder, contentReadResponseDecoder, contentSearchResponseDecoder, contentsResponseDecoder, eksiKonserveResponseDecoder, gotGraphDataDecoder, homePageDataResponseDecoder)
 import Http
@@ -151,60 +152,60 @@ updateExistingTag tagId model =
         }
 
 
-aboutMeIcon : IconInfo
-aboutMeIcon =
-    { urlToNavigate = "https://about.me/m.e", iconImageUrl = "/about-me.svg", marginLeft = "4px" }
+aboutMeIcon : Theme -> IconInfo
+aboutMeIcon activeTheme =
+    { urlToNavigate = "https://about.me/m.e", iconImageUrl = (getIconPath activeTheme "about-me"), marginLeft = "4px" }
 
 
-bioPageIcon : IconInfo
-bioPageIcon =
-    { urlToNavigate = "/me", iconImageUrl = "/bio.svg", marginLeft = "4px" }
+bioPageIcon : Theme -> IconInfo
+bioPageIcon activeTheme =
+    { urlToNavigate = "/me", iconImageUrl = (getIconPath activeTheme "bio"), marginLeft = "4px" }
 
 
-homeIcon : IconInfo
-homeIcon =
-    { urlToNavigate = "/", iconImageUrl = "/home.svg", marginLeft = "4px" }
+homeIcon : Theme -> IconInfo
+homeIcon activeTheme =
+    { urlToNavigate = "/", iconImageUrl = (getIconPath activeTheme "home"), marginLeft = "4px" }
 
 
-readMeIcon : Bool -> IconInfo
-readMeIcon readMeIconClickedAtLeastOnce =
+readMeIcon : Theme -> Bool -> IconInfo
+readMeIcon activeTheme readMeIconClickedAtLeastOnce =
     { urlToNavigate = "/tags/beni_oku"
     , iconImageUrl =
         if readMeIconClickedAtLeastOnce then
-            "/question-mark.svg"
+            (getIconPath activeTheme "question-mark")
 
         else
-            "/question-mark-red.svg"
+            (getIconPath activeTheme "question-mark-red")
     , marginLeft = "4px"
     }
 
 
-getBioPageIcons : Bool -> Bool -> List IconInfo
-getBioPageIcons showAdditionalIcons readMeIconClickedAtLeastOnce =
-    aboutMeIcon
-        :: getAdditionalIcons showAdditionalIcons
-        ++ [ homeIcon, readMeIcon readMeIconClickedAtLeastOnce ]
+getBioPageIcons : Theme -> Bool -> Bool -> List IconInfo
+getBioPageIcons activeTheme showAdditionalIcons readMeIconClickedAtLeastOnce =
+    aboutMeIcon activeTheme
+        :: getAdditionalIcons activeTheme showAdditionalIcons
+        ++ [ homeIcon activeTheme, readMeIcon activeTheme readMeIconClickedAtLeastOnce ]
 
 
-getIcons : Bool -> Bool -> List IconInfo
-getIcons showAdditionalIcons readMeIconClickedAtLeastOnce =
-    [ aboutMeIcon, bioPageIcon, readMeIcon readMeIconClickedAtLeastOnce ]
-        ++ getAdditionalIcons showAdditionalIcons
+getIcons : Theme -> Bool -> Bool -> List IconInfo
+getIcons activeTheme showAdditionalIcons readMeIconClickedAtLeastOnce =
+    [ aboutMeIcon activeTheme, bioPageIcon activeTheme, readMeIcon activeTheme readMeIconClickedAtLeastOnce ]
+        ++ getAdditionalIcons activeTheme showAdditionalIcons
 
 
-getAdditionalIcons : Bool -> List IconInfo
-getAdditionalIcons showAdditionalIcons =
+getAdditionalIcons : Theme -> Bool -> List IconInfo
+getAdditionalIcons activeTheme showAdditionalIcons =
     if not showAdditionalIcons then
         []
 
     else
-        [ { urlToNavigate = "https://open.spotify.com/user/215irwufih45cpoovmxs2r25q/", iconImageUrl = "/spotify.svg", marginLeft = "4px" }
-        , { urlToNavigate = "https://github.com/elifoglu", iconImageUrl = "/github.svg", marginLeft = "4px" }
-        , { urlToNavigate = "https://philocoder.medium.com/", iconImageUrl = "/medium.svg", marginLeft = "4px" }
-        , { urlToNavigate = "https://eksisozluk1923.com/biri/ajora", iconImageUrl = "/eksi.svg", marginLeft = "4px" }
-        , { urlToNavigate = "https://twitter.com/philocoder", iconImageUrl = "/twitter.svg", marginLeft = "4px" }
-        , { urlToNavigate = "https://youtube.com/ajora", iconImageUrl = "/youtube.svg", marginLeft = "4px" }
-        , { urlToNavigate = "https://www.criticker.com/ratings/philocoder", iconImageUrl = "/criticker.svg", marginLeft = "4px" }
+        [ { urlToNavigate = "https://open.spotify.com/user/215irwufih45cpoovmxs2r25q/", iconImageUrl = (getIconPath activeTheme "spotify"), marginLeft = "4px" }
+        , { urlToNavigate = "https://github.com/elifoglu", iconImageUrl = (getIconPath activeTheme "github"), marginLeft = "4px" }
+        , { urlToNavigate = "https://philocoder.medium.com/", iconImageUrl = (getIconPath activeTheme "medium"), marginLeft = "4px" }
+        , { urlToNavigate = "https://eksisozluk1923.com/biri/ajora", iconImageUrl = (getIconPath activeTheme "eksi"), marginLeft = "4px" }
+        , { urlToNavigate = "https://twitter.com/philocoder", iconImageUrl = (getIconPath activeTheme "twitter"), marginLeft = "4px" }
+        , { urlToNavigate = "https://youtube.com/ajora", iconImageUrl = (getIconPath activeTheme "youtube"), marginLeft = "4px" }
+        , { urlToNavigate = "https://www.criticker.com/ratings/philocoder", iconImageUrl = (getIconPath activeTheme "criticker"), marginLeft = "4px" }
         ]
 
 

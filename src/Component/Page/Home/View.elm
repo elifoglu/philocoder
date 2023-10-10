@@ -1,6 +1,7 @@
 module Home.View exposing (..)
 
-import App.Model exposing (IconInfo, Model, Page(..), ReadingMode(..))
+import App.IconUtil exposing (getIconPath)
+import App.Model exposing (IconInfo, Model, Page(..), ReadingMode(..), Theme(..))
 import App.Msg exposing (Msg(..))
 import Html exposing (Html, a, br, button, div, img, input, span, text)
 import Html.Attributes exposing (checked, class, href, name, placeholder, src, style, type_, value)
@@ -11,16 +12,16 @@ import Tag.Model exposing (Tag)
 import TagInfoIcon.View exposing (viewTagInfoIcon)
 
 
-viewHomePageDiv : Maybe (List Tag) -> Maybe (List Tag) -> ReadingMode -> Bool -> Bool -> Html Msg
-viewHomePageDiv allTagsToShow blogTagsToShow readingMode loggedIn consumeModeIsOn =
+viewHomePageDiv : Maybe (List Tag) -> Maybe (List Tag) -> ReadingMode -> Bool -> Bool -> Theme -> Html Msg
+viewHomePageDiv allTagsToShow blogTagsToShow readingMode loggedIn consumeModeIsOn activeTheme =
     div [ class "homepage homepageTagsFont", style "width" "auto", style "float" "left" ]
         ((tagsToShow readingMode allTagsToShow blogTagsToShow
-            |> List.map (viewTag readingMode)
+            |> List.map (viewTag activeTheme readingMode)
             |> List.intersperse (br [] [])
          )
             ++ [ showAllContentsAreReadMessageIfNecessary allTagsToShow blogTagsToShow readingMode ]
             ++ [ br [] [] ]
-            ++ viewMiscDiv readingMode blogTagsToShow loggedIn consumeModeIsOn
+            ++ viewMiscDiv readingMode blogTagsToShow loggedIn consumeModeIsOn activeTheme
         )
 
 
@@ -68,8 +69,8 @@ tagCountCurrentlyShownOnPage readingMode allTags blogTags =
 -- if all contents are read, we show an info message to user about it and its height is exactly one-tag-view-long. so, this is just a correction for "user read all blog/all contents" case
 
 
-viewTag : ReadingMode -> Tag -> Html Msg
-viewTag readingMode tag =
+viewTag : Theme -> ReadingMode -> Tag -> Html Msg
+viewTag activeTheme readingMode tag =
     span []
         [ a
             [ class "homepageTagA"
@@ -94,7 +95,7 @@ viewTag readingMode tag =
                 [ text tag.name ]
             )
         , text " "
-        , viewTagInfoIcon tag
+        , viewTagInfoIcon activeTheme tag
         ]
 
 
@@ -125,18 +126,18 @@ viewIconsDiv model =
     case model.activePage of
         BioPage _ ->
             div [ class "bioPageIconsContainer" ]
-                (getBioPageIcons True model.localStorage.readMeIconClickedAtLeastOnce
+                (getBioPageIcons model.activeTheme True model.localStorage.readMeIconClickedAtLeastOnce
                     |> List.map viewIcon
                 )
 
         _ ->
             div [ class "iconsContainer" ]
-                ((getIcons model.showAdditionalIcons model.localStorage.readMeIconClickedAtLeastOnce
+                ((getIcons model.activeTheme model.showAdditionalIcons model.localStorage.readMeIconClickedAtLeastOnce
                     |> List.map viewIcon
                  )
                     ++ (if not model.showAdditionalIcons then
                             [ div [ class "iconDiv" ]
-                                [ img [ class "icon showMoreIconsIcon", onClick ShowAdditionalIcons, src "/more.svg" ] []
+                                [ img [ class "icon showMoreIconsIcon", onClick ShowAdditionalIcons, src (getIconPath model.activeTheme "more") ] []
                                 ]
                             ]
 
@@ -155,8 +156,8 @@ viewIcon iconInfo =
         ]
 
 
-viewMiscDiv : ReadingMode -> Maybe (List Tag) -> Bool -> Bool -> List (Html Msg)
-viewMiscDiv readingMode blogTagsToShow loggedIn consumeModeIsOn =
+viewMiscDiv : ReadingMode -> Maybe (List Tag) -> Bool -> Bool -> Theme -> List (Html Msg)
+viewMiscDiv readingMode blogTagsToShow loggedIn consumeModeIsOn activeTheme =
     if blogTagsToShow /= Nothing then
         --this 'if expression' is just to show this div 'after' tags are shown; not before. it is just about aesthetics
         [ div [ style "margin-top" "5px", style "margin-bottom" "10px", style "margin-left" "-5px" ]
@@ -193,12 +194,23 @@ viewMiscDiv readingMode blogTagsToShow loggedIn consumeModeIsOn =
 
               else
                 logoutButton Logout
+            , span []
+                [ input [ type_ "checkbox", class "consumeModeToggle", checked (themeToBool activeTheme), onClick ThemeChanged ] []
+                ]
             ]
         ]
 
     else
         []
 
+themeToBool : Theme -> Bool
+themeToBool theme =
+    case theme of
+        Light ->
+            False
+
+        Dark ->
+            True
 
 logoutButton : msg -> Html msg
 logoutButton msg =

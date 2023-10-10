@@ -1,4 +1,4 @@
-port module App.Ports exposing (consoleLog, openNewTab, sendTitle, storeConsumeMode, storeContentReadClickedForTheFirstTime, storeCredentials, storeReadMeIconClickedForTheFirstTime, storeReadingMode, title, modifyUrl)
+port module App.Ports exposing (consoleLog, modifyUrl, openNewTab, sendTitle, storeConsumeMode, storeContentReadClickedForTheFirstTime, storeCredentials, storeReadMeIconClickedForTheFirstTime, storeReadingMode, title, storeTheme)
 
 import App.Model exposing (Initializable(..), MaySendRequest(..), Model, Page(..), UpdateContentPageModel(..))
 
@@ -116,6 +116,9 @@ sendTitle model =
 
         RedirectPage _ ->
             title "philocoder"
+
+
+port storeTheme : String -> Cmd msg
 
 
 port storeCredentials : String -> Cmd msg
