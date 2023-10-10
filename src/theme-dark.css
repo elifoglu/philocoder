@@ -46,6 +46,7 @@
     --login-register-buttons-background-hover: #474747;
 
     --graph-box-shadow-color: var(--dark-theme-base-color-1);
+    --graph-box-shadow-size: 1px;
     --graph-page-info-text-font-color: var(--dark-theme-base-color-1);
 
     --eksi-konserve-background-color: #dcffce;

@@ -445,7 +445,7 @@ input[type='checkbox'] {
 
 .graph {
     position: fixed;
-    box-shadow: 0px 0px 5px 1px var(--graph-box-shadow-color);
+    box-shadow: 0px 0px var(--graph-box-shadow-size) 1px var(--graph-box-shadow-color);
     z-index: -1;
     width: 275px;
     height: 275px;
@@ -455,7 +455,7 @@ input[type='checkbox'] {
 
 .graphForGraphPage {
     position: fixed;
-    box-shadow: 0px 0px 5px 1px var(--graph-box-shadow-color);
+    box-shadow: 0px 0px var(--graph-box-shadow-size) 1px var(--graph-box-shadow-color);
     z-index: -1;
     width: 800px;
     height: 800px;
@@ -471,7 +471,7 @@ input[type='checkbox'] {
 }
 
 .graphForContent {
-    box-shadow: 0px 0px 5px 1px var(--graph-box-shadow-color);
+    box-shadow: 0px 0px var(--graph-box-shadow-size) 1px var(--graph-box-shadow-color);
     width: 275px;
     height: 275px;
     display: block;
