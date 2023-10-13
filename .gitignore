@@ -7,4 +7,5 @@ backup_philocoder.sh
 put_backup_to_philocoder.sh
 backup/*
 old_version_images/*
+cloudflare/*
 .idea/*
