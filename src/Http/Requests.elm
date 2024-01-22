@@ -202,7 +202,7 @@ getAdditionalIcons activeTheme showAdditionalIcons =
         [ { urlToNavigate = "https://open.spotify.com/user/215irwufih45cpoovmxs2r25q/", iconImageUrl = (getIconPath activeTheme "spotify"), marginLeft = "4px" }
         , { urlToNavigate = "https://github.com/elifoglu", iconImageUrl = (getIconPath activeTheme "github"), marginLeft = "4px" }
         , { urlToNavigate = "https://philocoder.medium.com/", iconImageUrl = (getIconPath activeTheme "medium"), marginLeft = "4px" }
-        , { urlToNavigate = "https://eksisozluk1923.com/biri/ajora", iconImageUrl = (getIconPath activeTheme "eksi"), marginLeft = "4px" }
+        , { urlToNavigate = "https://eksisozluk.com/biri/ajora", iconImageUrl = (getIconPath activeTheme "eksi"), marginLeft = "4px" }
         , { urlToNavigate = "https://twitter.com/philocoder", iconImageUrl = (getIconPath activeTheme "twitter"), marginLeft = "4px" }
         , { urlToNavigate = "https://youtube.com/ajora", iconImageUrl = (getIconPath activeTheme "youtube"), marginLeft = "4px" }
         , { urlToNavigate = "https://www.criticker.com/ratings/philocoder", iconImageUrl = (getIconPath activeTheme "criticker"), marginLeft = "4px" }
